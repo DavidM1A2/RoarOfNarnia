@@ -12,6 +12,7 @@ public class ModEnglishLanguageProvider extends LanguageProvider {
 
     @Override
     protected void addTranslations() {
-        addItem(ModItems.RING, "Ring");
+        addItem(ModItems.YELLOW_RING, "Yellow Ring");
+        addItem(ModItems.GREEN_RING, "Green Ring");
     }
 }

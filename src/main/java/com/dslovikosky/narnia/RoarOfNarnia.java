@@ -2,6 +2,7 @@ package com.dslovikosky.narnia;
 
 import com.dslovikosky.narnia.common.constants.Constants;
 import com.dslovikosky.narnia.common.constants.ModCreativeTabs;
+import com.dslovikosky.narnia.common.constants.ModDataComponentTypes;
 import com.dslovikosky.narnia.common.constants.ModItems;
 import com.dslovikosky.narnia.common.event.DataGenerationHandler;
 import net.neoforged.bus.api.IEventBus;
@@ -16,5 +17,6 @@ public class RoarOfNarnia {
         modBus.register(new DataGenerationHandler());
         ModItems.ITEMS.register(modBus);
         ModCreativeTabs.CREATIVE_TABS.register(modBus);
+        ModDataComponentTypes.DATA_COMPONENT_TYPES.register(modBus);
     }
 }

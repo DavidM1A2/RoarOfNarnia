@@ -16,6 +16,6 @@ public class DataGenerationHandler {
         final ExistingFileHelper existingFileHelper = event.getExistingFileHelper();
 
         generator.addProvider(event.includeClient(), new ModItemModelProvider(output, existingFileHelper));
-        generator.addProvider(event.includeServer(), new ModEnglishLanguageProvider(output));
+        generator.addProvider(event.includeClient(), new ModEnglishLanguageProvider(output));
     }
 }

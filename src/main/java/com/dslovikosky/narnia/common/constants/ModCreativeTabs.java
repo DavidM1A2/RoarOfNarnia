@@ -13,6 +13,6 @@ public class ModCreativeTabs {
     public static final DeferredHolder<CreativeModeTab, CreativeModeTab> ROAR_OF_NARNIA = CREATIVE_TABS.register("roar_of_narnia", () -> CreativeModeTab.builder()
             .title(Component.literal("Roar of Narnia"))
             .displayItems((params, output) -> ModItems.ITEMS.getEntries().stream().map(DeferredHolder::get).forEach(output::accept))
-            .icon(() -> new ItemStack(ModItems.RING.get()))
+            .icon(() -> new ItemStack(ModItems.YELLOW_RING.get()))
             .build());
 }
