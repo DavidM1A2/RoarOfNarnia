@@ -1,0 +1,26 @@
+{
+  "type": "narnia:wood_between_the_worlds",
+  "generator": {
+    "type": "minecraft:flat",
+    "settings": {
+      "layers": [
+        {
+          "height": 1,
+          "block": "minecraft:bedrock"
+        },
+        {
+          "height": 30,
+          "block": "minecraft:dirt"
+        },
+        {
+          "height": 1,
+          "block": "minecraft:grass_block"
+        }
+      ],
+      "biome": "narnia:wood_between_the_worlds",
+      "lakes": false,
+      "features": false,
+      "structure_overrides": []
+    }
+  }
+}
