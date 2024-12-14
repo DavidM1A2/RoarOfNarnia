@@ -19,7 +19,7 @@
       ],
       "biome": "narnia:wood_between_the_worlds",
       "lakes": false,
-      "features": false,
+      "features": true,
       "structure_overrides": []
     }
   }

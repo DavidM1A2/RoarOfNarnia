@@ -1,0 +1,35 @@
+{
+  "type": "narnia:water_pool",
+  "config": {
+    "fluid": {
+      "type": "minecraft:simple_state_provider",
+      "state": {
+        "Name": "minecraft:water",
+        "Properties": {
+          "falling": false
+        }
+      }
+    },
+    "width": {
+      "type": "minecraft:clamped_normal",
+      "min_inclusive": 6,
+      "max_inclusive": 10,
+      "mean": 8.0,
+      "deviation": 1.0
+    },
+    "length": {
+      "type": "minecraft:clamped_normal",
+      "min_inclusive": 6,
+      "max_inclusive": 10,
+      "mean": 8.0,
+      "deviation": 1.0
+    },
+    "depth": {
+      "type": "minecraft:clamped_normal",
+      "min_inclusive": 8,
+      "max_inclusive": 12,
+      "mean": 10.0,
+      "deviation": 1.0
+    }
+  }
+}
