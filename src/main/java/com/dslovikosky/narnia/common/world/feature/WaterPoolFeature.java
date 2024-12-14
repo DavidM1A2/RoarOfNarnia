@@ -40,7 +40,7 @@ public class WaterPoolFeature extends Feature<WaterPoolFeature.Configuration> {
 
         for (int x = -width / 2; x <= width / 2; x++) {
             for (int z = -length / 2; z <= length / 2; z++) {
-                for (int y = -depth; y <= 0; y++) {
+                for (int y = -depth; y < 0; y++) {
                     final BlockPos currentBlockPos = blockPos.offset(x, y, z);
 
                     if (!EllipsoidUtils.isInsideEllipsoid(0.0, 0.0, 0.0, width / 2.0, depth, length / 2.0, x, y, z)) {

@@ -28,7 +28,13 @@
     [
       "narnia:wood_between_the_worlds_water_pool"
     ],
-    [],
+    [
+      "minecraft:forest_flowers",
+      "minecraft:flower_default",
+      "minecraft:patch_grass_forest",
+      "minecraft:brown_mushroom_normal",
+      "minecraft:red_mushroom_normal"
+    ],
     []
   ],
   "creature_spawn_probability": 0.0,
