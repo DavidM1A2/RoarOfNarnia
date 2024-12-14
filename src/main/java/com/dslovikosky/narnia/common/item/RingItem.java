@@ -42,16 +42,18 @@ public class RingItem extends Item {
 
     private void tickHeldGreenRing(final Level level, final Entity entity) {
         if (ModLevels.WOOD_BETWEEN_THE_WORLDS == level.dimension()) {
-            if (!level.isClientSide()) {
-                final ServerLevel overworld = level.getServer().getLevel(Level.OVERWORLD);
-                entity.changeDimension(new DimensionTransition(overworld, entity, transitionedEntity -> {
-                }));
-            }
             // Push entities in the wood between the worlds down
             if (entity.isInWater() || entity.isUnderWater()) {
                 final double yMovement = entity.getDeltaMovement().y;
                 if (yMovement > -0.5) {
                     entity.push(0.0, -0.1, 0.0);
+                }
+                if (entity.onGround()) {
+                    if (!level.isClientSide()) {
+                        final ServerLevel overworld = level.getServer().getLevel(Level.OVERWORLD);
+                        entity.changeDimension(new DimensionTransition(overworld, entity, transitionedEntity -> {
+                        }));
+                    }
                 }
             }
         }
