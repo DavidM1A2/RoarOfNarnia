@@ -2,6 +2,7 @@ package com.dslovikosky.narnia;
 
 import com.dslovikosky.narnia.common.constants.Constants;
 import com.dslovikosky.narnia.common.constants.ModAttachmentTypes;
+import com.dslovikosky.narnia.common.constants.ModBlocks;
 import com.dslovikosky.narnia.common.constants.ModCreativeTabs;
 import com.dslovikosky.narnia.common.constants.ModDataComponentTypes;
 import com.dslovikosky.narnia.common.constants.ModFeatures;
@@ -16,6 +17,7 @@ import net.neoforged.neoforge.common.NeoForge;
 public class RoarOfNarnia {
     public RoarOfNarnia(final IEventBus modBus) {
         modBus.register(new DataGenerationHandler());
+        ModBlocks.BLOCKS.register(modBus);
         ModItems.ITEMS.register(modBus);
         ModCreativeTabs.CREATIVE_TABS.register(modBus);
         ModDataComponentTypes.DATA_COMPONENT_TYPES.register(modBus);
