@@ -5,6 +5,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.data.loot.BlockLootSubProvider;
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.DoorBlock;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import org.jetbrains.annotations.NotNull;
 
@@ -22,6 +23,12 @@ public class ModBlockLootTableSubProvider extends BlockLootSubProvider {
 
     @Override
     protected void generate() {
-        ModBlocks.BLOCKS.getEntries().stream().map(DeferredHolder::get).forEach(this::dropSelf);
+        ModBlocks.BLOCKS.getEntries().stream().map(DeferredHolder::get).forEach(block -> {
+            if (block instanceof DoorBlock) {
+                add(block, createDoorTable(block));
+            } else {
+                dropSelf(block);
+            }
+        });
     }
 }

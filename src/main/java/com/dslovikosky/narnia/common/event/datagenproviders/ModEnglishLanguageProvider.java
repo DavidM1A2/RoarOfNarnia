@@ -22,5 +22,6 @@ public class ModEnglishLanguageProvider extends LanguageProvider {
         addBlock(ModBlocks.STRIPPED_WORLD_WOOD_LOG, "Stripped World Wood Log");
         addBlock(ModBlocks.WORLD_WOOD_PLANKS, "World Wood Planks");
         addBlock(ModBlocks.WORLD_WOOD_BUTTON, "World Wood Button");
+        addBlock(ModBlocks.WORLD_WOOD_DOOR, "World Wood Door");
     }
 }

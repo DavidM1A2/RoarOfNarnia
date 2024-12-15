@@ -6,6 +6,7 @@ import com.dslovikosky.narnia.common.constants.ModItems;
 import net.minecraft.data.PackOutput;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.DoorBlock;
 import net.neoforged.neoforge.client.model.generators.ItemModelProvider;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
@@ -21,6 +22,8 @@ public class ModItemModelProvider extends ItemModelProvider {
             if (item instanceof BlockItem blockItem) {
                 if (blockItem.getBlock() instanceof HasCustomBlockItemModel specialBlockItemModel) {
                     specialBlockItemModel.applyBlockItemModel(this, deferredItem);
+                } else if (blockItem.getBlock() instanceof DoorBlock) {
+                    basicItem(item);
                 } else {
                     withExistingParent(deferredItem.getRegisteredName(), modLoc(BLOCK_FOLDER + "/" + deferredItem.getId().getPath()));
                 }
