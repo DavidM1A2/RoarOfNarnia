@@ -20,6 +20,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
         logBlock(ModBlocks.WORLD_WOOD_LOG.get());
         logBlock(ModBlocks.STRIPPED_WORLD_WOOD_LOG.get());
         simpleBlock(ModBlocks.WORLD_WOOD_PLANKS.get());
+        buttonBlock(ModBlocks.WORLD_WOOD_BUTTON.get(), blockTexture(ModBlocks.WORLD_WOOD_PLANKS.get()));
     }
 
     private void woodBlock(final RotatedPillarBlock block, final RotatedPillarBlock logBlock) {

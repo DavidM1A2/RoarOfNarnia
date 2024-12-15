@@ -29,5 +29,6 @@ public class ModItemTagsProvider extends ItemTagsProvider {
         tag(ModItemTags.WORLD_WOOD).add(ModBlocks.STRIPPED_WORLD_WOOD.get().asItem());
         tag(ModItemTags.WORLD_WOOD).add(ModBlocks.STRIPPED_WORLD_WOOD_LOG.get().asItem());
         tag(ItemTags.PLANKS).add(ModBlocks.WORLD_WOOD_PLANKS.get().asItem());
+        tag(ItemTags.WOODEN_BUTTONS).add(ModBlocks.WORLD_WOOD_BUTTON.get().asItem());
     }
 }

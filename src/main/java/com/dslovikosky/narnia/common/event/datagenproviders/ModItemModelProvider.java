@@ -1,5 +1,6 @@
 package com.dslovikosky.narnia.common.event.datagenproviders;
 
+import com.dslovikosky.narnia.common.block.worldwood.HasCustomBlockItemModel;
 import com.dslovikosky.narnia.common.constants.Constants;
 import com.dslovikosky.narnia.common.constants.ModItems;
 import net.minecraft.data.PackOutput;
@@ -17,8 +18,12 @@ public class ModItemModelProvider extends ItemModelProvider {
     protected void registerModels() {
         ModItems.ITEMS.getEntries().forEach(deferredItem -> {
             final Item item = deferredItem.get();
-            if (item instanceof BlockItem) {
-                withExistingParent(deferredItem.getRegisteredName(), modLoc("block/" + deferredItem.getId().getPath()));
+            if (item instanceof BlockItem blockItem) {
+                if (blockItem.getBlock() instanceof HasCustomBlockItemModel specialBlockItemModel) {
+                    specialBlockItemModel.applyBlockItemModel(this, deferredItem);
+                } else {
+                    withExistingParent(deferredItem.getRegisteredName(), modLoc(BLOCK_FOLDER + "/" + deferredItem.getId().getPath()));
+                }
             } else {
                 basicItem(item);
             }
