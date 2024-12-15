@@ -1,6 +1,7 @@
 package com.dslovikosky.narnia.common.event.datagenproviders;
 
 import com.dslovikosky.narnia.common.constants.Constants;
+import com.dslovikosky.narnia.common.constants.ModBlockTags;
 import com.dslovikosky.narnia.common.constants.ModBlocks;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
@@ -20,9 +21,16 @@ public class ModBlockTagsProvider extends BlockTagsProvider {
 
     @Override
     protected void addTags(final HolderLookup.Provider provider) {
-        tag(BlockTags.LOGS).add(ModBlocks.WORLD_WOOD_LOG.get());
-        tag(BlockTags.LOGS).add(ModBlocks.STRIPPED_WORLD_WOOD_LOG.get());
+        tag(BlockTags.LOGS).addTag(ModBlockTags.WORLD_WOOD);
+        tag(ModBlockTags.WORLD_WOOD).add(ModBlocks.WORLD_WOOD.get());
+        tag(ModBlockTags.WORLD_WOOD).add(ModBlocks.WORLD_WOOD_LOG.get());
+        tag(ModBlockTags.WORLD_WOOD).add(ModBlocks.STRIPPED_WORLD_WOOD.get());
+        tag(ModBlockTags.WORLD_WOOD).add(ModBlocks.STRIPPED_WORLD_WOOD_LOG.get());
+        tag(BlockTags.MINEABLE_WITH_AXE).add(ModBlocks.WORLD_WOOD.get());
         tag(BlockTags.MINEABLE_WITH_AXE).add(ModBlocks.WORLD_WOOD_LOG.get());
+        tag(BlockTags.MINEABLE_WITH_AXE).add(ModBlocks.STRIPPED_WORLD_WOOD.get());
         tag(BlockTags.MINEABLE_WITH_AXE).add(ModBlocks.STRIPPED_WORLD_WOOD_LOG.get());
+        tag(BlockTags.MINEABLE_WITH_AXE).add(ModBlocks.WORLD_WOOD_PLANKS.get());
+        tag(BlockTags.PLANKS).add(ModBlocks.WORLD_WOOD_PLANKS.get());
     }
 }

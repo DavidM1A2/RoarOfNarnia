@@ -16,7 +16,10 @@ public class ModEnglishLanguageProvider extends LanguageProvider {
         addItem(ModItems.YELLOW_RING, "Yellow Ring");
         addItem(ModItems.GREEN_RING, "Green Ring");
 
+        addBlock(ModBlocks.WORLD_WOOD, "World Wood");
         addBlock(ModBlocks.WORLD_WOOD_LOG, "World Wood Log");
+        addBlock(ModBlocks.STRIPPED_WORLD_WOOD, "Stripped World Wood");
         addBlock(ModBlocks.STRIPPED_WORLD_WOOD_LOG, "Stripped World Wood Log");
+        addBlock(ModBlocks.WORLD_WOOD_PLANKS, "World Wood Planks");
     }
 }

@@ -7,8 +7,8 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 import net.minecraft.world.level.material.MapColor;
 
-public class StrippedWorldWoodLog extends RotatedPillarBlock {
-    public StrippedWorldWoodLog() {
+public class StrippedWorldWoodLogBlock extends RotatedPillarBlock {
+    public StrippedWorldWoodLogBlock() {
         super(BlockBehaviour.Properties.of()
                 .mapColor(blockState -> blockState.getValue(RotatedPillarBlock.AXIS) == Direction.Axis.Y ? MapColor.PODZOL : MapColor.COLOR_BROWN)
                 .instrument(NoteBlockInstrument.BASS)

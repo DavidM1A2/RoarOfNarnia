@@ -17,8 +17,8 @@ import org.jetbrains.annotations.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
-public class WorldWoodLog extends RotatedPillarBlock {
-    public WorldWoodLog() {
+public class WorldWoodLogBlock extends RotatedPillarBlock {
+    public WorldWoodLogBlock() {
         super(BlockBehaviour.Properties.of()
                 .mapColor(blockState -> blockState.getValue(RotatedPillarBlock.AXIS) == Direction.Axis.Y ? MapColor.PODZOL : MapColor.COLOR_BROWN)
                 .instrument(NoteBlockInstrument.BASS)
