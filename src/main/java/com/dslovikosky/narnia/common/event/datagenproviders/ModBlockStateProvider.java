@@ -14,5 +14,6 @@ public class ModBlockStateProvider extends BlockStateProvider {
     @Override
     protected void registerStatesAndModels() {
         logBlock(ModBlocks.WORLD_WOOD_LOG.get());
+        logBlock(ModBlocks.STRIPPED_WORLD_WOOD_LOG.get());
     }
 }
