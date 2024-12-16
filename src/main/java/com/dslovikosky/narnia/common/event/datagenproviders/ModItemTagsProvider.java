@@ -35,5 +35,6 @@ public class ModItemTagsProvider extends ItemTagsProvider {
         tag(ItemTags.FENCE_GATES).add(ModBlocks.WORLD_WOOD_FENCE_GATE.get().asItem());
         tag(ItemTags.LEAVES).add(ModBlocks.WORLD_WOOD_LEAVES.get().asItem());
         tag(ItemTags.SAPLINGS).add(ModBlocks.WORLD_WOOD_SAPLING.get().asItem());
+        tag(ItemTags.SLABS).add(ModBlocks.WORLD_WOOD_SLAB.get().asItem());
     }
 }

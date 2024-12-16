@@ -7,6 +7,7 @@ import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.DoorBlock;
 import net.minecraft.world.level.block.LeavesBlock;
+import net.minecraft.world.level.block.SlabBlock;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import org.jetbrains.annotations.NotNull;
 
@@ -34,6 +35,8 @@ public class ModBlockLootTableSubProvider extends BlockLootSubProvider {
                 add(block, createDoorTable(block));
             } else if (block instanceof LeavesBlock) {
                 add(block, createLeavesDrops(block, leafToSapling.get(block), NORMAL_LEAVES_SAPLING_CHANCES));
+            } else if (block instanceof SlabBlock) {
+                add(block, createSlabItemTable(block));
             } else {
                 dropSelf(block);
             }
