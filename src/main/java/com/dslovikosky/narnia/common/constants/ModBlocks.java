@@ -7,6 +7,7 @@ import com.dslovikosky.narnia.common.block.worldwood.WorldWoodButtonBlock;
 import com.dslovikosky.narnia.common.block.worldwood.WorldWoodDoorBlock;
 import com.dslovikosky.narnia.common.block.worldwood.WorldWoodFenceBlock;
 import com.dslovikosky.narnia.common.block.worldwood.WorldWoodFenceGateBlock;
+import com.dslovikosky.narnia.common.block.worldwood.WorldWoodLeavesBlock;
 import com.dslovikosky.narnia.common.block.worldwood.WorldWoodLogBlock;
 import com.dslovikosky.narnia.common.block.worldwood.WorldWoodPlanksBlock;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -25,4 +26,5 @@ public class ModBlocks {
     public static final Supplier<WorldWoodFenceBlock> WORLD_WOOD_FENCE = BLOCKS.register("world_wood_fence", WorldWoodFenceBlock::new);
     public static final Supplier<WorldWoodFenceGateBlock> WORLD_WOOD_FENCE_GATE = BLOCKS.register("world_wood_fence_gate", WorldWoodFenceGateBlock::new);
     public static final Supplier<WorldWoodButtonBlock> WORLD_WOOD_BUTTON = BLOCKS.register("world_wood_button", WorldWoodButtonBlock::new);
+    public static final Supplier<WorldWoodLeavesBlock> WORLD_WOOD_LEAVES = BLOCKS.register("world_wood_leaves", WorldWoodLeavesBlock::new);
 }

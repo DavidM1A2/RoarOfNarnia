@@ -5,15 +5,22 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.data.loot.BlockLootSubProvider;
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.DoorBlock;
+import net.minecraft.world.level.block.LeavesBlock;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 public class ModBlockLootTableSubProvider extends BlockLootSubProvider {
+    private final Map<LeavesBlock, Block> leafToSapling = new HashMap<>();
+
     protected ModBlockLootTableSubProvider(final HolderLookup.Provider lookupProvider) {
         super(Set.of(), FeatureFlags.DEFAULT_FLAGS, lookupProvider);
+        leafToSapling.put(ModBlocks.WORLD_WOOD_LEAVES.get(), Blocks.SPRUCE_SAPLING);
     }
 
     @Override
@@ -26,6 +33,8 @@ public class ModBlockLootTableSubProvider extends BlockLootSubProvider {
         ModBlocks.BLOCKS.getEntries().stream().map(DeferredHolder::get).forEach(block -> {
             if (block instanceof DoorBlock) {
                 add(block, createDoorTable(block));
+            } else if (block instanceof LeavesBlock) {
+                add(block, createLeavesDrops(block, leafToSapling.get(block), NORMAL_LEAVES_SAPLING_CHANCES));
             } else {
                 dropSelf(block);
             }
