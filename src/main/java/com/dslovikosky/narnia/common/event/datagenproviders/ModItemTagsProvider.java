@@ -38,5 +38,6 @@ public class ModItemTagsProvider extends ItemTagsProvider {
         tag(ItemTags.SLABS).add(ModBlocks.WORLD_WOOD_SLAB.get().asItem());
         tag(ItemTags.WOODEN_STAIRS).add(ModBlocks.WORLD_WOOD_STAIR.get().asItem());
         tag(ItemTags.WOODEN_TRAPDOORS).add(ModBlocks.WORLD_WOOD_TRAP_DOOR.get().asItem());
+        tag(ItemTags.WOODEN_PRESSURE_PLATES).add(ModBlocks.WORLD_WOOD_PRESSURE_PLATE.get().asItem());
     }
 }

@@ -34,6 +34,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
         slabBlock(ModBlocks.WORLD_WOOD_SLAB.get(), blockTexture(ModBlocks.WORLD_WOOD_PLANKS.get()));
         stairsBlock(ModBlocks.WORLD_WOOD_STAIR.get(), blockTexture(ModBlocks.WORLD_WOOD_PLANKS.get()));
         trapdoorBlockWithRenderType(ModBlocks.WORLD_WOOD_TRAP_DOOR.get(), blockTexture(ModBlocks.WORLD_WOOD_TRAP_DOOR.get()), true, RenderType.cutout().name);
+        pressurePlateBlock(ModBlocks.WORLD_WOOD_PRESSURE_PLATE.get(), blockTexture(ModBlocks.WORLD_WOOD_PLANKS.get()));
     }
 
     private void woodBlock(final RotatedPillarBlock block, final RotatedPillarBlock logBlock) {

@@ -30,5 +30,6 @@ public class ModEnglishLanguageProvider extends LanguageProvider {
         addBlock(ModBlocks.WORLD_WOOD_SLAB, "World Wood Slab");
         addBlock(ModBlocks.WORLD_WOOD_STAIR, "World Wood Stair");
         addBlock(ModBlocks.WORLD_WOOD_TRAP_DOOR, "World Wood Trapdoor");
+        addBlock(ModBlocks.WORLD_WOOD_PRESSURE_PLATE, "World Wood Pressure Plate");
     }
 }

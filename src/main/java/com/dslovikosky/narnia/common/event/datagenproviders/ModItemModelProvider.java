@@ -10,6 +10,7 @@ import net.minecraft.world.level.block.ButtonBlock;
 import net.minecraft.world.level.block.DoorBlock;
 import net.minecraft.world.level.block.FenceBlock;
 import net.minecraft.world.level.block.FenceGateBlock;
+import net.minecraft.world.level.block.PressurePlateBlock;
 import net.minecraft.world.level.block.SaplingBlock;
 import net.minecraft.world.level.block.SlabBlock;
 import net.minecraft.world.level.block.StairBlock;
@@ -53,6 +54,8 @@ public class ModItemModelProvider extends ItemModelProvider {
                     stairs(deferredItem.getRegisteredName(), determineTexture(deferredItem), determineTexture(deferredItem), determineTexture(deferredItem));
                 } else if (blockItem.getBlock() instanceof TrapDoorBlock) {
                     trapdoorBottom(deferredItem.getRegisteredName(), modLoc(BLOCK_FOLDER + "/" + deferredItem.getId().getPath()));
+                } else if (blockItem.getBlock() instanceof PressurePlateBlock) {
+                    pressurePlate(deferredItem.getRegisteredName(), determineTexture(deferredItem));
                 } else {
                     withExistingParent(deferredItem.getRegisteredName(), modLoc(BLOCK_FOLDER + "/" + deferredItem.getId().getPath()));
                 }
