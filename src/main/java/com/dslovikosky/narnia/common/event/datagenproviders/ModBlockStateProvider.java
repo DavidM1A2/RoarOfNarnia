@@ -8,6 +8,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.DoorBlock;
 import net.minecraft.world.level.block.LeavesBlock;
 import net.minecraft.world.level.block.RotatedPillarBlock;
+import net.minecraft.world.level.block.SaplingBlock;
 import net.neoforged.neoforge.client.model.generators.BlockStateProvider;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
@@ -28,6 +29,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
         fenceBlock(ModBlocks.WORLD_WOOD_FENCE.get(), blockTexture(ModBlocks.WORLD_WOOD_PLANKS.get()));
         fenceGateBlock(ModBlocks.WORLD_WOOD_FENCE_GATE.get(), blockTexture(ModBlocks.WORLD_WOOD_PLANKS.get()));
         leavesBlock(ModBlocks.WORLD_WOOD_LEAVES.get());
+        saplingBlock(ModBlocks.WORLD_WOOD_SAPLING.get());
     }
 
     private void woodBlock(final RotatedPillarBlock block, final RotatedPillarBlock logBlock) {
@@ -43,5 +45,10 @@ public class ModBlockStateProvider extends BlockStateProvider {
     private void leavesBlock(final LeavesBlock leavesBlock) {
         final ResourceLocation leavesTexturePath = blockTexture(leavesBlock);
         simpleBlock(leavesBlock, models().leaves(leavesTexturePath.getPath(), leavesTexturePath).renderType(RenderType.cutoutMipped().name));
+    }
+
+    private void saplingBlock(final SaplingBlock saplingBlock) {
+        final ResourceLocation leavesTexturePath = blockTexture(saplingBlock);
+        simpleBlock(saplingBlock, models().cross(leavesTexturePath.getPath(), leavesTexturePath).renderType(RenderType.cutout().name));
     }
 }

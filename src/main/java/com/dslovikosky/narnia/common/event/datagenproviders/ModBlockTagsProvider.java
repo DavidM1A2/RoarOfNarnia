@@ -37,5 +37,6 @@ public class ModBlockTagsProvider extends BlockTagsProvider {
         tag(BlockTags.WOODEN_FENCES).add(ModBlocks.WORLD_WOOD_FENCE.get());
         tag(BlockTags.FENCE_GATES).add(ModBlocks.WORLD_WOOD_FENCE_GATE.get());
         tag(BlockTags.LEAVES).add(ModBlocks.WORLD_WOOD_LEAVES.get());
+        tag(BlockTags.SAPLINGS).add(ModBlocks.WORLD_WOOD_SAPLING.get());
     }
 }

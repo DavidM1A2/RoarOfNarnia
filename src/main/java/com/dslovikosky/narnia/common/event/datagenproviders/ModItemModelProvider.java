@@ -10,7 +10,9 @@ import net.minecraft.world.level.block.ButtonBlock;
 import net.minecraft.world.level.block.DoorBlock;
 import net.minecraft.world.level.block.FenceBlock;
 import net.minecraft.world.level.block.FenceGateBlock;
+import net.minecraft.world.level.block.SaplingBlock;
 import net.neoforged.neoforge.client.model.generators.ItemModelProvider;
+import net.neoforged.neoforge.client.model.generators.ModelFile;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
@@ -34,6 +36,10 @@ public class ModItemModelProvider extends ItemModelProvider {
                     buttonInventory(deferredItem.getRegisteredName(), determineTexture(deferredItem));
                 } else if (blockItem.getBlock() instanceof DoorBlock) {
                     basicItem(item);
+                } else if (blockItem.getBlock() instanceof SaplingBlock) {
+                    getBuilder(item.toString())
+                            .parent(new ModelFile.UncheckedModelFile("item/generated"))
+                            .texture("layer0", modLoc(BLOCK_FOLDER + "/" + deferredItem.getId().getPath()));
                 } else if (blockItem.getBlock() instanceof FenceBlock) {
                     fenceInventory(deferredItem.getRegisteredName(), determineTexture(deferredItem));
                 } else if (blockItem.getBlock() instanceof FenceGateBlock) {

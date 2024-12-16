@@ -5,7 +5,6 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.data.loot.BlockLootSubProvider;
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.DoorBlock;
 import net.minecraft.world.level.block.LeavesBlock;
 import net.neoforged.neoforge.registries.DeferredHolder;
@@ -20,7 +19,7 @@ public class ModBlockLootTableSubProvider extends BlockLootSubProvider {
 
     protected ModBlockLootTableSubProvider(final HolderLookup.Provider lookupProvider) {
         super(Set.of(), FeatureFlags.DEFAULT_FLAGS, lookupProvider);
-        leafToSapling.put(ModBlocks.WORLD_WOOD_LEAVES.get(), Blocks.SPRUCE_SAPLING);
+        leafToSapling.put(ModBlocks.WORLD_WOOD_LEAVES.get(), ModBlocks.WORLD_WOOD_SAPLING.get());
     }
 
     @Override
