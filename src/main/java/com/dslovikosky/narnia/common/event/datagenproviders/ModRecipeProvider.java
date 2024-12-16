@@ -10,6 +10,8 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.ButtonBlock;
 import net.minecraft.world.level.block.DoorBlock;
+import net.minecraft.world.level.block.FenceBlock;
+import net.minecraft.world.level.block.FenceGateBlock;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.CompletableFuture;
@@ -25,6 +27,8 @@ public class ModRecipeProvider extends RecipeProvider {
         planksFromLog(recipeOutput, ModBlocks.WORLD_WOOD_PLANKS.get(), ModItemTags.WORLD_WOOD, 4);
         buttonFromPlanks(recipeOutput, ModBlocks.WORLD_WOOD_BUTTON.get(), ModBlocks.WORLD_WOOD_PLANKS.get());
         doorFromPlanks(recipeOutput, ModBlocks.WORLD_WOOD_DOOR.get(), ModBlocks.WORLD_WOOD_PLANKS.get());
+        fenceFromPlanks(recipeOutput, ModBlocks.WORLD_WOOD_FENCE.get(), ModBlocks.WORLD_WOOD_PLANKS.get());
+        fenceGateFromPlanks(recipeOutput, ModBlocks.WORLD_WOOD_FENCE_GATE.get(), ModBlocks.WORLD_WOOD_PLANKS.get());
     }
 
     private void buttonFromPlanks(final RecipeOutput recipeOutput, final ButtonBlock buttonBlock, final Block planks) {
@@ -33,5 +37,13 @@ public class ModRecipeProvider extends RecipeProvider {
 
     private void doorFromPlanks(final RecipeOutput recipeOutput, final DoorBlock doorBlock, final Block planks) {
         doorBuilder(doorBlock, Ingredient.of(planks)).unlockedBy(getHasName(planks), has(planks)).save(recipeOutput);
+    }
+
+    private void fenceFromPlanks(final RecipeOutput recipeOutput, final FenceBlock fenceBlock, final Block planks) {
+        fenceBuilder(fenceBlock, Ingredient.of(planks)).unlockedBy(getHasName(planks), has(planks)).save(recipeOutput);
+    }
+
+    private void fenceGateFromPlanks(final RecipeOutput recipeOutput, final FenceGateBlock fenceGateBlock, final Block planks) {
+        fenceGateBuilder(fenceGateBlock, Ingredient.of(planks)).unlockedBy(getHasName(planks), has(planks)).save(recipeOutput);
     }
 }

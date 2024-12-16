@@ -23,5 +23,7 @@ public class ModEnglishLanguageProvider extends LanguageProvider {
         addBlock(ModBlocks.WORLD_WOOD_PLANKS, "World Wood Planks");
         addBlock(ModBlocks.WORLD_WOOD_BUTTON, "World Wood Button");
         addBlock(ModBlocks.WORLD_WOOD_DOOR, "World Wood Door");
+        addBlock(ModBlocks.WORLD_WOOD_FENCE, "World Wood Fence");
+        addBlock(ModBlocks.WORLD_WOOD_FENCE_GATE, "World Wood Fence Gate");
     }
 }

@@ -24,6 +24,8 @@ public class ModBlockStateProvider extends BlockStateProvider {
         simpleBlock(ModBlocks.WORLD_WOOD_PLANKS.get());
         buttonBlock(ModBlocks.WORLD_WOOD_BUTTON.get(), blockTexture(ModBlocks.WORLD_WOOD_PLANKS.get()));
         doorBlock(ModBlocks.WORLD_WOOD_DOOR.get());
+        fenceBlock(ModBlocks.WORLD_WOOD_FENCE.get(), blockTexture(ModBlocks.WORLD_WOOD_PLANKS.get()));
+        fenceGateBlock(ModBlocks.WORLD_WOOD_FENCE_GATE.get(), blockTexture(ModBlocks.WORLD_WOOD_PLANKS.get()));
     }
 
     private void woodBlock(final RotatedPillarBlock block, final RotatedPillarBlock logBlock) {
