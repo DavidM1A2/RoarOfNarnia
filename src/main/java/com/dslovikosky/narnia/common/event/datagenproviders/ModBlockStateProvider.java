@@ -32,6 +32,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
         leavesBlock(ModBlocks.WORLD_WOOD_LEAVES.get());
         saplingBlock(ModBlocks.WORLD_WOOD_SAPLING.get());
         slabBlock(ModBlocks.WORLD_WOOD_SLAB.get(), blockTexture(ModBlocks.WORLD_WOOD_PLANKS.get()));
+        stairsBlock(ModBlocks.WORLD_WOOD_STAIR.get(), blockTexture(ModBlocks.WORLD_WOOD_PLANKS.get()));
     }
 
     private void woodBlock(final RotatedPillarBlock block, final RotatedPillarBlock logBlock) {

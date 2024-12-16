@@ -12,6 +12,7 @@ import net.minecraft.world.level.block.FenceBlock;
 import net.minecraft.world.level.block.FenceGateBlock;
 import net.minecraft.world.level.block.SaplingBlock;
 import net.minecraft.world.level.block.SlabBlock;
+import net.minecraft.world.level.block.StairBlock;
 import net.neoforged.neoforge.client.model.generators.ItemModelProvider;
 import net.neoforged.neoforge.client.model.generators.ModelFile;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
@@ -47,6 +48,8 @@ public class ModItemModelProvider extends ItemModelProvider {
                     fenceGate(deferredItem.getRegisteredName(), determineTexture(deferredItem));
                 } else if (blockItem.getBlock() instanceof SlabBlock) {
                     slab(deferredItem.getRegisteredName(), determineTexture(deferredItem), determineTexture(deferredItem), determineTexture(deferredItem));
+                } else if (blockItem.getBlock() instanceof StairBlock) {
+                    stairs(deferredItem.getRegisteredName(), determineTexture(deferredItem), determineTexture(deferredItem), determineTexture(deferredItem));
                 } else {
                     withExistingParent(deferredItem.getRegisteredName(), modLoc(BLOCK_FOLDER + "/" + deferredItem.getId().getPath()));
                 }

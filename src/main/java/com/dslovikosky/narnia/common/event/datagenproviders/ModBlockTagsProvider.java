@@ -39,5 +39,6 @@ public class ModBlockTagsProvider extends BlockTagsProvider {
         tag(BlockTags.LEAVES).add(ModBlocks.WORLD_WOOD_LEAVES.get());
         tag(BlockTags.SAPLINGS).add(ModBlocks.WORLD_WOOD_SAPLING.get());
         tag(BlockTags.WOODEN_SLABS).add(ModBlocks.WORLD_WOOD_SLAB.get());
+        tag(BlockTags.WOODEN_STAIRS).add(ModBlocks.WORLD_WOOD_STAIR.get());
     }
 }
