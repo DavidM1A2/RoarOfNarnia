@@ -13,6 +13,7 @@ import com.dslovikosky.narnia.common.block.worldwood.WorldWoodPlanksBlock;
 import com.dslovikosky.narnia.common.block.worldwood.WorldWoodSaplingBlock;
 import com.dslovikosky.narnia.common.block.worldwood.WorldWoodSlabBlock;
 import com.dslovikosky.narnia.common.block.worldwood.WorldWoodStairBlock;
+import com.dslovikosky.narnia.common.block.worldwood.WorldWoodTrapDoorBlock;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
 import java.util.function.Supplier;
@@ -33,4 +34,5 @@ public class ModBlocks {
     public static final Supplier<WorldWoodLeavesBlock> WORLD_WOOD_LEAVES = BLOCKS.register("world_wood_leaves", WorldWoodLeavesBlock::new);
     public static final Supplier<WorldWoodSaplingBlock> WORLD_WOOD_SAPLING = BLOCKS.register("world_wood_sapling", WorldWoodSaplingBlock::new);
     public static final Supplier<WorldWoodSlabBlock> WORLD_WOOD_SLAB = BLOCKS.register("world_wood_slab", WorldWoodSlabBlock::new);
+    public static final Supplier<WorldWoodTrapDoorBlock> WORLD_WOOD_TRAP_DOOR = BLOCKS.register("world_wood_trap_door", WorldWoodTrapDoorBlock::new);
 }

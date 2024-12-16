@@ -37,5 +37,6 @@ public class ModItemTagsProvider extends ItemTagsProvider {
         tag(ItemTags.SAPLINGS).add(ModBlocks.WORLD_WOOD_SAPLING.get().asItem());
         tag(ItemTags.SLABS).add(ModBlocks.WORLD_WOOD_SLAB.get().asItem());
         tag(ItemTags.WOODEN_STAIRS).add(ModBlocks.WORLD_WOOD_STAIR.get().asItem());
+        tag(ItemTags.WOODEN_TRAPDOORS).add(ModBlocks.WORLD_WOOD_TRAP_DOOR.get().asItem());
     }
 }
