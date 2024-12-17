@@ -5,11 +5,13 @@ import com.dslovikosky.narnia.common.constants.ModBlocks;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.CeilingHangingSignBlock;
 import net.minecraft.world.level.block.DoorBlock;
 import net.minecraft.world.level.block.LeavesBlock;
 import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.block.SaplingBlock;
 import net.minecraft.world.level.block.SlabBlock;
+import net.minecraft.world.level.block.WallHangingSignBlock;
 import net.neoforged.neoforge.client.model.generators.BlockStateProvider;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
@@ -35,6 +37,8 @@ public class ModBlockStateProvider extends BlockStateProvider {
         stairsBlock(ModBlocks.WORLD_WOOD_STAIR.get(), blockTexture(ModBlocks.WORLD_WOOD_PLANKS.get()));
         trapdoorBlockWithRenderType(ModBlocks.WORLD_WOOD_TRAP_DOOR.get(), blockTexture(ModBlocks.WORLD_WOOD_TRAP_DOOR.get()), true, RenderType.cutout().name);
         pressurePlateBlock(ModBlocks.WORLD_WOOD_PRESSURE_PLATE.get(), blockTexture(ModBlocks.WORLD_WOOD_PLANKS.get()));
+        signBlock(ModBlocks.WORLD_WOOD_STANDING_SIGN.get(), ModBlocks.WORLD_WOOD_WALL_SIGN.get(), blockTexture(ModBlocks.WORLD_WOOD_PLANKS.get()));
+        hangingSignBlock(ModBlocks.WORLD_WOOD_WALL_HANGING_SIGN.get(), ModBlocks.WORLD_WOOD_CEILING_HANGING_SIGN.get(), blockTexture(ModBlocks.WORLD_WOOD_PLANKS.get()));
     }
 
     private void woodBlock(final RotatedPillarBlock block, final RotatedPillarBlock logBlock) {
@@ -59,5 +63,12 @@ public class ModBlockStateProvider extends BlockStateProvider {
 
     private void slabBlock(final SlabBlock slabBlock, final ResourceLocation slabTexture) {
         slabBlock(slabBlock, slabTexture, slabTexture);
+    }
+
+    private void hangingSignBlock(final WallHangingSignBlock wallHangingSignBlock, final CeilingHangingSignBlock ceilingHangingSignBlock, final ResourceLocation hangingSignTexture) {
+        final ResourceLocation wallHangingSignTexture = blockTexture(wallHangingSignBlock);
+        final ResourceLocation ceilingHangingSignTexture = blockTexture(ceilingHangingSignBlock);
+        simpleBlock(wallHangingSignBlock, models().sign(wallHangingSignTexture.getPath(), hangingSignTexture));
+        simpleBlock(ceilingHangingSignBlock, models().sign(ceilingHangingSignTexture.getPath(), hangingSignTexture));
     }
 }

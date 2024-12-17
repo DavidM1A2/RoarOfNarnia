@@ -2,11 +2,13 @@ package com.dslovikosky.narnia.common.event.datagenproviders;
 
 import com.dslovikosky.narnia.common.constants.ModBlocks;
 import com.dslovikosky.narnia.common.constants.ModItemTags;
+import com.dslovikosky.narnia.common.constants.ModItems;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.RecipeProvider;
+import net.minecraft.world.item.SignItem;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.ButtonBlock;
@@ -36,6 +38,8 @@ public class ModRecipeProvider extends RecipeProvider {
         stairsFromPlanks(recipeOutput, ModBlocks.WORLD_WOOD_STAIR.get(), ModBlocks.WORLD_WOOD_PLANKS.get());
         trapDoor(recipeOutput, ModBlocks.WORLD_WOOD_TRAP_DOOR.get(), ModBlocks.WORLD_WOOD_PLANKS.get());
         pressurePlate(recipeOutput, ModBlocks.WORLD_WOOD_PRESSURE_PLATE.get(), ModBlocks.WORLD_WOOD_PLANKS.get());
+        sign(recipeOutput, ModItems.WORLD_WOOD_SIGN.get(), ModBlocks.WORLD_WOOD_PLANKS.get());
+        hangingSign(recipeOutput, ModItems.WORLD_WOOD_HANGING_SIGN.get(), ModBlocks.WORLD_WOOD_PLANKS.get());
     }
 
     private void buttonFromPlanks(final RecipeOutput recipeOutput, final ButtonBlock buttonBlock, final Block planks) {
@@ -60,5 +64,9 @@ public class ModRecipeProvider extends RecipeProvider {
 
     private void trapDoor(final RecipeOutput recipeOutput, final TrapDoorBlock trapDoorBlock, final Block planks) {
         trapdoorBuilder(trapDoorBlock, Ingredient.of(planks)).unlockedBy(getHasName(planks), has(planks)).save(recipeOutput);
+    }
+
+    private void sign(final RecipeOutput recipeOutput, final SignItem signItem, final Block planks) {
+        signBuilder(signItem, Ingredient.of(planks)).unlockedBy(getHasName(planks), has(planks)).save(recipeOutput);
     }
 }

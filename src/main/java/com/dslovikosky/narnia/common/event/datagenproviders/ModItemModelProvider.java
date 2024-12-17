@@ -5,7 +5,9 @@ import com.dslovikosky.narnia.common.constants.ModItems;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.HangingSignItem;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.SignItem;
 import net.minecraft.world.level.block.ButtonBlock;
 import net.minecraft.world.level.block.DoorBlock;
 import net.minecraft.world.level.block.FenceBlock;
@@ -56,6 +58,8 @@ public class ModItemModelProvider extends ItemModelProvider {
                     trapdoorBottom(deferredItem.getRegisteredName(), modLoc(BLOCK_FOLDER + "/" + deferredItem.getId().getPath()));
                 } else if (blockItem.getBlock() instanceof PressurePlateBlock) {
                     pressurePlate(deferredItem.getRegisteredName(), determineTexture(deferredItem));
+                } else if (item instanceof SignItem || item instanceof HangingSignItem) {
+                    basicItem(item);
                 } else {
                     withExistingParent(deferredItem.getRegisteredName(), modLoc(BLOCK_FOLDER + "/" + deferredItem.getId().getPath()));
                 }

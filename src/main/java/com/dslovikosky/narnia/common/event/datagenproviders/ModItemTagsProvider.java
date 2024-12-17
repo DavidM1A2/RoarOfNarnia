@@ -3,6 +3,7 @@ package com.dslovikosky.narnia.common.event.datagenproviders;
 import com.dslovikosky.narnia.common.constants.Constants;
 import com.dslovikosky.narnia.common.constants.ModBlocks;
 import com.dslovikosky.narnia.common.constants.ModItemTags;
+import com.dslovikosky.narnia.common.constants.ModItems;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.ItemTagsProvider;
@@ -39,5 +40,7 @@ public class ModItemTagsProvider extends ItemTagsProvider {
         tag(ItemTags.WOODEN_STAIRS).add(ModBlocks.WORLD_WOOD_STAIR.get().asItem());
         tag(ItemTags.WOODEN_TRAPDOORS).add(ModBlocks.WORLD_WOOD_TRAP_DOOR.get().asItem());
         tag(ItemTags.WOODEN_PRESSURE_PLATES).add(ModBlocks.WORLD_WOOD_PRESSURE_PLATE.get().asItem());
+        tag(ItemTags.SIGNS).add(ModItems.WORLD_WOOD_SIGN.get().asItem());
+        tag(ItemTags.HANGING_SIGNS).add(ModItems.WORLD_WOOD_HANGING_SIGN.get().asItem());
     }
 }

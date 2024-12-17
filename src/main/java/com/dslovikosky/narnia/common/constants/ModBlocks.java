@@ -4,6 +4,7 @@ import com.dslovikosky.narnia.common.block.worldwood.StrippedWorldWoodBlock;
 import com.dslovikosky.narnia.common.block.worldwood.StrippedWorldWoodLogBlock;
 import com.dslovikosky.narnia.common.block.worldwood.WorldWoodBlock;
 import com.dslovikosky.narnia.common.block.worldwood.WorldWoodButtonBlock;
+import com.dslovikosky.narnia.common.block.worldwood.WorldWoodCeilingHangingSignBlock;
 import com.dslovikosky.narnia.common.block.worldwood.WorldWoodDoorBlock;
 import com.dslovikosky.narnia.common.block.worldwood.WorldWoodFenceBlock;
 import com.dslovikosky.narnia.common.block.worldwood.WorldWoodFenceGateBlock;
@@ -14,14 +15,18 @@ import com.dslovikosky.narnia.common.block.worldwood.WorldWoodPressurePlateBlock
 import com.dslovikosky.narnia.common.block.worldwood.WorldWoodSaplingBlock;
 import com.dslovikosky.narnia.common.block.worldwood.WorldWoodSlabBlock;
 import com.dslovikosky.narnia.common.block.worldwood.WorldWoodStairBlock;
+import com.dslovikosky.narnia.common.block.worldwood.WorldWoodStandingSignBlock;
 import com.dslovikosky.narnia.common.block.worldwood.WorldWoodTrapDoorBlock;
+import com.dslovikosky.narnia.common.block.worldwood.WorldWoodWallHangingSignBlock;
+import com.dslovikosky.narnia.common.block.worldwood.WorldWoodWallSignBlock;
+import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
+import java.util.Set;
 import java.util.function.Supplier;
 
 public class ModBlocks {
     public static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(Constants.MOD_ID);
-
     public static final Supplier<WorldWoodBlock> WORLD_WOOD = BLOCKS.register("world_wood", WorldWoodBlock::new);
     public static final Supplier<StrippedWorldWoodBlock> STRIPPED_WORLD_WOOD = BLOCKS.register("stripped_world_wood", StrippedWorldWoodBlock::new);
     public static final Supplier<WorldWoodLogBlock> WORLD_WOOD_LOG = BLOCKS.register("world_wood_log", WorldWoodLogBlock::new);
@@ -32,6 +37,11 @@ public class ModBlocks {
     public static final Supplier<WorldWoodFenceGateBlock> WORLD_WOOD_FENCE_GATE = BLOCKS.register("world_wood_fence_gate", WorldWoodFenceGateBlock::new);
     public static final Supplier<WorldWoodStairBlock> WORLD_WOOD_STAIR = BLOCKS.register("world_wood_stair", WorldWoodStairBlock::new);
     public static final Supplier<WorldWoodPressurePlateBlock> WORLD_WOOD_PRESSURE_PLATE = BLOCKS.register("world_wood_pressure_plate", WorldWoodPressurePlateBlock::new);
+    public static final Supplier<WorldWoodStandingSignBlock> WORLD_WOOD_STANDING_SIGN = BLOCKS.register("world_wood_standing_sign", WorldWoodStandingSignBlock::new);
+    public static final Supplier<WorldWoodWallSignBlock> WORLD_WOOD_WALL_SIGN = BLOCKS.register("world_wood_wall_sign", WorldWoodWallSignBlock::new);
+    public static final Supplier<WorldWoodWallHangingSignBlock> WORLD_WOOD_WALL_HANGING_SIGN = BLOCKS.register("world_wood_wall_hanging_sign", WorldWoodWallHangingSignBlock::new);
+    public static final Supplier<WorldWoodCeilingHangingSignBlock> WORLD_WOOD_CEILING_HANGING_SIGN = BLOCKS.register("world_wood_ceiling_hanging_sign", WorldWoodCeilingHangingSignBlock::new);
+    public static final Set<Supplier<? extends Block>> SPECIAL_ITEM_BLOCKS = Set.of(WORLD_WOOD_STANDING_SIGN, WORLD_WOOD_WALL_SIGN, WORLD_WOOD_WALL_HANGING_SIGN, WORLD_WOOD_CEILING_HANGING_SIGN);
     public static final Supplier<WorldWoodButtonBlock> WORLD_WOOD_BUTTON = BLOCKS.register("world_wood_button", WorldWoodButtonBlock::new);
     public static final Supplier<WorldWoodLeavesBlock> WORLD_WOOD_LEAVES = BLOCKS.register("world_wood_leaves", WorldWoodLeavesBlock::new);
     public static final Supplier<WorldWoodSaplingBlock> WORLD_WOOD_SAPLING = BLOCKS.register("world_wood_sapling", WorldWoodSaplingBlock::new);
