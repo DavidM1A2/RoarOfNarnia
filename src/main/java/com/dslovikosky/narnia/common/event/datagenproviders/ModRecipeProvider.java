@@ -40,6 +40,8 @@ public class ModRecipeProvider extends RecipeProvider {
         pressurePlate(recipeOutput, ModBlocks.WORLD_WOOD_PRESSURE_PLATE.get(), ModBlocks.WORLD_WOOD_PLANKS.get());
         sign(recipeOutput, ModItems.WORLD_WOOD_SIGN.get(), ModBlocks.WORLD_WOOD_PLANKS.get());
         hangingSign(recipeOutput, ModItems.WORLD_WOOD_HANGING_SIGN.get(), ModBlocks.WORLD_WOOD_PLANKS.get());
+        woodenBoat(recipeOutput, ModItems.WORLD_WOOD_BOAT.get(), ModBlocks.WORLD_WOOD_PLANKS.get());
+        chestBoat(recipeOutput, ModItems.WORLD_WOOD_CHEST_BOAT.get(), ModBlocks.WORLD_WOOD_PLANKS.get());
     }
 
     private void buttonFromPlanks(final RecipeOutput recipeOutput, final ButtonBlock buttonBlock, final Block planks) {

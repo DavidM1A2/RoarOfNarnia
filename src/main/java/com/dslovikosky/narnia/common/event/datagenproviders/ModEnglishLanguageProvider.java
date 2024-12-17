@@ -15,6 +15,8 @@ public class ModEnglishLanguageProvider extends LanguageProvider {
     protected void addTranslations() {
         addItem(ModItems.YELLOW_RING, "Yellow Ring");
         addItem(ModItems.GREEN_RING, "Green Ring");
+        addItem(ModItems.WORLD_WOOD_BOAT, "World Wood Boat");
+        addItem(ModItems.WORLD_WOOD_CHEST_BOAT, "World Wood Chest Boat");
         addItem(ModItems.WORLD_WOOD_SIGN, "World Wood Sign");
         addItem(ModItems.WORLD_WOOD_HANGING_SIGN, "World Wood Hanging Sign");
 

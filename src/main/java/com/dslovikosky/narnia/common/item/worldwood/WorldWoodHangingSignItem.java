@@ -1,4 +1,4 @@
-package com.dslovikosky.narnia.common.item;
+package com.dslovikosky.narnia.common.item.worldwood;
 
 import com.dslovikosky.narnia.common.constants.ModBlocks;
 import net.minecraft.world.item.HangingSignItem;

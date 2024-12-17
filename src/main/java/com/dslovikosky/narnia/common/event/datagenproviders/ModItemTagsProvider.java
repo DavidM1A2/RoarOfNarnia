@@ -25,6 +25,11 @@ public class ModItemTagsProvider extends ItemTagsProvider {
     protected void addTags(final HolderLookup.Provider provider) {
         tag(ItemTags.LOGS).addTag(ModItemTags.WORLD_WOOD);
 
+        tag(ItemTags.BOATS).add(ModItems.WORLD_WOOD_BOAT.get().asItem());
+        tag(ItemTags.CHEST_BOATS).add(ModItems.WORLD_WOOD_CHEST_BOAT.get().asItem());
+        tag(ItemTags.SIGNS).add(ModItems.WORLD_WOOD_SIGN.get().asItem());
+        tag(ItemTags.HANGING_SIGNS).add(ModItems.WORLD_WOOD_HANGING_SIGN.get().asItem());
+
         tag(ModItemTags.WORLD_WOOD).add(ModBlocks.WORLD_WOOD.get().asItem());
         tag(ModItemTags.WORLD_WOOD).add(ModBlocks.WORLD_WOOD_LOG.get().asItem());
         tag(ModItemTags.WORLD_WOOD).add(ModBlocks.STRIPPED_WORLD_WOOD.get().asItem());
@@ -40,7 +45,5 @@ public class ModItemTagsProvider extends ItemTagsProvider {
         tag(ItemTags.WOODEN_STAIRS).add(ModBlocks.WORLD_WOOD_STAIR.get().asItem());
         tag(ItemTags.WOODEN_TRAPDOORS).add(ModBlocks.WORLD_WOOD_TRAP_DOOR.get().asItem());
         tag(ItemTags.WOODEN_PRESSURE_PLATES).add(ModBlocks.WORLD_WOOD_PRESSURE_PLATE.get().asItem());
-        tag(ItemTags.SIGNS).add(ModItems.WORLD_WOOD_SIGN.get().asItem());
-        tag(ItemTags.HANGING_SIGNS).add(ModItems.WORLD_WOOD_HANGING_SIGN.get().asItem());
     }
 }
