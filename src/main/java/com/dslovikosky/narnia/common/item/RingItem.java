@@ -107,7 +107,7 @@ public class RingItem extends Item {
             int waterCount = 0;
             for (int x = 0; x < 15; x++) {
                 for (int z = 0; z < 15; z++) {
-                    final BlockState blockState = centerChunk.getBlockState(new BlockPos(x, 31, z));
+                    final BlockState blockState = centerChunk.getBlockState(new BlockPos(x, 30, z));
                     if (blockState.is(Blocks.WATER)) {
                         waterXSum += x;
                         waterZSum += z;
@@ -120,7 +120,7 @@ public class RingItem extends Item {
             if (waterCount != 0) {
                 final double waterXCenter = waterXSum / waterCount;
                 final double waterZCenter = waterZSum / waterCount;
-                for (int y = 31; y > 0; y--) {
+                for (int y = 30; y > 0; y--) {
                     final BlockState blockState = centerChunk.getBlockState(new BlockPos((int) waterXCenter, y, (int) waterZCenter));
                     if (!blockState.is(Blocks.WATER)) {
                         playerSpawnSpot = new Vec3(waterXCenter, y + 2, waterZCenter);
@@ -130,7 +130,7 @@ public class RingItem extends Item {
             }
 
             if (playerSpawnSpot == null) {
-                LOG.error("Wood between the worlds had an invalid 0,0 chunk, spawning the player at 8, 31, 8");
+                LOG.error("Wood between the worlds had an invalid 0,0 chunk, spawning the player at 8, 30, 8");
                 playerSpawnSpot = new Vec3(8, 32, 8);
             }
 

@@ -8,6 +8,7 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.valueproviders.IntProvider;
 import net.minecraft.world.level.WorldGenLevel;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
@@ -25,6 +26,7 @@ public class WaterPoolFeature extends Feature<WaterPoolFeature.Configuration> {
     @Override
     public boolean place(final FeaturePlaceContext<Configuration> context) {
         final BlockPos blockPos = context.origin();
+        final BlockPos waterLevelPos = blockPos.below();
         final WorldGenLevel level = context.level();
         final RandomSource random = context.random();
         final WaterPoolFeature.Configuration configuration = context.config();
@@ -34,14 +36,16 @@ public class WaterPoolFeature extends Feature<WaterPoolFeature.Configuration> {
         final int length = configuration.length().sample(random);
         final int depth = configuration.depth().sample(random);
 
-        if (blockPos.getY() <= level.getMinBuildHeight() + depth + 1) {
+        if (waterLevelPos.getY() <= level.getMinBuildHeight() + depth + 1) {
             return false;
         }
 
-        for (int x = -width / 2; x <= width / 2; x++) {
-            for (int z = -length / 2; z <= length / 2; z++) {
+        final int widthBoundingBox = width / 2 + 2;
+        final int lengthBoundingBox = length / 2 + 2;
+        for (int x = -widthBoundingBox; x <= widthBoundingBox; x++) {
+            for (int z = -lengthBoundingBox; z <= lengthBoundingBox; z++) {
                 for (int y = -depth; y < 0; y++) {
-                    final BlockPos currentBlockPos = blockPos.offset(x, y, z);
+                    final BlockPos currentBlockPos = waterLevelPos.offset(x, y, z);
 
                     if (!EllipsoidUtils.isInsideEllipsoid(0.0, 0.0, 0.0, width / 2.0, depth, length / 2.0, x, y, z)) {
                         continue;
@@ -51,6 +55,19 @@ public class WaterPoolFeature extends Feature<WaterPoolFeature.Configuration> {
                     final BlockState oldBlockState = level.getBlockState(currentBlockPos);
                     if (!oldBlockState.is(BlockTags.FEATURES_CANNOT_REPLACE) && !oldBlockState.isAir()) {
                         level.setBlock(currentBlockPos, newBlockState, 2);
+                    }
+                }
+                final BlockPos currentBlockPos = waterLevelPos.offset(x, 0, z);
+
+                if (!EllipsoidUtils.isInsideEllipsoid(0.0, 0.0, 0.0, widthBoundingBox, depth, lengthBoundingBox, x, 0, z)) {
+                    continue;
+                }
+
+                final BlockState oldBlockState = level.getBlockState(currentBlockPos);
+                if (!oldBlockState.is(BlockTags.FEATURES_CANNOT_REPLACE) && !oldBlockState.isAir()) {
+                    level.setBlock(currentBlockPos, Blocks.AIR.defaultBlockState(), 2);
+                    if (level.getBlockState(currentBlockPos.below()).is(Blocks.DIRT)) {
+                        level.setBlock(currentBlockPos.below(), Blocks.GRASS_BLOCK.defaultBlockState(), 2);
                     }
                 }
             }

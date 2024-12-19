@@ -94,7 +94,7 @@ public class WorldWoodTreeFeature extends Feature<WorldWoodTreeConfiguration> {
             WorldWoodTreeConfiguration configuration
     ) {
         final int treeHeight = configuration.height().sample(random);
-        final double baseTrunkWidth = treeHeight / 4.0;
+        final double baseTrunkWidth = treeHeight / 5.0;
 
         final double xCenterShift = -random.nextDouble();
         final double zCenterShift = -random.nextDouble();
@@ -102,7 +102,7 @@ public class WorldWoodTreeFeature extends Feature<WorldWoodTreeConfiguration> {
         // Check that the trunk is valid
         final AtomicBoolean isValidPlace = new AtomicBoolean(true);
         loopOverTreeTrunkLayerBlocks(0, treeHeight, baseTrunkWidth, xCenterShift, zCenterShift, originPos, blockPos -> {
-            if (level.getBlockState(blockPos.below()).liquid()) {
+            if (!level.getBlockState(blockPos.below()).isSolid()) {
                 isValidPlace.set(false);
             }
         });
