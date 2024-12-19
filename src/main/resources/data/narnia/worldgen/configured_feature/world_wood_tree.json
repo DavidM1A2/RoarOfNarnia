@@ -1,0 +1,30 @@
+{
+  "type": "narnia:world_wood_tree",
+  "config": {
+    "foliage_provider": {
+      "type": "minecraft:simple_state_provider",
+      "state": {
+        "Name": "narnia:world_wood_leaves",
+        "Properties": {
+          "distance": "7",
+          "persistent": "false",
+          "waterlogged": "false"
+        }
+      }
+    },
+    "trunk_provider": {
+      "type": "minecraft:simple_state_provider",
+      "state": {
+        "Name": "narnia:world_wood_log",
+        "Properties": {
+          "axis": "y"
+        }
+      }
+    },
+    "height": {
+      "type": "minecraft:uniform",
+      "min_inclusive": 3,
+      "max_inclusive": 24
+    }
+  }
+}
