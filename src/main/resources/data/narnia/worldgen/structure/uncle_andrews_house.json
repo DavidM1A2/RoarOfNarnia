@@ -1,0 +1,7 @@
+{
+  "type": "narnia:uncle_andrews_house",
+  "biomes": "#narnia:has_structure/uncle_andrews_house",
+  "step": "surface_structures",
+  "spawn_overrides": {
+  }
+}

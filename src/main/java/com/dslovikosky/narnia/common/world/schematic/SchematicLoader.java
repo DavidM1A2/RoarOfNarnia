@@ -2,6 +2,7 @@ package com.dslovikosky.narnia.common.world.schematic;
 
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.commands.arguments.blocks.BlockStateParser;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -11,8 +12,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.FastBufferedInputStream;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.common.CommonHooks;
-import net.neoforged.neoforge.server.ServerLifecycleHooks;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,8 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 public class SchematicLoader {
-    public static Schematic load(final ResourceLocation location) {
-        final ResourceManager resourceManager = ServerLifecycleHooks.getCurrentServer().getResourceManager();
+    public static Schematic load(final RegistryAccess registryAccess, final ResourceManager resourceManager, final ResourceLocation location) {
         final CompoundTag compoundTag;
         try (final InputStream inputStream = resourceManager.open(location);
              final InputStream fastInputStream = new FastBufferedInputStream(inputStream)) {
@@ -47,7 +45,7 @@ public class SchematicLoader {
         final Map<Integer, BlockState> blockPaletteLookup = new HashMap<>();
         for (final String blockStateString : blockPalette.getAllKeys()) {
             final int key = blockPalette.getInt(blockStateString);
-            blockPaletteLookup.put(key, parseBlockState(blockStateString));
+            blockPaletteLookup.put(key, parseBlockState(registryAccess, blockStateString));
         }
 
         final BlockState[] blocks = new BlockState[blockData.length];
@@ -55,12 +53,12 @@ public class SchematicLoader {
             blocks[i] = blockPaletteLookup.get(blockData[i]);
         }
 
-        return new Schematic(width, height, length, blocks, blockEntities, entities);
+        return new Schematic(location, width, height, length, blocks, blockEntities, entities);
     }
 
-    private static BlockState parseBlockState(final String blockStateString) {
+    private static BlockState parseBlockState(final RegistryAccess registryAccess, final String blockStateString) {
         try {
-            return BlockStateParser.parseForBlock(CommonHooks.resolveLookup(Registries.BLOCK), blockStateString, true).blockState();
+            return BlockStateParser.parseForBlock(registryAccess.lookup(Registries.BLOCK).get(), blockStateString, true).blockState();
         } catch (final CommandSyntaxException e) {
             throw new RuntimeException(e);
         }
