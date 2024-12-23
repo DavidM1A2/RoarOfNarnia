@@ -2,6 +2,7 @@ package com.dslovikosky.narnia.common.constants;
 
 import com.dslovikosky.narnia.common.item.DebugItem;
 import com.dslovikosky.narnia.common.item.RingItem;
+import com.dslovikosky.narnia.common.item.TheChroniclesOfNarniaBookItem;
 import com.dslovikosky.narnia.common.item.worldwood.WorldWoodBoatItem;
 import com.dslovikosky.narnia.common.item.worldwood.WorldWoodHangingSignItem;
 import com.dslovikosky.narnia.common.item.worldwood.WorldWoodSignItem;
@@ -14,6 +15,8 @@ public class ModItems {
     public static final DeferredItem<RingItem> YELLOW_RING = ITEMS.register("yellow_ring", () -> new RingItem(RingItem.Type.YELLOW));
     public static final DeferredItem<RingItem> GREEN_RING = ITEMS.register("green_ring", () -> new RingItem(RingItem.Type.GREEN));
     public static final DeferredItem<DebugItem> DEBUG = ITEMS.register("debug", DebugItem::new);
+
+    public static final DeferredItem<TheChroniclesOfNarniaBookItem> THE_MAGICIANS_NEPHEW = ITEMS.register("the_magicians_nephew", () -> new TheChroniclesOfNarniaBookItem(TheChroniclesOfNarniaBookItem.Book.TheMagiciansNephew));
 
     public static final DeferredItem<WorldWoodBoatItem> WORLD_WOOD_BOAT = ITEMS.register("world_wood_boat", () -> new WorldWoodBoatItem(false));
     public static final DeferredItem<WorldWoodBoatItem> WORLD_WOOD_CHEST_BOAT = ITEMS.register("world_wood_chest_boat", () -> new WorldWoodBoatItem(true));

@@ -16,6 +16,9 @@ public class ModEnglishLanguageProvider extends LanguageProvider {
         addItem(ModItems.YELLOW_RING, "Yellow Ring");
         addItem(ModItems.GREEN_RING, "Green Ring");
         addItem(ModItems.DEBUG, "Debug");
+
+        addItem(ModItems.THE_MAGICIANS_NEPHEW, "The Magician's Nephew");
+
         addItem(ModItems.WORLD_WOOD_BOAT, "World Wood Boat");
         addItem(ModItems.WORLD_WOOD_CHEST_BOAT, "World Wood Chest Boat");
         addItem(ModItems.WORLD_WOOD_SIGN, "World Wood Sign");
