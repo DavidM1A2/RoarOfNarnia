@@ -12,6 +12,7 @@ import com.dslovikosky.narnia.common.constants.ModStructurePieces;
 import com.dslovikosky.narnia.common.constants.ModStructureTypes;
 import com.dslovikosky.narnia.common.event.AttachmentHandler;
 import com.dslovikosky.narnia.common.event.DataGenerationHandler;
+import com.dslovikosky.narnia.common.event.GivePlayerMagiciansNephewHandler;
 import com.dslovikosky.narnia.common.event.ModColorRegister;
 import com.dslovikosky.narnia.common.event.RendererRegister;
 import com.dslovikosky.narnia.common.event.SignBlockRegister;
@@ -40,5 +41,6 @@ public class RoarOfNarnia {
         final IEventBus forgeBus = NeoForge.EVENT_BUS;
 
         forgeBus.register(new AttachmentHandler());
+        forgeBus.register(new GivePlayerMagiciansNephewHandler());
     }
 }

@@ -8,6 +8,8 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.RecipeProvider;
+import net.minecraft.data.recipes.ShapedRecipeBuilder;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.SignItem;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Block;
@@ -42,6 +44,14 @@ public class ModRecipeProvider extends RecipeProvider {
         hangingSign(recipeOutput, ModItems.WORLD_WOOD_HANGING_SIGN.get(), ModBlocks.WORLD_WOOD_PLANKS.get());
         woodenBoat(recipeOutput, ModItems.WORLD_WOOD_BOAT.get(), ModBlocks.WORLD_WOOD_PLANKS.get());
         chestBoat(recipeOutput, ModItems.WORLD_WOOD_CHEST_BOAT.get(), ModBlocks.WORLD_WOOD_PLANKS.get());
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.THE_MAGICIANS_NEPHEW.get())
+                .pattern("P")
+                .pattern("P")
+                .pattern("P")
+                .define('P', Items.PAPER)
+                .unlockedBy(getHasName(Items.PAPER), has(Items.PAPER))
+                .save(recipeOutput);
     }
 
     private void buttonFromPlanks(final RecipeOutput recipeOutput, final ButtonBlock buttonBlock, final Block planks) {
