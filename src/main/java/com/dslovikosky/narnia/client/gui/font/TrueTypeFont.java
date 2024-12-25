@@ -14,17 +14,23 @@ import net.minecraft.client.renderer.GameRenderer;
 import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL11;
 
-import java.awt.*;
+import javax.imageio.ImageIO;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.FontMetrics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBuffer;
 import java.awt.image.DataBufferByte;
 import java.awt.image.DataBufferInt;
+import java.io.File;
+import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -33,7 +39,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class TrueTypeFont {
-    private static final char DEFAULT_CHARACTER = '?';
+    private static final float TEXT_SCALE_FACTOR = 0.2f;
     private static final Set<Integer> VALID_TEXTURE_SIZES = IntStream.rangeClosed(6, 12).map(it -> (int) Math.pow(2.0, it)).boxed().collect(Collectors.toSet());
     private final Map<Character, CharacterGlyph> glyphs = new HashMap<>();
     private final Font font;
@@ -42,24 +48,21 @@ public class TrueTypeFont {
     private final int fontTextureId;
     private final int textureWidth;
     private final int textureHeight;
-    private int height;
+    private int charHeight;
 
     public TrueTypeFont(final Font font, final boolean antiAlias, final Set<Character> alphabet) {
         this.font = font;
         this.antiAlias = antiAlias;
 
-        final HashSet<Character> supportedCharacters = new HashSet<>(alphabet);
-        supportedCharacters.add(DEFAULT_CHARACTER);
-
         this.fontMetrics = computeFontMetrics();
 
         // A multiple of 2 for the opengl texture (ex. 256, 512, or 1024)
-        final int textureSize = getTextureSize(supportedCharacters);
+        final int textureSize = getTextureSize(alphabet);
         this.textureWidth = textureSize;
         this.textureHeight = textureSize;
 
         // Render the characters into open GL format
-        this.fontTextureId = createTextureSheet(supportedCharacters);
+        this.fontTextureId = createTextureSheet(alphabet);
     }
 
     private FontMetrics computeFontMetrics() {
@@ -118,40 +121,42 @@ public class TrueTypeFont {
         // Fill the rectangle with black
         graphics.fillRect(0, 0, textureWidth, textureHeight);
 
-        // 3 values to use in writing the glyphs to the image
-        // The current row's height
-        int rowHeight = 0;
+        // Set the anti-alias flag if needed
+        if (antiAlias) {
+            graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            graphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+        }
+        // Set the font
+        graphics.setFont(font);
+        // Set the color to white
+        graphics.setColor(Color.WHITE);
+
         // The current glyph pos x and y
         int positionX = 0;
         int positionY = 0;
 
+        // Compute the height of the character
+        this.charHeight = fontMetrics.getHeight();
+
         // Go over each character
         for (final Character character : alphabet) {
-            // Render the character into an image
-            final BufferedImage fontImage = getFontImage(character);
+            // Compute the width of the current character
+            final int charWidth = Math.max(1, fontMetrics.charWidth(character));
 
             // If the glyph is too big for the texture move down a line
-            if (positionX + fontImage.getWidth() >= textureWidth) {
+            if (positionX + charWidth >= textureWidth) {
                 // Reset X to the far left
                 positionX = 0;
                 // Move Y down a row
-                positionY += rowHeight;
-                // Reset row height to be 0, the current row has no glyphs
-                rowHeight = 0;
+                positionY += this.charHeight;
             }
 
             // Assign the glyph position on the texture
             // Create a new character glyph for this font
-            final CharacterGlyph characterGlyph = new CharacterGlyph(fontImage.getWidth(), fontImage.getHeight(), positionX, positionY);
-
-            // The font height is the max of the current height and the new glyph's height
-            height = Math.max(height, characterGlyph.height);
-
-            // The row height is the max of the current row height and the new glyph's height
-            rowHeight = Math.max(rowHeight, characterGlyph.height);
+            final CharacterGlyph characterGlyph = new CharacterGlyph(charWidth, charHeight, positionX, positionY);
 
             // Draw the character glyph to the large texture
-            graphics.drawImage(fontImage, positionX, positionY, null);
+            graphics.drawString(character.toString(), positionX, positionY + fontMetrics.getAscent());
 
             // Move the X position over by the glyph's width
             positionX += characterGlyph.width;
@@ -159,49 +164,15 @@ public class TrueTypeFont {
             glyphs.put(character, characterGlyph);
         }
 
+        try {
+            ImageIO.write(imgTemp, "png", new File("./out.png"));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
         // Once we're done writing all of our glyphs onto the 1024x1024 image we load it into open GL for rendering
         return loadImage(imgTemp);
     }
-
-    private BufferedImage getFontImage(final Character character) {
-        // Compute the width of the current character
-        int charWidth = fontMetrics.charWidth(character);
-
-        // If our character has no width just use a width of 1 and don't do anything with it
-        charWidth = Math.max(1, charWidth);
-
-        // Compute the height of the character
-        int charHeight = fontMetrics.getHeight();
-
-        // If the char's height is invalid just use the font size
-        if (charHeight <= 0) {
-            charHeight = font.getSize();
-        }
-
-        // Create another image holding the character we are creating
-        final BufferedImage fontImage = new BufferedImage(charWidth, charHeight, BufferedImage.TYPE_INT_ARGB);
-
-        // Extract the graphics component that we write to
-        final Graphics2D graphics = (Graphics2D) fontImage.getGraphics();
-
-        // Set the anti-alias flag if needed
-        if (antiAlias) {
-            graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        }
-
-        // Set the font
-        graphics.setFont(font);
-
-        // Set the color to white
-        graphics.setColor(Color.WHITE);
-
-        // Write the character onto the image
-        graphics.drawString(character.toString(), 0, fontMetrics.getAscent());
-
-        // Return the image
-        return fontImage;
-    }
-
 
     private int loadImage(final BufferedImage bufferedImage) {
         // Grab the width and height of the texture
@@ -263,9 +234,6 @@ public class TrueTypeFont {
         int drawX = 0;
         int drawY = 0;
 
-        // Multiply the scale by the overall gui scale
-        final float guiScale = 1.0f; //calcGuiScale()
-
         final PoseStack poseStack = guiGraphics.pose();
         poseStack.pushPose();
         RenderSystem.enableBlend();
@@ -293,15 +261,15 @@ public class TrueTypeFont {
             // Draw each character
             for (final char currentChar : line.toCharArray()) {
                 // Grab the glyph to draw, it will either be ascii or in the additional glyphs map
-                characterGlyph = Optional.ofNullable(glyphs.get(currentChar)).orElse(glyphs.get(DEFAULT_CHARACTER));
+                characterGlyph = Optional.ofNullable(glyphs.get(currentChar)).orElse(glyphs.get('a'));
                 // Draw a letter
                 drawQuad(
                         poseStack,
                         tessellator,
-                        drawX * guiScale + x,
-                        drawY * guiScale + y,
-                        (drawX + characterGlyph.width) * guiScale + x,
-                        (drawY + characterGlyph.height) * guiScale + y,
+                        drawX * TEXT_SCALE_FACTOR + x,
+                        drawY * TEXT_SCALE_FACTOR + y,
+                        (drawX + characterGlyph.width) * TEXT_SCALE_FACTOR + x,
+                        (drawY + characterGlyph.height) * TEXT_SCALE_FACTOR + y,
                         characterGlyph.storedX,
                         characterGlyph.storedY,
                         characterGlyph.storedX + characterGlyph.width,
@@ -310,7 +278,7 @@ public class TrueTypeFont {
                 drawX += characterGlyph.width;
             }
             // On newline
-            drawY += height;
+            drawY += charHeight;
         }
         poseStack.popPose();
     }
@@ -349,11 +317,11 @@ public class TrueTypeFont {
     }
 
     public int getWidth(final String string) {
-        return (int) Math.round(this.fontMetrics.stringWidth(string) * 1.0);
+        return Math.round(this.fontMetrics.stringWidth(string) * TEXT_SCALE_FACTOR);
     }
 
     public int getHeight(final String string) {
-        return (int) Math.round(this.fontMetrics.getHeight() * 1.0 * (string.chars().filter(it -> it == '\n').count() + 1));
+        return Math.round(this.fontMetrics.getHeight() * TEXT_SCALE_FACTOR * (string.chars().filter(it -> it == '\n').count() + 1));
     }
 
     public void destroy() {

@@ -197,4 +197,12 @@ public abstract class GuiPane extends GuiComponentWithEvents {
     public void setPadding(final Spacing padding) {
         this.padding = padding;
     }
+
+    public double getGuiOffsetX() {
+        return guiOffsetX;
+    }
+
+    public double getGuiOffsetY() {
+        return guiOffsetY;
+    }
 }
