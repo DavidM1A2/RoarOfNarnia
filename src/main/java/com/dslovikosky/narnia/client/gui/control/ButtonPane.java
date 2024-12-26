@@ -7,7 +7,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.sounds.SoundEvents;
 
-import java.awt.*;
+import java.awt.Color;
 import java.util.function.Consumer;
 
 public class ButtonPane extends GuiPane {
@@ -44,13 +44,13 @@ public class ButtonPane extends GuiPane {
     @Override
     public void draw(final GuiGraphics guiGraphics) {
         if (this.isVisible()) {
-            super.draw(guiGraphics);
             if (iconHovered != null) {
                 iconHovered.setVisible(isHovered());
             }
             if (icon != null) {
                 icon.setVisible(iconHovered == null || !isHovered());
             }
+            super.draw(guiGraphics);
         }
     }
 
@@ -58,6 +58,7 @@ public class ButtonPane extends GuiPane {
         this.addMouseListener(event -> {
             if (event.getEventType() == MouseEvent.EventType.Click && event.getClickedButton() == MouseEvent.LEFT_MOUSE_BUTTON && this.isVisible() && this.isHovered() && this.isInBounds()) {
                 listener.accept(event);
+                event.consume();
             }
         });
     }

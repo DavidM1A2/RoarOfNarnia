@@ -39,5 +39,16 @@ public class ModEnglishLanguageProvider extends LanguageProvider {
         addBlock(ModBlocks.WORLD_WOOD_STAIR, "World Wood Stair");
         addBlock(ModBlocks.WORLD_WOOD_TRAP_DOOR, "World Wood Trapdoor");
         addBlock(ModBlocks.WORLD_WOOD_PRESSURE_PLATE, "World Wood Pressure Plate");
+
+        add("actor.narnia.digory.name", "Digory");
+        add("actor.narnia.polly.name", "Polly");
+
+        add("book.narnia.the_magicians_nephew.name", "The Magician's Nephew");
+
+        add("chapter.narnia.the_magicians_nephew.the_wrong_door.title", "The Wrong Door");
+        add("chapter.narnia.the_magicians_nephew.digory_and_his_uncle.title", "Digory and His Uncle");
+        add("chapter.narnia.the_magicians_nephew.the_wood_between_the_worlds.title", "The Wood Between the Worlds");
+
+        add("gui.narnia.book.chapter_header", "Chapter %1$d\n%2$s");
     }
 }

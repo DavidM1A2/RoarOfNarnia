@@ -27,12 +27,11 @@ public class TextBoxComponent extends GuiComponentWithEvents {
             float yCoord = getY();
 
             for (final String line : textLines) {
-                final int lineWidth = font.getWidth(line);
                 final int lineHeight = font.getHeight(line);
 
                 final float xCoord = getX() + switch (this.textAlignment) {
-                    case TextAlignment.ALIGN_RIGHT -> lineWidth;
-                    case TextAlignment.ALIGN_CENTER -> lineWidth / 2f;
+                    case TextAlignment.ALIGN_RIGHT -> getWidth();
+                    case TextAlignment.ALIGN_CENTER -> getWidth() / 2f;
                     default -> 0f;
                 };
 

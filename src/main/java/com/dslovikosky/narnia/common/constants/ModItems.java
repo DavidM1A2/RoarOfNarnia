@@ -16,7 +16,7 @@ public class ModItems {
     public static final DeferredItem<RingItem> GREEN_RING = ITEMS.register("green_ring", () -> new RingItem(RingItem.Type.GREEN));
     public static final DeferredItem<DebugItem> DEBUG = ITEMS.register("debug", DebugItem::new);
 
-    public static final DeferredItem<TheChroniclesOfNarniaBookItem> THE_MAGICIANS_NEPHEW = ITEMS.register("the_magicians_nephew", () -> new TheChroniclesOfNarniaBookItem(TheChroniclesOfNarniaBookItem.Book.TheMagiciansNephew));
+    public static final DeferredItem<TheChroniclesOfNarniaBookItem> THE_MAGICIANS_NEPHEW = ITEMS.register("the_magicians_nephew", () -> new TheChroniclesOfNarniaBookItem(ModNarniaBooks.THE_MAGICIANS_NEPHEW));
 
     public static final DeferredItem<WorldWoodBoatItem> WORLD_WOOD_BOAT = ITEMS.register("world_wood_boat", () -> new WorldWoodBoatItem(false));
     public static final DeferredItem<WorldWoodBoatItem> WORLD_WOOD_CHEST_BOAT = ITEMS.register("world_wood_chest_boat", () -> new WorldWoodBoatItem(true));
