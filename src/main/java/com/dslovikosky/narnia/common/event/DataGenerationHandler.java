@@ -8,6 +8,7 @@ import com.dslovikosky.narnia.common.event.datagenproviders.ModItemModelProvider
 import com.dslovikosky.narnia.common.event.datagenproviders.ModItemTagsProvider;
 import com.dslovikosky.narnia.common.event.datagenproviders.ModLootTableProvider;
 import com.dslovikosky.narnia.common.event.datagenproviders.ModRecipeProvider;
+import com.dslovikosky.narnia.common.event.datagenproviders.ModSoundDefinitionsProvider;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
@@ -29,6 +30,7 @@ public class DataGenerationHandler {
         generator.addProvider(event.includeClient(), new ModBlockStateProvider(output, existingFileHelper));
         generator.addProvider(event.includeClient(), new ModItemModelProvider(output, existingFileHelper));
         generator.addProvider(event.includeClient(), new ModEnglishLanguageProvider(output));
+        generator.addProvider(event.includeClient(), new ModSoundDefinitionsProvider(output, existingFileHelper));
         final ModBlockTagsProvider modBlockTagsProvider = new ModBlockTagsProvider(output, lookupProvider, existingFileHelper);
         generator.addProvider(event.includeServer(), modBlockTagsProvider);
         generator.addProvider(event.includeServer(), new ModItemTagsProvider(output, lookupProvider, modBlockTagsProvider.contentsGetter(), existingFileHelper));
