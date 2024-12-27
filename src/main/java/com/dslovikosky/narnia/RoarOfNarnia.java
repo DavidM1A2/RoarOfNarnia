@@ -15,19 +15,26 @@ import com.dslovikosky.narnia.common.event.AttachmentHandler;
 import com.dslovikosky.narnia.common.event.DataGenerationHandler;
 import com.dslovikosky.narnia.common.event.GivePlayerMagiciansNephewHandler;
 import com.dslovikosky.narnia.common.event.ModColorRegister;
+import com.dslovikosky.narnia.common.event.NarniaGlobalDataHandler;
+import com.dslovikosky.narnia.common.event.PacketRegistrationHandler;
 import com.dslovikosky.narnia.common.event.RendererRegister;
 import com.dslovikosky.narnia.common.event.SignBlockRegister;
+import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.loading.FMLLoader;
 import net.neoforged.neoforge.common.NeoForge;
 
 @Mod(Constants.MOD_ID)
 public class RoarOfNarnia {
     public RoarOfNarnia(final IEventBus modBus) {
         modBus.register(new DataGenerationHandler());
-        modBus.register(new ModColorRegister());
         modBus.register(new RendererRegister());
         modBus.register(new SignBlockRegister());
+        modBus.register(new PacketRegistrationHandler());
+        if (FMLLoader.getDist() == Dist.CLIENT) {
+            modBus.register(new ModColorRegister());
+        }
 
         ModBlocks.BLOCKS.register(modBus);
         ModItems.ITEMS.register(modBus);
@@ -44,5 +51,6 @@ public class RoarOfNarnia {
 
         forgeBus.register(new AttachmentHandler());
         forgeBus.register(new GivePlayerMagiciansNephewHandler());
+        forgeBus.register(new NarniaGlobalDataHandler());
     }
 }

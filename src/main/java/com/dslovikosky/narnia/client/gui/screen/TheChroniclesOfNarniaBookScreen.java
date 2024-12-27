@@ -12,8 +12,8 @@ import com.dslovikosky.narnia.client.gui.layout.Position;
 import com.dslovikosky.narnia.client.gui.layout.TextAlignment;
 import com.dslovikosky.narnia.common.constants.Constants;
 import com.dslovikosky.narnia.common.constants.ModSoundEvents;
-import com.dslovikosky.narnia.common.model.chapter.NarniaBook;
-import com.dslovikosky.narnia.common.model.chapter.NarniaChapter;
+import com.dslovikosky.narnia.common.model.chapter.Book;
+import com.dslovikosky.narnia.common.model.chapter.Chapter;
 import com.ibm.icu.text.RuleBasedNumberFormat;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
@@ -27,16 +27,16 @@ import java.util.List;
 public class TheChroniclesOfNarniaBookScreen extends BaseScreen {
     private static final RuleBasedNumberFormat NUMBER_FORMATTER = new RuleBasedNumberFormat(RuleBasedNumberFormat.SPELLOUT);
 
-    private final List<NarniaChapter> chapters;
+    private final List<Chapter> chapters;
     private final ButtonPane forwardButton;
     private final ButtonPane backwardButton;
     private final TextBoxComponent leftTitleBox;
 
     private int chapterIndex = 0;
 
-    public TheChroniclesOfNarniaBookScreen(final NarniaBook book) {
+    public TheChroniclesOfNarniaBookScreen(final Book book) {
         super(book.title());
-        this.chapters = book.narniaChapters();
+        this.chapters = book.chapters();
 
         final StackPane backgroundPane = new StackPane();
         backgroundPane.setPrefSize(new Dimensions(256, 256, false));
@@ -135,7 +135,7 @@ public class TheChroniclesOfNarniaBookScreen extends BaseScreen {
 
     private void refreshPages() {
         Minecraft.getInstance().player.playSound(ModSoundEvents.PAGE_TURN.get(), 1f, 1f);
-        final NarniaChapter currentChapter = chapters.get(chapterIndex);
+        final Chapter currentChapter = chapters.get(chapterIndex);
 
         forwardButton.setVisible(hasNextPage());
         backwardButton.setVisible(hasPreviousPage());

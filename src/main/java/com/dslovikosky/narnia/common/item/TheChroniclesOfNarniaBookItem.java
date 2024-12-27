@@ -1,8 +1,7 @@
 package com.dslovikosky.narnia.common.item;
 
-import com.dslovikosky.narnia.client.gui.screen.TheChroniclesOfNarniaBookScreen;
-import com.dslovikosky.narnia.common.model.chapter.NarniaBook;
-import net.minecraft.client.Minecraft;
+import com.dslovikosky.narnia.client.proxy.ClientProxy;
+import com.dslovikosky.narnia.common.model.chapter.Book;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
@@ -11,9 +10,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
 public class TheChroniclesOfNarniaBookItem extends Item {
-    private final NarniaBook book;
+    private final Book book;
 
-    public TheChroniclesOfNarniaBookItem(final NarniaBook book) {
+    public TheChroniclesOfNarniaBookItem(final Book book) {
         super(new Properties());
         this.book = book;
     }
@@ -21,7 +20,7 @@ public class TheChroniclesOfNarniaBookItem extends Item {
     @Override
     public InteractionResultHolder<ItemStack> use(final Level pLevel, final Player pPlayer, final InteractionHand pUsedHand) {
         if (pLevel.isClientSide()) {
-            Minecraft.getInstance().setScreen(new TheChroniclesOfNarniaBookScreen(book));
+            ClientProxy.openChroniclesOfNarniaBookScreen(book);
         }
         return super.use(pLevel, pPlayer, pUsedHand);
     }
