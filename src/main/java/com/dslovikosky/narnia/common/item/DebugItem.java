@@ -1,6 +1,5 @@
 package com.dslovikosky.narnia.common.item;
 
-import com.dslovikosky.narnia.common.constants.ModBooks;
 import com.dslovikosky.narnia.common.model.NarniaGlobalData;
 import com.dslovikosky.narnia.common.model.chapter.Scene;
 import com.mojang.logging.LogUtils;
@@ -25,15 +24,6 @@ public class DebugItem extends Item {
     public InteractionResultHolder<ItemStack> use(final Level pLevel, final Player pPlayer, final InteractionHand pUsedHand) {
         final NarniaGlobalData data = NarniaGlobalData.getInstance(pLevel);
         final Scene runningChapter = data.getActiveScene();
-        if (!pLevel.isClientSide()) {
-            if (runningChapter == null) {
-                data.setActiveScene(new Scene(ModBooks.THE_MAGICIANS_NEPHEW.get()));
-            } else {
-                data.setActiveScene(null);
-            }
-            data.syncAll();
-            data.markDirty();
-        }
         LOG.info(Objects.toString(runningChapter));
         return super.use(pLevel, pPlayer, pUsedHand);
     }

@@ -12,6 +12,13 @@ import java.awt.Color;
 import java.util.function.Consumer;
 
 public class ButtonPane extends GuiPane {
+    private static final Consumer<MouseEvent> DEFAULT_LISTENER = event -> {
+        if (event.getEventType() == MouseEvent.EventType.Click && event.getClickedButton() == MouseEvent.LEFT_MOUSE_BUTTON && event.getSource().isVisible() && event.getSource().isHovered() && event.getSource().isInBounds()) {
+            Minecraft.getInstance().player.playSound(SoundEvents.UI_BUTTON_CLICK.value(), 1f, 1f);
+            event.consume();
+        }
+    };
+
     private final ImagePane icon;
     private final ImagePane iconHovered;
     private final LabelComponent label;
@@ -37,12 +44,7 @@ public class ButtonPane extends GuiPane {
             this.label = null;
         }
 
-        this.addMouseListener(event -> {
-            if (event.getEventType() == MouseEvent.EventType.Click && event.getClickedButton() == MouseEvent.LEFT_MOUSE_BUTTON && this.isVisible() && this.isHovered() && this.isInBounds()) {
-                Minecraft.getInstance().player.playSound(SoundEvents.UI_BUTTON_CLICK.value(), 1f, 1f);
-                event.consume();
-            }
-        });
+        this.addMouseListener(DEFAULT_LISTENER);
     }
 
     @Override
@@ -83,5 +85,11 @@ public class ButtonPane extends GuiPane {
         if (label != null) {
             label.setTextAlignment(textAlignment);
         }
+    }
+
+    @Override
+    public void clearMouseListeners() {
+        super.clearMouseListeners();
+        addMouseListener(DEFAULT_LISTENER);
     }
 }

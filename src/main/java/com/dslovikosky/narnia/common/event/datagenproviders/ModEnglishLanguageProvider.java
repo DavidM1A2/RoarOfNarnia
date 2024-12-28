@@ -40,9 +40,9 @@ public class ModEnglishLanguageProvider extends LanguageProvider {
         addBlock(ModBlocks.WORLD_WOOD_TRAP_DOOR, "World Wood Trapdoor");
         addBlock(ModBlocks.WORLD_WOOD_PRESSURE_PLATE, "World Wood Pressure Plate");
 
-        add("actor.narnia.spectator.name", "Spectator");
-        add("actor.narnia.digory.name", "Digory");
-        add("actor.narnia.polly.name", "Polly");
+        add("character.narnia.spectator.name", "Spectator");
+        add("character.narnia.digory.name", "Digory");
+        add("character.narnia.polly.name", "Polly");
 
         add("book.narnia.the_magicians_nephew.name", "The Magician's Nephew");
 

@@ -2,7 +2,7 @@ package com.dslovikosky.narnia.common.constants;
 
 import com.dslovikosky.narnia.common.model.chapter.Book;
 import com.dslovikosky.narnia.common.model.chapter.Chapter;
-import com.dslovikosky.narnia.common.model.chapter.PlayableActor;
+import com.dslovikosky.narnia.common.model.chapter.PlayableCharacter;
 import com.dslovikosky.narnia.common.model.chapter.goal.FindUncleAndrewsHouseGoal;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.registries.DeferredHolder;
@@ -13,9 +13,9 @@ import java.util.List;
 public class ModBooks {
     public static final DeferredRegister<Book> BOOKS = DeferredRegister.create(ModRegistries.BOOK, Constants.MOD_ID);
 
-    private static final PlayableActor SPECTATOR = new PlayableActor(ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "spectator"));
-    private static final PlayableActor DIGORY = new PlayableActor(ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "digory"));
-    private static final PlayableActor POLLY = new PlayableActor(ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "polly"));
+    private static final PlayableCharacter SPECTATOR = new PlayableCharacter(ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "spectator"));
+    private static final PlayableCharacter DIGORY = new PlayableCharacter(ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "digory"));
+    private static final PlayableCharacter POLLY = new PlayableCharacter(ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "polly"));
 
     public static final DeferredHolder<Book, ? extends Book> THE_MAGICIANS_NEPHEW = BOOKS.register("the_magicians_nephew",
             id -> new Book(id, List.of(
