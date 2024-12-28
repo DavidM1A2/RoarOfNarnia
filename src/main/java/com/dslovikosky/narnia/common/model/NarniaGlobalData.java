@@ -15,7 +15,7 @@ public final class NarniaGlobalData {
     private static final NarniaGlobalData SERVER_INSTANCE = new NarniaGlobalData(LogicalSide.SERVER);
 
     private final LogicalSide logicalSide;
-    private Scene activeChapter = null;
+    private Scene activeScene = null;
 
     private NarniaGlobalData(final LogicalSide logicalSide) {
         this.logicalSide = logicalSide;
@@ -33,20 +33,20 @@ public final class NarniaGlobalData {
         }
     }
 
-    public Scene getActiveChapter() {
-        return this.activeChapter;
+    public Scene getActiveScene() {
+        return this.activeScene;
     }
 
-    public void setActiveChapter(final Scene activeChapter) {
-        this.activeChapter = activeChapter;
+    public void setActiveScene(final Scene activeScene) {
+        this.activeScene = activeScene;
     }
 
     public void syncAll() {
-        PacketDistributor.sendToAllPlayers(new SyncNarniaGlobalDataPacket(Optional.ofNullable(activeChapter)));
+        PacketDistributor.sendToAllPlayers(new SyncNarniaGlobalDataPacket(Optional.ofNullable(activeScene)));
     }
 
     public void syncTo(final ServerPlayer player) {
-        PacketDistributor.sendToPlayer(player, new SyncNarniaGlobalDataPacket(Optional.ofNullable(activeChapter)));
+        PacketDistributor.sendToPlayer(player, new SyncNarniaGlobalDataPacket(Optional.ofNullable(activeScene)));
     }
 
     public void markDirty() {

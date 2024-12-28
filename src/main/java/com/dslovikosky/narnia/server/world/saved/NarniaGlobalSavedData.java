@@ -24,7 +24,7 @@ public class NarniaGlobalSavedData extends SavedData {
 
     private NarniaGlobalSavedData(final CompoundTag tag, final HolderLookup.Provider lookupProvider) {
         if (tag.contains(NBT_ACTIVE_CHAPTER)) {
-            NarniaGlobalData.getInstance(false).setActiveChapter(Scene.CODEC.decode(NbtOps.INSTANCE, tag.getCompound(NBT_ACTIVE_CHAPTER)).getOrThrow().getFirst());
+            NarniaGlobalData.getInstance(false).setActiveScene(Scene.CODEC.decode(NbtOps.INSTANCE, tag.getCompound(NBT_ACTIVE_CHAPTER)).getOrThrow().getFirst());
         }
     }
 
@@ -43,7 +43,7 @@ public class NarniaGlobalSavedData extends SavedData {
     @Override
     @Nonnull
     public CompoundTag save(final CompoundTag pTag, final HolderLookup.Provider pRegistries) {
-        final Scene activeChapter = NarniaGlobalData.getInstance(false).getActiveChapter();
+        final Scene activeChapter = NarniaGlobalData.getInstance(false).getActiveScene();
         if (activeChapter != null) {
             pTag.put(NBT_ACTIVE_CHAPTER, Scene.CODEC.encodeStart(NbtOps.INSTANCE, activeChapter).getOrThrow());
         }

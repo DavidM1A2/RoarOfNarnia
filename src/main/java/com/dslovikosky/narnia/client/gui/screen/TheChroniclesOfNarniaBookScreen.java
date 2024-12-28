@@ -1,11 +1,14 @@
 package com.dslovikosky.narnia.client.gui.screen;
 
 import com.dslovikosky.narnia.client.gui.control.ButtonPane;
+import com.dslovikosky.narnia.client.gui.control.HChainPane;
 import com.dslovikosky.narnia.client.gui.control.ImagePane;
+import com.dslovikosky.narnia.client.gui.control.LabelComponent;
 import com.dslovikosky.narnia.client.gui.control.StackPane;
 import com.dslovikosky.narnia.client.gui.control.TextBoxComponent;
 import com.dslovikosky.narnia.client.gui.event.KeyEvent;
 import com.dslovikosky.narnia.client.gui.font.TtfFontLoader;
+import com.dslovikosky.narnia.client.gui.layout.ChainLayout;
 import com.dslovikosky.narnia.client.gui.layout.Dimensions;
 import com.dslovikosky.narnia.client.gui.layout.Gravity;
 import com.dslovikosky.narnia.client.gui.layout.Position;
@@ -14,6 +17,7 @@ import com.dslovikosky.narnia.common.constants.Constants;
 import com.dslovikosky.narnia.common.constants.ModSoundEvents;
 import com.dslovikosky.narnia.common.model.chapter.Book;
 import com.dslovikosky.narnia.common.model.chapter.Chapter;
+import com.dslovikosky.narnia.common.model.chapter.PlayableActor;
 import com.ibm.icu.text.RuleBasedNumberFormat;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
@@ -31,6 +35,7 @@ public class TheChroniclesOfNarniaBookScreen extends BaseScreen {
     private final ButtonPane forwardButton;
     private final ButtonPane backwardButton;
     private final TextBoxComponent leftTitleBox;
+    private final HChainPane leftStartSceneOptions;
 
     private int chapterIndex = 0;
 
@@ -42,13 +47,13 @@ public class TheChroniclesOfNarniaBookScreen extends BaseScreen {
         backgroundPane.setPrefSize(new Dimensions(256, 256, false));
         backgroundPane.setGravity(Gravity.CENTER);
 
-        final ImagePane backgroundImage = new ImagePane(ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "textures/gui/narnia_book/background.png"), ImagePane.DisplayMode.FIT_TO_PARENT);
+        final ImagePane backgroundImage = new ImagePane(ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "textures/gui/narnia_book/background.png"), ImagePane.DisplayMode.STRETCH);
         backgroundImage.setGravity(Gravity.CENTER);
         backgroundPane.add(backgroundImage);
 
         final StackPane leftPage = new StackPane();
         leftPage.setOffset(new Position(0.04, 0.05, true));
-        leftPage.setPrefSize(new Dimensions(0.5 - 2 * 0.04, 0.6, true));
+        leftPage.setPrefSize(new Dimensions(0.5 - 2 * 0.04, 0.85, true));
         leftPage.setGravity(Gravity.TOP_LEFT);
 
         final StackPane rightPage = new StackPane();
@@ -58,14 +63,18 @@ public class TheChroniclesOfNarniaBookScreen extends BaseScreen {
 
         leftTitleBox = new TextBoxComponent(TtfFontLoader.getNarniaFont(40f), "");
         leftTitleBox.setTextAlignment(TextAlignment.ALIGN_CENTER);
-        leftTitleBox.setOffset(new Position(0, 0, true));
-        leftTitleBox.setPrefSize(new Dimensions(1, 0.25, true));
+        leftTitleBox.setPrefSize(new Dimensions(1, 0.14, true));
         leftTitleBox.setTextColor(new Color(16, 140, 0));
         leftPage.add(leftTitleBox);
 
+        final ImagePane leftTitleDivider = new ImagePane(ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "textures/gui/narnia_book/title_divider.png"), ImagePane.DisplayMode.STRETCH);
+        leftTitleDivider.setPrefSize(new Dimensions(100, 10, false));
+        leftTitleDivider.setGravity(Gravity.TOP_CENTER);
+        leftTitleDivider.setOffset(new Position(0.0, 0.14, true));
+        leftPage.add(leftTitleDivider);
+
         final TextBoxComponent rightTitleBox = new TextBoxComponent(TtfFontLoader.getNarniaFont(40f), "");
         rightTitleBox.setTextAlignment(TextAlignment.ALIGN_CENTER);
-        rightTitleBox.setOffset(new Position(0, 0, true));
         rightTitleBox.setPrefSize(new Dimensions(1, 0.25, true));
         rightTitleBox.setTextColor(new Color(16, 140, 0));
         rightPage.add(rightTitleBox);
@@ -74,19 +83,19 @@ public class TheChroniclesOfNarniaBookScreen extends BaseScreen {
         backgroundImage.add(rightPage);
 
         forwardButton = new ButtonPane(
-                new ImagePane(ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "textures/gui/narnia_book/forward_button.png"), ImagePane.DisplayMode.FIT_TO_PARENT),
-                new ImagePane(ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "textures/gui/narnia_book/forward_button_hovered.png"), ImagePane.DisplayMode.FIT_TO_PARENT),
+                new ImagePane(ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "textures/gui/narnia_book/forward_button.png"), ImagePane.DisplayMode.STRETCH),
+                new ImagePane(ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "textures/gui/narnia_book/forward_button_hovered.png"), ImagePane.DisplayMode.STRETCH),
                 null);
         forwardButton.setPrefSize(new Dimensions(10.0, 10.0, false));
-        forwardButton.setOffset(new Position(-0.05, -0.12, true));
+        forwardButton.setOffset(new Position(-0.03, -0.10, true));
         forwardButton.setGravity(Gravity.BOTTOM_RIGHT);
         forwardButton.addOnClick(event -> advancePage());
         backwardButton = new ButtonPane(
-                new ImagePane(ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "textures/gui/narnia_book/backward_button.png"), ImagePane.DisplayMode.FIT_TO_PARENT),
-                new ImagePane(ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "textures/gui/narnia_book/backward_button_hovered.png"), ImagePane.DisplayMode.FIT_TO_PARENT),
+                new ImagePane(ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "textures/gui/narnia_book/backward_button.png"), ImagePane.DisplayMode.STRETCH),
+                new ImagePane(ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "textures/gui/narnia_book/backward_button_hovered.png"), ImagePane.DisplayMode.STRETCH),
                 null);
         backwardButton.setPrefSize(new Dimensions(10.0, 10.0, false));
-        backwardButton.setOffset(new Position(0.05, -0.12, true));
+        backwardButton.setOffset(new Position(0.03, -0.10, true));
         backwardButton.setGravity(Gravity.BOTTOM_LEFT);
         backwardButton.addOnClick(event -> rewindPage());
         backgroundImage.add(forwardButton);
@@ -103,6 +112,32 @@ public class TheChroniclesOfNarniaBookScreen extends BaseScreen {
                 }
             }
         });
+
+        final ButtonPane cancelSceneButton = new ButtonPane(
+                new ImagePane(ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "textures/gui/narnia_book/book_button.png"), ImagePane.DisplayMode.STRETCH),
+                new ImagePane(ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "textures/gui/narnia_book/book_button_hovered.png"), ImagePane.DisplayMode.STRETCH),
+                TtfFontLoader.getTextFont(26f, true));
+        cancelSceneButton.setPrefSize(new Dimensions(60.0, 10.0, false));
+        cancelSceneButton.setOffset(new Position(0.0, -10.0, false));
+        cancelSceneButton.setGravity(Gravity.BOTTOM_CENTER);
+        cancelSceneButton.setTextAlignment(TextAlignment.ALIGN_CENTER);
+        cancelSceneButton.setText("Cancel Scene");
+//        leftPage.add(cancelSceneButton);
+
+        final LabelComponent leftStartSceneLabel = new LabelComponent(TtfFontLoader.getTextFont(26f, true), Component.translatable("gui.narnia.book.start_chapter_as").getString());
+        leftStartSceneLabel.setPrefSize(new Dimensions(1.0, 0.04, true));
+        leftStartSceneLabel.setOffset(new Position(0.0, -20.0, false));
+        leftStartSceneLabel.setGravity(Gravity.BOTTOM_CENTER);
+        leftStartSceneLabel.setTextAlignment(TextAlignment.ALIGN_CENTER);
+        leftStartSceneLabel.setTextColor(new Color(16, 140, 0));
+        leftPage.add(leftStartSceneLabel);
+
+        leftStartSceneOptions = new HChainPane(ChainLayout.SPREAD);
+        leftStartSceneOptions.setPrefSize(new Dimensions(0.85, 0.04, true));
+        leftStartSceneOptions.setOffset(new Position(0.0, -10.0, false));
+        leftStartSceneOptions.setGravity(Gravity.BOTTOM_CENTER);
+
+        leftPage.add(leftStartSceneOptions);
 
         contentPane.add(backgroundPane);
 
@@ -141,5 +176,19 @@ public class TheChroniclesOfNarniaBookScreen extends BaseScreen {
         backwardButton.setVisible(hasPreviousPage());
 
         leftTitleBox.setText(Component.translatable("gui.narnia.book.chapter_header", StringUtils.capitalise(NUMBER_FORMATTER.format(chapterIndex + 1)), currentChapter.title()).getString());
+
+        leftStartSceneOptions.getChildren().clear();
+        final List<PlayableActor> actors = currentChapter.actors();
+        for (final PlayableActor actor : actors) {
+            final ButtonPane startSceneButton = new ButtonPane(
+                    new ImagePane(ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "textures/gui/narnia_book/book_button.png"), ImagePane.DisplayMode.STRETCH),
+                    new ImagePane(ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "textures/gui/narnia_book/book_button_hovered.png"), ImagePane.DisplayMode.STRETCH),
+                    TtfFontLoader.getTextFont(26f, true));
+            startSceneButton.setPrefSize(new Dimensions(Math.max(0.3, 0.9f / actors.size()), 1.0, true));
+            startSceneButton.setTextAlignment(TextAlignment.ALIGN_CENTER);
+            startSceneButton.setText(String.format("%s", actor.getName().getString()));
+            leftStartSceneOptions.add(startSceneButton);
+        }
+        leftStartSceneOptions.calcChildrenBounds();
     }
 }

@@ -4,7 +4,7 @@ import com.dslovikosky.narnia.client.gui.font.TrueTypeFont;
 import com.dslovikosky.narnia.client.gui.layout.TextAlignment;
 import net.minecraft.client.gui.GuiGraphics;
 
-import java.awt.*;
+import java.awt.Color;
 
 public class LabelComponent extends GuiComponentWithEvents {
     private String text = "";
@@ -29,13 +29,8 @@ public class LabelComponent extends GuiComponentWithEvents {
                 case TextAlignment.ALIGN_CENTER -> this.getWidth() / 2f;
                 default -> 0f;
             };
-            float yCoord = getY();
-
             // Center align text on the y-axis
-            final float spaceLeft = this.getHeight() - this.font.getHeight(this.fitText);
-            if (spaceLeft > 0) {
-                yCoord += (spaceLeft / 2);
-            }
+            final float yCoord = getY() + this.getHeight() / 2f - this.font.getHeight(this.fitText) / 2f;
 
             // Draw the string at (x, y) with the correct color and scale
             this.font.drawString(guiGraphics, xCoord, yCoord, fitText, textAlignment, textColor);

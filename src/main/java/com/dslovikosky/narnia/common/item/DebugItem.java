@@ -24,12 +24,12 @@ public class DebugItem extends Item {
     @Override
     public InteractionResultHolder<ItemStack> use(final Level pLevel, final Player pPlayer, final InteractionHand pUsedHand) {
         final NarniaGlobalData data = NarniaGlobalData.getInstance(pLevel);
-        final Scene runningChapter = data.getActiveChapter();
+        final Scene runningChapter = data.getActiveScene();
         if (!pLevel.isClientSide()) {
             if (runningChapter == null) {
-                data.setActiveChapter(new Scene(ModBooks.THE_MAGICIANS_NEPHEW, ModBooks.THE_MAGICIANS_NEPHEW.chapters().get(0)));
+                data.setActiveScene(new Scene(ModBooks.THE_MAGICIANS_NEPHEW.get()));
             } else {
-                data.setActiveChapter(null);
+                data.setActiveScene(null);
             }
             data.syncAll();
             data.markDirty();

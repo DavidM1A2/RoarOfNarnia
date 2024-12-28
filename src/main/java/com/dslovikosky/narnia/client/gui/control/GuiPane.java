@@ -11,7 +11,6 @@ import com.dslovikosky.narnia.client.gui.layout.Position;
 import com.dslovikosky.narnia.client.gui.layout.Spacing;
 import net.minecraft.client.gui.GuiGraphics;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -108,7 +107,7 @@ public abstract class GuiPane extends GuiComponentWithEvents {
     }
 
     public List<GuiComponent> getChildren() {
-        return Collections.unmodifiableList(subComponents);
+        return subComponents;
     }
 
     @Override

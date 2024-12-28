@@ -2,6 +2,7 @@ package com.dslovikosky.narnia.client.gui.control;
 
 import com.dslovikosky.narnia.client.gui.event.MouseEvent;
 import com.dslovikosky.narnia.client.gui.font.TrueTypeFont;
+import com.dslovikosky.narnia.client.gui.layout.Gravity;
 import com.dslovikosky.narnia.client.gui.layout.TextAlignment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -17,17 +18,20 @@ public class ButtonPane extends GuiPane {
 
     public ButtonPane(final ImagePane icon, final ImagePane iconHovered, final TrueTypeFont font) {
         this.icon = icon;
-        if (this.icon != null) {
-            add(this.icon);
+        if (icon != null) {
+            icon.setGravity(Gravity.CENTER);
+            add(icon);
         }
 
         this.iconHovered = iconHovered;
-        if (this.iconHovered != null) {
-            add(this.iconHovered);
+        if (iconHovered != null) {
+            iconHovered.setGravity(Gravity.CENTER);
+            add(iconHovered);
         }
 
         if (font != null) {
             this.label = new LabelComponent(font, "");
+            label.setGravity(Gravity.CENTER);
             add(this.label);
         } else {
             this.label = null;

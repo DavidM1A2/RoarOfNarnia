@@ -11,10 +11,10 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
 
-public record SyncNarniaGlobalDataPacket(Optional<Scene> instance) implements CustomPacketPayload {
+public record SyncNarniaGlobalDataPacket(Optional<Scene> scene) implements CustomPacketPayload {
     public static final StreamCodec<RegistryFriendlyByteBuf, SyncNarniaGlobalDataPacket> STREAM_CODEC = StreamCodec.composite(
             Scene.STREAM_CODEC.apply(ByteBufCodecs::optional),
-            SyncNarniaGlobalDataPacket::instance,
+            SyncNarniaGlobalDataPacket::scene,
             SyncNarniaGlobalDataPacket::new
     );
     public static final CustomPacketPayload.Type<SyncNarniaGlobalDataPacket> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "sync_narnia_global_data"));

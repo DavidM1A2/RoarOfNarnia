@@ -8,11 +8,12 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.neoforged.neoforge.registries.DeferredHolder;
 
 public class TheChroniclesOfNarniaBookItem extends Item {
-    private final Book book;
+    private final DeferredHolder<Book, ? extends Book> book;
 
-    public TheChroniclesOfNarniaBookItem(final Book book) {
+    public TheChroniclesOfNarniaBookItem(final DeferredHolder<Book, ? extends Book> book) {
         super(new Properties());
         this.book = book;
     }
@@ -20,7 +21,7 @@ public class TheChroniclesOfNarniaBookItem extends Item {
     @Override
     public InteractionResultHolder<ItemStack> use(final Level pLevel, final Player pPlayer, final InteractionHand pUsedHand) {
         if (pLevel.isClientSide()) {
-            ClientProxy.openChroniclesOfNarniaBookScreen(book);
+            ClientProxy.openChroniclesOfNarniaBookScreen(book.get());
         }
         return super.use(pLevel, pPlayer, pUsedHand);
     }

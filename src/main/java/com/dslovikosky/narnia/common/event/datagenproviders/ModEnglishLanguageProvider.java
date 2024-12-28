@@ -40,6 +40,7 @@ public class ModEnglishLanguageProvider extends LanguageProvider {
         addBlock(ModBlocks.WORLD_WOOD_TRAP_DOOR, "World Wood Trapdoor");
         addBlock(ModBlocks.WORLD_WOOD_PRESSURE_PLATE, "World Wood Pressure Plate");
 
+        add("actor.narnia.spectator.name", "Spectator");
         add("actor.narnia.digory.name", "Digory");
         add("actor.narnia.polly.name", "Polly");
 
@@ -50,5 +51,8 @@ public class ModEnglishLanguageProvider extends LanguageProvider {
         add("chapter.narnia.the_magicians_nephew.the_wood_between_the_worlds.title", "The Wood Between the Worlds");
 
         add("gui.narnia.book.chapter_header", "Chapter %1$d\n%2$s");
+        add("gui.narnia.book.start_chapter_as", "Start Chapter As:");
+
+        add("sound.narnia.ui.page_turn", "Page Turn");
     }
 }

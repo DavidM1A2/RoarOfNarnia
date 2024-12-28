@@ -8,11 +8,14 @@ import java.awt.Font;
 import java.awt.FontFormatException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class TtfFontLoader {
+    private static final Map<TtfFontId, TrueTypeFont> FONT_CACHE = new HashMap<>();
     private static final ResourceLocation CALIBRI_FONT = ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "font/calibri.ttf");
     private static final ResourceLocation NARNIA_FONT = ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "font/narnia_bll.ttf");
 
@@ -34,14 +37,19 @@ public class TtfFontLoader {
     }
 
     private static TrueTypeFont createFont(final ResourceLocation fontLocation, final float size, final boolean antiAlias, final Set<Character> alphabet) {
-        final Font font;
-        try (final InputStream fontInputStream = Minecraft.getInstance().getResourceManager().getResourceOrThrow(fontLocation).open()) {
-            font = Font.createFont(Font.TRUETYPE_FONT, fontInputStream).deriveFont(size);
-        } catch (IOException | FontFormatException e) {
-            throw new RuntimeException(e);
-        }
+        return FONT_CACHE.computeIfAbsent(new TtfFontId(fontLocation, size, antiAlias, alphabet), id -> {
+            final Font font;
+            try (final InputStream fontInputStream = Minecraft.getInstance().getResourceManager().getResourceOrThrow(fontLocation).open()) {
+                font = Font.createFont(Font.TRUETYPE_FONT, fontInputStream).deriveFont(size);
+            } catch (IOException | FontFormatException e) {
+                throw new RuntimeException(e);
+            }
 
-        // Return a new true type font without any additional characters
-        return new TrueTypeFont(font, antiAlias, alphabet.stream().filter(font::canDisplay).collect(Collectors.toSet()));
+            // Return a new true type font without any additional characters
+            return new TrueTypeFont(font, antiAlias, alphabet.stream().filter(font::canDisplay).collect(Collectors.toSet()));
+        });
+    }
+
+    private record TtfFontId(ResourceLocation fontLocation, float size, boolean antiAlias, Set<Character> alphabet) {
     }
 }

@@ -4,6 +4,7 @@ import com.dslovikosky.narnia.common.constants.Constants;
 import com.dslovikosky.narnia.common.constants.ModAttachmentTypes;
 import com.dslovikosky.narnia.common.constants.ModBlockEntities;
 import com.dslovikosky.narnia.common.constants.ModBlocks;
+import com.dslovikosky.narnia.common.constants.ModBooks;
 import com.dslovikosky.narnia.common.constants.ModCreativeTabs;
 import com.dslovikosky.narnia.common.constants.ModDataComponentTypes;
 import com.dslovikosky.narnia.common.constants.ModFeatures;
@@ -17,6 +18,7 @@ import com.dslovikosky.narnia.common.event.GivePlayerMagiciansNephewHandler;
 import com.dslovikosky.narnia.common.event.ModColorRegister;
 import com.dslovikosky.narnia.common.event.NarniaGlobalDataHandler;
 import com.dslovikosky.narnia.common.event.PacketRegistrationHandler;
+import com.dslovikosky.narnia.common.event.RegistryRegister;
 import com.dslovikosky.narnia.common.event.RendererRegister;
 import com.dslovikosky.narnia.common.event.SignBlockRegister;
 import net.neoforged.api.distmarker.Dist;
@@ -32,6 +34,7 @@ public class RoarOfNarnia {
         modBus.register(new RendererRegister());
         modBus.register(new SignBlockRegister());
         modBus.register(new PacketRegistrationHandler());
+        modBus.register(new RegistryRegister());
         if (FMLLoader.getDist() == Dist.CLIENT) {
             modBus.register(new ModColorRegister());
         }
@@ -46,6 +49,7 @@ public class RoarOfNarnia {
         ModStructurePieces.STRUCTURE_PIECES.register(modBus);
         ModStructureTypes.STRUCTURE_TYPES.register(modBus);
         ModSoundEvents.SOUND_EVENTS.register(modBus);
+        ModBooks.BOOKS.register(modBus);
 
         final IEventBus forgeBus = NeoForge.EVENT_BUS;
 

@@ -16,7 +16,7 @@ public class ModSoundDefinitionsProvider extends SoundDefinitionsProvider {
     @Override
     public void registerSounds() {
         add(ModSoundEvents.PAGE_TURN.get(), SoundDefinition.definition()
-                .subtitle("Page Turn")
+                .subtitle("sound.narnia.ui.page_turn")
                 .replace(false)
                 .with(SoundDefinition.Sound.sound(ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "ui/page_turn"), SoundDefinition.SoundType.SOUND).stream(false)));
     }

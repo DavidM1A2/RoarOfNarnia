@@ -10,6 +10,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class SyncNarniaGlobalDataPacketHandler implements IPayloadHandler<SyncNarniaGlobalDataPacket> {
     @Override
     public void handle(final SyncNarniaGlobalDataPacket payload, final IPayloadContext context) {
-        NarniaGlobalData.getInstance(context.player().level()).setActiveChapter(payload.instance().orElse(null));
+        NarniaGlobalData.getInstance(context.player().level()).setActiveScene(payload.scene().orElse(null));
     }
 }
