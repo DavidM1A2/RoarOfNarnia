@@ -1,7 +1,7 @@
 package com.dslovikosky.narnia.common.network.packet;
 
 import com.dslovikosky.narnia.common.model.NarniaGlobalData;
-import com.dslovikosky.narnia.common.model.chapter.PlayableCharacter;
+import com.dslovikosky.narnia.common.model.chapter.Chapter;
 import com.dslovikosky.narnia.common.model.chapter.Scene;
 import com.mojang.logging.LogUtils;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
@@ -24,12 +24,7 @@ public class JoinScenePacketHandler implements IPayloadHandler<JoinScenePacket> 
             return;
         }
 
-        final PlayableCharacter playableCharacter = activeScene.getChapter().getPlayableActor(payload.characterId());
-        if (playableCharacter == null) {
-            LOG.warn("No playable-actor to join for {}.", payload);
-            return;
-        }
-
-        activeScene.getChapter().tryJoin(activeScene, context.player(), playableCharacter);
+        final Chapter chapter = activeScene.getChapter();
+        chapter.tryJoin(activeScene, context.player(), payload.character().orElse(null));
     }
 }

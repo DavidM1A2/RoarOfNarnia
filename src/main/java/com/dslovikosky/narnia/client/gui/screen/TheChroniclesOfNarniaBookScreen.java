@@ -18,8 +18,9 @@ import com.dslovikosky.narnia.common.constants.ModSoundEvents;
 import com.dslovikosky.narnia.common.model.NarniaGlobalData;
 import com.dslovikosky.narnia.common.model.chapter.Book;
 import com.dslovikosky.narnia.common.model.chapter.Chapter;
-import com.dslovikosky.narnia.common.model.chapter.PlayableCharacter;
+import com.dslovikosky.narnia.common.model.chapter.Character;
 import com.dslovikosky.narnia.common.model.chapter.Scene;
+import com.dslovikosky.narnia.common.network.packet.JoinScenePacket;
 import com.dslovikosky.narnia.common.network.packet.StartScenePacket;
 import com.dslovikosky.narnia.common.network.packet.StopScenePacket;
 import com.ibm.icu.text.RuleBasedNumberFormat;
@@ -211,17 +212,29 @@ public class TheChroniclesOfNarniaBookScreen extends BaseScreen {
             } else {
                 // Show a "Join Chapter As" label and buttons per actor
                 joinSceneLabel.setVisible(true);
-                final List<PlayableCharacter> characters = currentChapter.actors();
-                for (final PlayableCharacter character : characters) {
-                    final ButtonPane startSceneButton = new ButtonPane(
-                            new ImagePane(ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "textures/gui/narnia_book/book_button.png"), ImagePane.DisplayMode.STRETCH),
-                            new ImagePane(ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "textures/gui/narnia_book/book_button_hovered.png"), ImagePane.DisplayMode.STRETCH),
-                            TtfFontLoader.getTextFont(26f, true));
-                    startSceneButton.setPrefSize(new Dimensions(Math.max(0.3, 0.9f / characters.size()), 1.0, true));
-                    startSceneButton.setTextAlignment(TextAlignment.ALIGN_CENTER);
-                    startSceneButton.setText(String.format("%s", character.getName().getString()));
-                    startSceneButton.addOnClick(event -> PacketDistributor.sendToServer(new StartScenePacket(book, currentChapter)));
-                    joinSceneOptions.add(startSceneButton);
+                final List<Character> characters = currentChapter.characters();
+                final int joinOptionCount = characters.size() + 1;
+                final ButtonPane joinSceneButton = new ButtonPane(
+                        new ImagePane(ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "textures/gui/narnia_book/book_button.png"), ImagePane.DisplayMode.STRETCH),
+                        new ImagePane(ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "textures/gui/narnia_book/book_button_hovered.png"), ImagePane.DisplayMode.STRETCH),
+                        TtfFontLoader.getTextFont(26f, true));
+                joinSceneButton.setPrefSize(new Dimensions(Math.max(0.3, 0.9f / joinOptionCount), 1.0, true));
+                joinSceneButton.setTextAlignment(TextAlignment.ALIGN_CENTER);
+                joinSceneButton.setText("Spectator");
+                joinSceneButton.addOnClick(event -> PacketDistributor.sendToServer(new JoinScenePacket()));
+                joinSceneOptions.add(joinSceneButton);
+                for (final Character character : characters) {
+                    if (character.isPlayable()) {
+                        final ButtonPane startSceneButton = new ButtonPane(
+                                new ImagePane(ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "textures/gui/narnia_book/book_button.png"), ImagePane.DisplayMode.STRETCH),
+                                new ImagePane(ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "textures/gui/narnia_book/book_button_hovered.png"), ImagePane.DisplayMode.STRETCH),
+                                TtfFontLoader.getTextFont(26f, true));
+                        startSceneButton.setPrefSize(new Dimensions(Math.max(0.3, 0.9f / joinOptionCount), 1.0, true));
+                        startSceneButton.setTextAlignment(TextAlignment.ALIGN_CENTER);
+                        startSceneButton.setText(String.format("%s", character.getName().getString()));
+                        startSceneButton.addOnClick(event -> PacketDistributor.sendToServer(new JoinScenePacket(character)));
+                        joinSceneOptions.add(startSceneButton);
+                    }
                 }
             }
         } else {
