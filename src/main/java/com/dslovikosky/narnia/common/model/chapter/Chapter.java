@@ -29,7 +29,7 @@ public record Chapter(ResourceLocation id, Supplier<? extends Book> book, Suppli
         if (character == null) {
             scene.getSpectatingPlayerIds().add(player.getUUID());
         } else {
-            scene.getCharacterInstances().put(character, new Actor(character, player));
+            scene.getActors().put(character, new Actor(character, player));
         }
     }
 
@@ -38,7 +38,11 @@ public record Chapter(ResourceLocation id, Supplier<? extends Book> book, Suppli
     }
 
     public boolean isParticipatingIn(final Scene scene, final Player player) {
-        return true;
+        if (scene.getSpectatingPlayerIds().contains(player.getUUID())) {
+            return true;
+        }
+
+        return scene.getActors().values().stream().anyMatch(actor -> actor.entityId().equals(player.getUUID()));
     }
 }
 

@@ -204,12 +204,11 @@ public class TheChroniclesOfNarniaBookScreen extends BaseScreen {
             startButton.clearMouseListeners();
             startButton.addOnClick(event -> PacketDistributor.sendToServer(new StartScenePacket(currentChapter)));
         } else if (activeScene.getChapter() == currentChapter) {
-            if (currentChapter.isParticipatingIn(activeScene, Minecraft.getInstance().player)) {
-                // Show a "Leave Chapter" button
-                stopButton.setVisible(true);
-                stopButton.clearMouseListeners();
-                stopButton.addOnClick(event -> PacketDistributor.sendToServer(new StopScenePacket()));
-            } else {
+            // Show a "Leave Chapter" button
+            stopButton.setVisible(true);
+            stopButton.clearMouseListeners();
+            stopButton.addOnClick(event -> PacketDistributor.sendToServer(new StopScenePacket()));
+            if (!currentChapter.isParticipatingIn(activeScene, Minecraft.getInstance().player)) {
                 // Show a "Join Chapter As" label and buttons per actor
                 joinSceneLabel.setVisible(true);
                 final List<? extends Character> characters = currentChapter.characters().get();

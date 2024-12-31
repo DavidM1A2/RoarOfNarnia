@@ -51,7 +51,7 @@ public class ModEnglishLanguageProvider extends LanguageProvider {
         add("chapter.narnia.the_magicians_nephew.the_wood_between_the_worlds.title", "The Wood Between the Worlds");
 
         add("gui.narnia.book.chapter_header", "Chapter %1$d\n%2$s");
-        add("gui.narnia.book.start_chapter_as", "Start Chapter As:");
+        add("gui.narnia.book.join_chapter_as", "Join Chapter As:");
 
         add("sound.narnia.ui.page_turn", "Page Turn");
     }

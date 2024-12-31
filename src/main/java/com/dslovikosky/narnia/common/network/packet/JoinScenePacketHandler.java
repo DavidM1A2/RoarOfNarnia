@@ -26,5 +26,7 @@ public class JoinScenePacketHandler implements IPayloadHandler<JoinScenePacket> 
 
         final Chapter chapter = activeScene.getChapter();
         chapter.tryJoin(activeScene, context.player(), payload.character().orElse(null));
+        data.markDirty();
+        data.syncAll();
     }
 }
