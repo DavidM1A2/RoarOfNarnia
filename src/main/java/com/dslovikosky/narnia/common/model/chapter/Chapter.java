@@ -6,10 +6,11 @@ import net.minecraft.world.entity.player.Player;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.function.Supplier;
 
-public record Chapter(ResourceLocation id, List<ChapterGoal> goals, List<Character> characters) {
+public record Chapter(ResourceLocation id, Supplier<? extends Book> book, Supplier<List<? extends Character>> characters, List<ChapterGoal> goals) {
     public Component title() {
-        return Component.translatable(String.format("chapter.%s.the_magicians_nephew.%s.title", id.getNamespace(), id.getPath()));
+        return Component.translatable(String.format("chapter.%s.%s.%s.title", id.getNamespace(), book.get().getId().getPath(), id.getPath()));
     }
 
     public void start(final Scene scene) {

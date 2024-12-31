@@ -163,7 +163,7 @@ public class TheChroniclesOfNarniaBookScreen extends BaseScreen {
     }
 
     private boolean hasNextPage() {
-        return chapterIndex < book.chapters().size() - 1;
+        return chapterIndex < book.getChapters().size() - 1;
     }
 
     private void rewindPage() {
@@ -179,13 +179,13 @@ public class TheChroniclesOfNarniaBookScreen extends BaseScreen {
         if (!hasNextPage()) {
             return;
         }
-        chapterIndex = Math.min(book.chapters().size() - 1, chapterIndex + 1);
+        chapterIndex = Math.min(book.getChapters().size() - 1, chapterIndex + 1);
         refreshPages();
         Minecraft.getInstance().player.playSound(ModSoundEvents.PAGE_TURN.get(), 1f, 1f);
     }
 
     public void refreshPages() {
-        final Chapter currentChapter = book.chapters().get(chapterIndex);
+        final Chapter currentChapter = book.getChapters().get(chapterIndex);
 
         forwardButton.setVisible(hasNextPage());
         backwardButton.setVisible(hasPreviousPage());
@@ -202,7 +202,7 @@ public class TheChroniclesOfNarniaBookScreen extends BaseScreen {
             // Show a "Start Chapter" button
             startButton.setVisible(true);
             startButton.clearMouseListeners();
-            startButton.addOnClick(event -> PacketDistributor.sendToServer(new StartScenePacket(book, currentChapter)));
+            startButton.addOnClick(event -> PacketDistributor.sendToServer(new StartScenePacket(currentChapter)));
         } else if (activeScene.getChapter() == currentChapter) {
             if (currentChapter.isParticipatingIn(activeScene, Minecraft.getInstance().player)) {
                 // Show a "Leave Chapter" button
@@ -212,7 +212,7 @@ public class TheChroniclesOfNarniaBookScreen extends BaseScreen {
             } else {
                 // Show a "Join Chapter As" label and buttons per actor
                 joinSceneLabel.setVisible(true);
-                final List<Character> characters = currentChapter.characters();
+                final List<? extends Character> characters = currentChapter.characters().get();
                 final int joinOptionCount = characters.size() + 1;
                 final ButtonPane joinSceneButton = new ButtonPane(
                         new ImagePane(ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "textures/gui/narnia_book/book_button.png"), ImagePane.DisplayMode.STRETCH),
