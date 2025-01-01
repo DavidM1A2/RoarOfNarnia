@@ -1,11 +1,18 @@
 package com.dslovikosky.narnia.common.model.chapter;
 
+import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.world.level.Level;
 
 public interface ChapterGoal {
-    void onStart(final Level level, final Scene scene);
+    default boolean start(final Scene scene, final Level level) {
+        return true;
+    }
 
-    void tick(final Level level, final Scene scene);
+    GoalTickResult tick(final Scene scene, final Level level);
 
-    void onFinish(final Level level, final Scene scene);
+    default void finish(final Scene scene, final Level level) {
+    }
+
+    default void registerComponents(final DataComponentMap.Builder builder) {
+    }
 }

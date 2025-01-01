@@ -22,27 +22,37 @@ public class Scene implements MutableDataComponentHolder {
             ByteBufCodecs.registry(ModRegistries.CHAPTER_KEY), Scene::getChapter,
             Actor.STREAM_CODEC.apply(ByteBufCodecs.list()), Scene::getActors,
             DataComponentPatch.STREAM_CODEC, chapterInstance -> chapterInstance.components.asPatch(),
+            ByteBufCodecs.INT, Scene::getGoalIndex,
+            ByteBufCodecs.BOOL, Scene::isGoalStarted,
             Scene::new);
     public static final Codec<Scene> CODEC = Codec.lazyInitialized(() -> RecordCodecBuilder.create(instance -> instance.group(
             ModRegistries.CHAPTER.byNameCodec().fieldOf("chapter_id").forGetter(Scene::getChapter),
             Codec.list(Actor.CODEC).fieldOf("actors").forGetter(Scene::getActors),
-            DataComponentPatch.CODEC.fieldOf("components").forGetter(chapterInstance -> chapterInstance.components.asPatch())
+            DataComponentPatch.CODEC.fieldOf("components").forGetter(chapterInstance -> chapterInstance.components.asPatch()),
+            Codec.INT.fieldOf("goal_index").forGetter(Scene::getGoalIndex),
+            Codec.BOOL.fieldOf("goal_started").forGetter(Scene::isGoalStarted)
     ).apply(instance, Scene::new)));
 
     private final Chapter chapter;
     private final List<Actor> actors;
     private final PatchedDataComponentMap components;
+    private int goalIndex;
+    private boolean goalStarted;
 
     public Scene(final Chapter chapter) {
         this.chapter = chapter;
         this.actors = new ArrayList<>();
-        this.components = new PatchedDataComponentMap(DataComponentMap.EMPTY);
+        this.components = new PatchedDataComponentMap(buildComponentMap(chapter));
+        this.goalIndex = 0;
+        this.goalStarted = false;
     }
 
-    private Scene(final Chapter chapter, final List<Actor> actors, final DataComponentPatch components) {
+    private Scene(final Chapter chapter, final List<Actor> actors, final DataComponentPatch components, final int goalIndex, final boolean goalStarted) {
         this.chapter = chapter;
         this.actors = new ArrayList<>(actors);
-        this.components = PatchedDataComponentMap.fromPatch(DataComponentMap.EMPTY, components);
+        this.components = PatchedDataComponentMap.fromPatch(buildComponentMap(chapter), components);
+        this.goalIndex = goalIndex;
+        this.goalStarted = goalStarted;
     }
 
     public Chapter getChapter() {
@@ -51,6 +61,22 @@ public class Scene implements MutableDataComponentHolder {
 
     public List<Actor> getActors() {
         return actors;
+    }
+
+    public int getGoalIndex() {
+        return goalIndex;
+    }
+
+    public void setGoalIndex(final int goalIndex) {
+        this.goalIndex = goalIndex;
+    }
+
+    public boolean isGoalStarted() {
+        return goalStarted;
+    }
+
+    public void setGoalStarted(final boolean goalStarted) {
+        this.goalStarted = goalStarted;
     }
 
     @Override
@@ -76,6 +102,12 @@ public class Scene implements MutableDataComponentHolder {
     @Override
     public @NotNull DataComponentMap getComponents() {
         return components;
+    }
+
+    private DataComponentMap buildComponentMap(final Chapter chapter) {
+        final DataComponentMap.Builder builder = DataComponentMap.builder();
+        chapter.goals().forEach(goal -> goal.registerComponents(builder));
+        return builder.build();
     }
 
     @Override

@@ -3,6 +3,7 @@ package com.dslovikosky.narnia.common.model.chapter;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -14,16 +15,32 @@ public record Chapter(ResourceLocation id, Supplier<? extends Book> book, Suppli
         return Component.translatable(String.format("chapter.%s.%s.%s.title", id.getNamespace(), book.get().getId().getPath(), id.getPath()));
     }
 
-    public void start(final Scene scene) {
-
+    public boolean isComplete(final Scene scene) {
+        return scene.getGoalIndex() >= goals.size();
     }
 
-    public void stop(final Scene scene) {
-
+    public void start(final Scene scene, final Level level) {
     }
 
-    public void tick(final Scene scene) {
+    public void stop(final Scene scene, final Level level, final boolean isComplete) {
+    }
 
+    public boolean tick(final Scene scene, final Level level) {
+        final Optional<ChapterGoal> currentGoalOpt = getCurrentGoal(scene);
+        if (currentGoalOpt.isEmpty()) {
+            return true;
+        }
+
+        final ChapterGoal currentGoal = currentGoalOpt.get();
+        final GoalTickResult result = currentGoal.tick(scene, level);
+        if (result == GoalTickResult.COMPLETED) {
+            currentGoal.finish(scene, level);
+            scene.setGoalIndex(scene.getGoalIndex() + 1);
+            scene.setGoalStarted(false);
+            return true;
+        } else {
+            return result == GoalTickResult.CONTINUE_SYNC;
+        }
     }
 
     public boolean tryJoin(final Scene scene, final Player player, @Nullable final Character character) {
@@ -64,11 +81,16 @@ public record Chapter(ResourceLocation id, Supplier<? extends Book> book, Suppli
         return scene.getActors().stream().filter(actor -> actor.representedBy(player)).findFirst();
     }
 
-    private Optional<Actor> getActor(final Scene scene, final Character character) {
-        return scene.getActors()
-                .stream()
-                .filter(actor -> actor.represents(character))
-                .findFirst();
+    public Optional<Actor> getActor(final Scene scene, final Character character) {
+        return scene.getActors().stream().filter(actor -> actor.represents(character)).findFirst();
+    }
+
+    public Optional<ChapterGoal> getCurrentGoal(final Scene scene) {
+        final int goalIndex = scene.getGoalIndex();
+        if (goals.isEmpty() || goalIndex >= goals.size() || goalIndex < 0) {
+            return Optional.empty();
+        }
+        return Optional.of(goals.get(goalIndex));
     }
 }
 

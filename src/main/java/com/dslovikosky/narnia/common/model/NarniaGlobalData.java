@@ -42,7 +42,9 @@ public final class NarniaGlobalData {
     }
 
     public void syncAll() {
-        PacketDistributor.sendToAllPlayers(new SyncNarniaGlobalDataPacket(Optional.ofNullable(activeScene)));
+        if (logicalSide == LogicalSide.SERVER) {
+            PacketDistributor.sendToAllPlayers(new SyncNarniaGlobalDataPacket(Optional.ofNullable(activeScene)));
+        }
     }
 
     public void syncTo(final ServerPlayer player) {

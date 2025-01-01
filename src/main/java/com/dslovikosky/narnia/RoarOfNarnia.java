@@ -14,6 +14,7 @@ import com.dslovikosky.narnia.common.constants.ModItems;
 import com.dslovikosky.narnia.common.constants.ModSoundEvents;
 import com.dslovikosky.narnia.common.constants.ModStructurePieces;
 import com.dslovikosky.narnia.common.constants.ModStructureTypes;
+import com.dslovikosky.narnia.common.event.ActiveSceneHandler;
 import com.dslovikosky.narnia.common.event.AttachmentHandler;
 import com.dslovikosky.narnia.common.event.DataGenerationHandler;
 import com.dslovikosky.narnia.common.event.GivePlayerMagiciansNephewHandler;
@@ -60,5 +61,6 @@ public class RoarOfNarnia {
         forgeBus.register(new AttachmentHandler());
         forgeBus.register(new GivePlayerMagiciansNephewHandler());
         forgeBus.register(new NarniaGlobalDataHandler());
+        forgeBus.register(new ActiveSceneHandler());
     }
 }
