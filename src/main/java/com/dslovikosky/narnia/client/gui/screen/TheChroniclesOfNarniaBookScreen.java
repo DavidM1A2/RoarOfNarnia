@@ -16,11 +16,13 @@ import com.dslovikosky.narnia.client.gui.layout.TextAlignment;
 import com.dslovikosky.narnia.common.constants.Constants;
 import com.dslovikosky.narnia.common.constants.ModSoundEvents;
 import com.dslovikosky.narnia.common.model.NarniaGlobalData;
+import com.dslovikosky.narnia.common.model.chapter.Actor;
 import com.dslovikosky.narnia.common.model.chapter.Book;
 import com.dslovikosky.narnia.common.model.chapter.Chapter;
 import com.dslovikosky.narnia.common.model.chapter.Character;
 import com.dslovikosky.narnia.common.model.chapter.Scene;
 import com.dslovikosky.narnia.common.network.packet.JoinScenePacket;
+import com.dslovikosky.narnia.common.network.packet.LeaveScenePacket;
 import com.dslovikosky.narnia.common.network.packet.StartScenePacket;
 import com.dslovikosky.narnia.common.network.packet.StopScenePacket;
 import com.ibm.icu.text.RuleBasedNumberFormat;
@@ -33,6 +35,7 @@ import org.lwjgl.glfw.GLFW;
 
 import java.awt.Color;
 import java.util.List;
+import java.util.Optional;
 
 public class TheChroniclesOfNarniaBookScreen extends BaseScreen {
     private static final RuleBasedNumberFormat NUMBER_FORMATTER = new RuleBasedNumberFormat(RuleBasedNumberFormat.SPELLOUT);
@@ -208,7 +211,8 @@ public class TheChroniclesOfNarniaBookScreen extends BaseScreen {
             stopButton.setVisible(true);
             stopButton.clearMouseListeners();
             stopButton.addOnClick(event -> PacketDistributor.sendToServer(new StopScenePacket()));
-            if (!currentChapter.isParticipatingIn(activeScene, Minecraft.getInstance().player)) {
+            final Optional<Actor> actor = currentChapter.getActor(activeScene, Minecraft.getInstance().player);
+            if (actor.isEmpty()) {
                 // Show a "Join Chapter As" label and buttons per actor
                 joinSceneLabel.setVisible(true);
                 final List<? extends Character> characters = currentChapter.characters().get();
@@ -235,6 +239,16 @@ public class TheChroniclesOfNarniaBookScreen extends BaseScreen {
                         joinSceneOptions.add(startSceneButton);
                     }
                 }
+            } else {
+                final ButtonPane joinSceneButton = new ButtonPane(
+                        new ImagePane(ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "textures/gui/narnia_book/book_button.png"), ImagePane.DisplayMode.STRETCH),
+                        new ImagePane(ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "textures/gui/narnia_book/book_button_hovered.png"), ImagePane.DisplayMode.STRETCH),
+                        TtfFontLoader.getTextFont(26f, true));
+                joinSceneButton.setPrefSize(new Dimensions(Math.max(0.3, 0.9f), 1.0, true));
+                joinSceneButton.setTextAlignment(TextAlignment.ALIGN_CENTER);
+                joinSceneButton.setText(String.format("Stop Being %s", actor.get().getName().getString()));
+                joinSceneButton.addOnClick(event -> PacketDistributor.sendToServer(new LeaveScenePacket()));
+                joinSceneOptions.add(joinSceneButton);
             }
         } else {
             // Show nothing
