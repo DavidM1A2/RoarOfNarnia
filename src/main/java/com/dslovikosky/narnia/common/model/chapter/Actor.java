@@ -68,11 +68,11 @@ public final class Actor {
         return entityId.equals(player.getUUID());
     }
 
-    public Entity getEntity(final Level level) {
+    public Optional<Entity> getEntity(final Level level) {
         if (level instanceof ServerLevel serverLevel) {
-            return serverLevel.getEntity(entityId);
+            return Optional.ofNullable(serverLevel.getEntity(entityId));
         }
-        return null;
+        return Optional.empty();
     }
 
     public Character getCharacter() {

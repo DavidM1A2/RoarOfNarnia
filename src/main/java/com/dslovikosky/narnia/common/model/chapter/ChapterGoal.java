@@ -1,6 +1,7 @@
 package com.dslovikosky.narnia.common.model.chapter;
 
 import net.minecraft.core.component.DataComponentMap;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.Level;
 
 public interface ChapterGoal {
@@ -15,4 +16,6 @@ public interface ChapterGoal {
 
     default void registerComponents(final DataComponentMap.Builder builder) {
     }
+
+    Component getDescription(final Scene scene, final Level level);
 }

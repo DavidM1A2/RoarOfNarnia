@@ -18,6 +18,7 @@ import com.dslovikosky.narnia.common.event.ActiveSceneHandler;
 import com.dslovikosky.narnia.common.event.AttachmentHandler;
 import com.dslovikosky.narnia.common.event.DataGenerationHandler;
 import com.dslovikosky.narnia.common.event.GivePlayerMagiciansNephewHandler;
+import com.dslovikosky.narnia.common.event.GuiLayerRegister;
 import com.dslovikosky.narnia.common.event.ModColorRegister;
 import com.dslovikosky.narnia.common.event.NarniaGlobalDataHandler;
 import com.dslovikosky.narnia.common.event.PacketRegistrationHandler;
@@ -40,6 +41,7 @@ public class RoarOfNarnia {
         modBus.register(new RegistryRegister());
         if (FMLLoader.getDist() == Dist.CLIENT) {
             modBus.register(new ModColorRegister());
+            modBus.register(new GuiLayerRegister());
         }
 
         ModBlocks.BLOCKS.register(modBus);

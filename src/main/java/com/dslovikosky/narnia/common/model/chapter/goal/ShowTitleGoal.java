@@ -5,12 +5,13 @@ import com.dslovikosky.narnia.common.model.chapter.ChapterGoal;
 import com.dslovikosky.narnia.common.model.chapter.GoalTickResult;
 import com.dslovikosky.narnia.common.model.chapter.Scene;
 import net.minecraft.core.component.DataComponentMap;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.Level;
 
 import java.time.Duration;
 
 public class ShowTitleGoal implements ChapterGoal {
-    private static final long TITLE_SHOW_TIME = Duration.ofSeconds(5).toMillis();
+    private static final long TITLE_SHOW_TIME = Duration.ofSeconds(15).toMillis();
 
     @Override
     public boolean start(Scene scene, Level level) {
@@ -35,5 +36,10 @@ public class ShowTitleGoal implements ChapterGoal {
     @Override
     public void registerComponents(DataComponentMap.Builder builder) {
         builder.set(ModDataComponentTypes.TITLE_END_TIME, 0L);
+    }
+
+    @Override
+    public Component getDescription(Scene scene, Level level) {
+        return Component.literal("Show Title");
     }
 }
