@@ -9,6 +9,7 @@ import com.dslovikosky.narnia.common.constants.ModChapters;
 import com.dslovikosky.narnia.common.constants.ModCharacters;
 import com.dslovikosky.narnia.common.constants.ModCreativeTabs;
 import com.dslovikosky.narnia.common.constants.ModDataComponentTypes;
+import com.dslovikosky.narnia.common.constants.ModEntityTypes;
 import com.dslovikosky.narnia.common.constants.ModFeatures;
 import com.dslovikosky.narnia.common.constants.ModItems;
 import com.dslovikosky.narnia.common.constants.ModSoundEvents;
@@ -17,13 +18,13 @@ import com.dslovikosky.narnia.common.constants.ModStructureTypes;
 import com.dslovikosky.narnia.common.event.ActiveSceneHandler;
 import com.dslovikosky.narnia.common.event.AttachmentHandler;
 import com.dslovikosky.narnia.common.event.DataGenerationHandler;
+import com.dslovikosky.narnia.common.event.EntityRegistrationHandler;
 import com.dslovikosky.narnia.common.event.GivePlayerMagiciansNephewHandler;
 import com.dslovikosky.narnia.common.event.GuiLayerRegister;
 import com.dslovikosky.narnia.common.event.ModColorRegister;
 import com.dslovikosky.narnia.common.event.NarniaGlobalDataHandler;
 import com.dslovikosky.narnia.common.event.PacketRegistrationHandler;
 import com.dslovikosky.narnia.common.event.RegistryRegister;
-import com.dslovikosky.narnia.common.event.RendererRegister;
 import com.dslovikosky.narnia.common.event.SignBlockRegister;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
@@ -35,7 +36,7 @@ import net.neoforged.neoforge.common.NeoForge;
 public class RoarOfNarnia {
     public RoarOfNarnia(final IEventBus modBus) {
         modBus.register(new DataGenerationHandler());
-        modBus.register(new RendererRegister());
+        modBus.register(new EntityRegistrationHandler());
         modBus.register(new SignBlockRegister());
         modBus.register(new PacketRegistrationHandler());
         modBus.register(new RegistryRegister());
@@ -57,6 +58,7 @@ public class RoarOfNarnia {
         ModBooks.BOOKS.register(modBus);
         ModChapters.CHAPTERS.register(modBus);
         ModCharacters.CHARACTERS.register(modBus);
+        ModEntityTypes.ENTITY_TYPES.register(modBus);
 
         final IEventBus forgeBus = NeoForge.EVENT_BUS;
 

@@ -2,6 +2,7 @@ package com.dslovikosky.narnia.common.event.datagenproviders;
 
 import com.dslovikosky.narnia.common.constants.Constants;
 import com.dslovikosky.narnia.common.constants.ModBlocks;
+import com.dslovikosky.narnia.common.constants.ModEntityTypes;
 import com.dslovikosky.narnia.common.constants.ModItems;
 import net.minecraft.data.PackOutput;
 import net.neoforged.neoforge.common.data.LanguageProvider;
@@ -40,8 +41,10 @@ public class ModEnglishLanguageProvider extends LanguageProvider {
         addBlock(ModBlocks.WORLD_WOOD_TRAP_DOOR, "World Wood Trapdoor");
         addBlock(ModBlocks.WORLD_WOOD_PRESSURE_PLATE, "World Wood Pressure Plate");
 
+        addEntityType(ModEntityTypes.DIGORY, "Digory");
+
         add("character.narnia.spectator.name", "Spectator");
-        add("character.narnia.digory.name", "Digory");
+        add("character.narnia.com.dslovikosky.narnia.client.entity.digory.name", "Digory");
         add("character.narnia.polly.name", "Polly");
 
         add("book.narnia.the_magicians_nephew.name", "The Magician's Nephew");
