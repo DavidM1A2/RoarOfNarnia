@@ -56,8 +56,7 @@ public class FindUncleAndrewsHouseGoal implements ChapterGoal {
             return false;
         }
 
-        final BlockPos nearestHousePos = nearestHouse.getFirst();
-        final ChunkAccess chunk = level.getChunk(nearestHousePos);
+        final ChunkAccess chunk = level.getChunk(nearestHouse.getFirst());
         final StructureStart houseStart = chunk.getStartForStructure(nearestHouse.getSecond().value());
 
         if (houseStart == null || houseStart.getPieces().isEmpty()) {
@@ -73,15 +72,9 @@ public class FindUncleAndrewsHouseGoal implements ChapterGoal {
 
     @Override
     public GoalTickResult tick(final Scene scene, final Level level) {
-        final List<Actor> actors = scene.getActors();
-        if (actors.isEmpty()) {
-            return GoalTickResult.CONTINUE;
-        }
-        final List<Actor> playerActors = actors.stream().filter(Actor::isPlayerControlled).toList();
-        if (playerActors.isEmpty()) {
-            return GoalTickResult.CONTINUE;
-        }
-        final List<Entity> playerEntities = playerActors.stream()
+        final List<Entity> playerEntities = scene.getActors()
+                .stream()
+                .filter(Actor::isPlayerControlled)
                 .map(actor -> actor.getEntity(level))
                 .filter(Optional::isPresent)
                 .map(Optional::get)
