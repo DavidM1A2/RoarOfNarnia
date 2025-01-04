@@ -1,11 +1,11 @@
-package com.dslovikosky.narnia.client.entity.digory;
+package com.dslovikosky.narnia.client.entity.human_child;
 // Made with Blockbench 4.11.2
 // Exported for Minecraft version 1.17 or later with Mojang mappings
 // Paste this class into your mod and generate all required imports
 
 
 import com.dslovikosky.narnia.common.constants.Constants;
-import com.dslovikosky.narnia.common.entity.digory.DigoryEntity;
+import com.dslovikosky.narnia.common.entity.human_child.HumanChildEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.model.HierarchicalModel;
@@ -19,9 +19,9 @@ import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.resources.ResourceLocation;
 
-public class DigoryModel extends HierarchicalModel<DigoryEntity> {
+public class HumanChildModel<T extends HumanChildEntity> extends HierarchicalModel<T> {
     // This layer location should be baked with EntityRendererProvider.Context in the entity renderer and passed into this model's constructor
-    public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "textures/entity/digory.png"), "main");
+    public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "human_child"), "main");
     private final ModelPart body;
     private final ModelPart leg2;
     private final ModelPart leg1;
@@ -29,7 +29,7 @@ public class DigoryModel extends HierarchicalModel<DigoryEntity> {
     private final ModelPart arm2;
     private final ModelPart head;
 
-    public DigoryModel(final ModelPart root) {
+    public HumanChildModel(final ModelPart root) {
         this.body = root.getChild("body");
         this.leg2 = this.body.getChild("leg2");
         this.leg1 = this.body.getChild("leg1");
@@ -58,12 +58,12 @@ public class DigoryModel extends HierarchicalModel<DigoryEntity> {
     }
 
     @Override
-    public void setupAnim(DigoryEntity pEntity, float pLimbSwing, float pLimbSwingAmount, float pAgeInTicks, float pNetHeadYaw, float pHeadPitch) {
+    public void setupAnim(T pEntity, float pLimbSwing, float pLimbSwingAmount, float pAgeInTicks, float pNetHeadYaw, float pHeadPitch) {
         this.root().getAllParts().forEach(ModelPart::resetPose);
 
-        this.animateWalk(DigoryAnimations.WALK, pLimbSwing, pLimbSwingAmount, 2f, 2.5f);
-        this.animate(pEntity.getIdleAnimationState(), DigoryAnimations.IDLE, pAgeInTicks, 1f);
-        this.animate(pEntity.getTalkAnimationState(), DigoryAnimations.TALK, pAgeInTicks, 1f);
+        this.animateWalk(HumanChildAnimations.WALK, pLimbSwing, pLimbSwingAmount, 2f, 2.5f);
+        this.animate(pEntity.getIdleAnimationState(), HumanChildAnimations.IDLE, pAgeInTicks, 1f);
+        this.animate(pEntity.getTalkAnimationState(), HumanChildAnimations.TALK, pAgeInTicks, 1f);
     }
 
     @Override

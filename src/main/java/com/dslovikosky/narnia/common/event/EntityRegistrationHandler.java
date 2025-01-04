@@ -1,9 +1,9 @@
 package com.dslovikosky.narnia.common.event;
 
-import com.dslovikosky.narnia.client.entity.digory.DigoryModel;
 import com.dslovikosky.narnia.client.entity.digory.DigoryRenderer;
+import com.dslovikosky.narnia.client.entity.human_child.HumanChildModel;
 import com.dslovikosky.narnia.common.constants.ModEntityTypes;
-import com.dslovikosky.narnia.common.entity.digory.DigoryEntity;
+import com.dslovikosky.narnia.common.entity.human_child.HumanChildEntity;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
@@ -11,12 +11,12 @@ import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
 public class EntityRegistrationHandler {
     @SubscribeEvent
     public void onEntityAttributeCreationEvent(final EntityAttributeCreationEvent event) {
-        event.put(ModEntityTypes.DIGORY.get(), DigoryEntity.createAttributes().build());
+        event.put(ModEntityTypes.DIGORY.get(), HumanChildEntity.createAttributes().build());
     }
 
     @SubscribeEvent
     public void onRegisterLayerDefinitions(final EntityRenderersEvent.RegisterLayerDefinitions event) {
-        event.registerLayerDefinition(DigoryModel.LAYER_LOCATION, DigoryModel::createBodyLayer);
+        event.registerLayerDefinition(HumanChildModel.LAYER_LOCATION, HumanChildModel::createBodyLayer);
     }
 
     @SubscribeEvent

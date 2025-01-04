@@ -44,7 +44,7 @@ public class ModEnglishLanguageProvider extends LanguageProvider {
         addEntityType(ModEntityTypes.DIGORY, "Digory");
 
         add("character.narnia.spectator.name", "Spectator");
-        add("character.narnia.com.dslovikosky.narnia.client.entity.digory.name", "Digory");
+        add("character.narnia.digory.name", "Digory");
         add("character.narnia.polly.name", "Polly");
 
         add("book.narnia.the_magicians_nephew.name", "The Magician's Nephew");

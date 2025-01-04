@@ -1,4 +1,4 @@
-package com.dslovikosky.narnia.common.entity.digory;
+package com.dslovikosky.narnia.common.entity.human_child;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.entity.AnimationState;
@@ -17,11 +17,11 @@ import java.util.Collections;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-public class DigoryEntity extends LivingEntity {
+public class HumanChildEntity extends LivingEntity {
     private final AnimationState idleAnimationState = new AnimationState();
     private final AnimationState talkAnimationState = new AnimationState();
 
-    public DigoryEntity(final EntityType<? extends LivingEntity> entityType, final Level level) {
+    public HumanChildEntity(final EntityType<? extends LivingEntity> entityType, final Level level) {
         super(entityType, level);
     }
 

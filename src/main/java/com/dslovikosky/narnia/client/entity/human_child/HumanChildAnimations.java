@@ -1,4 +1,4 @@
-package com.dslovikosky.narnia.client.entity.digory;
+package com.dslovikosky.narnia.client.entity.human_child;
 
 // Save this class in your mod and generate all required imports
 
@@ -13,7 +13,7 @@ import net.minecraft.client.animation.KeyframeAnimations;
  *
  * @author Author
  */
-public class DigoryAnimations {
+public class HumanChildAnimations {
     public static final AnimationDefinition WALK = AnimationDefinition.Builder.withLength(2.0F).looping()
             .addAnimation("leg2", new AnimationChannel(AnimationChannel.Targets.ROTATION,
                     new Keyframe(0.0F, KeyframeAnimations.degreeVec(0.0F, 0.0F, 0.0F), AnimationChannel.Interpolations.LINEAR),
