@@ -42,6 +42,7 @@ public class ModEnglishLanguageProvider extends LanguageProvider {
         addBlock(ModBlocks.WORLD_WOOD_PRESSURE_PLATE, "World Wood Pressure Plate");
 
         addEntityType(ModEntityTypes.DIGORY, "Digory");
+        addEntityType(ModEntityTypes.POLLY, "Polly");
 
         add("character.narnia.spectator.name", "Spectator");
         add("character.narnia.digory.name", "Digory");

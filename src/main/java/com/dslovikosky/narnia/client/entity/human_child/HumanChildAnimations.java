@@ -62,8 +62,8 @@ public class HumanChildAnimations {
     public static final AnimationDefinition TALK = AnimationDefinition.Builder.withLength(1.0F).looping()
             .addAnimation("arm1", new AnimationChannel(AnimationChannel.Targets.ROTATION,
                     new Keyframe(0.0F, KeyframeAnimations.degreeVec(0.0F, 0.0F, 0.0F), AnimationChannel.Interpolations.LINEAR),
-                    new Keyframe(0.36F, KeyframeAnimations.degreeVec(30.0F, -2.5F, -2.5F), AnimationChannel.Interpolations.LINEAR),
-                    new Keyframe(0.6F, KeyframeAnimations.degreeVec(30.0F, -55.0F, -2.5F), AnimationChannel.Interpolations.LINEAR),
+                    new Keyframe(0.36F, KeyframeAnimations.degreeVec(-30.0F, -2.5F, -2.5F), AnimationChannel.Interpolations.LINEAR),
+                    new Keyframe(0.6F, KeyframeAnimations.degreeVec(-30.0F, -55.0F, -2.5F), AnimationChannel.Interpolations.LINEAR),
                     new Keyframe(1.0F, KeyframeAnimations.degreeVec(0.0F, 0.0F, 0.0F), AnimationChannel.Interpolations.LINEAR)
             ))
             .addAnimation("arm2", new AnimationChannel(AnimationChannel.Targets.ROTATION,

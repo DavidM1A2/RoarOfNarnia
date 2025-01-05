@@ -16,4 +16,10 @@ public class ModEntityTypes {
             .ridingOffset(-0.7F)
             .clientTrackingRange(8)
             .build(id.getPath()));
+    public static final DeferredHolder<EntityType<?>, EntityType<HumanChildEntity>> POLLY = ENTITY_TYPES.register("polly", id -> EntityType.Builder.of(HumanChildEntity::new, MobCategory.CREATURE)
+            .sized(0.4F, 1.1F)
+            .eyeHeight(0.9F)
+            .ridingOffset(-0.7F)
+            .clientTrackingRange(8)
+            .build(id.getPath()));
 }
