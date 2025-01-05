@@ -1,7 +1,6 @@
 package com.dslovikosky.narnia.common.model.chapter.goal;
 
 import com.dslovikosky.narnia.common.constants.ModDataComponentTypes;
-import com.dslovikosky.narnia.common.constants.ModSchematics;
 import com.dslovikosky.narnia.common.constants.ModStructureTypes;
 import com.dslovikosky.narnia.common.model.chapter.Actor;
 import com.dslovikosky.narnia.common.model.chapter.ChapterGoal;
@@ -18,13 +17,13 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.ChunkGenerator;
+import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.StructureStart;
-import net.minecraft.world.phys.Vec3;
 import org.slf4j.Logger;
 
 import java.util.List;
@@ -64,15 +63,14 @@ public class FindUncleAndrewsHouseGoal implements ChapterGoal {
         }
 
         final Direction direction = houseStart.getPieces().getFirst().getOrientation();
-        scene.set(ModDataComponentTypes.UNCLE_ANDREWS_HOUSE_LOCATION, getWorldPos(houseStart, direction,
-                ModSchematics.UNCLE_ANDREWS_HOUSE.width() / 2, 0, ModSchematics.UNCLE_ANDREWS_HOUSE.length() / 2));
+        scene.set(ModDataComponentTypes.UNCLE_ANDREWS_HOUSE_BB, houseStart.getBoundingBox());
         scene.set(ModDataComponentTypes.UNCLE_ANDREWS_HOUSE_DIRECTION, direction);
         return true;
     }
 
     @Override
     public GoalTickResult tick(final Scene scene, final Level level) {
-        final List<Entity> playerEntities = scene.getActors()
+        final List<LivingEntity> playerEntities = scene.getActors()
                 .stream()
                 .filter(Actor::isPlayerControlled)
                 .map(actor -> actor.getEntity(level))
@@ -84,8 +82,8 @@ public class FindUncleAndrewsHouseGoal implements ChapterGoal {
             return GoalTickResult.CONTINUE;
         }
 
-        final BlockPos location = scene.getOrDefault(ModDataComponentTypes.UNCLE_ANDREWS_HOUSE_LOCATION, BlockPos.ZERO);
-        if (playerEntities.stream().allMatch(playerEntity -> playerEntity.distanceToSqr(Vec3.atCenterOf(location)) < 25 * 25)) {
+        final BoundingBox boundingBox = scene.getOrDefault(ModDataComponentTypes.UNCLE_ANDREWS_HOUSE_BB, BoundingBox.infinite());
+        if (playerEntities.stream().allMatch(playerEntity -> boundingBox.isInside(playerEntity.blockPosition()))) {
             return GoalTickResult.COMPLETED;
         }
 
@@ -94,39 +92,14 @@ public class FindUncleAndrewsHouseGoal implements ChapterGoal {
 
     @Override
     public void registerComponents(DataComponentMap.Builder builder) {
-        builder.set(ModDataComponentTypes.UNCLE_ANDREWS_HOUSE_LOCATION, BlockPos.ZERO);
+        builder.set(ModDataComponentTypes.UNCLE_ANDREWS_HOUSE_BB, BoundingBox.infinite());
         builder.set(ModDataComponentTypes.UNCLE_ANDREWS_HOUSE_DIRECTION, Direction.NORTH);
     }
 
     @Override
     public Component getDescription(Scene scene, Level level) {
-        final BlockPos location = scene.getOrDefault(ModDataComponentTypes.UNCLE_ANDREWS_HOUSE_LOCATION, BlockPos.ZERO);
-        return Component.literal(String.format("Walk to Uncle Andrew's House at x = %s, z = %s", location.getX(), location.getZ()));
-    }
-
-    private BlockPos getWorldPos(final StructureStart start, final Direction direction, int offsetX, int offsetY, int offsetZ) {
-        return new BlockPos(this.getWorldX(start, direction, offsetX, offsetZ), this.getWorldY(start, direction, offsetY), this.getWorldZ(start, direction, offsetX, offsetZ));
-    }
-
-    private int getWorldX(final StructureStart start, final Direction direction, final int pX, final int pZ) {
-        return switch (direction) {
-            case NORTH, SOUTH -> start.getBoundingBox().minX() + pX;
-            case WEST -> start.getBoundingBox().maxX() - pZ;
-            case EAST -> start.getBoundingBox().minX() + pZ;
-            default -> pX;
-        };
-    }
-
-    private int getWorldY(final StructureStart start, final Direction direction, final int pY) {
-        return direction == null ? pY : pY + start.getBoundingBox().minY();
-    }
-
-    private int getWorldZ(final StructureStart start, final Direction direction, final int pX, final int pZ) {
-        return switch (direction) {
-            case NORTH -> start.getBoundingBox().maxZ() - pZ;
-            case SOUTH -> start.getBoundingBox().minZ() + pZ;
-            case WEST, EAST -> start.getBoundingBox().minZ() + pX;
-            default -> pZ;
-        };
+        final BoundingBox boundingBox = scene.getOrDefault(ModDataComponentTypes.UNCLE_ANDREWS_HOUSE_BB, BoundingBox.infinite());
+        final BlockPos blockPos = boundingBox.getCenter();
+        return Component.literal(String.format("Walk to Uncle Andrew's House at x = %s, z = %s", blockPos.getX(), blockPos.getZ()));
     }
 }

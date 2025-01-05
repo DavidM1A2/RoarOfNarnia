@@ -3,6 +3,7 @@ package com.dslovikosky.narnia.common.model.chapter;
 import com.dslovikosky.narnia.common.constants.ModRegistries;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.core.UUIDUtil;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.component.DataComponentType;
@@ -16,12 +17,14 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class Scene implements MutableDataComponentHolder {
     public static final StreamCodec<RegistryFriendlyByteBuf, Scene> STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.registry(ModRegistries.CHAPTER_KEY), Scene::getChapter,
             Actor.STREAM_CODEC.apply(ByteBufCodecs.list()), Scene::getActors,
             DataComponentPatch.STREAM_CODEC, chapterInstance -> chapterInstance.components.asPatch(),
+            UUIDUtil.STREAM_CODEC, Scene::getId,
             ByteBufCodecs.INT, Scene::getGoalIndex,
             ByteBufCodecs.BOOL, Scene::isGoalStarted,
             Scene::new);
@@ -29,6 +32,7 @@ public class Scene implements MutableDataComponentHolder {
             ModRegistries.CHAPTER.byNameCodec().fieldOf("chapter_id").forGetter(Scene::getChapter),
             Codec.list(Actor.CODEC).fieldOf("actors").forGetter(Scene::getActors),
             DataComponentPatch.CODEC.fieldOf("components").forGetter(chapterInstance -> chapterInstance.components.asPatch()),
+            UUIDUtil.CODEC.fieldOf("id").forGetter(Scene::getId),
             Codec.INT.fieldOf("goal_index").forGetter(Scene::getGoalIndex),
             Codec.BOOL.fieldOf("goal_started").forGetter(Scene::isGoalStarted)
     ).apply(instance, Scene::new)));
@@ -36,6 +40,7 @@ public class Scene implements MutableDataComponentHolder {
     private final Chapter chapter;
     private final List<Actor> actors;
     private final PatchedDataComponentMap components;
+    private final UUID id;
     private int goalIndex;
     private boolean goalStarted;
 
@@ -43,14 +48,16 @@ public class Scene implements MutableDataComponentHolder {
         this.chapter = chapter;
         this.actors = new ArrayList<>();
         this.components = new PatchedDataComponentMap(buildComponentMap(chapter));
+        this.id = UUID.randomUUID();
         this.goalIndex = 0;
         this.goalStarted = false;
     }
 
-    private Scene(final Chapter chapter, final List<Actor> actors, final DataComponentPatch components, final int goalIndex, final boolean goalStarted) {
+    private Scene(final Chapter chapter, final List<Actor> actors, final DataComponentPatch components, final UUID id, final int goalIndex, final boolean goalStarted) {
         this.chapter = chapter;
         this.actors = new ArrayList<>(actors);
         this.components = PatchedDataComponentMap.fromPatch(buildComponentMap(chapter), components);
+        this.id = id;
         this.goalIndex = goalIndex;
         this.goalStarted = goalStarted;
     }
@@ -61,6 +68,10 @@ public class Scene implements MutableDataComponentHolder {
 
     public List<Actor> getActors() {
         return actors;
+    }
+
+    public UUID getId() {
+        return id;
     }
 
     public int getGoalIndex() {
@@ -116,6 +127,9 @@ public class Scene implements MutableDataComponentHolder {
                 "chapter=" + chapter +
                 ", actors=" + actors +
                 ", components=" + components +
+                ", goalIndex=" + goalIndex +
+                ", goalStarted=" + goalStarted +
+                ", id=" + id +
                 '}';
     }
 }

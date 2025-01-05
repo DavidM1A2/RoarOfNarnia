@@ -2,6 +2,7 @@ package com.dslovikosky.narnia.common.model.chapter;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 
@@ -41,6 +42,14 @@ public record Chapter(ResourceLocation id, Supplier<? extends Book> book, Suppli
         } else {
             return result == GoalTickResult.CONTINUE_SYNC;
         }
+    }
+
+    public void join(final Scene scene, final LivingEntity entity, final Character character) {
+        scene.getActors().add(new Actor(character, entity));
+    }
+
+    public void leave(final Scene scene, final Character character) {
+        scene.getActors().removeIf(actor -> actor.getCharacter().equals(character));
     }
 
     public boolean tryJoin(final Scene scene, final Player player, @Nullable final Character character) {

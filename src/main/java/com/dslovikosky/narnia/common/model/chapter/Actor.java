@@ -9,7 +9,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 
@@ -48,7 +48,7 @@ public final class Actor {
         this(Optional.empty(), true, player.getUUID());
     }
 
-    public Actor(final Character character, final Entity entity) {
+    public Actor(final Character character, final LivingEntity entity) {
         this(Optional.of(character), false, entity.getUUID());
     }
 
@@ -68,9 +68,11 @@ public final class Actor {
         return entityId.equals(player.getUUID());
     }
 
-    public Optional<Entity> getEntity(final Level level) {
+    public Optional<LivingEntity> getEntity(final Level level) {
         if (level instanceof ServerLevel serverLevel) {
-            return Optional.ofNullable(serverLevel.getEntity(entityId));
+            return Optional.ofNullable(serverLevel.getEntity(entityId))
+                    .filter(it -> it instanceof LivingEntity)
+                    .map(LivingEntity.class::cast);
         }
         return Optional.empty();
     }
