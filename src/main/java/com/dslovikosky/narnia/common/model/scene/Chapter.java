@@ -1,5 +1,6 @@
-package com.dslovikosky.narnia.common.model.chapter;
+package com.dslovikosky.narnia.common.model.scene;
 
+import com.dslovikosky.narnia.common.model.scene.goal.base.ChapterGoal;
 import com.google.common.base.Suppliers;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;

@@ -1,11 +1,11 @@
-package com.dslovikosky.narnia.common.model.chapter.goal;
+package com.dslovikosky.narnia.common.model.scene.goal;
 
 import com.dslovikosky.narnia.common.constants.ModDataComponentTypes;
 import com.dslovikosky.narnia.common.constants.ModStructureTypes;
-import com.dslovikosky.narnia.common.model.chapter.Actor;
-import com.dslovikosky.narnia.common.model.chapter.ChapterGoal;
-import com.dslovikosky.narnia.common.model.chapter.GoalTickResult;
-import com.dslovikosky.narnia.common.model.chapter.Scene;
+import com.dslovikosky.narnia.common.model.scene.Actor;
+import com.dslovikosky.narnia.common.model.scene.GoalTickResult;
+import com.dslovikosky.narnia.common.model.scene.Scene;
+import com.dslovikosky.narnia.common.model.scene.goal.base.ChapterGoal;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.logging.LogUtils;
 import net.minecraft.core.BlockPos;
@@ -29,7 +29,7 @@ import org.slf4j.Logger;
 import java.util.List;
 import java.util.Optional;
 
-public class FindUncleAndrewsHouseGoal implements ChapterGoal {
+public class FindUncleAndrewsHouseGoal extends ChapterGoal {
     private static final ResourceKey<Structure> UNCLE_ANDREWS_HOUSE = ResourceKey.create(Registries.STRUCTURE, ModStructureTypes.UNCLE_ANDREWS_HOUSE.getId());
     private static final Logger LOG = LogUtils.getLogger();
 

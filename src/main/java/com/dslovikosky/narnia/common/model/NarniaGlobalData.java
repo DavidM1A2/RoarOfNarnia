@@ -1,6 +1,6 @@
 package com.dslovikosky.narnia.common.model;
 
-import com.dslovikosky.narnia.common.model.chapter.Scene;
+import com.dslovikosky.narnia.common.model.scene.Scene;
 import com.dslovikosky.narnia.common.network.packet.SyncNarniaGlobalDataPacket;
 import com.dslovikosky.narnia.server.world.saved.NarniaGlobalSavedData;
 import net.minecraft.server.level.ServerPlayer;

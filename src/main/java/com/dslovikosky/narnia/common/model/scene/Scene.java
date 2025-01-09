@@ -1,4 +1,4 @@
-package com.dslovikosky.narnia.common.model.chapter;
+package com.dslovikosky.narnia.common.model.scene;
 
 import com.dslovikosky.narnia.common.constants.ModRegistries;
 import com.mojang.serialization.Codec;

@@ -1,8 +1,8 @@
 package com.dslovikosky.narnia.common.constants;
 
-import com.dslovikosky.narnia.common.model.chapter.Chapter;
-import com.dslovikosky.narnia.common.model.chapter.goal.DigoryPollyIntroductionGoal;
-import com.dslovikosky.narnia.common.model.chapter.goal.FindUncleAndrewsHouseGoal;
+import com.dslovikosky.narnia.common.model.scene.Chapter;
+import com.dslovikosky.narnia.common.model.scene.goal.DigoryPollyIntroductionGoal;
+import com.dslovikosky.narnia.common.model.scene.goal.FindUncleAndrewsHouseGoal;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 

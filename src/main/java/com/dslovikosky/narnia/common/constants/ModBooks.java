@@ -1,6 +1,6 @@
 package com.dslovikosky.narnia.common.constants;
 
-import com.dslovikosky.narnia.common.model.chapter.Book;
+import com.dslovikosky.narnia.common.model.scene.Book;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 

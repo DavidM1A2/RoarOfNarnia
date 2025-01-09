@@ -1,4 +1,4 @@
-package com.dslovikosky.narnia.common.model.chapter;
+package com.dslovikosky.narnia.common.model.scene;
 
 import com.google.common.base.Suppliers;
 import net.minecraft.network.chat.Component;

@@ -1,10 +1,12 @@
-package com.dslovikosky.narnia.common.model.chapter.goal;
+package com.dslovikosky.narnia.common.model.scene.goal.base;
 
 import com.dslovikosky.narnia.common.entity.human_child.SceneEntity;
-import com.dslovikosky.narnia.common.model.chapter.Actor;
-import com.dslovikosky.narnia.common.model.chapter.ChapterGoal;
-import com.dslovikosky.narnia.common.model.chapter.Character;
-import com.dslovikosky.narnia.common.model.chapter.Scene;
+import com.dslovikosky.narnia.common.model.scene.Actor;
+import com.dslovikosky.narnia.common.model.scene.Character;
+import com.dslovikosky.narnia.common.model.scene.GoalTickResult;
+import com.dslovikosky.narnia.common.model.scene.Scene;
+import net.minecraft.core.component.DataComponentMap;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -13,10 +15,29 @@ import net.minecraft.world.level.Level;
 import java.util.List;
 import java.util.Optional;
 
-public abstract class ActedChapterGoal implements ChapterGoal {
+public abstract class ChapterGoal {
+    public ChapterGoal() {
+    }
+
+    public boolean start(final Scene scene, final Level level) {
+        return true;
+    }
+
+    public GoalTickResult tick(final Scene scene, final Level level) {
+        return GoalTickResult.COMPLETED;
+    }
+
+    public void finish(final Scene scene, final Level level) {
+    }
+
+    public void registerComponents(final DataComponentMap.Builder builder) {
+    }
+
+    public abstract Component getDescription(final Scene scene, final Level level);
+
     protected void ensureActorsExist(Scene scene, Level level) {
-        final List<Character> characters = scene.getChapter().getCharacters();
-        for (final Character character : characters) {
+        final List<com.dslovikosky.narnia.common.model.scene.Character> characters = scene.getChapter().getCharacters();
+        for (final com.dslovikosky.narnia.common.model.scene.Character character : characters) {
             final Optional<Actor> currentActorOpt = scene.getChapter().getActor(scene, character);
             boolean needsToSpawnActor = false;
             if (currentActorOpt.isEmpty()) {
@@ -44,5 +65,6 @@ public abstract class ActedChapterGoal implements ChapterGoal {
         }
     }
 
-    protected abstract void initActorEntity(final Scene scene, final Character character, final Entity entity);
+    protected void initActorEntity(final Scene scene, final Character character, final Entity entity) {
+    }
 }

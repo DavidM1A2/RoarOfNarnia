@@ -1,9 +1,9 @@
 package com.dslovikosky.narnia.common.event;
 
 import com.dslovikosky.narnia.common.model.NarniaGlobalData;
-import com.dslovikosky.narnia.common.model.chapter.Chapter;
-import com.dslovikosky.narnia.common.model.chapter.ChapterGoal;
-import com.dslovikosky.narnia.common.model.chapter.Scene;
+import com.dslovikosky.narnia.common.model.scene.Chapter;
+import com.dslovikosky.narnia.common.model.scene.Scene;
+import com.dslovikosky.narnia.common.model.scene.goal.base.ChapterGoal;
 import net.minecraft.world.level.Level;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.event.tick.LevelTickEvent;

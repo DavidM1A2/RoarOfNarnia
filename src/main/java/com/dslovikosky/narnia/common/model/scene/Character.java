@@ -1,4 +1,4 @@
-package com.dslovikosky.narnia.common.model.chapter;
+package com.dslovikosky.narnia.common.model.scene;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;

@@ -1,7 +1,7 @@
 package com.dslovikosky.narnia.common.entity.human_child;
 
 import com.dslovikosky.narnia.common.model.NarniaGlobalData;
-import com.dslovikosky.narnia.common.model.chapter.Scene;
+import com.dslovikosky.narnia.common.model.scene.Scene;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.entity.AnimationState;
 import net.minecraft.world.entity.EntityType;

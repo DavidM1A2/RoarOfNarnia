@@ -1,10 +1,11 @@
-package com.dslovikosky.narnia.common.model.chapter.goal;
+package com.dslovikosky.narnia.common.model.scene.goal;
 
 import com.dslovikosky.narnia.common.constants.ModCharacters;
 import com.dslovikosky.narnia.common.constants.ModDataComponentTypes;
-import com.dslovikosky.narnia.common.model.chapter.Character;
-import com.dslovikosky.narnia.common.model.chapter.GoalTickResult;
-import com.dslovikosky.narnia.common.model.chapter.Scene;
+import com.dslovikosky.narnia.common.model.scene.Character;
+import com.dslovikosky.narnia.common.model.scene.GoalTickResult;
+import com.dslovikosky.narnia.common.model.scene.Scene;
+import com.dslovikosky.narnia.common.model.scene.goal.base.ChapterGoal;
 import com.dslovikosky.narnia.common.world.schematic.StructureRelativeCoordinate;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -13,7 +14,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 
-public class DigoryPollyIntroductionGoal extends ActedChapterGoal {
+public class DigoryPollyIntroductionGoal extends ChapterGoal {
     @Override
     public boolean start(Scene scene, Level level) {
         if (level.isClientSide()) {

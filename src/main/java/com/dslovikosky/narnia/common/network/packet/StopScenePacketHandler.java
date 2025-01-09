@@ -1,7 +1,7 @@
 package com.dslovikosky.narnia.common.network.packet;
 
 import com.dslovikosky.narnia.common.model.NarniaGlobalData;
-import com.dslovikosky.narnia.common.model.chapter.Scene;
+import com.dslovikosky.narnia.common.model.scene.Scene;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import net.neoforged.neoforge.network.handling.IPayloadHandler;
 

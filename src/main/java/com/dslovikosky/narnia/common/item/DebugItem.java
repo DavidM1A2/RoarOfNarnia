@@ -1,7 +1,7 @@
 package com.dslovikosky.narnia.common.item;
 
 import com.dslovikosky.narnia.common.model.NarniaGlobalData;
-import com.dslovikosky.narnia.common.model.chapter.Scene;
+import com.dslovikosky.narnia.common.model.scene.Scene;
 import com.mojang.logging.LogUtils;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;

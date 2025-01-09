@@ -1,7 +1,7 @@
 package com.dslovikosky.narnia.common.item;
 
 import com.dslovikosky.narnia.client.proxy.ClientProxy;
-import com.dslovikosky.narnia.common.model.chapter.Book;
+import com.dslovikosky.narnia.common.model.scene.Book;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;

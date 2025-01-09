@@ -1,8 +1,8 @@
 package com.dslovikosky.narnia.common.constants;
 
-import com.dslovikosky.narnia.common.model.chapter.Book;
-import com.dslovikosky.narnia.common.model.chapter.Chapter;
-import com.dslovikosky.narnia.common.model.chapter.Character;
+import com.dslovikosky.narnia.common.model.scene.Book;
+import com.dslovikosky.narnia.common.model.scene.Chapter;
+import com.dslovikosky.narnia.common.model.scene.Character;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;

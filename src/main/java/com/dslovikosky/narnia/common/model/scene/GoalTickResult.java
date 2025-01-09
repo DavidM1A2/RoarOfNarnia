@@ -1,4 +1,4 @@
-package com.dslovikosky.narnia.common.model.chapter;
+package com.dslovikosky.narnia.common.model.scene;
 
 public enum GoalTickResult {
     CONTINUE,

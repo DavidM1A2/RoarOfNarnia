@@ -2,7 +2,7 @@ package com.dslovikosky.narnia.common.network.packet;
 
 import com.dslovikosky.narnia.common.constants.Constants;
 import com.dslovikosky.narnia.common.constants.ModRegistries;
-import com.dslovikosky.narnia.common.model.chapter.Character;
+import com.dslovikosky.narnia.common.model.scene.Character;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;

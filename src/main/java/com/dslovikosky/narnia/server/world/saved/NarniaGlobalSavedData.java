@@ -2,7 +2,7 @@ package com.dslovikosky.narnia.server.world.saved;
 
 import com.dslovikosky.narnia.common.constants.Constants;
 import com.dslovikosky.narnia.common.model.NarniaGlobalData;
-import com.dslovikosky.narnia.common.model.chapter.Scene;
+import com.dslovikosky.narnia.common.model.scene.Scene;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
