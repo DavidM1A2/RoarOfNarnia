@@ -1,18 +1,32 @@
 package com.dslovikosky.narnia.common.model.chapter;
 
+import com.google.common.base.Suppliers;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.neoforged.neoforge.registries.DeferredHolder;
 
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-public record Chapter(ResourceLocation id, Supplier<? extends Book> book, Supplier<List<? extends Character>> characters, List<ChapterGoal> goals) {
-    public Component title() {
+public class Chapter {
+    private final ResourceLocation id;
+    private final Supplier<Book> book;
+    private final Supplier<List<Character>> characters;
+    private final List<ChapterGoal> goals;
+
+    public Chapter(final ResourceLocation id, final DeferredHolder<Book, ? extends Book> book, final List<DeferredHolder<Character, ? extends Character>> characters, final List<ChapterGoal> goals) {
+        this.id = id;
+        this.book = book::get;
+        this.characters = Suppliers.memoize(() -> characters.stream().map(DeferredHolder::get).map(Character.class::cast).toList());
+        this.goals = goals;
+    }
+
+    public Component getTitle() {
         return Component.translatable(String.format("chapter.%s.%s.%s.title", id.getNamespace(), book.get().getId().getPath(), id.getPath()));
     }
 
@@ -82,16 +96,16 @@ public record Chapter(ResourceLocation id, Supplier<? extends Book> book, Suppli
     }
 
     public void tryLeave(final Scene scene, final Player player) {
-        final Optional<Actor> actorToRemove = scene.getActors().stream().filter(actor -> actor.representedBy(player)).findFirst();
+        final Optional<Actor> actorToRemove = scene.getActors().stream().filter(actor -> actor.getCharacter().representedBy(actor, player)).findFirst();
         actorToRemove.ifPresent(actor -> scene.getActors().remove(actor));
     }
 
     public Optional<Actor> getActor(final Scene scene, final Player player) {
-        return scene.getActors().stream().filter(actor -> actor.representedBy(player)).findFirst();
+        return scene.getActors().stream().filter(actor -> actor.getCharacter().representedBy(actor, player)).findFirst();
     }
 
     public Optional<Actor> getActor(final Scene scene, final Character character) {
-        return scene.getActors().stream().filter(actor -> actor.represents(character)).findFirst();
+        return scene.getActors().stream().filter(actor -> actor.getCharacter().represents(actor, character)).findFirst();
     }
 
     public Optional<ChapterGoal> getCurrentGoal(final Scene scene) {
@@ -100,6 +114,32 @@ public record Chapter(ResourceLocation id, Supplier<? extends Book> book, Suppli
             return Optional.empty();
         }
         return Optional.of(goals.get(goalIndex));
+    }
+
+    public ResourceLocation getId() {
+        return id;
+    }
+
+    public Book getBook() {
+        return book.get();
+    }
+
+    public List<Character> getCharacters() {
+        return characters.get();
+    }
+
+    public List<ChapterGoal> getGoals() {
+        return goals;
+    }
+
+    @Override
+    public String toString() {
+        return "Chapter{" +
+                "id=" + id +
+                ", book=" + book +
+                ", characters=" + characters +
+                ", goals=" + goals +
+                '}';
     }
 }
 

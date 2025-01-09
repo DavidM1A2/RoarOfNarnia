@@ -193,7 +193,7 @@ public class TheChroniclesOfNarniaBookScreen extends BaseScreen {
         forwardButton.setVisible(hasNextPage());
         backwardButton.setVisible(hasPreviousPage());
 
-        titleBox.setText(Component.translatable("gui.narnia.book.chapter_header", StringUtils.capitalise(NUMBER_FORMATTER.format(chapterIndex + 1)), currentChapter.title()).getString());
+        titleBox.setText(Component.translatable("gui.narnia.book.chapter_header", StringUtils.capitalise(NUMBER_FORMATTER.format(chapterIndex + 1)), currentChapter.getTitle()).getString());
 
         final Scene activeScene = NarniaGlobalData.getInstance(true).getActiveScene();
 
@@ -215,7 +215,7 @@ public class TheChroniclesOfNarniaBookScreen extends BaseScreen {
             if (actor.isEmpty()) {
                 // Show a "Join Chapter As" label and buttons per actor
                 joinSceneLabel.setVisible(true);
-                final List<? extends Character> characters = currentChapter.characters().get();
+                final List<Character> characters = currentChapter.getCharacters();
                 final int joinOptionCount = characters.size() + 1;
                 final ButtonPane joinSceneButton = new ButtonPane(
                         new ImagePane(ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "textures/gui/narnia_book/book_button.png"), ImagePane.DisplayMode.STRETCH),

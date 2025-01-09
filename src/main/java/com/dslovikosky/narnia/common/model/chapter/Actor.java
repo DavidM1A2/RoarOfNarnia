@@ -8,16 +8,13 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.Level;
 
-import javax.annotation.Nullable;
 import java.util.Optional;
 import java.util.UUID;
 
-public final class Actor {
+public class Actor {
     public static final Codec<Actor> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             ModRegistries.CHARACTER.byNameCodec().optionalFieldOf("character").forGetter(it -> Optional.ofNullable(it.getCharacter())),
             Codec.BOOL.fieldOf("player_controlled").forGetter(Actor::isPlayerControlled),
@@ -58,23 +55,6 @@ public final class Actor {
         } else {
             return character.getName();
         }
-    }
-
-    public boolean represents(@Nullable final Character other) {
-        return character == other;
-    }
-
-    public boolean representedBy(final Player player) {
-        return entityId.equals(player.getUUID());
-    }
-
-    public Optional<LivingEntity> getEntity(final Level level) {
-        if (level instanceof ServerLevel serverLevel) {
-            return Optional.ofNullable(serverLevel.getEntity(entityId))
-                    .filter(it -> it instanceof LivingEntity)
-                    .map(LivingEntity.class::cast);
-        }
-        return Optional.empty();
     }
 
     public Character getCharacter() {

@@ -73,7 +73,7 @@ public class FindUncleAndrewsHouseGoal implements ChapterGoal {
         final List<LivingEntity> playerEntities = scene.getActors()
                 .stream()
                 .filter(Actor::isPlayerControlled)
-                .map(actor -> actor.getEntity(level))
+                .map(actor -> actor.getCharacter().getEntity(actor, level))
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .toList();

@@ -15,7 +15,7 @@ import java.util.Optional;
 
 public abstract class ActedChapterGoal implements ChapterGoal {
     protected void ensureActorsExist(Scene scene, Level level) {
-        final List<? extends Character> characters = scene.getChapter().characters().get();
+        final List<Character> characters = scene.getChapter().getCharacters();
         for (final Character character : characters) {
             final Optional<Actor> currentActorOpt = scene.getChapter().getActor(scene, character);
             boolean needsToSpawnActor = false;
@@ -23,7 +23,7 @@ public abstract class ActedChapterGoal implements ChapterGoal {
                 needsToSpawnActor = true;
             } else {
                 final Actor currentActor = currentActorOpt.get();
-                final Optional<LivingEntity> currentActorEntity = currentActor.getEntity(level);
+                final Optional<LivingEntity> currentActorEntity = character.getEntity(currentActor, level);
                 if (currentActorEntity.isEmpty()) {
                     needsToSpawnActor = true;
                 } else if (!currentActorEntity.get().isAlive() && !currentActor.isPlayerControlled()) {
@@ -32,7 +32,7 @@ public abstract class ActedChapterGoal implements ChapterGoal {
             }
 
             if (needsToSpawnActor) {
-                final EntityType<? extends LivingEntity> entityType = character.entityType();
+                final EntityType<? extends LivingEntity> entityType = character.getEntityType();
                 final LivingEntity actorEntity = entityType.create(level);
                 if (actorEntity instanceof SceneEntity sceneEntity) {
                     sceneEntity.setSceneId(scene.getId());

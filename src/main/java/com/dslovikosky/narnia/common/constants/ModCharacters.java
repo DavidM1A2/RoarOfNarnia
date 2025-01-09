@@ -1,7 +1,6 @@
 package com.dslovikosky.narnia.common.constants;
 
 import com.dslovikosky.narnia.common.model.chapter.Character;
-import com.google.common.base.Suppliers;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
@@ -9,9 +8,9 @@ public class ModCharacters {
     public static final DeferredRegister<Character> CHARACTERS = DeferredRegister.create(ModRegistries.CHARACTER, Constants.MOD_ID);
 
     public static final DeferredHolder<Character, ? extends Character> DIGORY = CHARACTERS.register("digory",
-            id -> new Character(id, Suppliers.memoize(ModEntityTypes.DIGORY::get).get(), true));
+            id -> new Character(id, ModEntityTypes.DIGORY::get, true));
     public static final DeferredHolder<Character, ? extends Character> POLLY = CHARACTERS.register("polly",
-            id -> new Character(id, Suppliers.memoize(ModEntityTypes.POLLY::get).get(), true));
+            id -> new Character(id, ModEntityTypes.POLLY::get, true));
     public static final DeferredHolder<Character, ? extends Character> UNCLE_ANDREW = CHARACTERS.register("uncle_andrew",
             id -> new Character(id, null, false));
 }

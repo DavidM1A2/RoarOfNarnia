@@ -117,7 +117,7 @@ public class Scene implements MutableDataComponentHolder {
 
     private DataComponentMap buildComponentMap(final Chapter chapter) {
         final DataComponentMap.Builder builder = DataComponentMap.builder();
-        chapter.goals().forEach(goal -> goal.registerComponents(builder));
+        chapter.getGoals().forEach(goal -> goal.registerComponents(builder));
         return builder.build();
     }
 
