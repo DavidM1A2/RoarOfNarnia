@@ -3,6 +3,7 @@ package com.dslovikosky.narnia.common.model.scene;
 import com.dslovikosky.narnia.common.entity.human_child.SceneEntity;
 import com.dslovikosky.narnia.common.model.scene.goal.base.ChapterGoal;
 import com.google.common.base.Suppliers;
+import net.minecraft.commands.arguments.EntityAnchorArgument;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
@@ -11,11 +12,10 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
-import javax.annotation.Nullable;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public class Chapter {
@@ -35,32 +35,13 @@ public class Chapter {
         return Component.translatable(String.format("chapter.%s.%s.%s.title", id.getNamespace(), book.get().getId().getPath(), id.getPath()));
     }
 
-    public boolean isComplete(final Scene scene) {
-        return scene.getGoalIndex() >= goals.size();
-    }
-
     public void start(final Scene scene, final Level level) {
     }
 
     public void stop(final Scene scene, final Level level, final boolean isComplete) {
     }
 
-    public boolean tick(final Scene scene, final Level level) {
-        final Optional<ChapterGoal> currentGoalOpt = getCurrentGoal(scene);
-        if (currentGoalOpt.isEmpty()) {
-            return true;
-        }
-
-        final ChapterGoal currentGoal = currentGoalOpt.get();
-        final GoalTickResult result = currentGoal.tick(scene, level);
-        if (result == GoalTickResult.COMPLETED) {
-            currentGoal.finish(scene, level);
-            scene.setGoalIndex(scene.getGoalIndex() + 1);
-            scene.setGoalStarted(false);
-            return true;
-        } else {
-            return result == GoalTickResult.CONTINUE_SYNC;
-        }
+    public void tick(final Scene scene, final Level level) {
     }
 
     public boolean join(final Scene scene, final Player player) {
@@ -77,25 +58,20 @@ public class Chapter {
     }
 
     public List<Player> getPlayers(final Scene scene, final Level level) {
-        return scene.getPlayerIds().stream().map(level::getPlayerByUUID).toList();
+        return scene.getPlayerIds().stream().map(level::getPlayerByUUID).filter(Objects::nonNull).toList();
     }
 
-    public boolean isParticipating(final Scene scene, @Nullable final Player player) {
-        if (player == null) {
-            return false;
-        }
+    public boolean isParticipating(final Scene scene, final Player player) {
         return scene.getPlayerIds().contains(player.getUUID());
     }
 
-    public Optional<Actor> getActor(final Scene scene, final Character character) {
-        return scene.getActors().stream()
-                .filter(actor -> actor.getCharacter().represents(actor, character))
-                .findFirst();
+    public Actor getActor(final Scene scene, final Character character) {
+        return scene.getActors().get(character);
     }
 
-    public LivingEntity getOrCreateActingEntity(final Scene scene, final Level level, final Character character, final Consumer<LivingEntity> initializer) {
-        final Optional<Actor> actorOpt = getActor(scene, character);
-        final Optional<LivingEntity> actingEntityOpt = actorOpt.flatMap(actor -> actor.getCharacter().getEntity(actor, level));
+    public LivingEntity getActingEntity(final Scene scene, final Level level, final Character character) {
+        final Actor actor = getActor(scene, character);
+        final Optional<LivingEntity> actingEntityOpt = actor.getCharacter().getEntity(actor, level);
         if (actingEntityOpt.isPresent()) {
             return actingEntityOpt.get();
         }
@@ -109,9 +85,9 @@ public class Chapter {
         if (actorEntity instanceof SceneEntity sceneEntity) {
             sceneEntity.setSceneId(scene.getId());
         }
-        initializer.accept(actorEntity);
-        actorOpt.ifPresent(actor -> scene.getActors().remove(actor));
-        scene.getActors().add(new Actor(character, actorEntity));
+        actorEntity.setPos(actor.getTargetPosition());
+        actorEntity.lookAt(EntityAnchorArgument.Anchor.EYES, actor.getLookPosition());
+        actor.setEntity(actorEntity);
         level.addFreshEntity(actorEntity);
         return actorEntity;
     }

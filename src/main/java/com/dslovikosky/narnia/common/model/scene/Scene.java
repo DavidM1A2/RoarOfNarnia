@@ -2,6 +2,7 @@ package com.dslovikosky.narnia.common.model.scene;
 
 import com.dslovikosky.narnia.common.constants.ModRegistries;
 import com.dslovikosky.narnia.common.utils.LongStreamCodec;
+import com.google.common.collect.ImmutableList;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.UUIDUtil;
@@ -17,62 +18,66 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class Scene implements MutableDataComponentHolder {
     public static final StreamCodec<RegistryFriendlyByteBuf, Scene> STREAM_CODEC = LongStreamCodec.composite(
             ByteBufCodecs.registry(ModRegistries.CHAPTER_KEY), Scene::getChapter,
-            Actor.STREAM_CODEC.apply(ByteBufCodecs.list()), Scene::getActors,
+            Actor.STREAM_CODEC.apply(ByteBufCodecs.list()), it -> ImmutableList.copyOf(it.getActors().values()),
             UUIDUtil.STREAM_CODEC.apply(ByteBufCodecs.list()), Scene::getPlayerIds,
             DataComponentPatch.STREAM_CODEC, chapterInstance -> chapterInstance.components.asPatch(),
             UUIDUtil.STREAM_CODEC, Scene::getId,
+            ByteBufCodecs.STRING_UTF8.map(SceneState::valueOf, SceneState::toString), Scene::getState,
             ByteBufCodecs.INT, Scene::getGoalIndex,
-            ByteBufCodecs.BOOL, Scene::isGoalStarted,
             Scene::new);
     public static final Codec<Scene> CODEC = Codec.lazyInitialized(() -> RecordCodecBuilder.create(instance -> instance.group(
             ModRegistries.CHAPTER.byNameCodec().fieldOf("chapter_id").forGetter(Scene::getChapter),
-            Codec.list(Actor.CODEC).fieldOf("actors").forGetter(Scene::getActors),
+            Codec.list(Actor.CODEC).fieldOf("actors").forGetter(it -> ImmutableList.copyOf(it.getActors().values())),
             Codec.list(UUIDUtil.CODEC).fieldOf("player_ids").forGetter(Scene::getPlayerIds),
             DataComponentPatch.CODEC.fieldOf("components").forGetter(chapterInstance -> chapterInstance.components.asPatch()),
             UUIDUtil.CODEC.fieldOf("id").forGetter(Scene::getId),
-            Codec.INT.fieldOf("goal_index").forGetter(Scene::getGoalIndex),
-            Codec.BOOL.fieldOf("goal_started").forGetter(Scene::isGoalStarted)
+            Codec.STRING.fieldOf("state").xmap(SceneState::valueOf, SceneState::toString).forGetter(Scene::getState),
+            Codec.INT.fieldOf("goal_index").forGetter(Scene::getGoalIndex)
     ).apply(instance, Scene::new)));
 
     private final Chapter chapter;
-    private final List<Actor> actors;
+    private final Map<Character, Actor> actors;
     private final List<UUID> playerIds;
     private final PatchedDataComponentMap components;
     private final UUID id;
+    private SceneState state;
     private int goalIndex;
-    private boolean goalStarted;
 
     public Scene(final Chapter chapter) {
         this.chapter = chapter;
-        this.actors = new ArrayList<>();
+        this.actors = new HashMap<>();
         this.playerIds = new ArrayList<>();
         this.components = new PatchedDataComponentMap(buildComponentMap(chapter));
         this.id = UUID.randomUUID();
+        this.state = SceneState.NEW;
         this.goalIndex = 0;
-        this.goalStarted = false;
     }
 
-    private Scene(final Chapter chapter, final List<Actor> actors, final List<UUID> playerIds, final DataComponentPatch components, final UUID id, final int goalIndex, final boolean goalStarted) {
+    private Scene(final Chapter chapter, final List<Actor> actors, final List<UUID> playerIds, final DataComponentPatch components, final UUID id, final SceneState state, final int goalIndex) {
         this.chapter = chapter;
-        this.actors = new ArrayList<>(actors);
+        this.actors = actors.stream().collect(Collectors.toMap(Actor::getCharacter, Function.identity()));
         this.playerIds = new ArrayList<>(playerIds);
         this.components = PatchedDataComponentMap.fromPatch(buildComponentMap(chapter), components);
         this.id = id;
+        this.state = state;
         this.goalIndex = goalIndex;
-        this.goalStarted = goalStarted;
     }
 
     public Chapter getChapter() {
         return chapter;
     }
 
-    public List<Actor> getActors() {
+    public Map<Character, Actor> getActors() {
         return actors;
     }
 
@@ -92,12 +97,12 @@ public class Scene implements MutableDataComponentHolder {
         this.goalIndex = goalIndex;
     }
 
-    public boolean isGoalStarted() {
-        return goalStarted;
+    public SceneState getState() {
+        return state;
     }
 
-    public void setGoalStarted(final boolean goalStarted) {
-        this.goalStarted = goalStarted;
+    public void setState(SceneState state) {
+        this.state = state;
     }
 
     @Override
@@ -136,10 +141,11 @@ public class Scene implements MutableDataComponentHolder {
         return "Scene{" +
                 "chapter=" + chapter +
                 ", actors=" + actors +
+                ", playerIds=" + playerIds +
                 ", components=" + components +
-                ", goalIndex=" + goalIndex +
-                ", goalStarted=" + goalStarted +
                 ", id=" + id +
+                ", state=" + state +
+                ", goalIndex=" + goalIndex +
                 '}';
     }
 }

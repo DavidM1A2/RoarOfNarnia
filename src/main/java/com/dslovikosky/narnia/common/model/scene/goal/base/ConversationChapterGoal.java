@@ -5,7 +5,6 @@ import com.dslovikosky.narnia.common.model.scene.GoalTickResult;
 import com.dslovikosky.narnia.common.model.scene.Scene;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 
 import java.util.HashMap;
@@ -48,7 +47,6 @@ public class ConversationChapterGoal extends ChapterGoal {
 
         if (elapsedTimeToChatLine.containsKey(elapsedTime)) {
             final ChatLine chatLine = elapsedTimeToChatLine.get(elapsedTime);
-            final LivingEntity talkingEntity = scene.getChapter().getOrCreateActingEntity(scene, level, chatLine.getSpeaker(), entity -> entity.setPos(0, 0, 0));
             scene.getChapter().getPlayers(scene, level).forEach(player -> player.sendSystemMessage(Component.translatable(
                     "chat.conversation.character_speaks", chatLine.getSpeaker().getName(), chatLine.getComponent())));
         }

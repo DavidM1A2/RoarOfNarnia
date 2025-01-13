@@ -15,7 +15,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.ChunkGenerator;
@@ -24,7 +24,6 @@ import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.StructureStart;
 
 import java.util.List;
-import java.util.Optional;
 
 public class FindUncleAndrewsHouseGoal extends ChapterGoal {
     private static final ResourceKey<Structure> UNCLE_ANDREWS_HOUSE = ResourceKey.create(Registries.STRUCTURE, ModStructureTypes.UNCLE_ANDREWS_HOUSE.getId());
@@ -66,20 +65,14 @@ public class FindUncleAndrewsHouseGoal extends ChapterGoal {
 
     @Override
     public GoalTickResult tick(final Scene scene, final Level level) {
-        final List<LivingEntity> playerEntities = scene.getActors()
-                .stream()
-                .filter(actor -> actor.getCharacter() != null)
-                .map(actor -> actor.getCharacter().getEntity(actor, level))
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .toList();
+        final List<Player> players = scene.getChapter().getPlayers(scene, level);
 
-        if (playerEntities.isEmpty()) {
+        if (players.isEmpty()) {
             return GoalTickResult.CONTINUE;
         }
 
         final BoundingBox boundingBox = scene.getOrDefault(ModDataComponentTypes.UNCLE_ANDREWS_HOUSE_BB, BoundingBox.infinite());
-        if (playerEntities.stream().allMatch(playerEntity -> boundingBox.isInside(playerEntity.blockPosition()))) {
+        if (players.stream().allMatch(playerEntity -> boundingBox.isInside(playerEntity.blockPosition()))) {
             return GoalTickResult.COMPLETED;
         }
 

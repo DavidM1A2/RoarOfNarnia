@@ -11,6 +11,7 @@ import com.dslovikosky.narnia.common.constants.Constants;
 import com.dslovikosky.narnia.common.model.NarniaGlobalData;
 import com.dslovikosky.narnia.common.model.scene.Chapter;
 import com.dslovikosky.narnia.common.model.scene.Scene;
+import com.dslovikosky.narnia.common.model.scene.SceneState;
 import com.dslovikosky.narnia.common.model.scene.goal.base.ChapterGoal;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
@@ -54,7 +55,7 @@ public class SceneGoalLayer extends BaseLayer {
             return;
         }
 
-        if (!activeScene.isGoalStarted()) {
+        if (activeScene.getState() == SceneState.NEW) {
             contentPane.setVisible(false);
             return;
         }

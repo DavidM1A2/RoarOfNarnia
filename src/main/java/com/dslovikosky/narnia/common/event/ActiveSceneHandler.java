@@ -2,7 +2,9 @@ package com.dslovikosky.narnia.common.event;
 
 import com.dslovikosky.narnia.common.model.NarniaGlobalData;
 import com.dslovikosky.narnia.common.model.scene.Chapter;
+import com.dslovikosky.narnia.common.model.scene.GoalTickResult;
 import com.dslovikosky.narnia.common.model.scene.Scene;
+import com.dslovikosky.narnia.common.model.scene.SceneState;
 import com.dslovikosky.narnia.common.model.scene.goal.base.ChapterGoal;
 import net.minecraft.world.level.Level;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -23,26 +25,44 @@ public class ActiveSceneHandler {
         final Chapter chapter = activeScene.getChapter();
         boolean needsSync = false;
 
-        if (!activeScene.isGoalStarted()) {
-            Optional<ChapterGoal> currentGoal = chapter.getCurrentGoal(activeScene);
+        final SceneState state = activeScene.getState();
+
+        if (state == SceneState.NEW) {
+            chapter.start(activeScene, level);
+            activeScene.setState(SceneState.STARTED);
+            needsSync = true;
+        } else if (state == SceneState.STARTED || state == SceneState.GOAL_FINISHED) {
+            chapter.tick(activeScene, level);
+
+            final Optional<ChapterGoal> currentGoal = chapter.getCurrentGoal(activeScene);
             if (currentGoal.isPresent()) {
                 final boolean started = currentGoal.get().start(activeScene, level);
                 if (started) {
-                    activeScene.setGoalStarted(true);
+                    activeScene.setState(SceneState.GOAL_STARTED);
+                    needsSync = true;
+                }
+            } else {
+                chapter.stop(activeScene, level, false);
+                activeScene.setState(SceneState.FINISHED);
+                data.setActiveScene(null);
+                needsSync = true;
+            }
+        } else if (state == SceneState.GOAL_STARTED) {
+            chapter.tick(activeScene, level);
+
+            final Optional<ChapterGoal> currentGoalOpt = chapter.getCurrentGoal(activeScene);
+            if (currentGoalOpt.isPresent()) {
+                final ChapterGoal currentGoal = currentGoalOpt.get();
+                final GoalTickResult result = currentGoal.tick(activeScene, level);
+                if (result == GoalTickResult.COMPLETED) {
+                    currentGoal.finish(activeScene, level);
+                    activeScene.setGoalIndex(activeScene.getGoalIndex() + 1);
+                    activeScene.setState(SceneState.GOAL_FINISHED);
                     needsSync = true;
                 } else {
-                    // If there's no goal to start no-op
-                    return;
+                    needsSync = result == GoalTickResult.CONTINUE_SYNC;
                 }
             }
-        }
-
-        needsSync = needsSync || chapter.tick(activeScene, level);
-
-        if (chapter.isComplete(activeScene)) {
-            chapter.stop(activeScene, level, false);
-            data.setActiveScene(null);
-            needsSync = true;
         }
 
         if (!level.isClientSide() && needsSync) {
