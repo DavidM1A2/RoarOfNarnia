@@ -1,9 +1,11 @@
 package com.dslovikosky.narnia.common.model.scene;
 
+import com.dslovikosky.narnia.common.entity.human_child.SceneEntity;
 import com.dslovikosky.narnia.common.model.scene.goal.base.ChapterGoal;
 import com.google.common.base.Suppliers;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -12,6 +14,8 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public class Chapter {
@@ -59,54 +63,57 @@ public class Chapter {
         }
     }
 
-    public void join(final Scene scene, final LivingEntity entity, final Character character) {
-        scene.getActors().add(new Actor(character, entity));
-    }
-
-    public void leave(final Scene scene, final Character character) {
-        scene.getActors().removeIf(actor -> actor.getCharacter().equals(character));
-    }
-
-    public boolean tryJoin(final Scene scene, final Player player, @Nullable final Character character) {
-        Optional<Actor> currentActorOpt = getActor(scene, player);
-        // Player is already part of the scene, ignore
-        if (currentActorOpt.isPresent()) {
-            return false;
-        }
-
-        // Player wishes to spectate, allow it
-        if (character == null) {
-            scene.getActors().add(new Actor(player));
+    public boolean join(final Scene scene, final Player player) {
+        final List<UUID> playerIds = scene.getPlayerIds();
+        if (!playerIds.contains(player.getUUID())) {
+            playerIds.add(player.getUUID());
             return true;
         }
-
-        // Character is not playable, don't allow
-        if (!character.isPlayable()) {
-            return false;
-        }
-
-        currentActorOpt = getActor(scene, character);
-        // Character is already being played
-        if (currentActorOpt.isPresent()) {
-            return false;
-        }
-
-        // Character is not being played, allow joining
-        scene.getActors().add(new Actor(character, player));
-        return true;
+        return false;
     }
 
-    public void tryLeave(final Scene scene, final Player player) {
-        final Optional<Actor> actorToRemove = scene.getActors().stream().filter(actor -> actor.getCharacter().representedBy(actor, player)).findFirst();
-        actorToRemove.ifPresent(actor -> scene.getActors().remove(actor));
+    public void leave(final Scene scene, final Player player) {
+        scene.getPlayerIds().remove(player.getUUID());
     }
 
-    public Optional<Actor> getActor(final Scene scene, final Player player) {
-        return scene.getActors().stream().filter(actor -> actor.getCharacter().representedBy(actor, player)).findFirst();
+    public List<Player> getPlayers(final Scene scene, final Level level) {
+        return scene.getPlayerIds().stream().map(level::getPlayerByUUID).toList();
+    }
+
+    public boolean isParticipating(final Scene scene, @Nullable final Player player) {
+        if (player == null) {
+            return false;
+        }
+        return scene.getPlayerIds().contains(player.getUUID());
     }
 
     public Optional<Actor> getActor(final Scene scene, final Character character) {
-        return scene.getActors().stream().filter(actor -> actor.getCharacter().represents(actor, character)).findFirst();
+        return scene.getActors().stream()
+                .filter(actor -> actor.getCharacter().represents(actor, character))
+                .findFirst();
+    }
+
+    public LivingEntity getOrCreateActingEntity(final Scene scene, final Level level, final Character character, final Consumer<LivingEntity> initializer) {
+        final Optional<Actor> actorOpt = getActor(scene, character);
+        final Optional<LivingEntity> actingEntityOpt = actorOpt.flatMap(actor -> actor.getCharacter().getEntity(actor, level));
+        if (actingEntityOpt.isPresent()) {
+            return actingEntityOpt.get();
+        }
+
+        final EntityType<? extends LivingEntity> entityType = character.getEntityType();
+        final LivingEntity actorEntity = entityType.create(level);
+        if (actorEntity == null) {
+            return null;
+        }
+
+        if (actorEntity instanceof SceneEntity sceneEntity) {
+            sceneEntity.setSceneId(scene.getId());
+        }
+        initializer.accept(actorEntity);
+        actorOpt.ifPresent(actor -> scene.getActors().remove(actor));
+        scene.getActors().add(new Actor(character, actorEntity));
+        level.addFreshEntity(actorEntity);
+        return actorEntity;
     }
 
     public Optional<ChapterGoal> getCurrentGoal(final Scene scene) {

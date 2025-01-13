@@ -23,7 +23,7 @@ public class LeaveScenePacketHandler implements IPayloadHandler<LeaveScenePacket
             return;
         }
 
-        activeScene.getChapter().tryLeave(activeScene, context.player());
+        activeScene.getChapter().leave(activeScene, context.player());
         data.markDirty();
         data.syncAll();
     }

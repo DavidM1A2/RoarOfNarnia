@@ -8,26 +8,23 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 
-import javax.annotation.Nullable;
 import java.util.Optional;
 import java.util.function.Supplier;
 
 public class Character {
     private final ResourceLocation id;
     private final Supplier<EntityType<? extends LivingEntity>> entityType;
-    private final boolean isPlayable;
 
-    public Character(final ResourceLocation id, final Supplier<EntityType<? extends LivingEntity>> entityType, final boolean isPlayable) {
+    public Character(final ResourceLocation id, final Supplier<EntityType<? extends LivingEntity>> entityType) {
         this.id = id;
         this.entityType = entityType;
-        this.isPlayable = isPlayable;
     }
 
     public Component getName() {
         return Component.translatable(String.format("character.%s.%s.name", id.getNamespace(), id.getPath()));
     }
 
-    public boolean represents(final Actor actor, @Nullable final Character character) {
+    public boolean represents(final Actor actor, final Character character) {
         return character == actor.getCharacter();
     }
 
@@ -52,16 +49,11 @@ public class Character {
         return entityType.get();
     }
 
-    public boolean isPlayable() {
-        return isPlayable;
-    }
-
     @Override
     public String toString() {
         return "Character{" +
                 "id=" + id +
                 ", entityType=" + entityType +
-                ", isPlayable=" + isPlayable +
                 '}';
     }
 }

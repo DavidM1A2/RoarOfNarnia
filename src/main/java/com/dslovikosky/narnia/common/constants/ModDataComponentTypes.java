@@ -1,5 +1,6 @@
 package com.dslovikosky.narnia.common.constants;
 
+import com.mojang.serialization.Codec;
 import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -14,4 +15,6 @@ public class ModDataComponentTypes {
             "uncle_andrews_house_bb", builder -> builder.persistent(BoundingBox.CODEC).networkSynchronized(ByteBufCodecs.fromCodec(BoundingBox.CODEC)));
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Direction>> UNCLE_ANDREWS_HOUSE_DIRECTION = DATA_COMPONENT_TYPES.registerComponentType(
             "uncle_andrews_house_direction", builder -> builder.persistent(Direction.CODEC).networkSynchronized(Direction.STREAM_CODEC));
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Long>> CONVERSATION_START_TIME = DATA_COMPONENT_TYPES.registerComponentType(
+            "conversation_start_time", builder -> builder.persistent(Codec.LONG).networkSynchronized(ByteBufCodecs.VAR_LONG));
 }

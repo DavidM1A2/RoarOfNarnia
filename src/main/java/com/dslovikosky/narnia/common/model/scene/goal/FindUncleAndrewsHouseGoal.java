@@ -2,12 +2,10 @@ package com.dslovikosky.narnia.common.model.scene.goal;
 
 import com.dslovikosky.narnia.common.constants.ModDataComponentTypes;
 import com.dslovikosky.narnia.common.constants.ModStructureTypes;
-import com.dslovikosky.narnia.common.model.scene.Actor;
 import com.dslovikosky.narnia.common.model.scene.GoalTickResult;
 import com.dslovikosky.narnia.common.model.scene.Scene;
 import com.dslovikosky.narnia.common.model.scene.goal.base.ChapterGoal;
 import com.mojang.datafixers.util.Pair;
-import com.mojang.logging.LogUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
@@ -24,14 +22,12 @@ import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.StructureStart;
-import org.slf4j.Logger;
 
 import java.util.List;
 import java.util.Optional;
 
 public class FindUncleAndrewsHouseGoal extends ChapterGoal {
     private static final ResourceKey<Structure> UNCLE_ANDREWS_HOUSE = ResourceKey.create(Registries.STRUCTURE, ModStructureTypes.UNCLE_ANDREWS_HOUSE.getId());
-    private static final Logger LOG = LogUtils.getLogger();
 
     @Override
     public boolean start(final Scene scene, final Level level) {
@@ -72,7 +68,7 @@ public class FindUncleAndrewsHouseGoal extends ChapterGoal {
     public GoalTickResult tick(final Scene scene, final Level level) {
         final List<LivingEntity> playerEntities = scene.getActors()
                 .stream()
-                .filter(Actor::isPlayerControlled)
+                .filter(actor -> actor.getCharacter() != null)
                 .map(actor -> actor.getCharacter().getEntity(actor, level))
                 .filter(Optional::isPresent)
                 .map(Optional::get)

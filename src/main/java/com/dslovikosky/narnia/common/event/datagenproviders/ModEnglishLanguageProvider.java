@@ -54,8 +54,11 @@ public class ModEnglishLanguageProvider extends LanguageProvider {
         add("chapter.narnia.the_magicians_nephew.digory_and_his_uncle.title", "Digory and His Uncle");
         add("chapter.narnia.the_magicians_nephew.the_wood_between_the_worlds.title", "The Wood Between the Worlds");
 
+        add("chat.conversation.character_speaks", "[%1$s] %2$s");
+
         add("gui.narnia.book.chapter_header", "Chapter %1$d\n%2$s");
-        add("gui.narnia.book.join_chapter_as", "Join Chapter As:");
+        add("gui.narnia.book.join_scene", "Join Scene");
+        add("gui.narnia.book.leave_scene", "Leave Scene");
 
         add("sound.narnia.ui.page_turn", "Page Turn");
     }

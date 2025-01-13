@@ -1,14 +1,11 @@
 package com.dslovikosky.narnia.client.gui.screen;
 
 import com.dslovikosky.narnia.client.gui.control.ButtonPane;
-import com.dslovikosky.narnia.client.gui.control.HChainPane;
 import com.dslovikosky.narnia.client.gui.control.ImagePane;
-import com.dslovikosky.narnia.client.gui.control.LabelComponent;
 import com.dslovikosky.narnia.client.gui.control.StackPane;
 import com.dslovikosky.narnia.client.gui.control.TextBoxComponent;
 import com.dslovikosky.narnia.client.gui.event.KeyEvent;
 import com.dslovikosky.narnia.client.gui.font.TtfFontLoader;
-import com.dslovikosky.narnia.client.gui.layout.ChainLayout;
 import com.dslovikosky.narnia.client.gui.layout.Dimensions;
 import com.dslovikosky.narnia.client.gui.layout.Gravity;
 import com.dslovikosky.narnia.client.gui.layout.Position;
@@ -16,10 +13,8 @@ import com.dslovikosky.narnia.client.gui.layout.TextAlignment;
 import com.dslovikosky.narnia.common.constants.Constants;
 import com.dslovikosky.narnia.common.constants.ModSoundEvents;
 import com.dslovikosky.narnia.common.model.NarniaGlobalData;
-import com.dslovikosky.narnia.common.model.scene.Actor;
 import com.dslovikosky.narnia.common.model.scene.Book;
 import com.dslovikosky.narnia.common.model.scene.Chapter;
-import com.dslovikosky.narnia.common.model.scene.Character;
 import com.dslovikosky.narnia.common.model.scene.Scene;
 import com.dslovikosky.narnia.common.network.packet.JoinScenePacket;
 import com.dslovikosky.narnia.common.network.packet.LeaveScenePacket;
@@ -34,8 +29,6 @@ import org.codehaus.plexus.util.StringUtils;
 import org.lwjgl.glfw.GLFW;
 
 import java.awt.Color;
-import java.util.List;
-import java.util.Optional;
 
 public class TheChroniclesOfNarniaBookScreen extends BaseScreen {
     private static final RuleBasedNumberFormat NUMBER_FORMATTER = new RuleBasedNumberFormat(RuleBasedNumberFormat.SPELLOUT);
@@ -46,8 +39,7 @@ public class TheChroniclesOfNarniaBookScreen extends BaseScreen {
     private final TextBoxComponent titleBox;
     private final ButtonPane startButton;
     private final ButtonPane stopButton;
-    private final LabelComponent joinSceneLabel;
-    private final HChainPane joinSceneOptions;
+    private final ButtonPane joinLeaveSceneButton;
 
     private int chapterIndex = 0;
 
@@ -110,6 +102,16 @@ public class TheChroniclesOfNarniaBookScreen extends BaseScreen {
         stopButton.setText("Stop Chapter");
         leftPage.add(stopButton);
 
+        joinLeaveSceneButton = new ButtonPane(
+                new ImagePane(ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "textures/gui/narnia_book/book_button.png"), ImagePane.DisplayMode.STRETCH),
+                new ImagePane(ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "textures/gui/narnia_book/book_button_hovered.png"), ImagePane.DisplayMode.STRETCH),
+                TtfFontLoader.getTextFont(26f, true));
+        joinLeaveSceneButton.setPrefSize(new Dimensions(50, 10, false));
+        joinLeaveSceneButton.setOffset(new Position(0.0, 0.3, true));
+        joinLeaveSceneButton.setGravity(Gravity.TOP_CENTER);
+        joinLeaveSceneButton.setTextAlignment(TextAlignment.ALIGN_CENTER);
+        leftPage.add(joinLeaveSceneButton);
+
         forwardButton = new ButtonPane(
                 new ImagePane(ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "textures/gui/narnia_book/forward_button.png"), ImagePane.DisplayMode.STRETCH),
                 new ImagePane(ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "textures/gui/narnia_book/forward_button_hovered.png"), ImagePane.DisplayMode.STRETCH),
@@ -140,21 +142,6 @@ public class TheChroniclesOfNarniaBookScreen extends BaseScreen {
                 }
             }
         });
-
-        joinSceneLabel = new LabelComponent(TtfFontLoader.getTextFont(26f, true), Component.translatable("gui.narnia.book.join_chapter_as").getString());
-        joinSceneLabel.setPrefSize(new Dimensions(1.0, 0.04, true));
-        joinSceneLabel.setOffset(new Position(0.0, -20.0, false));
-        joinSceneLabel.setGravity(Gravity.BOTTOM_CENTER);
-        joinSceneLabel.setTextAlignment(TextAlignment.ALIGN_CENTER);
-        joinSceneLabel.setTextColor(new Color(16, 140, 0));
-        leftPage.add(joinSceneLabel);
-
-        joinSceneOptions = new HChainPane(ChainLayout.SPREAD);
-        joinSceneOptions.setPrefSize(new Dimensions(0.85, 0.04, true));
-        joinSceneOptions.setOffset(new Position(0.0, -10.0, false));
-        joinSceneOptions.setGravity(Gravity.BOTTOM_CENTER);
-
-        leftPage.add(joinSceneOptions);
 
         contentPane.add(backgroundPane);
 
@@ -197,62 +184,27 @@ public class TheChroniclesOfNarniaBookScreen extends BaseScreen {
 
         final Scene activeScene = NarniaGlobalData.getInstance(true).getActiveScene();
 
-        joinSceneOptions.getChildren().clear();
-        joinSceneLabel.setVisible(false);
         startButton.setVisible(false);
         stopButton.setVisible(false);
+        joinLeaveSceneButton.setVisible(false);
         if (activeScene == null) {
             // Show a "Start Chapter" button
             startButton.setVisible(true);
             startButton.clearMouseListeners();
             startButton.addOnClick(event -> PacketDistributor.sendToServer(new StartScenePacket(currentChapter)));
         } else if (activeScene.getChapter() == currentChapter) {
-            // Show a "Leave Chapter" button
+            // Show a "Leave Scene" button
             stopButton.setVisible(true);
             stopButton.clearMouseListeners();
             stopButton.addOnClick(event -> PacketDistributor.sendToServer(new StopScenePacket()));
-            final Optional<Actor> actor = currentChapter.getActor(activeScene, Minecraft.getInstance().player);
-            if (actor.isEmpty()) {
-                // Show a "Join Chapter As" label and buttons per actor
-                joinSceneLabel.setVisible(true);
-                final List<Character> characters = currentChapter.getCharacters();
-                final int joinOptionCount = characters.size() + 1;
-                final ButtonPane joinSceneButton = new ButtonPane(
-                        new ImagePane(ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "textures/gui/narnia_book/book_button.png"), ImagePane.DisplayMode.STRETCH),
-                        new ImagePane(ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "textures/gui/narnia_book/book_button_hovered.png"), ImagePane.DisplayMode.STRETCH),
-                        TtfFontLoader.getTextFont(26f, true));
-                joinSceneButton.setPrefSize(new Dimensions(Math.max(0.3, 0.9f / joinOptionCount), 1.0, true));
-                joinSceneButton.setTextAlignment(TextAlignment.ALIGN_CENTER);
-                joinSceneButton.setText("Spectator");
-                joinSceneButton.addOnClick(event -> PacketDistributor.sendToServer(new JoinScenePacket()));
-                joinSceneOptions.add(joinSceneButton);
-                for (final Character character : characters) {
-                    if (character.isPlayable()) {
-                        final ButtonPane startSceneButton = new ButtonPane(
-                                new ImagePane(ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "textures/gui/narnia_book/book_button.png"), ImagePane.DisplayMode.STRETCH),
-                                new ImagePane(ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "textures/gui/narnia_book/book_button_hovered.png"), ImagePane.DisplayMode.STRETCH),
-                                TtfFontLoader.getTextFont(26f, true));
-                        startSceneButton.setPrefSize(new Dimensions(Math.max(0.3, 0.9f / joinOptionCount), 1.0, true));
-                        startSceneButton.setTextAlignment(TextAlignment.ALIGN_CENTER);
-                        startSceneButton.setText(String.format("%s", character.getName().getString()));
-                        startSceneButton.addOnClick(event -> PacketDistributor.sendToServer(new JoinScenePacket(character)));
-                        joinSceneOptions.add(startSceneButton);
-                    }
-                }
-            } else {
-                final ButtonPane joinSceneButton = new ButtonPane(
-                        new ImagePane(ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "textures/gui/narnia_book/book_button.png"), ImagePane.DisplayMode.STRETCH),
-                        new ImagePane(ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "textures/gui/narnia_book/book_button_hovered.png"), ImagePane.DisplayMode.STRETCH),
-                        TtfFontLoader.getTextFont(26f, true));
-                joinSceneButton.setPrefSize(new Dimensions(Math.max(0.3, 0.9f), 1.0, true));
-                joinSceneButton.setTextAlignment(TextAlignment.ALIGN_CENTER);
-                joinSceneButton.setText(String.format("Stop Being %s", actor.get().getName().getString()));
-                joinSceneButton.addOnClick(event -> PacketDistributor.sendToServer(new LeaveScenePacket()));
-                joinSceneOptions.add(joinSceneButton);
-            }
+
+            joinLeaveSceneButton.setVisible(true);
+            joinLeaveSceneButton.clearMouseListeners();
+            final boolean isParticipating = currentChapter.isParticipating(activeScene, Minecraft.getInstance().player);
+            joinLeaveSceneButton.setText(isParticipating ? "Leave Scene" : "Join Scene");
+            joinLeaveSceneButton.addOnClick(event -> PacketDistributor.sendToServer(isParticipating ? new LeaveScenePacket() : new JoinScenePacket()));
         } else {
             // Show nothing
         }
-        joinSceneOptions.calcChildrenBounds();
     }
 }

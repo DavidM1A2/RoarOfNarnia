@@ -8,9 +8,9 @@ public class ModCharacters {
     public static final DeferredRegister<Character> CHARACTERS = DeferredRegister.create(ModRegistries.CHARACTER, Constants.MOD_ID);
 
     public static final DeferredHolder<Character, ? extends Character> DIGORY = CHARACTERS.register("digory",
-            id -> new Character(id, ModEntityTypes.DIGORY::get, true));
+            id -> new Character(id, ModEntityTypes.DIGORY::get));
     public static final DeferredHolder<Character, ? extends Character> POLLY = CHARACTERS.register("polly",
-            id -> new Character(id, ModEntityTypes.POLLY::get, true));
+            id -> new Character(id, ModEntityTypes.POLLY::get));
     public static final DeferredHolder<Character, ? extends Character> UNCLE_ANDREW = CHARACTERS.register("uncle_andrew",
-            id -> new Character(id, null, false));
+            id -> new Character(id, null));
 }

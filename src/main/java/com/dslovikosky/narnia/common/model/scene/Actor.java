@@ -9,44 +9,32 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
 
-import java.util.Optional;
+import javax.annotation.Nullable;
 import java.util.UUID;
 
 public class Actor {
     public static final Codec<Actor> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            ModRegistries.CHARACTER.byNameCodec().optionalFieldOf("character").forGetter(it -> Optional.ofNullable(it.getCharacter())),
-            Codec.BOOL.fieldOf("player_controlled").forGetter(Actor::isPlayerControlled),
+            ModRegistries.CHARACTER.byNameCodec().fieldOf("character").forGetter(Actor::getCharacter),
             UUIDUtil.CODEC.fieldOf("entity_id").forGetter(Actor::getEntityId)
     ).apply(instance, Actor::new));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, Actor> STREAM_CODEC = StreamCodec.composite(
-            ByteBufCodecs.optional(ByteBufCodecs.registry(ModRegistries.CHARACTER_KEY)), it -> Optional.ofNullable(it.getCharacter()),
-            ByteBufCodecs.BOOL, Actor::isPlayerControlled,
+            ByteBufCodecs.registry(ModRegistries.CHARACTER_KEY), Actor::getCharacter,
             UUIDUtil.STREAM_CODEC, Actor::getEntityId,
             Actor::new);
 
     private final Character character;
-    private final boolean playerControlled;
     private final UUID entityId;
 
-    private Actor(final Optional<Character> character, final boolean playerControlled, final UUID entityId) {
-        this.character = character.orElse(null);
-        this.playerControlled = playerControlled;
+    private Actor(final Character character, final UUID entityId) {
+        this.character = character;
         this.entityId = entityId;
     }
 
-    public Actor(final Character character, final Player player) {
-        this(Optional.of(character), true, player.getUUID());
-    }
-
-    public Actor(final Player player) {
-        this(Optional.empty(), true, player.getUUID());
-    }
-
     public Actor(final Character character, final LivingEntity entity) {
-        this(Optional.of(character), false, entity.getUUID());
+        this.character = character;
+        this.entityId = entity.getUUID();
     }
 
     public Component getName() {
@@ -57,12 +45,8 @@ public class Actor {
         }
     }
 
-    public Character getCharacter() {
+    public @Nullable Character getCharacter() {
         return character;
-    }
-
-    public boolean isPlayerControlled() {
-        return playerControlled;
     }
 
     public UUID getEntityId() {
@@ -73,7 +57,6 @@ public class Actor {
     public String toString() {
         return "Actor[" +
                 "character=" + character + ", " +
-                "playerControlled=" + playerControlled + ", " +
                 "entityId=" + entityId + ']';
     }
 

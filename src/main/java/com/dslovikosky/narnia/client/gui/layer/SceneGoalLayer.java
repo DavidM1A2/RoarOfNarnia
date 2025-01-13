@@ -60,7 +60,7 @@ public class SceneGoalLayer extends BaseLayer {
         }
 
         final Chapter chapter = activeScene.getChapter();
-        if (chapter.getActor(activeScene, Minecraft.getInstance().player).isEmpty()) {
+        if (!chapter.isParticipating(activeScene, Minecraft.getInstance().player)) {
             contentPane.setVisible(false);
             return;
         }
