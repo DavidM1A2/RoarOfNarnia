@@ -1,34 +1,31 @@
 package com.dslovikosky.narnia.common.model.scene.goal;
 
+import com.dslovikosky.narnia.common.constants.ModCharacters;
+import com.dslovikosky.narnia.common.constants.ModDataComponentTypes;
+import com.dslovikosky.narnia.common.model.scene.Chapter;
 import com.dslovikosky.narnia.common.model.scene.GoalTickResult;
 import com.dslovikosky.narnia.common.model.scene.Scene;
 import com.dslovikosky.narnia.common.model.scene.goal.base.ChapterGoal;
+import com.dslovikosky.narnia.common.world.schematic.StructureRelativeCoordinate;
+import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.levelgen.structure.BoundingBox;
+import net.minecraft.world.phys.Vec3;
 
 public class DigoryPollyIntroductionGoal extends ChapterGoal {
     @Override
     public boolean start(Scene scene, Level level) {
-        if (level.isClientSide()) {
-            return false;
-        }
-
         if (level.dimension() != Level.OVERWORLD) {
             return false;
         }
 
-        /*
         final BoundingBox boundingBox = scene.get(ModDataComponentTypes.UNCLE_ANDREWS_HOUSE_BB);
         final Direction direction = scene.get(ModDataComponentTypes.UNCLE_ANDREWS_HOUSE_DIRECTION);
         final StructureRelativeCoordinate coord = new StructureRelativeCoordinate(boundingBox, direction);
-        if (character == ModCharacters.DIGORY.get()) {
-            final BlockPos blockPos = coord.relativeToAbsolutePos(10, 1, 20);
-            entity.setPos(blockPos.getX(), blockPos.getY(), blockPos.getZ());
-        } else if (character == ModCharacters.POLLY.get()) {
-            final BlockPos blockPos = coord.relativeToAbsolutePos(16, 1, 20);
-            entity.setPos(blockPos.getX(), blockPos.getY(), blockPos.getZ());
-        }
-         */
+        final Chapter chapter = scene.getChapter();
+        chapter.getActor(scene, ModCharacters.DIGORY.get()).setTargetPosition(Vec3.atCenterOf(coord.relativeToAbsolutePos(10, 1, 20)));
+        chapter.getActor(scene, ModCharacters.POLLY.get()).setTargetPosition(Vec3.atCenterOf(coord.relativeToAbsolutePos(16, 1, 20)));
 
         return super.start(scene, level);
     }

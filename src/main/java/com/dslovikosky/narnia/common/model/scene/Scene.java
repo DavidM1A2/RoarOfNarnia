@@ -18,7 +18,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -55,7 +54,7 @@ public class Scene implements MutableDataComponentHolder {
 
     public Scene(final Chapter chapter) {
         this.chapter = chapter;
-        this.actors = new HashMap<>();
+        this.actors = chapter.getCharacters().stream().map(Actor::new).collect(Collectors.toMap(Actor::getCharacter, Function.identity()));
         this.playerIds = new ArrayList<>();
         this.components = new PatchedDataComponentMap(buildComponentMap(chapter));
         this.id = UUID.randomUUID();

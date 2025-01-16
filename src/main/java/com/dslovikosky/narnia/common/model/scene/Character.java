@@ -1,5 +1,7 @@
 package com.dslovikosky.narnia.common.model.scene;
 
+import com.dslovikosky.narnia.common.entity.human_child.SceneEntity;
+import net.minecraft.commands.arguments.EntityAnchorArgument;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -21,6 +23,27 @@ public class Character {
 
     public Component getName() {
         return Component.translatable(String.format("character.%s.%s.name", id.getNamespace(), id.getPath()));
+    }
+
+    public LivingEntity getOrCreateEntity(final Scene scene, final Actor actor, final Level level) {
+        final Optional<LivingEntity> entityOpt = getEntity(actor, level);
+        if (entityOpt.isPresent()) {
+            return entityOpt.get();
+        }
+
+        final LivingEntity actorEntity = entityType.get().create(level);
+        if (actorEntity == null) {
+            return null;
+        }
+
+        if (actorEntity instanceof SceneEntity sceneEntity) {
+            sceneEntity.setSceneId(scene.getId());
+        }
+        actorEntity.setPos(actor.getTargetPosition());
+        actorEntity.lookAt(EntityAnchorArgument.Anchor.EYES, actor.getLookPosition());
+        actor.setEntity(actorEntity);
+        level.addFreshEntity(actorEntity);
+        return actorEntity;
     }
 
     public Optional<LivingEntity> getEntity(final Actor actor, final Level level) {

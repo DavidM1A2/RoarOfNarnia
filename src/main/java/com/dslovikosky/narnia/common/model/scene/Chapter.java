@@ -1,13 +1,9 @@
 package com.dslovikosky.narnia.common.model.scene;
 
-import com.dslovikosky.narnia.common.entity.human_child.SceneEntity;
 import com.dslovikosky.narnia.common.model.scene.goal.base.ChapterGoal;
 import com.google.common.base.Suppliers;
-import net.minecraft.commands.arguments.EntityAnchorArgument;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.registries.DeferredHolder;
@@ -67,29 +63,6 @@ public class Chapter {
 
     public Actor getActor(final Scene scene, final Character character) {
         return scene.getActors().get(character);
-    }
-
-    public LivingEntity getActingEntity(final Scene scene, final Level level, final Character character) {
-        final Actor actor = getActor(scene, character);
-        final Optional<LivingEntity> actingEntityOpt = actor.getCharacter().getEntity(actor, level);
-        if (actingEntityOpt.isPresent()) {
-            return actingEntityOpt.get();
-        }
-
-        final EntityType<? extends LivingEntity> entityType = character.getEntityType();
-        final LivingEntity actorEntity = entityType.create(level);
-        if (actorEntity == null) {
-            return null;
-        }
-
-        if (actorEntity instanceof SceneEntity sceneEntity) {
-            sceneEntity.setSceneId(scene.getId());
-        }
-        actorEntity.setPos(actor.getTargetPosition());
-        actorEntity.lookAt(EntityAnchorArgument.Anchor.EYES, actor.getLookPosition());
-        actor.setEntity(actorEntity);
-        level.addFreshEntity(actorEntity);
-        return actorEntity;
     }
 
     public Optional<ChapterGoal> getCurrentGoal(final Scene scene) {

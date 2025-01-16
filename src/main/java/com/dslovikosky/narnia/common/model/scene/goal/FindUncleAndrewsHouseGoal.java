@@ -30,10 +30,6 @@ public class FindUncleAndrewsHouseGoal extends ChapterGoal {
 
     @Override
     public boolean start(final Scene scene, final Level level) {
-        if (level.isClientSide()) {
-            return false;
-        }
-
         if (level.dimension() != Level.OVERWORLD) {
             return false;
         }

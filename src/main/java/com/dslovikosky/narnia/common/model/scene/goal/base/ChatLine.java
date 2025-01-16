@@ -12,7 +12,7 @@ public class ChatLine {
     private final int durationTicks;
 
     public ChatLine(final Supplier<Character> speaker, final Component component, final int durationTicks) {
-        this(speaker, null, component, durationTicks);
+        this(speaker, () -> null, component, durationTicks);
     }
 
     public ChatLine(final Supplier<Character> speaker, final Supplier<Character> listener, final Component component, final int durationTicks) {

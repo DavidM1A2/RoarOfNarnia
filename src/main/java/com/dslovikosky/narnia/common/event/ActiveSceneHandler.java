@@ -16,6 +16,9 @@ public class ActiveSceneHandler {
     @SubscribeEvent
     public void onPostLevelTick(final LevelTickEvent.Post event) {
         final Level level = event.getLevel();
+        if (level.isClientSide()) {
+            return;
+        }
 
         final NarniaGlobalData data = NarniaGlobalData.getInstance(level);
         final Scene activeScene = data.getActiveScene();
@@ -23,9 +26,9 @@ public class ActiveSceneHandler {
             return;
         }
         final Chapter chapter = activeScene.getChapter();
-        boolean needsSync = false;
-
         final SceneState state = activeScene.getState();
+
+        boolean needsSync = false;
 
         if (state == SceneState.NEW) {
             chapter.start(activeScene, level);
