@@ -15,6 +15,14 @@ public class ChatLine {
         this(speaker, () -> null, component, durationTicks);
     }
 
+    public ChatLine(final Supplier<Character> speaker, final Component component) {
+        this(speaker, () -> null, component, Math.max(20, component.getString().length()));
+    }
+
+    public ChatLine(final Supplier<Character> speaker, final Supplier<Character> listener, final Component component) {
+        this(speaker, listener, component, Math.max(40, component.getString().length() * 2));
+    }
+
     public ChatLine(final Supplier<Character> speaker, final Supplier<Character> listener, final Component component, final int durationTicks) {
         this.speaker = speaker;
         this.listener = listener;

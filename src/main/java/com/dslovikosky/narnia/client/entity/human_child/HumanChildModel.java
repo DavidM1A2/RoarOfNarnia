@@ -61,6 +61,9 @@ public class HumanChildModel<T extends HumanChildEntity> extends HierarchicalMod
     public void setupAnim(T pEntity, float pLimbSwing, float pLimbSwingAmount, float pAgeInTicks, float pNetHeadYaw, float pHeadPitch) {
         this.root().getAllParts().forEach(ModelPart::resetPose);
 
+        this.head.yRot = pNetHeadYaw * (float) (Math.PI / 180f);
+        this.head.xRot = pHeadPitch * (float) (Math.PI / 180f);
+
         this.animateWalk(HumanChildAnimations.WALK, pLimbSwing, pLimbSwingAmount, 2f, 2.5f);
         this.animate(pEntity.getIdleAnimationState(), HumanChildAnimations.IDLE, pAgeInTicks, 1f);
         this.animate(pEntity.getTalkAnimationState(), HumanChildAnimations.TALK, pAgeInTicks, 1f);

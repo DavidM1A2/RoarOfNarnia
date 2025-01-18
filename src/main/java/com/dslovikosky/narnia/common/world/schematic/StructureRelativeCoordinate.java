@@ -1,8 +1,8 @@
 package com.dslovikosky.narnia.common.world.schematic;
 
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
+import net.minecraft.world.phys.Vec3;
 
 public class StructureRelativeCoordinate {
     private final BoundingBox structureBoundingBox;
@@ -13,11 +13,15 @@ public class StructureRelativeCoordinate {
         this.orientation = orientation;
     }
 
-    public BlockPos relativeToAbsolutePos(final int relX, final int relY, final int relZ) {
-        return new BlockPos(this.getWorldX(relX, relZ), this.getWorldY(relY), this.getWorldZ(relX, relZ));
+    public Vec3 relativeToAbsolutePos(final double relX, final double relY, final double relZ) {
+        return new Vec3(this.getWorldX(relX, relZ), this.getWorldY(relY), this.getWorldZ(relX, relZ));
     }
 
-    private int getWorldX(final int relX, final int relZ) {
+    public Vec3 relativeToAbsolutePos(final Vec3 relativePos) {
+        return new Vec3(this.getWorldX(relativePos.x(), relativePos.z()), this.getWorldY(relativePos.y()), this.getWorldZ(relativePos.x(), relativePos.z()));
+    }
+
+    private double getWorldX(final double relX, final double relZ) {
         return switch (orientation) {
             case NORTH, SOUTH -> structureBoundingBox.minX() + relX;
             case WEST -> structureBoundingBox.maxX() - relZ;
@@ -26,11 +30,11 @@ public class StructureRelativeCoordinate {
         };
     }
 
-    private int getWorldY(final int relY) {
+    private double getWorldY(final double relY) {
         return orientation == null ? relY : relY + structureBoundingBox.minY();
     }
 
-    private int getWorldZ(final int relX, final int relZ) {
+    private double getWorldZ(final double relX, final double relZ) {
         return switch (orientation) {
             case NORTH -> structureBoundingBox.maxZ() - relZ;
             case SOUTH -> structureBoundingBox.minZ() + relZ;

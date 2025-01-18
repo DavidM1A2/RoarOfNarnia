@@ -4,7 +4,7 @@ import com.dslovikosky.narnia.common.constants.ModDataComponentTypes;
 import com.dslovikosky.narnia.common.constants.ModStructureTypes;
 import com.dslovikosky.narnia.common.model.scene.GoalTickResult;
 import com.dslovikosky.narnia.common.model.scene.Scene;
-import com.dslovikosky.narnia.common.model.scene.goal.ChapterGoal;
+import com.dslovikosky.narnia.common.model.scene.goal.BackgroundChapterGoal;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -25,7 +25,7 @@ import net.minecraft.world.level.levelgen.structure.StructureStart;
 
 import java.util.List;
 
-public class FindUncleAndrewsHouseGoal extends ChapterGoal {
+public class LocateUncleAndrewsHouseGoal extends BackgroundChapterGoal {
     private static final ResourceKey<Structure> UNCLE_ANDREWS_HOUSE = ResourceKey.create(Registries.STRUCTURE, ModStructureTypes.UNCLE_ANDREWS_HOUSE.getId());
 
     @Override
