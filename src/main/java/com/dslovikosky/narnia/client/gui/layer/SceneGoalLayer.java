@@ -12,7 +12,7 @@ import com.dslovikosky.narnia.common.model.NarniaGlobalData;
 import com.dslovikosky.narnia.common.model.scene.Chapter;
 import com.dslovikosky.narnia.common.model.scene.Scene;
 import com.dslovikosky.narnia.common.model.scene.SceneState;
-import com.dslovikosky.narnia.common.model.scene.goal.base.ChapterGoal;
+import com.dslovikosky.narnia.common.model.scene.goal.ChapterGoal;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;

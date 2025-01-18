@@ -1,10 +1,10 @@
-package com.dslovikosky.narnia.common.model.scene.goal;
+package com.dslovikosky.narnia.common.chapter.goal;
 
 import com.dslovikosky.narnia.common.constants.ModDataComponentTypes;
 import com.dslovikosky.narnia.common.constants.ModStructureTypes;
 import com.dslovikosky.narnia.common.model.scene.GoalTickResult;
 import com.dslovikosky.narnia.common.model.scene.Scene;
-import com.dslovikosky.narnia.common.model.scene.goal.base.ChapterGoal;
+import com.dslovikosky.narnia.common.model.scene.goal.ChapterGoal;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

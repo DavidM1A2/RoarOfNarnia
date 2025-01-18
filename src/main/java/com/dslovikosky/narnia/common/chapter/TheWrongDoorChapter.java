@@ -1,12 +1,12 @@
 package com.dslovikosky.narnia.common.chapter;
 
+import com.dslovikosky.narnia.common.chapter.goal.DigoryPollyIntroductionGoal;
+import com.dslovikosky.narnia.common.chapter.goal.FindUncleAndrewsHouseGoal;
 import com.dslovikosky.narnia.common.constants.ModBooks;
 import com.dslovikosky.narnia.common.constants.ModCharacters;
 import com.dslovikosky.narnia.common.model.scene.Chapter;
-import com.dslovikosky.narnia.common.model.scene.goal.DigoryPollyIntroductionGoal;
-import com.dslovikosky.narnia.common.model.scene.goal.FindUncleAndrewsHouseGoal;
-import com.dslovikosky.narnia.common.model.scene.goal.base.ChatLine;
-import com.dslovikosky.narnia.common.model.scene.goal.base.ConversationChapterGoal;
+import com.dslovikosky.narnia.common.model.scene.goal.ChatLine;
+import com.dslovikosky.narnia.common.model.scene.goal.ConversationChapterGoal;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 

@@ -5,7 +5,7 @@ import com.dslovikosky.narnia.common.model.scene.Chapter;
 import com.dslovikosky.narnia.common.model.scene.GoalTickResult;
 import com.dslovikosky.narnia.common.model.scene.Scene;
 import com.dslovikosky.narnia.common.model.scene.SceneState;
-import com.dslovikosky.narnia.common.model.scene.goal.base.ChapterGoal;
+import com.dslovikosky.narnia.common.model.scene.goal.ChapterGoal;
 import net.minecraft.world.level.Level;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.event.tick.LevelTickEvent;

@@ -1,11 +1,11 @@
-package com.dslovikosky.narnia.common.model.scene.goal;
+package com.dslovikosky.narnia.common.chapter.goal;
 
 import com.dslovikosky.narnia.common.constants.ModCharacters;
 import com.dslovikosky.narnia.common.constants.ModDataComponentTypes;
 import com.dslovikosky.narnia.common.model.scene.Chapter;
 import com.dslovikosky.narnia.common.model.scene.GoalTickResult;
 import com.dslovikosky.narnia.common.model.scene.Scene;
-import com.dslovikosky.narnia.common.model.scene.goal.base.ChapterGoal;
+import com.dslovikosky.narnia.common.model.scene.goal.ChapterGoal;
 import com.dslovikosky.narnia.common.world.schematic.StructureRelativeCoordinate;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;

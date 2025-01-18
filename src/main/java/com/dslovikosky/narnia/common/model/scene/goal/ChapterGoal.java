@@ -1,4 +1,4 @@
-package com.dslovikosky.narnia.common.model.scene.goal.base;
+package com.dslovikosky.narnia.common.model.scene.goal;
 
 import com.dslovikosky.narnia.common.model.scene.GoalTickResult;
 import com.dslovikosky.narnia.common.model.scene.Scene;
