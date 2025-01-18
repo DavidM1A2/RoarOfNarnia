@@ -9,6 +9,6 @@ import java.util.List;
 
 public class DigoryAndHisUncleChapter extends Chapter {
     public DigoryAndHisUncleChapter(final ResourceLocation id) {
-        super(id, ModBooks.THE_MAGICIANS_NEPHEW, List.of(ModCharacters.DIGORY, ModCharacters.UNCLE_ANDREW), List.of());
+        super(id, ModBooks.THE_MAGICIANS_NEPHEW, List.of(ModCharacters.DIGORY, ModCharacters.UNCLE_ANDREW));
     }
 }

@@ -8,6 +8,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -20,11 +21,15 @@ public class Chapter {
     private final Supplier<List<Character>> characters;
     private final List<ChapterGoal> goals;
 
-    public Chapter(final ResourceLocation id, final DeferredHolder<Book, ? extends Book> book, final List<DeferredHolder<Character, ? extends Character>> characters, final List<ChapterGoal> goals) {
+    public Chapter(final ResourceLocation id, final DeferredHolder<Book, ? extends Book> book, final List<DeferredHolder<Character, ? extends Character>> characters) {
         this.id = id;
         this.book = book::get;
         this.characters = Suppliers.memoize(() -> characters.stream().map(DeferredHolder::get).map(Character.class::cast).toList());
-        this.goals = goals;
+        this.goals = new ArrayList<>();
+    }
+
+    public void addGoal(final ChapterGoal goal) {
+        this.goals.add(goal);
     }
 
     public Component getTitle() {
