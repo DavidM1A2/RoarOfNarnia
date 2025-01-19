@@ -11,6 +11,7 @@ import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.goal.OpenDoorGoal;
 import net.minecraft.world.entity.ai.navigation.GroundPathNavigation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -61,6 +62,11 @@ public class HumanChildEntity extends Mob implements SceneEntity {
                 this.idleAnimationState.start(this.tickCount);
             }
         }
+    }
+
+    @Override
+    protected void registerGoals() {
+        this.goalSelector.addGoal(0, new OpenDoorGoal(this, true));
     }
 
     public AnimationState getIdleAnimationState() {
