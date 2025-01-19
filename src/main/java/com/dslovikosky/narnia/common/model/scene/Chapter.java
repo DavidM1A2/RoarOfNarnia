@@ -4,6 +4,7 @@ import com.dslovikosky.narnia.common.model.scene.goal.ChapterGoal;
 import com.google.common.base.Suppliers;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.registries.DeferredHolder;
@@ -68,6 +69,10 @@ public class Chapter {
 
     public Actor getActor(final Scene scene, final Character character) {
         return scene.getActors().get(character);
+    }
+
+    public Actor getActor(final Scene scene, final LivingEntity entity) {
+        return scene.getActors().values().stream().filter(actor -> entity.getUUID().equals(actor.getEntityId())).findFirst().orElse(null);
     }
 
     public Optional<ChapterGoal> getCurrentGoal(final Scene scene) {

@@ -31,9 +31,8 @@ public class InstantiateAtUncleAndrewsHouseGoal extends InstantiateActorChapterG
         final Actor actor = chapter.getActor(scene, character.get());
         final Vec3 newPosition = coord.relativeToAbsolutePos(position);
         actor.setTargetPosition(newPosition);
-        actor.setLookPosition(newPosition.add(new Vec3(houseDirection.getRotation().transform(direction.toVector3f())).multiply(100, 100, 100)));
         actor.getCharacter().getOrCreateEntity(scene, actor, level);
 
-        return super.start(scene, level);
+        return true;
     }
 }
