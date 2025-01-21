@@ -1,14 +1,22 @@
 package com.dslovikosky.narnia.common.event;
 
+import com.dslovikosky.narnia.common.constants.ModAttachmentTypes;
+import com.dslovikosky.narnia.common.constants.ModDimensions;
 import com.dslovikosky.narnia.common.model.NarniaGlobalData;
+import com.dslovikosky.narnia.common.model.PreTeleportLocation;
 import com.dslovikosky.narnia.common.model.scene.Chapter;
 import com.dslovikosky.narnia.common.model.scene.GoalTickResult;
 import com.dslovikosky.narnia.common.model.scene.Scene;
 import com.dslovikosky.narnia.common.model.scene.SceneState;
 import com.dslovikosky.narnia.common.model.scene.goal.ChapterGoal;
+import com.dslovikosky.narnia.common.utils.TeleportPlayerToPreTeleportPosition;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.portal.DimensionTransition;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.event.tick.LevelTickEvent;
+import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 
 import java.util.Optional;
 
@@ -71,6 +79,30 @@ public class ActiveSceneHandler {
         if (!level.isClientSide() && needsSync) {
             data.markDirty();
             data.syncAll();
+        }
+    }
+
+    @SubscribeEvent
+    public void onPlayerTickEvent(final PlayerTickEvent.Post event) {
+        ensurePlayerNotStrandedInLondon(event.getEntity());
+    }
+
+    private void ensurePlayerNotStrandedInLondon(final Player player) {
+        final Level level = player.level();
+
+        if (level.isClientSide()) {
+            return;
+        }
+
+        if (level.dimension() != ModDimensions.LONDON) {
+            return;
+        }
+
+        final NarniaGlobalData data = NarniaGlobalData.getInstance(level);
+        if (player.isAlive() && (data.getActiveScene() == null || !data.getActiveScene().getPlayerIds().contains(player.getUUID()))) {
+            final PreTeleportLocation preTeleportLocation = player.getData(ModAttachmentTypes.PRE_LONDON_TELEPORT_LOCATION);
+            final ServerLevel preTeleportLevel = level.getServer().getLevel(preTeleportLocation.level());
+            player.changeDimension(new DimensionTransition(preTeleportLevel, player, new TeleportPlayerToPreTeleportPosition(preTeleportLocation)));
         }
     }
 }

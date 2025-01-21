@@ -1,9 +1,8 @@
 {
   "placement": {
-    "type": "minecraft:random_spread",
-    "salt": 27197451,
-    "separation": 6,
-    "spacing": 12
+    "type": "narnia:grid",
+    "x_frequency": 3,
+    "z_frequency": 3
   },
   "structures": [
     {

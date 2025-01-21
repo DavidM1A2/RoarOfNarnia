@@ -7,4 +7,5 @@ import net.minecraft.world.level.dimension.DimensionType;
 
 public class ModDimensionTypes {
     public static final ResourceKey<DimensionType> WOOD_BETWEEN_THE_WORLDS = ResourceKey.create(Registries.DIMENSION_TYPE, ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "wood_between_the_worlds"));
+    public static final ResourceKey<DimensionType> LONDON = ResourceKey.create(Registries.DIMENSION_TYPE, ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "london"));
 }

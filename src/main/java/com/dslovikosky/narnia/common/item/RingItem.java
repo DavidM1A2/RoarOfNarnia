@@ -1,8 +1,9 @@
 package com.dslovikosky.narnia.common.item;
 
 import com.dslovikosky.narnia.common.constants.ModAttachmentTypes;
-import com.dslovikosky.narnia.common.constants.ModLevels;
+import com.dslovikosky.narnia.common.constants.ModDimensions;
 import com.dslovikosky.narnia.common.model.PreTeleportLocation;
+import com.dslovikosky.narnia.common.utils.TeleportPlayerToPreTeleportPosition;
 import com.mojang.logging.LogUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
@@ -43,7 +44,7 @@ public class RingItem extends Item {
     }
 
     private void tickHeldGreenRing(final Level level, final Entity entity) {
-        if (ModLevels.WOOD_BETWEEN_THE_WORLDS == level.dimension()) {
+        if (ModDimensions.WOOD_BETWEEN_THE_WORLDS == level.dimension()) {
             // Push entities in the wood between the worlds down
             if (entity.isInWater() || entity.isUnderWater()) {
                 final double yMovement = entity.getDeltaMovement().y;
@@ -62,15 +63,15 @@ public class RingItem extends Item {
     }
 
     private void tickHeldYellowRing(final Level level, final Entity entity) {
-        if (ModLevels.WOOD_BETWEEN_THE_WORLDS != level.dimension() && !level.isClientSide()) {
+        if (ModDimensions.WOOD_BETWEEN_THE_WORLDS != level.dimension() && !level.isClientSide()) {
             entity.setData(ModAttachmentTypes.PRE_YELLOW_RING_TELEPORT_LOCATION, new PreTeleportLocation(entity.position().x(), entity.position().y(), entity.position().z(), entity.level().dimension()));
-            final ServerLevel woodBetweenTheWorlds = level.getServer().getLevel(ModLevels.WOOD_BETWEEN_THE_WORLDS);
+            final ServerLevel woodBetweenTheWorlds = level.getServer().getLevel(ModDimensions.WOOD_BETWEEN_THE_WORLDS);
             entity.changeDimension(new DimensionTransition(woodBetweenTheWorlds, entity, new TeleportPlayerToBottomOfCenterPool(woodBetweenTheWorlds)));
             return;
         }
 
         // Push entities in the wood between the worlds up
-        if (ModLevels.WOOD_BETWEEN_THE_WORLDS == level.dimension()) {
+        if (ModDimensions.WOOD_BETWEEN_THE_WORLDS == level.dimension()) {
             if (entity.isInWater() || entity.isUnderWater()) {
                 final double yMovement = entity.getDeltaMovement().y;
                 if (yMovement < 0.5) {
@@ -82,17 +83,6 @@ public class RingItem extends Item {
 
     public enum Type {
         YELLOW, GREEN
-    }
-
-    private record TeleportPlayerToPreTeleportPosition(PreTeleportLocation preTeleportLocation) implements DimensionTransition.PostDimensionTransition {
-        @Override
-        public void onTransition(final Entity entity) {
-            if (entity instanceof ServerPlayer) {
-                ((ServerPlayer) entity).connection.teleport(preTeleportLocation.posX(), preTeleportLocation.posY(), preTeleportLocation.posZ(), 0f, 0f);
-            } else {
-                entity.setPos(preTeleportLocation.posX(), preTeleportLocation.posY(), preTeleportLocation.posZ());
-            }
-        }
     }
 
     private record TeleportPlayerToBottomOfCenterPool(ServerLevel level) implements DimensionTransition.PostDimensionTransition {

@@ -55,8 +55,8 @@ public class Chapter {
         return false;
     }
 
-    public void leave(final Scene scene, final Player player) {
-        scene.getPlayerIds().remove(player.getUUID());
+    public boolean leave(final Scene scene, final Player player) {
+        return scene.getPlayerIds().remove(player.getUUID());
     }
 
     public List<Player> getPlayers(final Scene scene, final Level level) {

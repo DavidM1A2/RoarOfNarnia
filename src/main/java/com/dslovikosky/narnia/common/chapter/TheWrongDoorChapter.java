@@ -3,15 +3,27 @@ package com.dslovikosky.narnia.common.chapter;
 import com.dslovikosky.narnia.common.chapter.goal.ActorMoveAtUncleAndrewsHouseGoal;
 import com.dslovikosky.narnia.common.chapter.goal.InstantiateAtUncleAndrewsHouseGoal;
 import com.dslovikosky.narnia.common.chapter.goal.LocateUncleAndrewsHouseGoal;
+import com.dslovikosky.narnia.common.constants.ModAttachmentTypes;
 import com.dslovikosky.narnia.common.constants.ModBooks;
+import com.dslovikosky.narnia.common.constants.ModDimensions;
+import com.dslovikosky.narnia.common.model.PreTeleportLocation;
 import com.dslovikosky.narnia.common.model.scene.Chapter;
+import com.dslovikosky.narnia.common.model.scene.Scene;
 import com.dslovikosky.narnia.common.model.scene.goal.ChatLine;
 import com.dslovikosky.narnia.common.model.scene.goal.ConversationChapterGoal;
 import com.dslovikosky.narnia.common.model.scene.goal.ParallelChapterGoal;
+import com.dslovikosky.narnia.common.utils.TeleportPlayerToPreTeleportPosition;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.portal.DimensionTransition;
 import net.minecraft.world.phys.Vec3;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 
 import static com.dslovikosky.narnia.common.constants.ModCharacters.DIGORY;
@@ -70,5 +82,46 @@ public class TheWrongDoorChapter extends Chapter {
         addGoal(new ConversationChapterGoal(Component.literal("Digory meets Polly"),
                 ChatLine.between(DIGORY, POLLY, Component.literal("Well he's either mad, or there's some other mystery. He has a study on the top floor and Aunt Letty says I must never go up there. Well, that looks fishy to begin with. And then there's another thing. Whenever he tries to say anything to me at meal times — he never even tries to talk to her — she always shuts him up. She says, 'Don't worry the boy, Andrew', or, 'I'm sure Digory doesn't want to hear about that', or else, 'Now, Digory, wouldn't you like to go out and play in the garden?'"))
         ));
+    }
+
+    @Override
+    public boolean join(Scene scene, Player player) {
+        final boolean joined = super.join(scene, player);
+        if (joined) {
+            final Level level = player.level();
+            if (!level.isClientSide()) {
+                player.setData(ModAttachmentTypes.PRE_LONDON_TELEPORT_LOCATION, new PreTeleportLocation(player.position().x(), player.position().y(), player.position().z(), player.level().dimension()));
+                final ServerLevel london = level.getServer().getLevel(ModDimensions.LONDON);
+                player.changeDimension(new DimensionTransition(london, player, new TeleportPlayerToUncleAndrewsHouse(london)));
+            }
+        }
+        return joined;
+    }
+
+    @Override
+    public boolean leave(Scene scene, Player player) {
+        final boolean left = super.leave(scene, player);
+        if (left) {
+            final Level level = player.level();
+            if (!level.isClientSide()) {
+                final PreTeleportLocation preTeleportLocation = player.getData(ModAttachmentTypes.PRE_LONDON_TELEPORT_LOCATION);
+                final ServerLevel preTeleportLevel = level.getServer().getLevel(preTeleportLocation.level());
+                player.changeDimension(new DimensionTransition(preTeleportLevel, player, new TeleportPlayerToPreTeleportPosition(preTeleportLocation)));
+            }
+        }
+        return left;
+    }
+
+    @ParametersAreNonnullByDefault
+    private record TeleportPlayerToUncleAndrewsHouse(ServerLevel level) implements DimensionTransition.PostDimensionTransition {
+        @Override
+        public void onTransition(final Entity entity) {
+            final Vec3 playerSpawnSpot = new Vec3(17.5, 66, 2.5);
+            if (entity instanceof ServerPlayer) {
+                ((ServerPlayer) entity).connection.teleport(playerSpawnSpot.x(), playerSpawnSpot.y(), playerSpawnSpot.z(), 0f, 0f);
+            } else {
+                entity.setPos(playerSpawnSpot);
+            }
+        }
     }
 }
