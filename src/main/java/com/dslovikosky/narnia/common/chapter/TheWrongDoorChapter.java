@@ -1,16 +1,16 @@
 package com.dslovikosky.narnia.common.chapter;
 
-import com.dslovikosky.narnia.common.chapter.goal.ActorMoveAtUncleAndrewsHouseGoal;
-import com.dslovikosky.narnia.common.chapter.goal.InstantiateAtUncleAndrewsHouseGoal;
-import com.dslovikosky.narnia.common.chapter.goal.LocateUncleAndrewsHouseGoal;
+import com.dslovikosky.narnia.common.chapter.goal.WalkToUncleAndrewsHouseGoal;
 import com.dslovikosky.narnia.common.constants.ModAttachmentTypes;
 import com.dslovikosky.narnia.common.constants.ModBooks;
 import com.dslovikosky.narnia.common.constants.ModDimensions;
 import com.dslovikosky.narnia.common.model.PreTeleportLocation;
 import com.dslovikosky.narnia.common.model.scene.Chapter;
 import com.dslovikosky.narnia.common.model.scene.Scene;
+import com.dslovikosky.narnia.common.model.scene.goal.ActorMoveChapterGoal;
 import com.dslovikosky.narnia.common.model.scene.goal.ChatLine;
 import com.dslovikosky.narnia.common.model.scene.goal.ConversationChapterGoal;
+import com.dslovikosky.narnia.common.model.scene.goal.InstantiateActorChapterGoal;
 import com.dslovikosky.narnia.common.model.scene.goal.ParallelChapterGoal;
 import com.dslovikosky.narnia.common.utils.TeleportPlayerToPreTeleportPosition;
 import net.minecraft.network.chat.Component;
@@ -32,10 +32,10 @@ import static com.dslovikosky.narnia.common.constants.ModCharacters.POLLY;
 public class TheWrongDoorChapter extends Chapter {
     public TheWrongDoorChapter(final ResourceLocation id) {
         super(id, ModBooks.THE_MAGICIANS_NEPHEW, List.of(DIGORY, POLLY));
-        addGoal(new LocateUncleAndrewsHouseGoal());
-        addGoal(new InstantiateAtUncleAndrewsHouseGoal(DIGORY, new Vec3(10, 1, 20), Vec3.directionFromRotation(0f, 270f)));
-        addGoal(new InstantiateAtUncleAndrewsHouseGoal(POLLY, new Vec3(16, 1, 20), Vec3.directionFromRotation(0f, 90f)));
-        addGoal(new ConversationChapterGoal(Component.literal("Digory meets Polly"),
+        addGoal(new WalkToUncleAndrewsHouseGoal());
+        addGoal(new InstantiateActorChapterGoal(ModDimensions.LONDON, DIGORY, new Vec3(10, 65.5, 15), Vec3.directionFromRotation(0f, 270f)));
+        addGoal(new InstantiateActorChapterGoal(ModDimensions.LONDON, POLLY, new Vec3(16, 65.5, 15), Vec3.directionFromRotation(0f, 90f)));
+        addGoal(new ConversationChapterGoal(ModDimensions.LONDON, Component.literal("Digory meets Polly"),
                 ChatLine.between(POLLY, DIGORY, Component.literal("Hullo")),
                 ChatLine.between(DIGORY, POLLY, Component.literal("Hullo")),
                 ChatLine.between(DIGORY, POLLY, Component.literal("What's your name?")),
@@ -43,8 +43,8 @@ public class TheWrongDoorChapter extends Chapter {
                 ChatLine.between(POLLY, DIGORY, Component.literal("What's yours?")),
                 ChatLine.between(DIGORY, POLLY, Component.literal("Digory"))
         ));
-        addGoal(new ActorMoveAtUncleAndrewsHouseGoal(DIGORY, new Vec3(15, 1, 20)));
-        addGoal(new ConversationChapterGoal(Component.literal("Digory meets Polly"),
+        addGoal(new ActorMoveChapterGoal(ModDimensions.LONDON, DIGORY, new Vec3(15, 65, 15)));
+        addGoal(new ConversationChapterGoal(ModDimensions.LONDON, Component.literal("Digory meets Polly"),
                 ChatLine.between(POLLY, DIGORY, Component.literal("I say, what a funny name!")),
                 ChatLine.between(DIGORY, POLLY, Component.literal("It isn't half so funny as Polly")),
                 ChatLine.between(POLLY, DIGORY, Component.literal("Yes it is")),
@@ -60,10 +60,10 @@ public class TheWrongDoorChapter extends Chapter {
                 ChatLine.between(POLLY, DIGORY, Component.literal("I didn't know. I'm sorry"))
         ));
         addGoal(new ParallelChapterGoal(
-                new ActorMoveAtUncleAndrewsHouseGoal(DIGORY, new Vec3(18, 1, 22)),
-                new ActorMoveAtUncleAndrewsHouseGoal(POLLY, new Vec3(19, 1, 21))
+                new ActorMoveChapterGoal(ModDimensions.LONDON, DIGORY, new Vec3(18, 65, 15)),
+                new ActorMoveChapterGoal(ModDimensions.LONDON, POLLY, new Vec3(19, 65, 13))
         ));
-        addGoal(new ConversationChapterGoal(Component.literal("Digory meets Polly"),
+        addGoal(new ConversationChapterGoal(ModDimensions.LONDON, Component.literal("Digory meets Polly"),
                 ChatLine.between(POLLY, DIGORY, Component.literal("Is Mr Ketterley really mad?")),
                 ChatLine.between(DIGORY, POLLY, Component.literal("Well he's either mad, or there's some other mystery. He has a study on the top floor and Aunt Letty says I must never go up there. Well, that looks fishy to begin with. And then there's another thing. Whenever he tries to say anything to me at meal times — he never even tries to talk to her — she always shuts him up. She says, 'Don't worry the boy, Andrew', or, 'I'm sure Digory doesn't want to hear about that', or else, 'Now, Digory, wouldn't you like to go out and play in the garden?'")),
                 ChatLine.between(POLLY, DIGORY, Component.literal("What sort of things does he try to say?")),
@@ -76,10 +76,10 @@ public class TheWrongDoorChapter extends Chapter {
                 ChatLine.between(DIGORY, POLLY, Component.literal("You may think it interesting, But you wouldn't like it if you had to sleep there. How would you like to lie awake listening for Uncle Andrew's step to come creeping along the passage to your room? And he has such awful eyes"))
         ));
         addGoal(new ParallelChapterGoal(
-                new ActorMoveAtUncleAndrewsHouseGoal(DIGORY, new Vec3(18, 1, 11)),
-                new ActorMoveAtUncleAndrewsHouseGoal(POLLY, new Vec3(19, 1, 12))
+                new ActorMoveChapterGoal(ModDimensions.LONDON, DIGORY, new Vec3(18, 65, 24)),
+                new ActorMoveChapterGoal(ModDimensions.LONDON, POLLY, new Vec3(19, 65, 26))
         ));
-        addGoal(new ConversationChapterGoal(Component.literal("Digory meets Polly"),
+        addGoal(new ConversationChapterGoal(ModDimensions.LONDON, Component.literal("Digory meets Polly"),
                 ChatLine.between(DIGORY, POLLY, Component.literal("Well he's either mad, or there's some other mystery. He has a study on the top floor and Aunt Letty says I must never go up there. Well, that looks fishy to begin with. And then there's another thing. Whenever he tries to say anything to me at meal times — he never even tries to talk to her — she always shuts him up. She says, 'Don't worry the boy, Andrew', or, 'I'm sure Digory doesn't want to hear about that', or else, 'Now, Digory, wouldn't you like to go out and play in the garden?'"))
         ));
     }
@@ -116,7 +116,7 @@ public class TheWrongDoorChapter extends Chapter {
     private record TeleportPlayerToUncleAndrewsHouse(ServerLevel level) implements DimensionTransition.PostDimensionTransition {
         @Override
         public void onTransition(final Entity entity) {
-            final Vec3 playerSpawnSpot = new Vec3(17.5, 66, 2.5);
+            final Vec3 playerSpawnSpot = new Vec3(2.5, 65, 2.5);
             if (entity instanceof ServerPlayer) {
                 ((ServerPlayer) entity).connection.teleport(playerSpawnSpot.x(), playerSpawnSpot.y(), playerSpawnSpot.z(), 0f, 0f);
             } else {

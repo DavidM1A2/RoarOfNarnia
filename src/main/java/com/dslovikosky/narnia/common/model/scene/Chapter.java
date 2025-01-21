@@ -41,6 +41,7 @@ public class Chapter {
     }
 
     public void stop(final Scene scene, final Level level, final boolean isComplete) {
+        getPlayers(scene, level).forEach(player -> leave(scene, player));
     }
 
     public void tick(final Scene scene, final Level level) {

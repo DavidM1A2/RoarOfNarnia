@@ -1,8 +1,8 @@
 {
   "placement": {
     "type": "narnia:grid",
-    "x_frequency": 3,
-    "z_frequency": 3
+    "x_frequency": 32,
+    "z_frequency": 32
   },
   "structures": [
     {

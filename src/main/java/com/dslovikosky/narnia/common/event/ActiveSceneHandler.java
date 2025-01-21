@@ -15,8 +15,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.portal.DimensionTransition;
 import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.tick.LevelTickEvent;
-import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 
 import java.util.Optional;
 
@@ -53,7 +53,7 @@ public class ActiveSceneHandler {
                     needsSync = true;
                 }
             } else {
-                chapter.stop(activeScene, level, false);
+                chapter.stop(activeScene, level, true);
                 activeScene.setState(SceneState.FINISHED);
                 data.setActiveScene(null);
                 needsSync = true;
@@ -83,7 +83,7 @@ public class ActiveSceneHandler {
     }
 
     @SubscribeEvent
-    public void onPlayerTickEvent(final PlayerTickEvent.Post event) {
+    public void onPlayerTickEvent(final PlayerEvent.PlayerLoggedInEvent event) {
         ensurePlayerNotStrandedInLondon(event.getEntity());
     }
 
