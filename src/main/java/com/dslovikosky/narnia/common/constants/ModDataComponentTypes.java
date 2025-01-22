@@ -1,6 +1,6 @@
 package com.dslovikosky.narnia.common.constants;
 
-import com.dslovikosky.narnia.common.model.ChapterGoalStatus;
+import com.dslovikosky.narnia.common.model.scene.goal.ChapterGoalStatus;
 import com.mojang.serialization.Codec;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.network.codec.ByteBufCodecs;

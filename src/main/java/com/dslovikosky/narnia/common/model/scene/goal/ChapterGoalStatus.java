@@ -1,4 +1,4 @@
-package com.dslovikosky.narnia.common.model;
+package com.dslovikosky.narnia.common.model.scene.goal;
 
 import com.mojang.serialization.Codec;
 import io.netty.buffer.ByteBuf;

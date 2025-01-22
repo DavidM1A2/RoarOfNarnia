@@ -1,7 +1,6 @@
 package com.dslovikosky.narnia.common.model.scene.goal;
 
 import com.dslovikosky.narnia.common.constants.ModDataComponentTypes;
-import com.dslovikosky.narnia.common.model.ChapterGoalStatus;
 import com.dslovikosky.narnia.common.model.scene.GoalTickResult;
 import com.dslovikosky.narnia.common.model.scene.Scene;
 import net.minecraft.core.component.DataComponentMap;
