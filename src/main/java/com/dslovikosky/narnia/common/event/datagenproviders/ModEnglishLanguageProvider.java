@@ -25,6 +25,8 @@ public class ModEnglishLanguageProvider extends LanguageProvider {
         addItem(ModItems.WORLD_WOOD_SIGN, "World Wood Sign");
         addItem(ModItems.WORLD_WOOD_HANGING_SIGN, "World Wood Hanging Sign");
 
+        addBlock(ModBlocks.POSITIONAL_MARKER, "Positional Marker");
+
         addBlock(ModBlocks.WORLD_WOOD, "World Wood");
         addBlock(ModBlocks.WORLD_WOOD_LOG, "World Wood Log");
         addBlock(ModBlocks.STRIPPED_WORLD_WOOD, "Stripped World Wood");

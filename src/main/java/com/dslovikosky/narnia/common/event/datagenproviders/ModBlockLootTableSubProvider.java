@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.Set;
 
 public class ModBlockLootTableSubProvider extends BlockLootSubProvider {
+    private final Set<Block> blocksWithoutDrops = Set.of(ModBlocks.POSITIONAL_MARKER.get());
     private final Map<LeavesBlock, Block> leafToSapling = new HashMap<>();
 
     protected ModBlockLootTableSubProvider(final HolderLookup.Provider lookupProvider) {
@@ -31,14 +32,16 @@ public class ModBlockLootTableSubProvider extends BlockLootSubProvider {
     @Override
     protected void generate() {
         ModBlocks.BLOCKS.getEntries().stream().map(DeferredHolder::get).forEach(block -> {
-            if (block instanceof DoorBlock) {
-                add(block, createDoorTable(block));
-            } else if (block instanceof LeavesBlock) {
-                add(block, createLeavesDrops(block, leafToSapling.get(block), NORMAL_LEAVES_SAPLING_CHANCES));
-            } else if (block instanceof SlabBlock) {
-                add(block, createSlabItemTable(block));
-            } else {
-                dropSelf(block);
+            if (!blocksWithoutDrops.contains(block)) {
+                if (block instanceof DoorBlock) {
+                    add(block, createDoorTable(block));
+                } else if (block instanceof LeavesBlock) {
+                    add(block, createLeavesDrops(block, leafToSapling.get(block), NORMAL_LEAVES_SAPLING_CHANCES));
+                } else if (block instanceof SlabBlock) {
+                    add(block, createSlabItemTable(block));
+                } else {
+                    dropSelf(block);
+                }
             }
         });
     }
