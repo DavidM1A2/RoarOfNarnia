@@ -1,9 +1,11 @@
 package com.dslovikosky.narnia.common.entity.human_child;
 
+import javax.annotation.Nonnull;
+import java.util.Optional;
 import java.util.UUID;
 
 public interface SceneEntity {
-    UUID getSceneId();
+    Optional<UUID> getSceneId();
 
-    void setSceneId(UUID sceneId);
+    void setSceneId(@Nonnull UUID sceneId);
 }

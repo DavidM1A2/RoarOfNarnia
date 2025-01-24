@@ -31,6 +31,7 @@ public class Scene implements MutableDataComponentHolder {
             UUIDUtil.STREAM_CODEC.apply(ByteBufCodecs.list()), Scene::getPlayerIds,
             DataComponentPatch.STREAM_CODEC, chapterInstance -> chapterInstance.components.asPatch(),
             UUIDUtil.STREAM_CODEC, Scene::getId,
+            Setting.STREAM_CODEC, Scene::getSetting,
             ByteBufCodecs.STRING_UTF8.map(SceneState::valueOf, SceneState::toString), Scene::getState,
             ByteBufCodecs.INT, Scene::getGoalIndex,
             Scene::new);
@@ -40,6 +41,7 @@ public class Scene implements MutableDataComponentHolder {
             Codec.list(UUIDUtil.CODEC).fieldOf("player_ids").forGetter(Scene::getPlayerIds),
             DataComponentPatch.CODEC.fieldOf("components").forGetter(chapterInstance -> chapterInstance.components.asPatch()),
             UUIDUtil.CODEC.fieldOf("id").forGetter(Scene::getId),
+            Setting.CODEC.fieldOf("setting").forGetter(Scene::getSetting),
             Codec.STRING.fieldOf("state").xmap(SceneState::valueOf, SceneState::toString).forGetter(Scene::getState),
             Codec.INT.fieldOf("goal_index").forGetter(Scene::getGoalIndex)
     ).apply(instance, Scene::new)));
@@ -49,6 +51,7 @@ public class Scene implements MutableDataComponentHolder {
     private final List<UUID> playerIds;
     private final PatchedDataComponentMap components;
     private final UUID id;
+    private final Setting setting;
     private SceneState state;
     private int goalIndex;
 
@@ -58,16 +61,18 @@ public class Scene implements MutableDataComponentHolder {
         this.playerIds = new ArrayList<>();
         this.components = new PatchedDataComponentMap(buildComponentMap(chapter));
         this.id = UUID.randomUUID();
+        this.setting = new Setting(chapter.getStartingDimension(), chapter.getStartingSpawnPosition());
         this.state = SceneState.NEW;
         this.goalIndex = 0;
     }
 
-    private Scene(final Chapter chapter, final List<Actor> actors, final List<UUID> playerIds, final DataComponentPatch components, final UUID id, final SceneState state, final int goalIndex) {
+    private Scene(final Chapter chapter, final List<Actor> actors, final List<UUID> playerIds, final DataComponentPatch components, final UUID id, final Setting setting, final SceneState state, final int goalIndex) {
         this.chapter = chapter;
         this.actors = actors.stream().collect(Collectors.toMap(Actor::getCharacter, Function.identity()));
         this.playerIds = new ArrayList<>(playerIds);
         this.components = PatchedDataComponentMap.fromPatch(buildComponentMap(chapter), components);
         this.id = id;
+        this.setting = setting;
         this.state = state;
         this.goalIndex = goalIndex;
     }
@@ -86,6 +91,10 @@ public class Scene implements MutableDataComponentHolder {
 
     public UUID getId() {
         return id;
+    }
+
+    public Setting getSetting() {
+        return setting;
     }
 
     public int getGoalIndex() {

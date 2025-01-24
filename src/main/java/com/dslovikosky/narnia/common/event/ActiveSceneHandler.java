@@ -36,6 +36,10 @@ public class ActiveSceneHandler {
         final Chapter chapter = activeScene.getChapter();
         final SceneState state = activeScene.getState();
 
+        if (activeScene.getSetting().dimension() != level.dimension()) {
+            return;
+        }
+
         boolean needsSync = false;
 
         if (state == SceneState.NEW) {

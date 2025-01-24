@@ -4,6 +4,10 @@ import com.dslovikosky.narnia.common.model.NarniaGlobalData;
 import com.dslovikosky.narnia.common.model.scene.Actor;
 import com.dslovikosky.narnia.common.model.scene.Scene;
 import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.entity.AnimationState;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -17,19 +21,27 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
+import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Collections;
+import java.util.Optional;
 import java.util.UUID;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 public class HumanChildEntity extends Mob implements SceneEntity {
+    private static final EntityDataAccessor<Optional<UUID>> SCENE_ID = SynchedEntityData.defineId(HumanChildEntity.class, EntityDataSerializers.OPTIONAL_UUID);
+
     private final AnimationState idleAnimationState = new AnimationState();
     private final AnimationState talkAnimationState = new AnimationState();
-    private UUID sceneId;
 
     public HumanChildEntity(final EntityType<? extends Mob> entityType, final Level level) {
         super(entityType, level);
+        final GroundPathNavigation groundNavigation = (GroundPathNavigation) this.getNavigation();
+        groundNavigation.setCanOpenDoors(true);
+        groundNavigation.setCanPassDoors(true);
+        // No despawning!
+        setPersistenceRequired();
     }
 
     public static AttributeSupplier.Builder createAttributes() {
@@ -40,21 +52,24 @@ public class HumanChildEntity extends Mob implements SceneEntity {
     }
 
     @Override
+    protected void defineSynchedData(SynchedEntityData.Builder pBuilder) {
+        super.defineSynchedData(pBuilder);
+        pBuilder.define(SCENE_ID, Optional.empty());
+    }
+
+    @Override
     public void tick() {
         super.tick();
 
         if (!level().isClientSide()) {
             final Scene activeScene = NarniaGlobalData.getInstance(level()).getActiveScene();
-            if (activeScene == null || !activeScene.getId().equals(sceneId)) {
+            if (activeScene == null || !activeScene.getId().equals(getSceneId().orElse(null))) {
                 remove(RemovalReason.DISCARDED);
                 return;
             }
             final Actor actor = activeScene.getChapter().getActor(activeScene, this);
             final Vec3 targetPosition = actor.getTargetPosition();
-            final GroundPathNavigation groundNavigation = (GroundPathNavigation) this.getNavigation();
-            groundNavigation.setCanOpenDoors(true);
-            groundNavigation.setCanPassDoors(true);
-            groundNavigation.moveTo(targetPosition.x, targetPosition.y, targetPosition.z, 0.35);
+            getNavigation().moveTo(targetPosition.x, targetPosition.y, targetPosition.z, 0.35);
         }
 
         if (level().isClientSide()) {
@@ -78,13 +93,13 @@ public class HumanChildEntity extends Mob implements SceneEntity {
     }
 
     @Override
-    public UUID getSceneId() {
-        return sceneId;
+    public Optional<UUID> getSceneId() {
+        return getEntityData().get(HumanChildEntity.SCENE_ID);
     }
 
     @Override
-    public void setSceneId(UUID sceneId) {
-        this.sceneId = sceneId;
+    public void setSceneId(@Nonnull UUID sceneId) {
+        getEntityData().set(HumanChildEntity.SCENE_ID, Optional.of(sceneId));
     }
 
     @Override
@@ -109,5 +124,19 @@ public class HumanChildEntity extends Mob implements SceneEntity {
     @Override
     public boolean mayBeLeashed() {
         return false;
+    }
+
+    @Override
+    public void addAdditionalSaveData(CompoundTag pCompound) {
+        super.addAdditionalSaveData(pCompound);
+        getSceneId().ifPresent(sceneId -> pCompound.putUUID("scene_id", sceneId));
+    }
+
+    @Override
+    public void readAdditionalSaveData(CompoundTag pCompound) {
+        super.readAdditionalSaveData(pCompound);
+        if (pCompound.contains("scene_id")) {
+            setSceneId(pCompound.getUUID("scene_id"));
+        }
     }
 }

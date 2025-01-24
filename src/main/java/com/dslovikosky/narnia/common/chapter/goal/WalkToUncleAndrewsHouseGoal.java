@@ -1,6 +1,5 @@
 package com.dslovikosky.narnia.common.chapter.goal;
 
-import com.dslovikosky.narnia.common.constants.ModDimensions;
 import com.dslovikosky.narnia.common.constants.ModSchematics;
 import com.dslovikosky.narnia.common.model.scene.GoalTickResult;
 import com.dslovikosky.narnia.common.model.scene.Scene;
@@ -15,16 +14,7 @@ import java.util.List;
 
 public class WalkToUncleAndrewsHouseGoal extends BackgroundChapterGoal {
     @Override
-    public boolean start(final Scene scene, final Level level) {
-        return level.dimension() == ModDimensions.LONDON;
-    }
-
-    @Override
     public GoalTickResult tick(final Scene scene, final Level level) {
-        if (level.dimension() != ModDimensions.LONDON) {
-            return GoalTickResult.CONTINUE;
-        }
-
         final List<Player> players = scene.getChapter().getPlayers(scene, level);
 
         if (players.isEmpty()) {

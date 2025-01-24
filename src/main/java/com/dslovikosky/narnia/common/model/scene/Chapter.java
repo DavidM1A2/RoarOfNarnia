@@ -3,10 +3,12 @@ package com.dslovikosky.narnia.common.model.scene;
 import com.dslovikosky.narnia.common.model.scene.goal.ChapterGoal;
 import com.google.common.base.Suppliers;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
 import java.util.ArrayList;
@@ -21,12 +23,16 @@ public class Chapter {
     private final Supplier<Book> book;
     private final Supplier<List<Character>> characters;
     private final List<ChapterGoal> goals;
+    private final ResourceKey<Level> startingDimension;
+    private final Vec3 startingSpawnPosition;
 
-    public Chapter(final ResourceLocation id, final DeferredHolder<Book, ? extends Book> book, final List<DeferredHolder<Character, ? extends Character>> characters) {
+    public Chapter(final ResourceLocation id, final DeferredHolder<Book, ? extends Book> book, final List<DeferredHolder<Character, ? extends Character>> characters, final ResourceKey<Level> startingDimension, final Vec3 startingSpawnPosition) {
         this.id = id;
         this.book = book::get;
         this.characters = Suppliers.memoize(() -> characters.stream().map(DeferredHolder::get).map(Character.class::cast).toList());
         this.goals = new ArrayList<>();
+        this.startingDimension = startingDimension;
+        this.startingSpawnPosition = startingSpawnPosition;
     }
 
     public void addGoal(final ChapterGoal goal) {
@@ -100,6 +106,14 @@ public class Chapter {
         return goals;
     }
 
+    public ResourceKey<Level> getStartingDimension() {
+        return startingDimension;
+    }
+
+    public Vec3 getStartingSpawnPosition() {
+        return startingSpawnPosition;
+    }
+
     @Override
     public String toString() {
         return "Chapter{" +
@@ -107,6 +121,8 @@ public class Chapter {
                 ", book=" + book +
                 ", characters=" + characters +
                 ", goals=" + goals +
+                ", startingDimension=" + startingDimension +
+                ", startingSpawnPosition=" + startingSpawnPosition +
                 '}';
     }
 }

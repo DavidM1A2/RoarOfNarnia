@@ -25,7 +25,7 @@ public class ParallelChapterGoal extends ChapterGoal {
             scene.set(ModDataComponentTypes.CHAPTER_GOAL_STATUS_LIST, Arrays.stream(goals)
                     .map(goal -> ChapterGoalStatus.NEW).collect(Collectors.toCollection(ArrayList::new)));
         }
-        final List<ChapterGoalStatus> statuses = scene.get(ModDataComponentTypes.CHAPTER_GOAL_STATUS_LIST);
+        final List<ChapterGoalStatus> statuses = new ArrayList<>(scene.get(ModDataComponentTypes.CHAPTER_GOAL_STATUS_LIST));
         for (int i = 0; i < goals.length; i++) {
             final ChapterGoalStatus chapterGoalStatus = statuses.get(i);
             if (chapterGoalStatus == ChapterGoalStatus.NEW) {
@@ -42,7 +42,7 @@ public class ParallelChapterGoal extends ChapterGoal {
     @Override
     public GoalTickResult tick(Scene scene, Level level) {
         boolean sync = false;
-        final List<ChapterGoalStatus> statuses = scene.get(ModDataComponentTypes.CHAPTER_GOAL_STATUS_LIST);
+        final List<ChapterGoalStatus> statuses = new ArrayList<>(scene.get(ModDataComponentTypes.CHAPTER_GOAL_STATUS_LIST));
         for (int i = 0; i < goals.length; i++) {
             ChapterGoal goal = goals[i];
             final ChapterGoalStatus chapterGoalStatus = statuses.get(i);

@@ -8,20 +8,17 @@ import com.dslovikosky.narnia.common.model.scene.Scene;
 import net.minecraft.commands.arguments.EntityAnchorArgument;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.Level;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class ConversationChapterGoal extends ChapterGoal {
-    private final ResourceKey<Level> dimension;
     private final Component description;
     private final Map<Long, ChatLine> elapsedTimeToChatLine;
     private final long durationTicks;
 
-    public ConversationChapterGoal(final ResourceKey<Level> dimension, final Component description, final ChatLine... chatLines) {
-        this.dimension = dimension;
+    public ConversationChapterGoal(final Component description, final ChatLine... chatLines) {
         this.description = description;
         this.elapsedTimeToChatLine = new HashMap<>();
         long ticksElapsed = 1;
@@ -34,20 +31,12 @@ public class ConversationChapterGoal extends ChapterGoal {
 
     @Override
     public boolean start(Scene scene, Level level) {
-        if (level.dimension() != dimension) {
-            return false;
-        }
-
         scene.set(ModDataComponentTypes.CONVERSATION_START_TIME, level.getGameTime());
         return true;
     }
 
     @Override
     public GoalTickResult tick(Scene scene, Level level) {
-        if (level.dimension() != dimension) {
-            return GoalTickResult.CONTINUE;
-        }
-
         final long conversationStartTime = scene.getOrDefault(ModDataComponentTypes.CONVERSATION_START_TIME, 0L);
         final long elapsedTime = level.getGameTime() - conversationStartTime;
 
@@ -74,10 +63,6 @@ public class ConversationChapterGoal extends ChapterGoal {
 
     @Override
     public void finish(Scene scene, Level level) {
-        if (level.dimension() != dimension) {
-            return;
-        }
-
         scene.remove(ModDataComponentTypes.CONVERSATION_START_TIME);
     }
 
