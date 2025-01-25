@@ -40,6 +40,10 @@ public class ActiveSceneHandler {
             return;
         }
 
+        if (activeScene.getPlayerIds().isEmpty()) {
+            return;
+        }
+
         boolean needsSync = false;
 
         if (state == SceneState.NEW) {
