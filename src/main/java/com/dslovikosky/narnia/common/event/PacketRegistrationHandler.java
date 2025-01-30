@@ -4,6 +4,8 @@ import com.dslovikosky.narnia.common.network.packet.JoinScenePacket;
 import com.dslovikosky.narnia.common.network.packet.JoinScenePacketHandler;
 import com.dslovikosky.narnia.common.network.packet.LeaveScenePacket;
 import com.dslovikosky.narnia.common.network.packet.LeaveScenePacketHandler;
+import com.dslovikosky.narnia.common.network.packet.SetPositionalMarkerDataPacket;
+import com.dslovikosky.narnia.common.network.packet.SetPositionalMarkerDataPacketHandler;
 import com.dslovikosky.narnia.common.network.packet.StartScenePacket;
 import com.dslovikosky.narnia.common.network.packet.StartScenePacketHandler;
 import com.dslovikosky.narnia.common.network.packet.StopScenePacket;
@@ -23,5 +25,6 @@ public class PacketRegistrationHandler {
         registrar.playToServer(StopScenePacket.TYPE, StopScenePacket.STREAM_CODEC, new StopScenePacketHandler());
         registrar.playToServer(JoinScenePacket.TYPE, JoinScenePacket.STREAM_CODEC, new JoinScenePacketHandler());
         registrar.playToServer(LeaveScenePacket.TYPE, LeaveScenePacket.STREAM_CODEC, new LeaveScenePacketHandler());
+        registrar.playToServer(SetPositionalMarkerDataPacket.TYPE, SetPositionalMarkerDataPacket.STREAM_CODEC, new SetPositionalMarkerDataPacketHandler());
     }
 }

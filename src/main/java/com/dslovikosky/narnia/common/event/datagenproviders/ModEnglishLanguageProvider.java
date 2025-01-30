@@ -62,6 +62,8 @@ public class ModEnglishLanguageProvider extends LanguageProvider {
         add("gui.narnia.book.join_scene", "Join Scene");
         add("gui.narnia.book.leave_scene", "Leave Scene");
 
+        add("screen.narnia.edit_positional_marker", "Edit Positional Marker");
+
         add("sound.narnia.ui.page_turn", "Page Turn");
     }
 }
