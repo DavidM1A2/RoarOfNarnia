@@ -2,7 +2,6 @@ package com.dslovikosky.narnia.common.block;
 
 import com.dslovikosky.narnia.client.proxy.ClientProxy;
 import com.dslovikosky.narnia.common.block.entity.PositionalMarkerBlockEntity;
-import com.mojang.logging.LogUtils;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionResult;
@@ -16,15 +15,12 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.Nullable;
-import org.slf4j.Logger;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class PositionalMarkerBlock extends Block implements EntityBlock {
-    private static final Logger LOG = LogUtils.getLogger();
-
     public PositionalMarkerBlock() {
         super(BlockBehaviour.Properties.of()
                 .noCollission()

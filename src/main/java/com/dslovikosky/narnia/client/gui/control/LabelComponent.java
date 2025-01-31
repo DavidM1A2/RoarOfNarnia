@@ -12,6 +12,7 @@ public class LabelComponent extends GuiComponentWithEvents {
     private Color textColor = Color.WHITE;
     private TextAlignment textAlignment = TextAlignment.ALIGN_CENTER;
     private TrueTypeFont font;
+    private boolean shortenToFitDimensions = true;
 
     public LabelComponent(final TrueTypeFont font, final String text) {
         this.font = font;
@@ -48,20 +49,24 @@ public class LabelComponent extends GuiComponentWithEvents {
     }
 
     private void computeTextForSize() {
-        // Test if the text will fit into our label based on height
-        if (this.font.getHeight(this.text) > this.getHeight()) {
-            this.fitText = "";
-        } else {
-            // If the height is OK shorten the text until it fits into the label
-            this.fitText = this.text;
-            // Grab the current width of the text
-            var width = this.font.getWidth(this.fitText);
-            // If it's too big remove one character at a time until it isn't
-            while (width > this.getWidth() && this.fitText.length() >= 2) {
-                this.fitText = this.fitText.substring(0, this.fitText.length() - 2);
+        if (shortenToFitDimensions) {
+            // Test if the text will fit into our label based on height
+            if (this.font.getHeight(this.text) > this.getHeight()) {
+                this.fitText = "";
+            } else {
+                // If the height is OK shorten the text until it fits into the label
+                this.fitText = this.text;
                 // Grab the current width of the text
-                width = this.font.getWidth(this.fitText);
+                var width = this.font.getWidth(this.fitText);
+                // If it's too big remove one character at a time until it isn't
+                while (width > this.getWidth() && this.fitText.length() >= 2) {
+                    this.fitText = this.fitText.substring(0, this.fitText.length() - 2);
+                    // Grab the current width of the text
+                    width = this.font.getWidth(this.fitText);
+                }
             }
+        } else {
+            this.fitText = this.text;
         }
     }
 
@@ -98,5 +103,13 @@ public class LabelComponent extends GuiComponentWithEvents {
     public void setFont(final TrueTypeFont font) {
         this.font = font;
         computeTextForSize();
+    }
+
+    public boolean isShortenToFitDimensions() {
+        return shortenToFitDimensions;
+    }
+
+    public void setShortenToFitDimensions(final boolean shortenToFitDimensions) {
+        this.shortenToFitDimensions = shortenToFitDimensions;
     }
 }

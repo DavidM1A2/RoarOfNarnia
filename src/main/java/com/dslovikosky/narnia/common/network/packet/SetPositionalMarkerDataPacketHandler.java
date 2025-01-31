@@ -32,7 +32,7 @@ public class SetPositionalMarkerDataPacketHandler implements IPayloadHandler<Set
                 changed = true;
             }
             if (changed) {
-                level.sendBlockUpdated(blockPos, blockEntity.getBlockState(), blockEntity.getBlockState(), 2);
+                blockEntity.setChanged();
             }
         }
     }

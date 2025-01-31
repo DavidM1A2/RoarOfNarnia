@@ -8,7 +8,7 @@ public class StackPane extends GuiPane {
     @Override
     public void draw(final GuiGraphics guiGraphics) {
         if (scissorsEnabled) {
-            guiGraphics.enableScissor(getX(), getY(), getWidth(), getHeight());
+            guiGraphics.enableScissor(getX(), getY(), getX() + getWidth(), getY() + getHeight());
         }
 
         super.draw(guiGraphics);
