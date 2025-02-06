@@ -4,7 +4,6 @@ import com.dslovikosky.narnia.common.block.entity.PositionalMarkerBlockEntity;
 import com.dslovikosky.narnia.common.constants.ModBlockEntities;
 import com.dslovikosky.narnia.common.constants.ModBlocks;
 import com.dslovikosky.narnia.common.constants.ModRegistries;
-import com.dslovikosky.narnia.common.model.PositionalMarker;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.commands.arguments.blocks.BlockStateParser;
@@ -92,26 +91,28 @@ public class SchematicManager extends SimplePreparableReloadListener<Map<Schemat
         }
 
         // Schematic pre-processing - Extract PositionalMarker data out from the schematic and remove unnecessary TEs
-        final boolean generateMarkerBlocks = true;
-        final List<PositionalMarker> markers = new ArrayList<>();
+        final boolean generateMarkerBlocks = false;
+        final Map<String, Vec3> markers = new HashMap<>();
         if (!generateMarkerBlocks) {
             for (int i = 0; i < blocks.length; i++) {
                 if (blocks[i].getBlock() == ModBlocks.POSITIONAL_MARKER.get()) {
                     blocks[i] = Blocks.AIR.defaultBlockState();
                 }
             }
-            for (int i = 0; i < blockEntities.size(); i++) {
-                final CompoundTag blockEntityTag = blockEntities.getCompound(i);
-                if (blockEntityTag.getString("Id").equals(ModBlockEntities.POSITIONAL_MARKER.getId().toString())) {
-                    final BlockPos basePos = NbtUtils.readBlockPos(blockEntityTag, "Pos").orElse(BlockPos.ZERO);
-                    final CompoundTag data = blockEntityTag.getCompound("Data");
+        }
+        for (int i = 0; i < blockEntities.size(); i++) {
+            final CompoundTag blockEntityTag = blockEntities.getCompound(i);
+            if (blockEntityTag.getString("Id").equals(ModBlockEntities.POSITIONAL_MARKER.getId().toString())) {
+                final BlockPos basePos = NbtUtils.readBlockPos(blockEntityTag, "Pos").orElse(BlockPos.ZERO);
+                final CompoundTag data = blockEntityTag.getCompound("Data");
 
-                    final String name = data.getString(PositionalMarkerBlockEntity.NBT_NAME);
-                    final Vec3 offset = new Vec3(data.getDouble(PositionalMarkerBlockEntity.NBT_OFFSET_X),
-                            data.getDouble(PositionalMarkerBlockEntity.NBT_OFFSET_Y),
-                            data.getDouble(PositionalMarkerBlockEntity.NBT_OFFSET_Z));
-                    markers.add(new PositionalMarker(name, basePos.getBottomCenter().add(offset)));
+                final String name = data.getString(PositionalMarkerBlockEntity.NBT_NAME);
+                final Vec3 offset = new Vec3(data.getDouble(PositionalMarkerBlockEntity.NBT_OFFSET_X),
+                        data.getDouble(PositionalMarkerBlockEntity.NBT_OFFSET_Y),
+                        data.getDouble(PositionalMarkerBlockEntity.NBT_OFFSET_Z));
+                markers.put(name, basePos.getBottomCenter().add(offset));
 
+                if (!generateMarkerBlocks) {
                     blockEntities.remove(i);
                     i--;
                 }

@@ -20,6 +20,8 @@ import net.minecraft.world.entity.ai.navigation.GroundPathNavigation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -31,7 +33,7 @@ import java.util.UUID;
 @ParametersAreNonnullByDefault
 public class HumanChildEntity extends Mob implements SceneEntity {
     private static final EntityDataAccessor<Optional<UUID>> SCENE_ID = SynchedEntityData.defineId(HumanChildEntity.class, EntityDataSerializers.OPTIONAL_UUID);
-
+    private static final Logger LOG = LogManager.getLogger();
     private final AnimationState idleAnimationState = new AnimationState();
     private final AnimationState talkAnimationState = new AnimationState();
 
@@ -68,7 +70,11 @@ public class HumanChildEntity extends Mob implements SceneEntity {
                 return;
             }
             final Actor actor = activeScene.getChapter().getActor(activeScene, this);
-            final Vec3 targetPosition = actor.getTargetPosition();
+            if (actor == null) {
+                LOG.error("Entity was: {}", getUUID());
+                LOG.error("Scene had: {}", activeScene.getActors().values());
+            }
+            final Vec3 targetPosition = new Vec3(actor.getTargetPosition().x(), actor.getTargetPosition().y(), actor.getTargetPosition().z());
             getNavigation().moveTo(targetPosition.x, targetPosition.y, targetPosition.z, 0.35);
         }
 

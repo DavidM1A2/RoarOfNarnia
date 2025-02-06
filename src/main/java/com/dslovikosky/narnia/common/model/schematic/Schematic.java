@@ -1,11 +1,12 @@
 package com.dslovikosky.narnia.common.model.schematic;
 
-import com.dslovikosky.narnia.common.model.PositionalMarker;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 
-import java.util.List;
+import java.util.Collections;
+import java.util.Map;
 
 public class Schematic {
     private final ResourceLocation id;
@@ -49,11 +50,14 @@ public class Schematic {
         return schematicData.entities();
     }
 
-    public List<PositionalMarker> getMarkers() {
+    protected Map<String, Vec3> getMarkers() {
+        if (schematicData == null) {
+            return Collections.emptyMap();
+        }
         return schematicData.markers();
     }
 
-    public void setSchematicData(final SchematicData schematicData) {
+    protected void setSchematicData(final SchematicData schematicData) {
         this.schematicData = schematicData;
     }
 }
