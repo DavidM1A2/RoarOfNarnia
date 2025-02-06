@@ -111,4 +111,9 @@ public class EditPositionalMarkerScreen extends BaseScreen {
         PacketDistributor.sendToServer(new SetPositionalMarkerDataPacket(pos, nameTextField.getText(), offset));
         super.onClose();
     }
+
+    @Override
+    protected boolean inventoryToCloseGuiScreen() {
+        return !nameTextField.isFocused() && !xOffsetField.isFocused() && !yOffsetField.isFocused() && !zOffsetField.isFocused();
+    }
 }

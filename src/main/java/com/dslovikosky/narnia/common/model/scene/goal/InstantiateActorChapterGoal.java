@@ -4,6 +4,7 @@ import com.dslovikosky.narnia.common.model.scene.Actor;
 import com.dslovikosky.narnia.common.model.scene.Chapter;
 import com.dslovikosky.narnia.common.model.scene.Character;
 import com.dslovikosky.narnia.common.model.scene.Scene;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.registries.DeferredHolder;
@@ -25,7 +26,9 @@ public class InstantiateActorChapterGoal extends BackgroundChapterGoal {
         final Actor actor = chapter.getActor(scene, character.get());
         actor.setTargetPosition(position);
         actor.setLookPosition(position.add(direction));
-        actor.setEntity(actor.getCharacter().getOrCreateEntity(scene, actor, level));
+        final LivingEntity entity = actor.getCharacter().getOrCreateEntity(scene, actor, level);
+        actor.setLookPosition(entity.getEyePosition().add(direction));
+        actor.setEntity(entity);
 
         return true;
     }

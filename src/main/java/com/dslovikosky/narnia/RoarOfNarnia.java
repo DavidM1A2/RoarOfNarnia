@@ -12,6 +12,7 @@ import com.dslovikosky.narnia.common.constants.ModDataComponentTypes;
 import com.dslovikosky.narnia.common.constants.ModEntityTypes;
 import com.dslovikosky.narnia.common.constants.ModFeatures;
 import com.dslovikosky.narnia.common.constants.ModItems;
+import com.dslovikosky.narnia.common.constants.ModSchematics;
 import com.dslovikosky.narnia.common.constants.ModSoundEvents;
 import com.dslovikosky.narnia.common.constants.ModStructurePieces;
 import com.dslovikosky.narnia.common.constants.ModStructurePlacementTypes;
@@ -26,6 +27,7 @@ import com.dslovikosky.narnia.common.event.ModColorRegister;
 import com.dslovikosky.narnia.common.event.NarniaGlobalDataHandler;
 import com.dslovikosky.narnia.common.event.PacketRegistrationHandler;
 import com.dslovikosky.narnia.common.event.RegistryRegister;
+import com.dslovikosky.narnia.common.event.SchematicHandler;
 import com.dslovikosky.narnia.common.event.SignBlockRegister;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
@@ -59,6 +61,7 @@ public class RoarOfNarnia {
         ModBooks.BOOKS.register(modBus);
         ModChapters.CHAPTERS.register(modBus);
         ModCharacters.CHARACTERS.register(modBus);
+        ModSchematics.SCHEMATICS.register(modBus);
         ModEntityTypes.ENTITY_TYPES.register(modBus);
         ModStructurePlacementTypes.STRUCTURE_PLACEMENTS.register(modBus);
 
@@ -68,5 +71,6 @@ public class RoarOfNarnia {
         forgeBus.register(new GivePlayerMagiciansNephewHandler());
         forgeBus.register(new NarniaGlobalDataHandler());
         forgeBus.register(new ActiveSceneHandler());
+        forgeBus.register(new SchematicHandler());
     }
 }

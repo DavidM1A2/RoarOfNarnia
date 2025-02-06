@@ -29,7 +29,7 @@ public class UncleAndrewsHouseStructure extends Structure {
         final BlockPos blockPos = new BlockPos(xPos, 64, zPos);
 
         return Optional.of(new GenerationStub(blockPos, builder ->
-                builder.addPiece(new SchematicStructurePiece(blockPos.getX(), blockPos.getY(), blockPos.getZ(), ModSchematics.UNCLE_ANDREWS_HOUSE, Direction.NORTH))));
+                builder.addPiece(new SchematicStructurePiece(blockPos.getX(), blockPos.getY(), blockPos.getZ(), ModSchematics.UNCLE_ANDREWS_HOUSE.get(), Direction.NORTH))));
     }
 
     @Override

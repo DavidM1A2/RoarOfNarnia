@@ -22,7 +22,9 @@ public class WalkToUncleAndrewsHouseGoal extends BackgroundChapterGoal {
         }
 
         final BoundingBox houseBoundingBox = BoundingBox.fromCorners(new BlockPos(0, 64, 10),
-                new BlockPos(ModSchematics.UNCLE_ANDREWS_HOUSE.width() - 1, 64 + ModSchematics.UNCLE_ANDREWS_HOUSE.height() - 1, ModSchematics.UNCLE_ANDREWS_HOUSE.length() - 1));
+                new BlockPos(ModSchematics.UNCLE_ANDREWS_HOUSE.get().getWidth() - 1,
+                        64 + ModSchematics.UNCLE_ANDREWS_HOUSE.get().getHeight() - 1,
+                        ModSchematics.UNCLE_ANDREWS_HOUSE.get().getLength() - 1));
         if (players.stream().allMatch(playerEntity -> houseBoundingBox.isInside(playerEntity.blockPosition()))) {
             return GoalTickResult.COMPLETED;
         }

@@ -89,21 +89,6 @@ public class TextFieldPane extends GuiPane {
         }
     }
 
-    private void setFocused(final boolean isFocused) {
-        final boolean wasFocused = this.isFocused;
-        if (!wasFocused && isFocused) {
-            background.setColor(FOCUSED_COLOR_TINT);
-            final String currentText = getText();
-            this.isFocused = true;
-            this.setTextInternal(currentText, currentText);
-        } else if (wasFocused && !isFocused) {
-            background.setColor(BASE_COLOR_TINT);
-            final String currentText = getText();
-            this.isFocused = false;
-            this.setTextInternal(currentText, currentText);
-        }
-    }
-
     private void keyTyped(final KeyEvent event) {
         if (isFocused) {
             final String character = StringUtil.filterText(Character.toString(event.getCharacter()));
@@ -206,5 +191,24 @@ public class TextFieldPane extends GuiPane {
 
     public void addTextChangeListener(final ITextChangeListener listener) {
         textChangeListeners.add(listener);
+    }
+
+    public boolean isFocused() {
+        return isFocused;
+    }
+
+    private void setFocused(final boolean isFocused) {
+        final boolean wasFocused = this.isFocused;
+        if (!wasFocused && isFocused) {
+            background.setColor(FOCUSED_COLOR_TINT);
+            final String currentText = getText();
+            this.isFocused = true;
+            this.setTextInternal(currentText, currentText);
+        } else if (wasFocused && !isFocused) {
+            background.setColor(BASE_COLOR_TINT);
+            final String currentText = getText();
+            this.isFocused = false;
+            this.setTextInternal(currentText, currentText);
+        }
     }
 }

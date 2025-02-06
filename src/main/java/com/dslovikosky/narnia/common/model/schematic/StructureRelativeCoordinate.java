@@ -1,4 +1,4 @@
-package com.dslovikosky.narnia.common.world.schematic;
+package com.dslovikosky.narnia.common.model.schematic;
 
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;

@@ -1,8 +1,8 @@
 package com.dslovikosky.narnia.common.world.structure;
 
-import com.dslovikosky.narnia.common.constants.ModSchematics;
+import com.dslovikosky.narnia.common.constants.ModRegistries;
 import com.dslovikosky.narnia.common.constants.ModStructurePieces;
-import com.dslovikosky.narnia.common.world.schematic.Schematic;
+import com.dslovikosky.narnia.common.model.schematic.Schematic;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -35,19 +35,19 @@ public class SchematicStructurePiece extends StructurePiece {
     private final Schematic schematic;
 
     protected SchematicStructurePiece(final int x, final int y, final int z, final Schematic schematic, final Direction direction) {
-        super(ModStructurePieces.SCHEMATIC.get(), 0, makeBoundingBox(x, y, z, direction, schematic.width(), schematic.height(), schematic.length()));
+        super(ModStructurePieces.SCHEMATIC.get(), 0, makeBoundingBox(x, y, z, direction, schematic.getWidth(), schematic.getHeight(), schematic.getLength()));
         this.schematic = schematic;
         setOrientation(direction);
     }
 
     public SchematicStructurePiece(final StructurePieceSerializationContext pContext, final CompoundTag pTag) {
         super(ModStructurePieces.SCHEMATIC.get(), pTag);
-        this.schematic = ModSchematics.get(ResourceLocation.parse(pTag.getString(SCHEMATIC_ID)));
+        this.schematic = ModRegistries.SCHEMATIC.get(ResourceLocation.parse(pTag.getString(SCHEMATIC_ID)));
     }
 
     @Override
     protected void addAdditionalSaveData(final StructurePieceSerializationContext pContext, final CompoundTag pTag) {
-        pTag.putString(SCHEMATIC_ID, schematic.id().toString());
+        pTag.putString(SCHEMATIC_ID, schematic.getId().toString());
     }
 
     @Override
@@ -58,10 +58,10 @@ public class SchematicStructurePiece extends StructurePiece {
     }
 
     private void generateBlocks(final WorldGenLevel pLevel, final BoundingBox pBox) {
-        final int width = schematic.width();
-        final int height = schematic.height();
-        final int length = schematic.length();
-        final BlockState[] blocks = schematic.blocks();
+        final int width = schematic.getWidth();
+        final int height = schematic.getHeight();
+        final int length = schematic.getLength();
+        final BlockState[] blocks = schematic.getBlocks();
 
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
@@ -69,21 +69,19 @@ public class SchematicStructurePiece extends StructurePiece {
                     final int index = (y * length * width) + (z * width) + x;
                     final BlockState nextToPlace = blocks[index];
 
-//                    if (!nextToPlace.isAir()) {
                     if (nextToPlace.getBlock() == Blocks.STRUCTURE_BLOCK) {
                         placeBlock(pLevel, Blocks.AIR.defaultBlockState(), x, y, length - z - 1, pBox);
                     } else {
                         placeBlock(pLevel, nextToPlace, x, y, length - z - 1, pBox);
                     }
-//                    }
                 }
             }
         }
     }
 
     private void generateTileEntities(final WorldGenLevel pLevel, final BoundingBox pBox) {
-        final ListTag blockEntities = schematic.blockEntities();
-        final int length = schematic.length();
+        final ListTag blockEntities = schematic.getBlockEntities();
+        final int length = schematic.getLength();
 
         for (int i = 0; i < blockEntities.size(); i++) {
             final CompoundTag blockEntityTag = blockEntities.getCompound(i);
@@ -106,8 +104,8 @@ public class SchematicStructurePiece extends StructurePiece {
     }
 
     private void generateEntities(final WorldGenLevel pLevel, final BoundingBox pBox) {
-        final ListTag entities = schematic.entities();
-        final int length = schematic.length();
+        final ListTag entities = schematic.getEntities();
+        final int length = schematic.getLength();
 
         for (int i = 0; i < entities.size(); i++) {
             final CompoundTag entityTag = entities.getCompound(i);

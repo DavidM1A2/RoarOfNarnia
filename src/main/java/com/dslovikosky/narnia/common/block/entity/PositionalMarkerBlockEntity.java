@@ -18,6 +18,11 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class PositionalMarkerBlockEntity extends BlockEntity {
+    public static final String NBT_NAME = "name";
+    public static final String NBT_OFFSET_X = "offset_x";
+    public static final String NBT_OFFSET_Y = "offset_y";
+    public static final String NBT_OFFSET_Z = "offset_z";
+
     private String name = "";
     private Vec3 offset = Vec3.ZERO;
 
@@ -40,17 +45,17 @@ public class PositionalMarkerBlockEntity extends BlockEntity {
     @Override
     public void saveAdditional(CompoundTag tag, HolderLookup.Provider provider) {
         super.saveAdditional(tag, provider);
-        tag.putString("name", name);
-        tag.putDouble("offset_x", offset.x);
-        tag.putDouble("offset_y", offset.y);
-        tag.putDouble("offset_z", offset.z);
+        tag.putString(NBT_NAME, name);
+        tag.putDouble(NBT_OFFSET_X, offset.x);
+        tag.putDouble(NBT_OFFSET_Y, offset.y);
+        tag.putDouble(NBT_OFFSET_Z, offset.z);
     }
 
     @Override
     public void loadAdditional(CompoundTag tag, HolderLookup.Provider provider) {
         super.loadAdditional(tag, provider);
-        name = tag.getString("name");
-        offset = new Vec3(tag.getDouble("offset_x"), tag.getDouble("offset_y"), tag.getDouble("offset_z"));
+        name = tag.getString(NBT_NAME);
+        offset = new Vec3(tag.getDouble(NBT_OFFSET_X), tag.getDouble(NBT_OFFSET_Y), tag.getDouble(NBT_OFFSET_Z));
     }
 
     public String getName() {
