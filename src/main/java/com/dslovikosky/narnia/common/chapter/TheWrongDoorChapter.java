@@ -1,6 +1,5 @@
 package com.dslovikosky.narnia.common.chapter;
 
-import com.dslovikosky.narnia.common.chapter.goal.WalkToUncleAndrewsHouseGoal;
 import com.dslovikosky.narnia.common.constants.ModAttachmentTypes;
 import com.dslovikosky.narnia.common.constants.ModBooks;
 import com.dslovikosky.narnia.common.constants.ModDimensions;
@@ -8,11 +7,13 @@ import com.dslovikosky.narnia.common.constants.ModSchematics;
 import com.dslovikosky.narnia.common.model.PreTeleportLocation;
 import com.dslovikosky.narnia.common.model.scene.Chapter;
 import com.dslovikosky.narnia.common.model.scene.Scene;
+import com.dslovikosky.narnia.common.model.scene.goal.ActorLookChapterGoal;
 import com.dslovikosky.narnia.common.model.scene.goal.ActorMoveChapterGoal;
 import com.dslovikosky.narnia.common.model.scene.goal.ChatLine;
 import com.dslovikosky.narnia.common.model.scene.goal.ConversationChapterGoal;
 import com.dslovikosky.narnia.common.model.scene.goal.InstantiateActorChapterGoal;
 import com.dslovikosky.narnia.common.model.scene.goal.ParallelChapterGoal;
+import com.dslovikosky.narnia.common.model.scene.goal.PlayerInAABBChapterGoal;
 import com.dslovikosky.narnia.common.model.schematic.SchematicMarkerPosition;
 import com.dslovikosky.narnia.common.utils.TeleportPlayerToPreTeleportPosition;
 import net.minecraft.network.chat.Component;
@@ -23,6 +24,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.portal.DimensionTransition;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -35,9 +37,15 @@ public class TheWrongDoorChapter extends Chapter {
     public TheWrongDoorChapter(final ResourceLocation id) {
         super(id, ModBooks.THE_MAGICIANS_NEPHEW, List.of(DIGORY, POLLY), ModDimensions.LONDON, new Vec3(2.5, 65, 4.5));
         final SchematicMarkerPosition position = new SchematicMarkerPosition(ModSchematics.UNCLE_ANDREWS_HOUSE, new Vec3(0.0, 64.0, 0.0));
-        addGoal(new WalkToUncleAndrewsHouseGoal());
-        addGoal(new InstantiateActorChapterGoal(DIGORY, position.named("narnia:the_wrong_door:digory_spawn"), Vec3.directionFromRotation(0f, 270f)));
-        addGoal(new InstantiateActorChapterGoal(POLLY, position.named("narnia:the_wrong_door:polly_spawn"), Vec3.directionFromRotation(0f, 90f)));
+        addGoal(new PlayerInAABBChapterGoal(Component.literal("Walk in to Uncle Andrew's house yard"), true,
+                () -> new AABB(0, 64, 10,
+                        ModSchematics.UNCLE_ANDREWS_HOUSE.get().getWidth() - 1,
+                        64 + ModSchematics.UNCLE_ANDREWS_HOUSE.get().getHeight() - 1,
+                        ModSchematics.UNCLE_ANDREWS_HOUSE.get().getLength() - 1)));
+        addGoal(new InstantiateActorChapterGoal(DIGORY, position.named("the_wrong_door:digory_spawn"), Vec3.directionFromRotation(0f, 270f)));
+        addGoal(new InstantiateActorChapterGoal(POLLY, position.named("the_wrong_door:polly_spawn"), Vec3.directionFromRotation(0f, 90f)));
+        addGoal(new ActorLookChapterGoal(DIGORY, POLLY));
+        addGoal(new ActorLookChapterGoal(POLLY, DIGORY));
         addGoal(new ConversationChapterGoal(Component.literal("Digory meets Polly"),
                 ChatLine.between(POLLY, DIGORY, Component.literal("Hullo")),
                 ChatLine.between(DIGORY, POLLY, Component.literal("Hullo")),
@@ -46,7 +54,7 @@ public class TheWrongDoorChapter extends Chapter {
                 ChatLine.between(POLLY, DIGORY, Component.literal("What's yours?")),
                 ChatLine.between(DIGORY, POLLY, Component.literal("Digory"))
         ));
-        addGoal(new ActorMoveChapterGoal(DIGORY, position.named("narnia:the_wrong_door:hop_fence")));
+        addGoal(new ActorMoveChapterGoal(DIGORY, position.named("the_wrong_door:hop_fence")));
         addGoal(new ConversationChapterGoal(Component.literal("Digory meets Polly"),
                 ChatLine.between(POLLY, DIGORY, Component.literal("I say, what a funny name!")),
                 ChatLine.between(DIGORY, POLLY, Component.literal("It isn't half so funny as Polly")),
@@ -63,8 +71,8 @@ public class TheWrongDoorChapter extends Chapter {
                 ChatLine.between(POLLY, DIGORY, Component.literal("I didn't know. I'm sorry"))
         ));
         addGoal(new ParallelChapterGoal(
-                new ActorMoveChapterGoal(DIGORY, position.named("narnia:the_wrong_door:polly_garden")),
-                new ActorMoveChapterGoal(POLLY, position.named("narnia:the_wrong_door:digory_garden"))
+                new ActorMoveChapterGoal(DIGORY, position.named("the_wrong_door:polly_garden")),
+                new ActorMoveChapterGoal(POLLY, position.named("the_wrong_door:digory_garden"))
         ));
         addGoal(new ConversationChapterGoal(Component.literal("Digory meets Polly"),
                 ChatLine.between(POLLY, DIGORY, Component.literal("Is Mr Ketterley really mad?")),
@@ -79,11 +87,41 @@ public class TheWrongDoorChapter extends Chapter {
                 ChatLine.between(DIGORY, POLLY, Component.literal("You may think it interesting, But you wouldn't like it if you had to sleep there. How would you like to lie awake listening for Uncle Andrew's step to come creeping along the passage to your room? And he has such awful eyes"))
         ));
         addGoal(new ParallelChapterGoal(
-                new ActorMoveChapterGoal(DIGORY, position.named("narnia:the_wrong_door:digory_inside")),
-                new ActorMoveChapterGoal(POLLY, position.named("narnia:the_wrong_door:polly_inside"))
+                new ActorMoveChapterGoal(DIGORY, position.named("the_wrong_door:digory_inside")),
+                new ActorMoveChapterGoal(POLLY, position.named("the_wrong_door:polly_inside"))
         ));
-        addGoal(new ConversationChapterGoal(Component.literal("Digory meets Polly"),
-                ChatLine.between(DIGORY, POLLY, Component.literal("Well he's either mad, or there's some other mystery. He has a study on the top floor and Aunt Letty says I must never go up there. Well, that looks fishy to begin with. And then there's another thing. Whenever he tries to say anything to me at meal times — he never even tries to talk to her — she always shuts him up. She says, 'Don't worry the boy, Andrew', or, 'I'm sure Digory doesn't want to hear about that', or else, 'Now, Digory, wouldn't you like to go out and play in the garden?'"))
+        addGoal(new PlayerInAABBChapterGoal(Component.literal("Explore Polly's home"), false,
+                () -> AABB.unitCubeFromLowerCorner(position.named("the_wrong_door:upstairs_detector").get())
+                        .move(-0.5, 0, -0.5)
+                        .inflate(10, 0, 10)
+                        .expandTowards(0, 2, 0)));
+        addGoal(new ParallelChapterGoal(
+                new ActorMoveChapterGoal(POLLY, position.named("the_wrong_door:polly_upstairs")),
+                new ActorMoveChapterGoal(DIGORY, position.named("the_wrong_door:digory_upstairs"))
+        ));
+        addGoal(new PlayerInAABBChapterGoal(Component.literal("Find the cistern to access the home's attic"), false,
+                () -> AABB.unitCubeFromLowerCorner(position.named("the_wrong_door:cistern_ladder_up").get())
+                        .move(-0.5, 1, -0.5)
+                        .inflate(1, 1, 1)));
+        addGoal(new ParallelChapterGoal(
+                new ActorMoveChapterGoal(POLLY, position.named("the_wrong_door:cistern_ladder_up", new Vec3(0, 0, -1.2))),
+                new ActorMoveChapterGoal(DIGORY, position.named("the_wrong_door:cistern_ladder_up", new Vec3(0, 0, -0.5)))
+        ));
+        addGoal(new PlayerInAABBChapterGoal(Component.literal("Enter the attic"), false,
+                () -> AABB.unitCubeFromLowerCorner(position.named("the_wrong_door:attic_up").get())
+                        .move(-0.5, 1, -0.5)
+                        .inflate(1, 1, 1)));
+        addGoal(new ParallelChapterGoal(
+                new ActorMoveChapterGoal(POLLY, position.named("the_wrong_door:cistern_ladder_top"), false),
+                new ActorMoveChapterGoal(DIGORY, position.named("the_wrong_door:cistern_ladder_top"), false)
+        ));
+        addGoal(new ParallelChapterGoal(
+                new ActorMoveChapterGoal(POLLY, position.named("the_wrong_door:cistern_ladder_top", new Vec3(0, 0, 1)), false),
+                new ActorMoveChapterGoal(DIGORY, position.named("the_wrong_door:cistern_ladder_top", new Vec3(0, 0, 1)), false)
+        ));
+        addGoal(new ParallelChapterGoal(
+                new ActorMoveChapterGoal(POLLY, position.named("the_wrong_door:attic_up", new Vec3(0, 0, 1))),
+                new ActorMoveChapterGoal(DIGORY, position.named("the_wrong_door:attic_up", new Vec3(0, 0, 1)))
         ));
     }
 

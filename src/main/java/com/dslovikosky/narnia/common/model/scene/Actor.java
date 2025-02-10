@@ -19,7 +19,8 @@ public class Actor {
             ModRegistries.CHARACTER.byNameCodec().fieldOf("character").forGetter(Actor::getCharacter),
             UUIDUtil.CODEC.fieldOf("entity_id").forGetter(Actor::getEntityId),
             Vec3.CODEC.fieldOf("target_position").forGetter(Actor::getTargetPosition),
-            Vec3.CODEC.fieldOf("look_position").forGetter(Actor::getLookPosition)
+            Vec3.CODEC.fieldOf("look_position").forGetter(Actor::getLookPosition),
+            Codec.BOOL.fieldOf("can_use_doors").forGetter(Actor::isCanUseDoors)
     ).apply(instance, Actor::new));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, Actor> STREAM_CODEC = StreamCodec.composite(
@@ -27,6 +28,7 @@ public class Actor {
             UUIDUtil.STREAM_CODEC, Actor::getEntityId,
             CustomStreamCodec.VEC3, Actor::getTargetPosition,
             CustomStreamCodec.VEC3, Actor::getLookPosition,
+            ByteBufCodecs.BOOL, Actor::isCanUseDoors,
             Actor::new);
 
     private final Character character;
@@ -34,16 +36,18 @@ public class Actor {
     private UUID entityId;
     private Vec3 targetPosition;
     private Vec3 lookPosition;
+    private boolean canUseDoors;
 
-    private Actor(final Character character, final UUID entityId, final Vec3 targetPosition, final Vec3 lookPosition) {
+    private Actor(final Character character, final UUID entityId, final Vec3 targetPosition, final Vec3 lookPosition, final boolean canUseDoors) {
         this.character = character;
         this.entityId = entityId;
         this.targetPosition = targetPosition;
         this.lookPosition = lookPosition;
+        this.canUseDoors = canUseDoors;
     }
 
     public Actor(final Character character) {
-        this(character, new UUID(0, 0), Vec3.ZERO, Vec3.ZERO);
+        this(character, new UUID(0, 0), Vec3.ZERO, Vec3.ZERO, true);
     }
 
     public Component getName() {
@@ -82,11 +86,22 @@ public class Actor {
         this.lookPosition = lookPosition;
     }
 
-    @Override
-    public String toString() {
-        return "Actor[" +
-                "character=" + character + ", " +
-                "entityId=" + entityId + ']';
+    public boolean isCanUseDoors() {
+        return canUseDoors;
     }
 
+    public void setCanUseDoors(final boolean canUseDoors) {
+        this.canUseDoors = canUseDoors;
+    }
+
+    @Override
+    public String toString() {
+        return "Actor{" +
+                "character=" + character +
+                ", entityId=" + entityId +
+                ", targetPosition=" + targetPosition +
+                ", lookPosition=" + lookPosition +
+                ", canUseDoors=" + canUseDoors +
+                '}';
+    }
 }

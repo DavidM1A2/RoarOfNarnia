@@ -36,7 +36,7 @@ public class ChatLine {
     }
 
     private static int getLineDuration(final Component line) {
-        return (int) Math.max(50, Math.round(line.getString().length() * 1.1));
+        return (int) Math.max(50, Math.round(line.getString().length() * 0.5)); // 1.1?
     }
 
     public Character getSpeaker() {

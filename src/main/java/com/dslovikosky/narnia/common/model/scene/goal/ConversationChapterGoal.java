@@ -5,7 +5,6 @@ import com.dslovikosky.narnia.common.model.scene.Chapter;
 import com.dslovikosky.narnia.common.model.scene.Character;
 import com.dslovikosky.narnia.common.model.scene.GoalTickResult;
 import com.dslovikosky.narnia.common.model.scene.Scene;
-import net.minecraft.commands.arguments.EntityAnchorArgument;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.Level;
@@ -52,8 +51,8 @@ public class ConversationChapterGoal extends ChapterGoal {
             chapter.getPlayers(scene, level).forEach(player -> player.sendSystemMessage(
                     Component.translatable("chat.conversation.character_speaks", speaker.getName(), chatLine.getComponent())));
             if (listener != null) {
-                speaker.getOrCreateEntity(scene, chapter.getActor(scene, speaker), level)
-                        .lookAt(EntityAnchorArgument.Anchor.EYES, listener.getOrCreateEntity(scene, chapter.getActor(scene, listener), level).position());
+                chapter.getActor(scene, listener).setLookPosition(speaker.getOrCreateEntity(scene, chapter.getActor(scene, speaker), level).getEyePosition());
+                chapter.getActor(scene, speaker).setLookPosition(listener.getOrCreateEntity(scene, chapter.getActor(scene, listener), level).getEyePosition());
             }
         }
 

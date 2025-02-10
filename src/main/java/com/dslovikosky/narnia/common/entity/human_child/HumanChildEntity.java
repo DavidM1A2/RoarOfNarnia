@@ -17,6 +17,8 @@ import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.OpenDoorGoal;
 import net.minecraft.world.entity.ai.navigation.GroundPathNavigation;
+import net.minecraft.world.entity.ai.navigation.PathNavigation;
+import net.minecraft.world.entity.ai.navigation.WallClimberNavigation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
@@ -39,9 +41,6 @@ public class HumanChildEntity extends Mob implements SceneEntity {
 
     public HumanChildEntity(final EntityType<? extends Mob> entityType, final Level level) {
         super(entityType, level);
-        final GroundPathNavigation groundNavigation = (GroundPathNavigation) this.getNavigation();
-        groundNavigation.setCanOpenDoors(true);
-        groundNavigation.setCanPassDoors(true);
         // No despawning!
         setPersistenceRequired();
     }
@@ -50,7 +49,12 @@ public class HumanChildEntity extends Mob implements SceneEntity {
         return Mob.createLivingAttributes()
                 .add(Attributes.MAX_HEALTH, 30D)
                 .add(Attributes.MOVEMENT_SPEED, 0.8D)
-                .add(Attributes.FOLLOW_RANGE, 24D);
+                .add(Attributes.FOLLOW_RANGE, 256D);
+    }
+
+    @Override
+    protected PathNavigation createNavigation(Level pLevel) {
+        return new WallClimberNavigation(this, pLevel);
     }
 
     @Override
@@ -74,8 +78,11 @@ public class HumanChildEntity extends Mob implements SceneEntity {
                 LOG.error("Entity was: {}", getUUID());
                 LOG.error("Scene had: {}", activeScene.getActors().values());
             }
+            final GroundPathNavigation groundNavigation = (GroundPathNavigation) this.getNavigation();
+            groundNavigation.setCanOpenDoors(actor.isCanUseDoors());
+            groundNavigation.setCanPassDoors(actor.isCanUseDoors());
             final Vec3 targetPosition = new Vec3(actor.getTargetPosition().x(), actor.getTargetPosition().y(), actor.getTargetPosition().z());
-            getNavigation().moveTo(targetPosition.x, targetPosition.y, targetPosition.z, 0.35);
+            getNavigation().moveTo(getNavigation().createPath(targetPosition.x(), targetPosition.y(), targetPosition.z(), 0), 0.31);
         }
 
         if (level().isClientSide()) {

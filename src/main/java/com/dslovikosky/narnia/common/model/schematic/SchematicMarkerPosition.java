@@ -18,4 +18,8 @@ public class SchematicMarkerPosition {
     public Supplier<Vec3> named(final String name) {
         return Suppliers.memoize(() -> baseOffset.add(schematic.get().getMarkers().get(name)));
     }
+
+    public Supplier<Vec3> named(final String name, final Vec3 offset) {
+        return Suppliers.memoize(() -> baseOffset.add(schematic.get().getMarkers().get(name)).add(offset));
+    }
 }
