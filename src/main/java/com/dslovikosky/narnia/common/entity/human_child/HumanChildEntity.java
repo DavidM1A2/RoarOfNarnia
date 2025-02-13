@@ -74,10 +74,6 @@ public class HumanChildEntity extends Mob implements SceneEntity {
                 return;
             }
             final Actor actor = activeScene.getChapter().getActor(activeScene, this);
-            if (actor == null) {
-                LOG.error("Entity was: {}", getUUID());
-                LOG.error("Scene had: {}", activeScene.getActors().values());
-            }
             final GroundPathNavigation groundNavigation = (GroundPathNavigation) this.getNavigation();
             groundNavigation.setCanOpenDoors(actor.isCanUseDoors());
             groundNavigation.setCanPassDoors(actor.isCanUseDoors());

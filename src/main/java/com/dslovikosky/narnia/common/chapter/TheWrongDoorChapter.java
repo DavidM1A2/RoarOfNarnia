@@ -16,12 +16,14 @@ import com.dslovikosky.narnia.common.model.scene.goal.ParallelChapterGoal;
 import com.dslovikosky.narnia.common.model.scene.goal.PlayerInAABBChapterGoal;
 import com.dslovikosky.narnia.common.model.schematic.SchematicMarkerPosition;
 import com.dslovikosky.narnia.common.utils.TeleportPlayerToPreTeleportPosition;
+import com.google.common.collect.ImmutableSet;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.portal.DimensionTransition;
 import net.minecraft.world.phys.AABB;
@@ -35,7 +37,8 @@ import static com.dslovikosky.narnia.common.constants.ModCharacters.POLLY;
 
 public class TheWrongDoorChapter extends Chapter {
     public TheWrongDoorChapter(final ResourceLocation id) {
-        super(id, ModBooks.THE_MAGICIANS_NEPHEW, List.of(DIGORY, POLLY), ModDimensions.LONDON, new Vec3(2.5, 65, 4.5));
+        super(id, ModBooks.THE_MAGICIANS_NEPHEW, List.of(DIGORY, POLLY), ModDimensions.LONDON, new Vec3(2.5, 65, 4.5),
+                ImmutableSet.of(new ChunkPos(0, 0), new ChunkPos(0, 1), new ChunkPos(1, 0), new ChunkPos(1, 1)));
         final SchematicMarkerPosition position = new SchematicMarkerPosition(ModSchematics.UNCLE_ANDREWS_HOUSE, new Vec3(0.0, 64.0, 0.0));
         addGoal(new PlayerInAABBChapterGoal(Component.literal("Walk in to Uncle Andrew's house yard"), true,
                 () -> new AABB(0, 64, 10,

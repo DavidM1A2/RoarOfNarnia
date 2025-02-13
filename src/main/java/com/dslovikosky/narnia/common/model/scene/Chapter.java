@@ -7,6 +7,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.registries.DeferredHolder;
@@ -15,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import java.util.function.Supplier;
 
@@ -25,14 +27,16 @@ public class Chapter {
     private final List<ChapterGoal> goals;
     private final ResourceKey<Level> startingDimension;
     private final Vec3 startingSpawnPosition;
+    private final Set<ChunkPos> requiredChunks;
 
-    public Chapter(final ResourceLocation id, final DeferredHolder<Book, ? extends Book> book, final List<DeferredHolder<Character, ? extends Character>> characters, final ResourceKey<Level> startingDimension, final Vec3 startingSpawnPosition) {
+    public Chapter(final ResourceLocation id, final DeferredHolder<Book, ? extends Book> book, final List<DeferredHolder<Character, ? extends Character>> characters, final ResourceKey<Level> startingDimension, final Vec3 startingSpawnPosition, final Set<ChunkPos> requiredChunks) {
         this.id = id;
         this.book = book::get;
         this.characters = Suppliers.memoize(() -> characters.stream().map(DeferredHolder::get).map(Character.class::cast).toList());
         this.goals = new ArrayList<>();
         this.startingDimension = startingDimension;
         this.startingSpawnPosition = startingSpawnPosition;
+        this.requiredChunks = requiredChunks;
     }
 
     public void addGoal(final ChapterGoal goal) {
@@ -114,6 +118,10 @@ public class Chapter {
         return startingSpawnPosition;
     }
 
+    public Set<ChunkPos> getRequiredChunks() {
+        return requiredChunks;
+    }
+
     @Override
     public String toString() {
         return "Chapter{" +
@@ -123,6 +131,7 @@ public class Chapter {
                 ", goals=" + goals +
                 ", startingDimension=" + startingDimension +
                 ", startingSpawnPosition=" + startingSpawnPosition +
+                ", requiredChunks=" + requiredChunks +
                 '}';
     }
 }

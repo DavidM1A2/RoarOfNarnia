@@ -44,6 +44,10 @@ public class ActiveSceneHandler {
             return;
         }
 
+        if (chapter.getRequiredChunks().stream().anyMatch(chunkPos -> !level.getChunkSource().hasChunk(chunkPos.x, chunkPos.z))) {
+            return;
+        }
+
         boolean needsSync = false;
 
         if (state == SceneState.NEW) {
