@@ -30,19 +30,19 @@ public class ConversationChapterGoal extends ChapterGoal {
 
     @Override
     public boolean start(Scene scene, Level level) {
-        scene.set(ModDataComponentTypes.CONVERSATION_START_TIME, level.getGameTime());
+        scene.set(ModDataComponentTypes.CONVERSATION_TICKS_LEFT, durationTicks);
         return true;
     }
 
     @Override
     public GoalTickResult tick(Scene scene, Level level) {
-        final long conversationStartTime = scene.getOrDefault(ModDataComponentTypes.CONVERSATION_START_TIME, 0L);
-        final long elapsedTime = level.getGameTime() - conversationStartTime;
+        final Long conversationTicksLeft = scene.update(ModDataComponentTypes.CONVERSATION_TICKS_LEFT, 0L, ticksLeft -> ticksLeft - 1);
 
-        if (elapsedTime > durationTicks) {
+        if (conversationTicksLeft == null || conversationTicksLeft < 0) {
             return GoalTickResult.COMPLETED;
         }
 
+        final long elapsedTime = durationTicks - conversationTicksLeft;
         if (elapsedTimeToChatLine.containsKey(elapsedTime)) {
             final ChatLine chatLine = elapsedTimeToChatLine.get(elapsedTime);
             final Character speaker = chatLine.getSpeaker();
@@ -62,7 +62,7 @@ public class ConversationChapterGoal extends ChapterGoal {
 
     @Override
     public void finish(Scene scene, Level level) {
-        scene.remove(ModDataComponentTypes.CONVERSATION_START_TIME);
+        scene.remove(ModDataComponentTypes.CONVERSATION_TICKS_LEFT);
     }
 
     @Override
@@ -72,6 +72,6 @@ public class ConversationChapterGoal extends ChapterGoal {
 
     @Override
     public void registerComponents(DataComponentMap.Builder builder) {
-        builder.set(ModDataComponentTypes.CONVERSATION_START_TIME, 0L);
+        builder.set(ModDataComponentTypes.CONVERSATION_TICKS_LEFT, durationTicks);
     }
 }
