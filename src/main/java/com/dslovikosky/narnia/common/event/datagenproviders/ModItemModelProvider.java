@@ -1,6 +1,7 @@
 package com.dslovikosky.narnia.common.event.datagenproviders;
 
 import com.dslovikosky.narnia.common.constants.Constants;
+import com.dslovikosky.narnia.common.constants.ModBlocks;
 import com.dslovikosky.narnia.common.constants.ModItems;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
@@ -8,6 +9,7 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.HangingSignItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.SignItem;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.ButtonBlock;
 import net.minecraft.world.level.block.DoorBlock;
 import net.minecraft.world.level.block.FenceBlock;
@@ -24,8 +26,10 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 public class ModItemModelProvider extends ItemModelProvider {
+    private final Set<Block> blocksWithCustomItemRenderer = Set.of(ModBlocks.RING_BOX.get());
     private final Map<String, ResourceLocation> materialToTexture = new HashMap<>();
 
     public ModItemModelProvider(final PackOutput output, final ExistingFileHelper existingFileHelper) {
@@ -38,7 +42,10 @@ public class ModItemModelProvider extends ItemModelProvider {
         ModItems.ITEMS.getEntries().forEach(deferredItem -> {
             final Item item = deferredItem.get();
             if (item instanceof BlockItem blockItem) {
-                if (blockItem.getBlock() instanceof ButtonBlock) {
+                if (blocksWithCustomItemRenderer.contains(blockItem.getBlock())) {
+                    getBuilder(item.toString())
+                            .parent(new ModelFile.UncheckedModelFile("builtin/entity"));
+                } else if (blockItem.getBlock() instanceof ButtonBlock) {
                     buttonInventory(deferredItem.getRegisteredName(), determineTexture(deferredItem));
                 } else if (blockItem.getBlock() instanceof DoorBlock) {
                     basicItem(item);

@@ -1,6 +1,7 @@
 package com.dslovikosky.narnia.common.constants;
 
 import com.dslovikosky.narnia.common.block.PositionalMarkerBlock;
+import com.dslovikosky.narnia.common.block.RingBoxBlock;
 import com.dslovikosky.narnia.common.block.worldwood.StrippedWorldWoodBlock;
 import com.dslovikosky.narnia.common.block.worldwood.StrippedWorldWoodLogBlock;
 import com.dslovikosky.narnia.common.block.worldwood.WorldWoodBlock;
@@ -30,6 +31,7 @@ public class ModBlocks {
     public static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(Constants.MOD_ID);
 
     public static final DeferredBlock<PositionalMarkerBlock> POSITIONAL_MARKER = BLOCKS.register("positional_marker", PositionalMarkerBlock::new);
+    public static final DeferredBlock<RingBoxBlock> RING_BOX = BLOCKS.register("ring_box", RingBoxBlock::new);
 
     public static final DeferredBlock<WorldWoodBlock> WORLD_WOOD = BLOCKS.register("world_wood", WorldWoodBlock::new);
     public static final DeferredBlock<StrippedWorldWoodBlock> STRIPPED_WORLD_WOOD = BLOCKS.register("stripped_world_wood", StrippedWorldWoodBlock::new);

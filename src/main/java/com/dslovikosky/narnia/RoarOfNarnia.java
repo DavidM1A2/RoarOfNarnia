@@ -19,6 +19,7 @@ import com.dslovikosky.narnia.common.constants.ModStructurePlacementTypes;
 import com.dslovikosky.narnia.common.constants.ModStructureTypes;
 import com.dslovikosky.narnia.common.event.ActiveSceneHandler;
 import com.dslovikosky.narnia.common.event.AttachmentHandler;
+import com.dslovikosky.narnia.common.event.BlockEntityRendererRegister;
 import com.dslovikosky.narnia.common.event.DataGenerationHandler;
 import com.dslovikosky.narnia.common.event.EntityRegistrationHandler;
 import com.dslovikosky.narnia.common.event.GivePlayerMagiciansNephewHandler;
@@ -40,6 +41,7 @@ public class RoarOfNarnia {
     public RoarOfNarnia(final IEventBus modBus) {
         modBus.register(new DataGenerationHandler());
         modBus.register(new EntityRegistrationHandler());
+        modBus.register(new BlockEntityRendererRegister());
         modBus.register(new SignBlockRegister());
         modBus.register(new PacketRegistrationHandler());
         modBus.register(new RegistryRegister());
