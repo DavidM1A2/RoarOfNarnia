@@ -3,6 +3,7 @@ package com.dslovikosky.narnia.common.model.scene.goal;
 import com.dslovikosky.narnia.common.model.scene.Actor;
 import com.dslovikosky.narnia.common.model.scene.Character;
 import com.dslovikosky.narnia.common.model.scene.Scene;
+import net.minecraft.commands.arguments.EntityAnchorArgument;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
@@ -29,14 +30,16 @@ public class ActorLookChapterGoal extends BackgroundChapterGoal {
     public boolean start(Scene scene, Level level) {
         final Vec3 targetLookPosition;
         final Actor sourceActor = scene.getChapter().getActor(scene, character.get());
+        final LivingEntity sourceActorEntity = sourceActor.getCharacter().getOrCreateEntity(scene, sourceActor, level);
         if (direction != null) {
-            final LivingEntity sourceActorEntity = sourceActor.getCharacter().getOrCreateEntity(scene, sourceActor, level);
             targetLookPosition = sourceActorEntity.getEyePosition().add(direction);
         } else {
             final Actor targetActor = scene.getChapter().getActor(scene, target.get());
             final LivingEntity targetActorEntity = targetActor.getCharacter().getOrCreateEntity(scene, targetActor, level);
             targetLookPosition = targetActorEntity.getEyePosition();
+            targetActorEntity.lookAt(EntityAnchorArgument.Anchor.EYES, sourceActorEntity.getEyePosition());
         }
+        sourceActorEntity.lookAt(EntityAnchorArgument.Anchor.EYES, targetLookPosition);
         sourceActor.setLookPosition(targetLookPosition);
         return super.start(scene, level);
     }

@@ -1,12 +1,15 @@
 package com.dslovikosky.narnia.common.model.scene.goal;
 
 import com.dslovikosky.narnia.common.constants.ModDataComponentTypes;
+import com.dslovikosky.narnia.common.model.scene.Actor;
 import com.dslovikosky.narnia.common.model.scene.Chapter;
 import com.dslovikosky.narnia.common.model.scene.Character;
 import com.dslovikosky.narnia.common.model.scene.GoalTickResult;
 import com.dslovikosky.narnia.common.model.scene.Scene;
+import net.minecraft.commands.arguments.EntityAnchorArgument;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 
 import java.util.HashMap;
@@ -51,8 +54,16 @@ public class ConversationChapterGoal extends ChapterGoal {
             chapter.getPlayers(scene, level).forEach(player -> player.sendSystemMessage(
                     Component.translatable("chat.conversation.character_speaks", speaker.getName(), chatLine.getComponent())));
             if (listener != null) {
-                chapter.getActor(scene, listener).setLookPosition(speaker.getOrCreateEntity(scene, chapter.getActor(scene, speaker), level).getEyePosition());
-                chapter.getActor(scene, speaker).setLookPosition(listener.getOrCreateEntity(scene, chapter.getActor(scene, listener), level).getEyePosition());
+                final Actor listenerActor = chapter.getActor(scene, listener);
+                final Actor speakerActor = chapter.getActor(scene, speaker);
+
+                final LivingEntity listenerEntity = listener.getOrCreateEntity(scene, listenerActor, level);
+                final LivingEntity speakerEntity = speaker.getOrCreateEntity(scene, speakerActor, level);
+
+                listenerActor.setLookPosition(speakerEntity.getEyePosition());
+                listenerEntity.lookAt(EntityAnchorArgument.Anchor.EYES, speakerEntity.getEyePosition());
+                speakerActor.setLookPosition(listenerEntity.getEyePosition());
+                speakerEntity.lookAt(EntityAnchorArgument.Anchor.EYES, listenerEntity.getEyePosition());
             }
         }
 
