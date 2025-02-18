@@ -123,8 +123,83 @@ public class TheWrongDoorChapter extends Chapter {
                 new ActorMoveChapterGoal(DIGORY, position.named("the_wrong_door:cistern_ladder_top", new Vec3(0, 0, 1)), false)
         ));
         addGoal(new ParallelChapterGoal(
-                new ActorMoveChapterGoal(POLLY, position.named("the_wrong_door:attic_up", new Vec3(0, 0, 1))),
-                new ActorMoveChapterGoal(DIGORY, position.named("the_wrong_door:attic_up", new Vec3(0, 0, 1)))
+                new ActorMoveChapterGoal(POLLY, position.named("the_wrong_door:attic_up", new Vec3(1, 0, 0))),
+                new ActorMoveChapterGoal(DIGORY, position.named("the_wrong_door:attic_up", new Vec3(2, 0, 0)))
+        ));
+        addGoal(new ConversationChapterGoal(Component.literal("Digory and Polly Explore"),
+                ChatLine.between(DIGORY, POLLY, Component.literal("Look here, How long does this tunnel go on for? I mean, does it stop where your house ends?")),
+                ChatLine.between(POLLY, DIGORY, Component.literal("No, The walls don't go out to the roof. It goes on. I don't know how far")),
+                ChatLine.between(DIGORY, POLLY, Component.literal("Then we could get the length of the whole row of houses")),
+                ChatLine.between(POLLY, DIGORY, Component.literal("So we could, And oh, I say!")),
+                ChatLine.between(DIGORY, POLLY, Component.literal("What?")),
+                ChatLine.between(POLLY, DIGORY, Component.literal("We could get into the other houses")),
+                ChatLine.between(DIGORY, POLLY, Component.literal("Yes, and get taken up for burglars! No thanks")),
+                ChatLine.between(POLLY, DIGORY, Component.literal("Don't be so jolly clever. I was thinking of the house beyond yours")),
+                ChatLine.between(DIGORY, POLLY, Component.literal("What about it?")),
+                ChatLine.between(POLLY, DIGORY, Component.literal("Why, it's the empty one. Daddy says it's always been empty since we came here")),
+                ChatLine.between(DIGORY, POLLY, Component.literal("I suppose we ought to have a look at it then")),
+                ChatLine.between(DIGORY, POLLY, Component.literal("Shall we go and try it now?")),
+                ChatLine.between(POLLY, DIGORY, Component.literal("Alright")),
+                ChatLine.between(DIGORY, POLLY, Component.literal("Don't if you'd rather not")),
+                ChatLine.between(POLLY, DIGORY, Component.literal("I'm game if you are")),
+                ChatLine.between(DIGORY, POLLY, Component.literal("How are we to know we're in the next house but one?"))
+        ));
+        addGoal(new ParallelChapterGoal(
+                new ActorMoveChapterGoal(POLLY, position.named("the_wrong_door:attic_up")),
+                new ActorMoveChapterGoal(DIGORY, position.named("the_wrong_door:attic_up"))
+        ));
+        addGoal(new ConversationChapterGoal(Component.literal("Digory and Polly Explore"),
+                ChatLine.between(DIGORY, POLLY, Component.literal("But I don't expect it's really empty at all")),
+                ChatLine.between(POLLY, DIGORY, Component.literal("What do you expect?")),
+                ChatLine.between(DIGORY, POLLY, Component.literal("I expect someone lives there in secret, only coming in and out at night, with a dark lantern. We shall probably discover a gang of desperate criminals and get a reward. It's all rot to say a house would be empty all those years unless there was some mystery")),
+                ChatLine.between(POLLY, DIGORY, Component.literal("Daddy thought it must be the drains")),
+                ChatLine.between(DIGORY, POLLY, Component.literal("Pooh! Grown-ups are always thinking of uninteresting explanations")),
+                ChatLine.between(POLLY, DIGORY, Component.literal("We mustn't make a sound"))
+        ));
+        addGoal(new PlayerInAABBChapterGoal(Component.literal("Cross the attic"), false,
+                () -> AABB.unitCubeFromLowerCorner(position.named("the_wrong_door:attic_down").get())
+                        .move(-0.5, 1, -0.5)
+                        .inflate(1, 1, 1)));
+        addGoal(new ParallelChapterGoal(
+                new ActorMoveChapterGoal(POLLY, position.named("the_wrong_door:attic_down", new Vec3(1, 0, 0))),
+                new ActorMoveChapterGoal(DIGORY, position.named("the_wrong_door:attic_down", new Vec3(2, 0, 0))),
+                new ConversationChapterGoal(Component.literal("Digory and Polly Explore"),
+                        ChatLine.between(POLLY, DIGORY, Component.literal("this must be halfway through our house")),
+                        ChatLine.between(DIGORY, POLLY, Component.literal("We're opposite your attic now"))
+                )
+        ));
+        addGoal(new PlayerInAABBChapterGoal(Component.literal("Climb into the abandoned house"), false,
+                () -> AABB.unitCubeFromLowerCorner(position.named("the_wrong_door:cistern_ladder_down").get())
+                        .move(-0.5, 1, -0.5)
+                        .inflate(1, 1, 1)));
+        addGoal(new ParallelChapterGoal(
+                new ActorMoveChapterGoal(POLLY, position.named("the_wrong_door:attic_down", new Vec3(0, 0, 1)), 10),
+                new ActorMoveChapterGoal(DIGORY, position.named("the_wrong_door:attic_down", new Vec3(0, 0, 1)), 10)
+        ));
+        addGoal(new ParallelChapterGoal(
+                new ActorMoveChapterGoal(POLLY, position.named("the_wrong_door:cistern_ladder_down", new Vec3(0, 0, -1)), 100),
+                new ActorMoveChapterGoal(DIGORY, position.named("the_wrong_door:cistern_ladder_down", new Vec3(0, 0, -1)), 100)
+        ));
+        addGoal(new ActorMoveChapterGoal(DIGORY, position.named("the_wrong_door:cistern_ladder_down")));
+        addGoal(new ConversationChapterGoal(Component.literal("Digory and Polly enter the abandoned house"),
+                ChatLine.between(DIGORY, POLLY, Component.literal("Shall I?")),
+                ChatLine.between(POLLY, DIGORY, Component.literal("I'm game if you are"))
+        ));
+        addGoal(new ParallelChapterGoal(
+                new ActorMoveChapterGoal(POLLY, position.named("the_wrong_door:digory_inside_study")),
+                new ActorMoveChapterGoal(DIGORY, position.named("the_wrong_door:polly_inside_study"))
+        ));
+        addGoal(new ConversationChapterGoal(Component.literal("Digory and Polly enter the abandoned house"),
+                ChatLine.between(POLLY, DIGORY, Component.literal("It's alright; there's no one here")),
+                ChatLine.between(DIGORY, POLLY, Component.literal("This is no good, It's not an empty house at all. We'd better bunk before anyone comes.")),
+                ChatLine.between(POLLY, DIGORY, Component.literal("What do you think those are?")),
+                ChatLine.between(DIGORY, POLLY, Component.literal("Oh come on, the sooner---"))
+        ));
+        addGoal(new ParallelChapterGoal(
+                new ConversationChapterGoal(Component.literal("Digory and Polly enter the abandoned house"),
+                        ChatLine.of(DIGORY, Component.literal("O-o-oh"), 40)),
+                new ConversationChapterGoal(Component.literal("Digory and Polly enter the abandoned house"),
+                        ChatLine.of(POLLY, Component.literal("O-o-oh"), 40))
         ));
     }
 
