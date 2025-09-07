@@ -1,6 +1,10 @@
 package com.dslovikosky.narnia.common.block.worldwood;
 
+import com.dslovikosky.narnia.common.constants.Constants;
 import com.dslovikosky.narnia.common.constants.ModBlocks;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.FenceBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -13,6 +17,7 @@ public class WorldWoodFenceBlock extends FenceBlock {
                 .instrument(NoteBlockInstrument.BASS)
                 .strength(2.0F, 3.0F)
                 .ignitedByLava()
-                .sound(SoundType.WOOD));
+                .sound(SoundType.WOOD)
+                .setId(ResourceKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "world_wood_fence"))));
     }
 }

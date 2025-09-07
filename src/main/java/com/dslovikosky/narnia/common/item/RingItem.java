@@ -1,38 +1,48 @@
 package com.dslovikosky.narnia.common.item;
 
+import com.dslovikosky.narnia.common.constants.Constants;
 import com.dslovikosky.narnia.common.constants.ModAttachmentTypes;
 import com.dslovikosky.narnia.common.constants.ModDimensions;
 import com.dslovikosky.narnia.common.model.PreTeleportLocation;
 import com.dslovikosky.narnia.common.utils.TeleportPlayerToPreTeleportPosition;
 import com.mojang.logging.LogUtils;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.LevelChunk;
-import net.minecraft.world.level.portal.DimensionTransition;
+import net.minecraft.world.level.portal.TeleportTransition;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.Locale;
 
 @ParametersAreNonnullByDefault
 public class RingItem extends Item {
     private final Type type;
 
     public RingItem(final Type type) {
-        super(new Properties().stacksTo(1).fireResistant());
+        super(new Properties()
+                .stacksTo(1)
+                .fireResistant()
+                .setId(ResourceKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, String.format("%s_ring", type.name().toLowerCase(Locale.ROOT))))));
         this.type = type;
     }
 
     @Override
-    public void inventoryTick(final ItemStack itemStack, final Level level, final Entity entity, final int slotId, final boolean isSelected) {
-        if (!isSelected) {
+    public void inventoryTick(ItemStack itemStack, ServerLevel level, Entity entity, @Nullable EquipmentSlot slot) {
+        if (slot != EquipmentSlot.MAINHAND) {
             return;
         }
 
@@ -55,7 +65,7 @@ public class RingItem extends Item {
                     if (!level.isClientSide()) {
                         final PreTeleportLocation preTeleportLocation = entity.getData(ModAttachmentTypes.PRE_YELLOW_RING_TELEPORT_LOCATION);
                         final ServerLevel overworld = level.getServer().getLevel(preTeleportLocation.level());
-                        entity.changeDimension(new DimensionTransition(overworld, entity, new TeleportPlayerToPreTeleportPosition(preTeleportLocation)));
+                        entity.teleport(new TeleportTransition(overworld, entity, new TeleportPlayerToPreTeleportPosition(preTeleportLocation)));
                     }
                 }
             }
@@ -66,7 +76,7 @@ public class RingItem extends Item {
         if (ModDimensions.WOOD_BETWEEN_THE_WORLDS != level.dimension() && !level.isClientSide()) {
             entity.setData(ModAttachmentTypes.PRE_YELLOW_RING_TELEPORT_LOCATION, new PreTeleportLocation(entity.position().x(), entity.position().y(), entity.position().z(), entity.level().dimension()));
             final ServerLevel woodBetweenTheWorlds = level.getServer().getLevel(ModDimensions.WOOD_BETWEEN_THE_WORLDS);
-            entity.changeDimension(new DimensionTransition(woodBetweenTheWorlds, entity, new TeleportPlayerToBottomOfCenterPool(woodBetweenTheWorlds)));
+            entity.teleport(new TeleportTransition(woodBetweenTheWorlds, entity, new TeleportPlayerToBottomOfCenterPool(woodBetweenTheWorlds)));
             return;
         }
 
@@ -85,7 +95,7 @@ public class RingItem extends Item {
         YELLOW, GREEN
     }
 
-    private record TeleportPlayerToBottomOfCenterPool(ServerLevel level) implements DimensionTransition.PostDimensionTransition {
+    private record TeleportPlayerToBottomOfCenterPool(ServerLevel level) implements TeleportTransition.PostTeleportTransition {
         private static final Logger LOG = LogUtils.getLogger();
 
         @Override

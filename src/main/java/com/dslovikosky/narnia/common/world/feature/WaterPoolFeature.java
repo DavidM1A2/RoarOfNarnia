@@ -36,7 +36,7 @@ public class WaterPoolFeature extends Feature<WaterPoolFeature.Configuration> {
         final int length = configuration.length().sample(random);
         final int depth = configuration.depth().sample(random);
 
-        if (waterLevelPos.getY() <= level.getMinBuildHeight() + depth + 1) {
+        if (waterLevelPos.getY() <= level.getMinY() + depth + 1) {
             return false;
         }
 

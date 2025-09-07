@@ -1,9 +1,12 @@
 package com.dslovikosky.narnia.common.block;
 
-import com.dslovikosky.narnia.client.proxy.ClientProxy;
 import com.dslovikosky.narnia.common.block.entity.PositionalMarkerBlockEntity;
+import com.dslovikosky.narnia.common.constants.Constants;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -26,7 +29,8 @@ public class PositionalMarkerBlock extends Block implements EntityBlock {
                 .noCollission()
                 .noLootTable()
                 .noTerrainParticles()
-                .pushReaction(PushReaction.DESTROY));
+                .pushReaction(PushReaction.DESTROY)
+                .setId(ResourceKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "positional_marker"))));
     }
 
     @Override
@@ -38,7 +42,6 @@ public class PositionalMarkerBlock extends Block implements EntityBlock {
     protected InteractionResult useWithoutItem(final BlockState blockState, final Level level, final BlockPos blockPos, final Player player, final BlockHitResult hitResult) {
         final BlockEntity blockEntity = level.getBlockEntity(blockPos);
         if (level.isClientSide() && blockEntity instanceof PositionalMarkerBlockEntity marker) {
-            ClientProxy.openEditPositionalMarkerScreen(blockPos, marker.getName(), marker.getOffset());
         }
         return InteractionResult.SUCCESS;
     }

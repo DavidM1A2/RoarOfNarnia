@@ -1,11 +1,11 @@
 package com.dslovikosky.narnia.client.gui.control;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.resources.ResourceLocation;
-import org.lwjgl.opengl.GL11;
+import org.joml.Matrix3x2fStack;
 
 public class ImagePane extends GuiPane {
     private double textureWidth = -1.0;
@@ -26,18 +26,14 @@ public class ImagePane extends GuiPane {
     @Override
     public void draw(final GuiGraphics guiGraphics) {
         if (this.isVisible() && this.imageTexture != null) {
-            final PoseStack poseStack = guiGraphics.pose();
-            poseStack.pushPose();
-            // Enable alpha blending
-            RenderSystem.enableBlend();
+            final Matrix3x2fStack poseStack = guiGraphics.pose();
+            poseStack.pushMatrix();
 
-            // Set the color
-            RenderSystem.setShaderColor(this.getColor().getRed() / 255f, this.getColor().getGreen() / 255f, this.getColor().getBlue() / 255f, this.getColor().getAlpha() / 255f);
             // Check for invalid texture dimensions
             if (textureHeight > -1 && textureWidth > -1) {
-                guiGraphics.blit(imageTexture, getX(), getY(), u, v, getWidth(), getHeight(), getWidth(), getHeight());
+                guiGraphics.blit(RenderPipelines.GUI_TEXTURED, imageTexture, getX(), getY(), u, v, getWidth(), getHeight(), getWidth(), getHeight(), this.getColor().getRGB());
             }
-            poseStack.popPose();
+            poseStack.popMatrix();
 
             // Draw any children
             super.draw(guiGraphics);
@@ -67,9 +63,9 @@ public class ImagePane extends GuiPane {
 
     private void loadTextureDimensions() {
         if (imageTexture != null) {
-            Minecraft.getInstance().getTextureManager().bindForSetup(this.imageTexture);
-            textureWidth = GL11.glGetTexLevelParameteri(GL11.GL_TEXTURE_2D, 0, GL11.GL_TEXTURE_WIDTH);
-            textureHeight = GL11.glGetTexLevelParameteri(GL11.GL_TEXTURE_2D, 0, GL11.GL_TEXTURE_HEIGHT);
+            final AbstractTexture texture = Minecraft.getInstance().getTextureManager().getTexture(this.imageTexture);
+            textureWidth = texture.getTexture().getWidth(0);
+            textureHeight = texture.getTexture().getHeight(0);
             if (Double.isNaN(textureWidth) || Double.isNaN(textureHeight)) {
                 throw new IllegalStateException(String.format("Texture %s does not exist", imageTexture));
             }

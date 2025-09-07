@@ -3,12 +3,12 @@ package com.dslovikosky.narnia.common.utils;
 import com.dslovikosky.narnia.common.model.PreTeleportLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.level.portal.DimensionTransition;
+import net.minecraft.world.level.portal.TeleportTransition;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
-public record TeleportPlayerToPreTeleportPosition(PreTeleportLocation preTeleportLocation) implements DimensionTransition.PostDimensionTransition {
+public record TeleportPlayerToPreTeleportPosition(PreTeleportLocation preTeleportLocation) implements TeleportTransition.PostTeleportTransition {
     @Override
     public void onTransition(final Entity entity) {
         if (entity instanceof ServerPlayer) {

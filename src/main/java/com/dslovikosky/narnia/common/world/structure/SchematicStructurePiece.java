@@ -3,14 +3,17 @@ package com.dslovikosky.narnia.common.world.structure;
 import com.dslovikosky.narnia.common.constants.ModRegistries;
 import com.dslovikosky.narnia.common.constants.ModStructurePieces;
 import com.dslovikosky.narnia.common.model.schematic.Schematic;
+import com.mojang.logging.LogUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.decoration.HangingEntity;
 import net.minecraft.world.level.ChunkPos;
@@ -23,6 +26,10 @@ import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.StructurePiece;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceSerializationContext;
+import net.minecraft.world.level.storage.TagValueInput;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.phys.Vec3;
+import org.slf4j.Logger;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Optional;
@@ -30,24 +37,27 @@ import java.util.UUID;
 
 @ParametersAreNonnullByDefault
 public class SchematicStructurePiece extends StructurePiece {
+    private static final Logger LOGGER = LogUtils.getLogger();
+
     private static final String SCHEMATIC_ID = "SchematicId";
 
-    private final Schematic schematic;
+    private final Holder<Schematic> schematic;
 
-    protected SchematicStructurePiece(final int x, final int y, final int z, final Schematic schematic, final Direction direction) {
-        super(ModStructurePieces.SCHEMATIC.get(), 0, makeBoundingBox(x, y, z, direction, schematic.getWidth(), schematic.getHeight(), schematic.getLength()));
+    protected SchematicStructurePiece(final int x, final int y, final int z, final Holder<Schematic> schematic, final Direction direction) {
+        super(ModStructurePieces.SCHEMATIC.get(), 0,
+                makeBoundingBox(x, y, z, direction, schematic.value().getWidth(), schematic.value().getHeight(), schematic.value().getLength()));
         this.schematic = schematic;
         setOrientation(direction);
     }
 
     public SchematicStructurePiece(final StructurePieceSerializationContext pContext, final CompoundTag pTag) {
         super(ModStructurePieces.SCHEMATIC.get(), pTag);
-        this.schematic = ModRegistries.SCHEMATIC.get(ResourceLocation.parse(pTag.getString(SCHEMATIC_ID)));
+        this.schematic = ModRegistries.SCHEMATIC.get(ResourceLocation.parse(pTag.getString(SCHEMATIC_ID).get())).get();
     }
 
     @Override
     protected void addAdditionalSaveData(final StructurePieceSerializationContext pContext, final CompoundTag pTag) {
-        pTag.putString(SCHEMATIC_ID, schematic.getId().toString());
+        pTag.putString(SCHEMATIC_ID, schematic.value().getId().toString());
     }
 
     @Override
@@ -58,10 +68,10 @@ public class SchematicStructurePiece extends StructurePiece {
     }
 
     private void generateBlocks(final WorldGenLevel pLevel, final BoundingBox pBox) {
-        final int width = schematic.getWidth();
-        final int height = schematic.getHeight();
-        final int length = schematic.getLength();
-        final BlockState[] blocks = schematic.getBlocks();
+        final int width = schematic.value().getWidth();
+        final int height = schematic.value().getHeight();
+        final int length = schematic.value().getLength();
+        final BlockState[] blocks = schematic.value().getBlocks();
 
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
@@ -80,67 +90,73 @@ public class SchematicStructurePiece extends StructurePiece {
     }
 
     private void generateTileEntities(final WorldGenLevel pLevel, final BoundingBox pBox) {
-        final ListTag blockEntities = schematic.getBlockEntities();
-        final int length = schematic.getLength();
+        final ListTag blockEntities = schematic.value().getBlockEntities();
+        final int length = schematic.value().getLength();
 
-        for (int i = 0; i < blockEntities.size(); i++) {
-            final CompoundTag blockEntityTag = blockEntities.getCompound(i);
-            final int[] posTag = blockEntityTag.getIntArray("Pos");
-            final int x = posTag[0];
-            final int y = posTag[1];
-            final int z = posTag[2];
-            final BlockPos tileEntityPosition = new BlockPos(
-                    getWorldX(x, length - z - 1),
-                    getWorldY(y),
-                    getWorldZ(x, length - z - 1));
+        try (final ProblemReporter.ScopedCollector reporter = new ProblemReporter.ScopedCollector(LOGGER)) {
+            for (int i = 0; i < blockEntities.size(); i++) {
+                final CompoundTag blockEntityTag = blockEntities.getCompoundOrEmpty(i);
+                final int[] posTag = blockEntityTag.getIntArray("Pos").get();
+                final int x = posTag[0];
+                final int y = posTag[1];
+                final int z = posTag[2];
+                final BlockPos tileEntityPosition = new BlockPos(
+                        getWorldX(x, length - z - 1),
+                        getWorldY(y),
+                        getWorldZ(x, length - z - 1));
 
-            if (pBox.isInside(tileEntityPosition)) {
-                final BlockEntity blockEntity = pLevel.getBlockEntity(tileEntityPosition);
-                if (blockEntity != null) {
-                    blockEntity.loadWithComponents(blockEntityTag.getCompound("Data"), pLevel.registryAccess());
+                if (pBox.isInside(tileEntityPosition)) {
+                    final BlockEntity blockEntity = pLevel.getBlockEntity(tileEntityPosition);
+                    if (blockEntity != null) {
+                        final ValueInput valueInput = TagValueInput.create(reporter, pLevel.registryAccess(), blockEntityTag.getCompound("Data").get());
+                        blockEntity.loadWithComponents(valueInput);
+                    }
                 }
             }
         }
     }
 
     private void generateEntities(final WorldGenLevel pLevel, final BoundingBox pBox) {
-        final ListTag entities = schematic.getEntities();
-        final int length = schematic.getLength();
+        final ListTag entities = schematic.value().getEntities();
+        final int length = schematic.value().getLength();
 
-        for (int i = 0; i < entities.size(); i++) {
-            final CompoundTag entityTag = entities.getCompound(i);
+        try (final ProblemReporter.ScopedCollector reporter = new ProblemReporter.ScopedCollector(LOGGER)) {
+            for (int i = 0; i < entities.size(); i++) {
+                final CompoundTag entityTag = entities.getCompound(i).get();
 
-            String entityId = entityTag.getString("Id");
-            Optional<EntityType<?>> entityTypeOpt = EntityType.byString(entityId);
+                String entityId = entityTag.getString("Id").get();
+                Optional<EntityType<?>> entityTypeOpt = EntityType.byString(entityId);
 
-            if (entityTypeOpt.isPresent()) {
-                final EntityType<?> entityType = entityTypeOpt.get();
-                final Entity entity = entityType.create(pLevel.getLevel());
+                if (entityTypeOpt.isPresent()) {
+                    final EntityType<?> entityType = entityTypeOpt.get();
+                    final Entity entity = entityType.create(pLevel.getLevel(), EntitySpawnReason.LOAD);
 
-                if (entity != null) {
-                    ListTag posTag = entityTag.getList("Pos", Tag.TAG_DOUBLE);
-                    double x = posTag.getDouble(0);
-                    double y = posTag.getDouble(1);
-                    double z = posTag.getDouble(2);
-                    double newX = getWorldX(x, length - z - 1);
-                    double newY = getWorldY(y);
-                    double newZ = getWorldZ(x, length - z - 1);
+                    if (entity != null) {
+                        ListTag posTag = entityTag.getList("Pos").get();
+                        double x = posTag.getDouble(0).get();
+                        double y = posTag.getDouble(1).get();
+                        double z = posTag.getDouble(2).get();
+                        double newX = getWorldX(x, length - z - 1);
+                        double newY = getWorldY(y);
+                        double newZ = getWorldZ(x, length - z - 1);
 
-                    if (pBox.isInside(new BlockPos((int) newX, (int) newY, (int) newZ))) {
-                        final CompoundTag dataTag = entityTag.getCompound("Data");
-                        dataTag.putString("id", entityId);
-                        entity.load(dataTag);
-                        entity.setUUID(UUID.randomUUID());
-                        // Idk why. For some reason when orientation is west we shouldn't apply the mirror.
-                        if (getOrientation() == Direction.WEST && entity instanceof HangingEntity) {
-                            float yRotation = entity.rotate(getRotation());
-                            entity.moveTo(newX, newY, newZ, yRotation, entity.getXRot());
-                        } else {
-                            float yRotation = entity.rotate(getRotation());
-                            yRotation += entity.mirror(getMirror()) - entity.getYRot();
-                            entity.moveTo(newX, newY, newZ, yRotation, entity.getXRot());
+                        if (pBox.isInside(new BlockPos((int) newX, (int) newY, (int) newZ))) {
+                            final CompoundTag dataTag = entityTag.getCompound("Data").get();
+                            dataTag.putString("id", entityId);
+                            final ValueInput valueInput = TagValueInput.create(reporter, pLevel.registryAccess(), dataTag);
+                            entity.load(valueInput);
+                            entity.setUUID(UUID.randomUUID());
+                            // Idk why. For some reason when orientation is west we shouldn't apply the mirror.
+                            if (getOrientation() == Direction.WEST && entity instanceof HangingEntity) {
+                                float yRotation = entity.rotate(getRotation());
+                                entity.moveOrInterpolateTo(new Vec3(newX, newY, newZ), yRotation, entity.getXRot());
+                            } else {
+                                float yRotation = entity.rotate(getRotation());
+                                yRotation += entity.mirror(getMirror()) - entity.getYRot();
+                                entity.moveOrInterpolateTo(new Vec3(newX, newY, newZ), yRotation, entity.getXRot());
+                            }
+                            pLevel.addFreshEntity(entity);
                         }
-                        pLevel.addFreshEntity(entity);
                     }
                 }
             }

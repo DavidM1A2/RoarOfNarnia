@@ -18,15 +18,12 @@ public class ModEnglishLanguageProvider extends LanguageProvider {
         addItem(ModItems.GREEN_RING, "Green Ring");
         addItem(ModItems.DEBUG, "Debug");
 
-        addItem(ModItems.THE_MAGICIANS_NEPHEW, "The Magician's Nephew");
-
         addItem(ModItems.WORLD_WOOD_BOAT, "World Wood Boat");
         addItem(ModItems.WORLD_WOOD_CHEST_BOAT, "World Wood Chest Boat");
         addItem(ModItems.WORLD_WOOD_SIGN, "World Wood Sign");
         addItem(ModItems.WORLD_WOOD_HANGING_SIGN, "World Wood Hanging Sign");
 
         addBlock(ModBlocks.POSITIONAL_MARKER, "Positional Marker");
-        addBlock(ModBlocks.RING_BOX, "Ring Box");
 
         addBlock(ModBlocks.WORLD_WOOD, "World Wood");
         addBlock(ModBlocks.WORLD_WOOD_LOG, "World Wood Log");
@@ -44,8 +41,8 @@ public class ModEnglishLanguageProvider extends LanguageProvider {
         addBlock(ModBlocks.WORLD_WOOD_TRAP_DOOR, "World Wood Trapdoor");
         addBlock(ModBlocks.WORLD_WOOD_PRESSURE_PLATE, "World Wood Pressure Plate");
 
-        addEntityType(ModEntityTypes.DIGORY, "Digory");
-        addEntityType(ModEntityTypes.POLLY, "Polly");
+        addEntityType(ModEntityTypes.WORLD_WOOD_BOAT, "World Wood Boat");
+        addEntityType(ModEntityTypes.WORLD_WOOD_CHEST_BOAT, "World Wood Chest Boat");
 
         add("character.narnia.spectator.name", "Spectator");
         add("character.narnia.digory.name", "Digory");

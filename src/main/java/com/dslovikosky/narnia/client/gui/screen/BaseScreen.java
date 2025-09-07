@@ -9,7 +9,6 @@ import com.dslovikosky.narnia.client.gui.event.MouseScrollEvent;
 import com.dslovikosky.narnia.client.gui.layout.Dimensions;
 import com.dslovikosky.narnia.client.gui.layout.GuiUtility;
 import com.mojang.blaze3d.platform.InputConstants;
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
@@ -60,10 +59,6 @@ public abstract class BaseScreen extends Screen {
         this.contentPane.draw(pGuiGraphics);
         // Draw the overlay on top of the content pane
         this.contentPane.drawOverlay(pGuiGraphics);
-        // Enable blend so we can draw opacity
-        RenderSystem.enableBlend();
-        // Disable blend now that we drew the UI
-        RenderSystem.disableBlend();
     }
 
     public boolean drawGradientBackground() {

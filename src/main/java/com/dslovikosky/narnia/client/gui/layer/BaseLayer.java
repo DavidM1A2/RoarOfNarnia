@@ -3,15 +3,14 @@ package com.dslovikosky.narnia.client.gui.layer;
 import com.dslovikosky.narnia.client.gui.control.StackPane;
 import com.dslovikosky.narnia.client.gui.layout.Dimensions;
 import com.dslovikosky.narnia.client.gui.layout.GuiUtility;
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.LayeredDraw;
+import net.neoforged.neoforge.client.gui.GuiLayer;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
-public abstract class BaseLayer implements LayeredDraw.Layer {
+public abstract class BaseLayer implements GuiLayer {
     protected final StackPane contentPane;
     private boolean isLayerValid;
     private boolean isInitialized;
@@ -57,7 +56,7 @@ public abstract class BaseLayer implements LayeredDraw.Layer {
         this.contentPane.draw(guiGraphics);
         // Draw the overlay on top of the content pane
         this.contentPane.drawOverlay(guiGraphics);
-        RenderSystem.disableBlend();
+//        RenderSystem.disableBlend();
     }
 
     public abstract void initialize();

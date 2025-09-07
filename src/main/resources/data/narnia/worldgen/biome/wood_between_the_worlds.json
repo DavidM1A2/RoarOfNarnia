@@ -12,10 +12,7 @@
     "grass_color": 2934807,
     "grass_color_modifier": "none"
   },
-  "carvers": {
-    "air": [],
-    "liquid": []
-  },
+  "carvers": [],
   "features": [
     [],
     [],
@@ -36,10 +33,19 @@
       "minecraft:red_mushroom_normal",
       "narnia:wood_between_the_worlds_trees"
     ],
+    [],
+    [],
+    [],
+    [],
     []
   ],
   "creature_spawn_probability": 0.0,
   "spawners": {
+    "monster": [],
+    "creature": [],
+    "ambient": [],
+    "water_creature": [],
+    "water_ambient": []
   },
   "spawn_costs": {}
 }

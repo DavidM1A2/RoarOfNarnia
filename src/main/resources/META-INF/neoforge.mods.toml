@@ -47,7 +47,7 @@ description = '''${mod_description}'''
 
 ## The file is relative to the output directory of the resources, or the root path inside the jar when compiled
 ## The 'resources' directory represents the root output directory of the resources
-enumExtensions = "META-INF/enumextensions.json"
+# enumExtensions = "META-INF/enumextensions.json"
 
 # The coremods config file path is not configurable and is always loaded from META-INF/coremods.json
 

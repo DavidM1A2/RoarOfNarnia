@@ -1,18 +1,23 @@
 package com.dslovikosky.narnia.client.gui.font;
 
 import com.dslovikosky.narnia.client.gui.layout.TextAlignment;
-import com.mojang.blaze3d.platform.TextureUtil;
+import com.mojang.blaze3d.buffers.GpuBuffer;
+import com.mojang.blaze3d.platform.NativeImage;
+import com.mojang.blaze3d.systems.RenderPass;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.textures.AddressMode;
+import com.mojang.blaze3d.textures.FilterMode;
+import com.mojang.blaze3d.textures.GpuTexture;
+import com.mojang.blaze3d.textures.GpuTextureView;
+import com.mojang.blaze3d.textures.TextureFormat;
 import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.BufferUploader;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.MeshData;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.GameRenderer;
-import org.joml.Matrix4f;
-import org.lwjgl.opengl.GL11;
+import net.minecraft.client.renderer.RenderPipelines;
+import org.joml.Matrix3x2f;
 
 import javax.imageio.ImageIO;
 import java.awt.Color;
@@ -34,6 +39,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.OptionalInt;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -41,11 +47,12 @@ import java.util.stream.IntStream;
 public class TrueTypeFont {
     private static final float TEXT_SCALE_FACTOR = 0.2f;
     private static final Set<Integer> VALID_TEXTURE_SIZES = IntStream.rangeClosed(6, 12).map(it -> (int) Math.pow(2.0, it)).boxed().collect(Collectors.toSet());
+    private final GpuTexture texture;
+    private final GpuTextureView textureView;
     private final Map<Character, CharacterGlyph> glyphs = new HashMap<>();
     private final Font font;
     private final boolean antiAlias;
     private final FontMetrics fontMetrics;
-    private final int fontTextureId;
     private final int textureWidth;
     private final int textureHeight;
     private int charHeight;
@@ -62,7 +69,8 @@ public class TrueTypeFont {
         this.textureHeight = textureSize;
 
         // Render the characters into open GL format
-        this.fontTextureId = createTextureSheet(alphabet);
+        this.texture = createTextureSheet(alphabet);
+        this.textureView = RenderSystem.getDevice().createTextureView(texture);
     }
 
     private FontMetrics computeFontMetrics() {
@@ -110,7 +118,7 @@ public class TrueTypeFont {
         throw new IllegalArgumentException(String.format("Texture width/height could not be created as it would be larger than %s", VALID_TEXTURE_SIZES.stream().max(Integer::compareTo).get()));
     }
 
-    private int createTextureSheet(final Set<Character> alphabet) {
+    private GpuTexture createTextureSheet(final Set<Character> alphabet) {
         // Create a temp buffered image to write to
         final BufferedImage imgTemp = new BufferedImage(textureWidth, textureHeight, BufferedImage.TYPE_INT_ARGB);
         // Grab the graphics object to write to the image
@@ -174,7 +182,7 @@ public class TrueTypeFont {
         return loadImage(imgTemp);
     }
 
-    private int loadImage(final BufferedImage bufferedImage) {
+    private GpuTexture loadImage(final BufferedImage bufferedImage) {
         // Grab the width and height of the texture
         final int width = bufferedImage.getWidth();
         final int height = bufferedImage.getHeight();
@@ -197,123 +205,71 @@ public class TrueTypeFont {
         // We need to flip the bytes so they get drawn correctly
         byteBuffer.flip();
 
-        // Not very familiar with OpenGl here, but create an int buffer and generate the texture from the byte buffer
-        final int textureId = TextureUtil.generateTextureId();
-        RenderSystem.bindTextureForSetup(textureId);
+        final GpuTexture texture = RenderSystem.getDevice().createTexture("TrueTypeFont", 0, TextureFormat.RGBA8, width, height, 1, 1);
+        texture.setAddressMode(AddressMode.CLAMP_TO_EDGE, AddressMode.CLAMP_TO_EDGE);
+        texture.setTextureFilter(FilterMode.NEAREST, FilterMode.NEAREST, false);
 
-        RenderSystem.texParameter(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, GL11.GL_CLAMP);
-        RenderSystem.texParameter(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T, GL11.GL_CLAMP);
+        RenderSystem.getDevice().createCommandEncoder().writeToTexture(texture, byteBuffer.asIntBuffer(), NativeImage.Format.RGBA, 0, 0, 0, 0, width, height);
 
-        RenderSystem.texParameter(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
-        RenderSystem.texParameter(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
-
-        RenderSystem.pixelStore(GL11.GL_UNPACK_ROW_LENGTH, 0);
-        RenderSystem.pixelStore(GL11.GL_UNPACK_SKIP_ROWS, 0);
-        RenderSystem.pixelStore(GL11.GL_UNPACK_SKIP_PIXELS, 0);
-        RenderSystem.pixelStore(GL11.GL_UNPACK_ALIGNMENT, bytesPerPixel);
-
-        GL11.glTexImage2D(
-                GL11.GL_TEXTURE_2D,
-                0,
-                GL11.GL_RGBA8,
-                width,
-                height,
-                0,
-                GL11.GL_RGBA,
-                GL11.GL_UNSIGNED_BYTE,
-                byteBuffer
-        );
-
-        // Return the texture ID
-        return textureId;
+        return texture;
     }
 
-    public void drawString(final GuiGraphics guiGraphics, final float x, final float y, final String stringToDraw, final TextAlignment textAlignment, final Color rgba) {
-        // The current glyph being drawn
-        CharacterGlyph characterGlyph;
-        int drawX = 0;
-        int drawY = 0;
+    public void drawString(final GuiGraphics guiGraphics, float x, float y, String stringToDraw, TextAlignment textAlignment, Color rgba) {
+        final Matrix3x2f pose = guiGraphics.pose();
+        try (final RenderPass pass = RenderSystem.getDevice().createCommandEncoder().createRenderPass(texture::getLabel, textureView, OptionalInt.of(0xFFFFFFFF))) {
+            // Build one big buffer for the entire string
+            BufferBuilder builder = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
 
-        final PoseStack poseStack = guiGraphics.pose();
-        poseStack.pushPose();
-        RenderSystem.enableBlend();
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+            int drawY = 0;
 
-        final float red = rgba.getRed() / 255f;
-        final float green = rgba.getGreen() / 255f;
-        final float blue = rgba.getBlue() / 255f;
-        final float alpha = rgba.getAlpha() / 255f;
+            for (String line : stringToDraw.split("\n")) {
+                // Start X depending on alignment
+                int drawX = switch (textAlignment) {
+                    case ALIGN_CENTER -> -(this.fontMetrics.stringWidth(line) / 2);
+                    case ALIGN_LEFT -> 0;
+                    case ALIGN_RIGHT -> -this.fontMetrics.stringWidth(line);
+                };
 
-        RenderSystem.setShaderColor(red, green, blue, alpha);
+                // Add each glyph as a quad
+                for (char currentChar : line.toCharArray()) {
+                    final CharacterGlyph glyph = Optional.ofNullable(glyphs.get(currentChar)).orElse(glyphs.get('a'));
 
-        // Bind our custom texture sheet
-        RenderSystem.setShaderTexture(0, fontTextureId);
+                    float gx1 = drawX * TEXT_SCALE_FACTOR + x;
+                    float gy1 = drawY * TEXT_SCALE_FACTOR + y;
+                    float gx2 = (drawX + glyph.width) * TEXT_SCALE_FACTOR + x;
+                    float gy2 = (drawY + glyph.height) * TEXT_SCALE_FACTOR + y;
 
-        final Tesselator tessellator = Tesselator.getInstance();
-        for (final String line : stringToDraw.split("\n")) {
-            // Set start position
-            drawX = switch (textAlignment) {
-                case TextAlignment.ALIGN_CENTER -> -(this.fontMetrics.stringWidth(line) / 2);
-                case TextAlignment.ALIGN_LEFT -> 0;
-                case TextAlignment.ALIGN_RIGHT -> -this.fontMetrics.stringWidth(line);
-            };
+                    float u1 = glyph.storedX / (float) textureWidth;
+                    float v1 = glyph.storedY / (float) textureHeight;
+                    float u2 = (glyph.storedX + glyph.width) / (float) textureWidth;
+                    float v2 = (glyph.storedY + glyph.height) / (float) textureHeight;
 
-            // Draw each character
-            for (final char currentChar : line.toCharArray()) {
-                // Grab the glyph to draw, it will either be ascii or in the additional glyphs map
-                characterGlyph = Optional.ofNullable(glyphs.get(currentChar)).orElse(glyphs.get('a'));
-                // Draw a letter
-                drawQuad(
-                        poseStack,
-                        tessellator,
-                        drawX * TEXT_SCALE_FACTOR + x,
-                        drawY * TEXT_SCALE_FACTOR + y,
-                        (drawX + characterGlyph.width) * TEXT_SCALE_FACTOR + x,
-                        (drawY + characterGlyph.height) * TEXT_SCALE_FACTOR + y,
-                        characterGlyph.storedX,
-                        characterGlyph.storedY,
-                        characterGlyph.storedX + characterGlyph.width,
-                        characterGlyph.storedY + characterGlyph.height
-                );
-                drawX += characterGlyph.width;
+                    builder.addVertexWith2DPose(pose, gx1, gy2, 0f).setUv(u1, v2);
+                    builder.addVertexWith2DPose(pose, gx2, gy2, 0f).setUv(u2, v2);
+                    builder.addVertexWith2DPose(pose, gx2, gy1, 0f).setUv(u2, v1);
+                    builder.addVertexWith2DPose(pose, gx1, gy1, 0f).setUv(u1, v1);
+
+                    drawX += glyph.width;
+                }
+
+                drawY += charHeight;
             }
-            // On newline
-            drawY += charHeight;
+
+            // Build once at the end
+            final MeshData mesh = builder.buildOrThrow();
+            int indexCount = mesh.indexBuffer().remaining() / Integer.BYTES;
+
+            // Upload into GPU buffers
+            try (GpuBuffer vertexBuffer = RenderSystem.getDevice().createBuffer(texture::getLabel, 0, mesh.vertexBuffer());
+                 GpuBuffer indexBuffer = RenderSystem.getDevice().createBuffer(texture::getLabel, 0, mesh.indexBuffer())) {
+
+                pass.setPipeline(RenderPipelines.GUI_TEXTURED);
+                pass.setVertexBuffer(0, vertexBuffer);
+                pass.setIndexBuffer(indexBuffer, VertexFormat.IndexType.INT); // or SHORT
+
+                pass.draw(0, indexCount);
+            }
         }
-        poseStack.popPose();
-    }
-
-    /**
-     * Draws a glyph using a quad on the screen
-     */
-    private void drawQuad(
-            final PoseStack poseStack,
-            final Tesselator tessellator,
-            final float drawX, final float drawY,
-            final float drawX2, final float drawY2,
-            final float srcX, final float srcY,
-            final float srcX2, final float srcY2) {
-        final Matrix4f pose = poseStack.last().pose();
-        final BufferBuilder bufferBuilder = tessellator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
-
-        // Compute the width and height of the glyph to draw
-        final float drawWidth = Math.abs(drawX2 - drawX);
-        final float drawHeight = Math.abs(drawY2 - drawY);
-        // Compute the width and height of the glyph on the source
-        final float srcWidth = Math.abs(srcX2 - srcX);
-        final float srcHeight = Math.abs(srcY2 - srcY);
-
-        // Add the 4 vertices that are used to draw the glyph. These must be done in this order
-        bufferBuilder.addVertex(pose, drawX, drawY + drawHeight, 0f)
-                .setUv(srcX / textureWidth, (srcY + srcHeight) / textureHeight);
-        bufferBuilder.addVertex(pose, drawX + drawWidth, drawY + drawHeight, 0f)
-                .setUv((srcX + srcWidth) / textureWidth, (srcY + srcHeight) / textureHeight);
-        bufferBuilder.addVertex(pose, drawX + drawWidth, drawY, 0f)
-                .setUv((srcX + srcWidth) / textureWidth, srcY / textureHeight);
-        bufferBuilder.addVertex(pose, drawX, drawY, 0f)
-                .setUv(srcX / textureWidth, srcY / textureHeight);
-
-        BufferUploader.drawWithShader(bufferBuilder.buildOrThrow());
     }
 
     public int getWidth(final String string) {
@@ -322,10 +278,6 @@ public class TrueTypeFont {
 
     public int getHeight(final String string) {
         return Math.round(this.fontMetrics.getHeight() * TEXT_SCALE_FACTOR * (string.chars().filter(it -> it == '\n').count() + 1));
-    }
-
-    public void destroy() {
-        TextureUtil.releaseTextureId(fontTextureId);
     }
 
     private record CharacterGlyph(int width, int height, int storedX, int storedY) {

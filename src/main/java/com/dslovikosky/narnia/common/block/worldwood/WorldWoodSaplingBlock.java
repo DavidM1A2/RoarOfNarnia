@@ -1,6 +1,10 @@
 package com.dslovikosky.narnia.common.block.worldwood;
 
+import com.dslovikosky.narnia.common.constants.Constants;
 import com.dslovikosky.narnia.common.constants.ModTreeGrowers;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.SaplingBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -15,6 +19,7 @@ public class WorldWoodSaplingBlock extends SaplingBlock {
                 .randomTicks()
                 .instabreak()
                 .sound(SoundType.GRASS)
-                .pushReaction(PushReaction.DESTROY));
+                .pushReaction(PushReaction.DESTROY)
+                .setId(ResourceKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "world_wood_sapling"))));
     }
 }

@@ -3,7 +3,7 @@ plugins {
     id("eclipse")
     id("idea")
     id("maven-publish")
-    id("net.neoforged.gradle.userdev").version("7.0.145")
+    id("net.neoforged.gradle.userdev").version("7.0.192")
 }
 
 tasks.named<Wrapper>("wrapper").configure {
@@ -19,7 +19,6 @@ version = project.extra["mod_version"] as String
 group = project.extra["mod_group_id"] as String
 
 repositories {
-    mavenLocal()
 }
 
 base {
@@ -59,7 +58,7 @@ runs {
 
     create("server") {
         systemProperty("forge.enabledGameTestNamespaces", project.extra["mod_id"] as String)
-        programArgument("--nogui")
+        argument("--nogui")
     }
 
     // This run config launches GameTestServer and runs all registered gametests, then exits.
@@ -69,12 +68,12 @@ runs {
         systemProperty("forge.enabledGameTestNamespaces", project.extra["mod_id"] as String)
     }
 
-    create("data") {
+    create("clientData") {
         // example of overriding the workingDirectory set in configureEach above, uncomment if you want to use it
         // workingDirectory project.file("run-data")
 
         // Specify the modid for data generation, where to output the resulting resource, and where to look for existing resources.
-        programArguments.addAll(
+        arguments.addAll(
             "--mod",
             project.extra["mod_id"] as String,
             "--all",

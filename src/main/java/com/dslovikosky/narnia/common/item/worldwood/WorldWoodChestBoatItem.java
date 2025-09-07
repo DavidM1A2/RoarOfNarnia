@@ -6,11 +6,10 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.BoatItem;
-import net.minecraft.world.item.Item;
 
-public class WorldWoodBoatItem extends BoatItem {
-    public WorldWoodBoatItem() {
-        super(ModEntityTypes.WORLD_WOOD_BOAT.get(), new Item.Properties().stacksTo(1)
-                .setId(ResourceKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "world_wood_boat"))));
+public class WorldWoodChestBoatItem extends BoatItem {
+    public WorldWoodChestBoatItem() {
+        super(ModEntityTypes.WORLD_WOOD_CHEST_BOAT.get(), new Properties().stacksTo(1)
+                .setId(ResourceKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "world_wood_chest_boat"))));
     }
 }

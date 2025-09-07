@@ -1,37 +1,31 @@
 package com.dslovikosky.narnia.common.item;
 
-import com.dslovikosky.narnia.common.constants.ModDimensions;
+import com.dslovikosky.narnia.common.constants.Constants;
 import com.mojang.logging.LogUtils;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.portal.DimensionTransition;
+import net.minecraft.world.item.context.UseOnContext;
 import org.slf4j.Logger;
 
 public class DebugItem extends Item {
     private static final Logger LOG = LogUtils.getLogger();
 
     public DebugItem() {
-        super(new Properties().stacksTo(1));
+        super(new Properties().stacksTo(1)
+                .setId(ResourceKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "debug"))));
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(final Level pLevel, final Player pPlayer, final InteractionHand pUsedHand) {
-        if (!pLevel.isClientSide()) {
-            if (pPlayer.level().dimension() == ModDimensions.LONDON) {
-                final ServerLevel overworld = pLevel.getServer().getLevel(Level.OVERWORLD);
-                pPlayer.changeDimension(new DimensionTransition(overworld, pPlayer, e -> {
-                }));
-            } else {
-                final ServerLevel london = pLevel.getServer().getLevel(ModDimensions.LONDON);
-                pPlayer.changeDimension(new DimensionTransition(london, pPlayer, e -> {
-                }));
-            }
-        }
-        return super.use(pLevel, pPlayer, pUsedHand);
+    public InteractionResult useOn(UseOnContext context) {
+        return super.useOn(context);
+    }
+
+    @Override
+    public InteractionResult onItemUseFirst(ItemStack stack, UseOnContext context) {
+        return InteractionResult.SUCCESS;
     }
 }

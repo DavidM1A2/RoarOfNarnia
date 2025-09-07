@@ -1,20 +1,16 @@
 package com.dslovikosky.narnia.common.model.schematic;
 
-import com.dslovikosky.narnia.common.block.entity.PositionalMarkerBlockEntity;
-import com.dslovikosky.narnia.common.constants.ModBlockEntities;
 import com.dslovikosky.narnia.common.constants.ModBlocks;
 import com.dslovikosky.narnia.common.constants.ModRegistries;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.commands.arguments.blocks.BlockStateParser;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtAccounter;
 import net.minecraft.nbt.NbtIo;
-import net.minecraft.nbt.NbtUtils;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimplePreparableReloadListener;
@@ -67,21 +63,21 @@ public class SchematicManager extends SimplePreparableReloadListener<Map<Schemat
             throw new RuntimeException(e);
         }
 
-        final CompoundTag schematicTag = compoundTag.getCompound("Schematic");
+        final CompoundTag schematicTag = compoundTag.getCompound("Schematic").get();
 
-        final int width = schematicTag.getInt("Width");
-        final int height = schematicTag.getInt("Height");
-        final int length = schematicTag.getInt("Length");
-        final ListTag entities = schematicTag.getList("Entities", ListTag.TAG_COMPOUND);
+        final int width = schematicTag.getInt("Width").get();
+        final int height = schematicTag.getInt("Height").get();
+        final int length = schematicTag.getInt("Length").get();
+        final ListTag entities = schematicTag.getListOrEmpty("Entities");
 
-        final CompoundTag blocksCompound = schematicTag.getCompound("Blocks");
-        final ListTag blockEntities = blocksCompound.getList("BlockEntities", ListTag.TAG_COMPOUND);
-        final int[] blockData = decodeLEB128(blocksCompound.getByteArray("Data"));
-        final CompoundTag blockPalette = blocksCompound.getCompound("Palette");
+        final CompoundTag blocksCompound = schematicTag.getCompoundOrEmpty("Blocks");
+        final ListTag blockEntities = blocksCompound.getListOrEmpty("BlockEntities");
+        final int[] blockData = decodeLEB128(blocksCompound.getByteArray("Data").orElse(new byte[0]));
+        final CompoundTag blockPalette = blocksCompound.getCompoundOrEmpty("Palette");
 
         final Map<Integer, BlockState> blockPaletteLookup = new HashMap<>();
-        for (final String blockStateString : blockPalette.getAllKeys()) {
-            final int key = blockPalette.getInt(blockStateString);
+        for (final String blockStateString : blockPalette.keySet()) {
+            final int key = blockPalette.getInt(blockStateString).get();
             blockPaletteLookup.put(key, parseBlockState(registryAccess, blockStateString));
         }
 
@@ -97,24 +93,6 @@ public class SchematicManager extends SimplePreparableReloadListener<Map<Schemat
             for (int i = 0; i < blocks.length; i++) {
                 if (blocks[i].getBlock() == ModBlocks.POSITIONAL_MARKER.get()) {
                     blocks[i] = Blocks.AIR.defaultBlockState();
-                }
-            }
-        }
-        for (int i = 0; i < blockEntities.size(); i++) {
-            final CompoundTag blockEntityTag = blockEntities.getCompound(i);
-            if (blockEntityTag.getString("Id").equals(ModBlockEntities.POSITIONAL_MARKER.getId().toString())) {
-                final BlockPos basePos = NbtUtils.readBlockPos(blockEntityTag, "Pos").orElse(BlockPos.ZERO);
-                final CompoundTag data = blockEntityTag.getCompound("Data");
-
-                final String name = data.getString(PositionalMarkerBlockEntity.NBT_NAME);
-                final Vec3 offset = new Vec3(data.getDouble(PositionalMarkerBlockEntity.NBT_OFFSET_X),
-                        data.getDouble(PositionalMarkerBlockEntity.NBT_OFFSET_Y),
-                        data.getDouble(PositionalMarkerBlockEntity.NBT_OFFSET_Z));
-                markers.put(name, basePos.getBottomCenter().add(offset));
-
-                if (!generateMarkerBlocks) {
-                    blockEntities.remove(i);
-                    i--;
                 }
             }
         }
