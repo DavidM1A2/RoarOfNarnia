@@ -20,17 +20,10 @@ public class DataGenerationHandler {
     public void onGatherDataEvent(final GatherDataEvent.Client event) {
         final DataGenerator generator = event.getGenerator();
         final PackOutput output = generator.getPackOutput();
+        final CompletableFuture<HolderLookup.Provider> lookupProvider = event.getLookupProvider();
 
         generator.addProvider(true, new ModEnglishLanguageProvider(output));
         generator.addProvider(true, new ModSoundDefinitionsProvider(output));
-    }
-
-    @SubscribeEvent
-    public void onGatherDataEvent(final GatherDataEvent.Server event) {
-        final DataGenerator generator = event.getGenerator();
-        final PackOutput output = generator.getPackOutput();
-        final CompletableFuture<HolderLookup.Provider> lookupProvider = event.getLookupProvider();
-
         final ModBlockTagsProvider modBlockTagsProvider = new ModBlockTagsProvider(output, lookupProvider);
         generator.addProvider(true, modBlockTagsProvider);
         generator.addProvider(true, new ModItemTagsProvider(output, lookupProvider));

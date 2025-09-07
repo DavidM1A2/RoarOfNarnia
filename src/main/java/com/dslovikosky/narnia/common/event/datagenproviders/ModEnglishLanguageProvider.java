@@ -20,7 +20,7 @@ public class ModEnglishLanguageProvider extends LanguageProvider {
 
         addItem(ModItems.WORLD_WOOD_BOAT, "World Wood Boat");
         addItem(ModItems.WORLD_WOOD_CHEST_BOAT, "World Wood Chest Boat");
-        addItem(ModItems.WORLD_WOOD_SIGN, "World Wood Sign");
+        addItem(ModItems.WORLD_WOOD_STANDING_SIGN, "World Wood Sign");
         addItem(ModItems.WORLD_WOOD_HANGING_SIGN, "World Wood Hanging Sign");
 
         addBlock(ModBlocks.POSITIONAL_MARKER, "Positional Marker");
@@ -43,24 +43,6 @@ public class ModEnglishLanguageProvider extends LanguageProvider {
 
         addEntityType(ModEntityTypes.WORLD_WOOD_BOAT, "World Wood Boat");
         addEntityType(ModEntityTypes.WORLD_WOOD_CHEST_BOAT, "World Wood Chest Boat");
-
-        add("character.narnia.spectator.name", "Spectator");
-        add("character.narnia.digory.name", "Digory");
-        add("character.narnia.polly.name", "Polly");
-
-        add("book.narnia.the_magicians_nephew.name", "The Magician's Nephew");
-
-        add("chapter.narnia.the_magicians_nephew.the_wrong_door.title", "The Wrong Door");
-        add("chapter.narnia.the_magicians_nephew.digory_and_his_uncle.title", "Digory and His Uncle");
-        add("chapter.narnia.the_magicians_nephew.the_wood_between_the_worlds.title", "The Wood Between the Worlds");
-
-        add("chat.conversation.character_speaks", "[%1$s] %2$s");
-
-        add("gui.narnia.book.chapter_header", "Chapter %1$d\n%2$s");
-        add("gui.narnia.book.join_scene", "Join Scene");
-        add("gui.narnia.book.leave_scene", "Leave Scene");
-
-        add("screen.narnia.edit_positional_marker", "Edit Positional Marker");
 
         add("sound.narnia.ui.page_turn", "Page Turn");
     }

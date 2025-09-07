@@ -5,7 +5,7 @@ import com.dslovikosky.narnia.common.item.RingItem;
 import com.dslovikosky.narnia.common.item.worldwood.WorldWoodBoatItem;
 import com.dslovikosky.narnia.common.item.worldwood.WorldWoodChestBoatItem;
 import com.dslovikosky.narnia.common.item.worldwood.WorldWoodHangingSignItem;
-import com.dslovikosky.narnia.common.item.worldwood.WorldWoodSignItem;
+import com.dslovikosky.narnia.common.item.worldwood.WorldWoodStandingSignItem;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
@@ -18,7 +18,7 @@ public class ModItems {
 
     public static final DeferredItem<WorldWoodBoatItem> WORLD_WOOD_BOAT = ITEMS.register("world_wood_boat", WorldWoodBoatItem::new);
     public static final DeferredItem<WorldWoodChestBoatItem> WORLD_WOOD_CHEST_BOAT = ITEMS.register("world_wood_chest_boat", WorldWoodChestBoatItem::new);
-    public static final DeferredItem<WorldWoodSignItem> WORLD_WOOD_SIGN = ITEMS.register("world_wood_sign", WorldWoodSignItem::new);
+    public static final DeferredItem<WorldWoodStandingSignItem> WORLD_WOOD_STANDING_SIGN = ITEMS.register("world_wood_standing_sign", WorldWoodStandingSignItem::new);
     public static final DeferredItem<WorldWoodHangingSignItem> WORLD_WOOD_HANGING_SIGN = ITEMS.register("world_wood_hanging_sign", WorldWoodHangingSignItem::new);
 
     static {

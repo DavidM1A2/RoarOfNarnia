@@ -10,7 +10,6 @@ import net.minecraft.world.item.HangingSignItem;
 public class WorldWoodHangingSignItem extends HangingSignItem {
     public WorldWoodHangingSignItem() {
         super(ModBlocks.WORLD_WOOD_WALL_HANGING_SIGN.get(), ModBlocks.WORLD_WOOD_CEILING_HANGING_SIGN.get(), new Properties().stacksTo(16)
-                .useBlockDescriptionPrefix()
                 .setId(ResourceKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "world_wood_hanging_sign"))));
     }
 }

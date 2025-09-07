@@ -24,7 +24,7 @@ public class ModItemTagsProvider extends ItemTagsProvider {
 
         tag(ItemTags.BOATS).add(ModItems.WORLD_WOOD_BOAT.get().asItem());
         tag(ItemTags.CHEST_BOATS).add(ModItems.WORLD_WOOD_CHEST_BOAT.get().asItem());
-        tag(ItemTags.SIGNS).add(ModItems.WORLD_WOOD_SIGN.get().asItem());
+        tag(ItemTags.SIGNS).add(ModItems.WORLD_WOOD_STANDING_SIGN.get().asItem());
         tag(ItemTags.HANGING_SIGNS).add(ModItems.WORLD_WOOD_HANGING_SIGN.get().asItem());
 
         tag(ModItemTags.WORLD_WOOD).add(ModBlocks.WORLD_WOOD.get().asItem());
