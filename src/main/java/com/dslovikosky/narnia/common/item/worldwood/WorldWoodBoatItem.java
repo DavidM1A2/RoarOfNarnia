@@ -4,13 +4,12 @@ import com.dslovikosky.narnia.common.constants.Constants;
 import com.dslovikosky.narnia.common.constants.ModEntityTypes;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.BoatItem;
 import net.minecraft.world.item.Item;
 
 public class WorldWoodBoatItem extends BoatItem {
     public WorldWoodBoatItem() {
         super(ModEntityTypes.WORLD_WOOD_BOAT.get(), new Item.Properties().stacksTo(1)
-                .setId(ResourceKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "world_wood_boat"))));
+                .setId(ResourceKey.create(Registries.ITEM, Constants.modLocation("world_wood_boat"))));
     }
 }

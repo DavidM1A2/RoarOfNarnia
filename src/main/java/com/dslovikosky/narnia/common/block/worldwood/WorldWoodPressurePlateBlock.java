@@ -5,7 +5,6 @@ import com.dslovikosky.narnia.common.constants.ModBlockSetTypes;
 import com.dslovikosky.narnia.common.constants.ModBlocks;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.PressurePlateBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
@@ -21,6 +20,6 @@ public class WorldWoodPressurePlateBlock extends PressurePlateBlock {
                 .strength(0.5F)
                 .ignitedByLava()
                 .pushReaction(PushReaction.DESTROY)
-                .setId(ResourceKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "world_wood_pressure_plate"))));
+                .setId(ResourceKey.create(Registries.BLOCK, Constants.modLocation("world_wood_pressure_plate"))));
     }
 }

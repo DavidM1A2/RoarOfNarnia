@@ -4,7 +4,6 @@ import com.dslovikosky.narnia.common.constants.Constants;
 import com.dslovikosky.narnia.common.constants.ModBlockSetTypes;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.ButtonBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.PushReaction;
@@ -15,6 +14,6 @@ public class WorldWoodButtonBlock extends ButtonBlock {
                 .noCollission()
                 .strength(0.5F)
                 .pushReaction(PushReaction.DESTROY)
-                .setId(ResourceKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "world_wood_button"))));
+                .setId(ResourceKey.create(Registries.BLOCK, Constants.modLocation("world_wood_button"))));
     }
 }

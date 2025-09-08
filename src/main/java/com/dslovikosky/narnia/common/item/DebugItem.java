@@ -4,7 +4,6 @@ import com.dslovikosky.narnia.common.constants.Constants;
 import com.mojang.logging.LogUtils;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -16,7 +15,7 @@ public class DebugItem extends Item {
 
     public DebugItem() {
         super(new Properties().stacksTo(1)
-                .setId(ResourceKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "debug"))));
+                .setId(ResourceKey.create(Registries.ITEM, Constants.modLocation("debug"))));
     }
 
     @Override

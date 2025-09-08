@@ -10,7 +10,6 @@ import com.dslovikosky.narnia.client.gui.layout.TextAlignment;
 import com.dslovikosky.narnia.common.constants.Constants;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.StringUtil;
 import org.lwjgl.glfw.GLFW;
 
@@ -36,7 +35,7 @@ public class TextFieldPane extends GuiPane {
     private Color textColor = Color.WHITE;
 
     public TextFieldPane(final TrueTypeFont font) {
-        background = new ImagePane(ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "textures/gui/text_field_background.png"), ImagePane.DisplayMode.STRETCH);
+        background = new ImagePane(Constants.modLocation("textures/gui/text_field_background.png"), ImagePane.DisplayMode.STRETCH);
 
         textContainer = new StackPane();
         textContainer.setPrefSize(new Dimensions(1.0, 1.0, true));

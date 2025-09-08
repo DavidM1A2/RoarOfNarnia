@@ -52,6 +52,7 @@ public class ModModelProvider extends ModelProvider {
         itemModels.generateFlatItem(ModItems.YELLOW_RING.get(), ModelTemplates.FLAT_ITEM);
         itemModels.generateFlatItem(ModItems.GREEN_RING.get(), ModelTemplates.FLAT_ITEM);
         itemModels.generateFlatItem(ModItems.DEBUG.get(), ModelTemplates.FLAT_ITEM);
+        itemModels.generateFlatItem(ModItems.ASLANS_CHRONICLE.get(), ModelTemplates.FLAT_ITEM);
 
         itemModels.generateFlatItem(ModItems.WORLD_WOOD_BOAT.get(), ModelTemplates.FLAT_ITEM);
         itemModels.generateFlatItem(ModItems.WORLD_WOOD_CHEST_BOAT.get(), ModelTemplates.FLAT_ITEM);

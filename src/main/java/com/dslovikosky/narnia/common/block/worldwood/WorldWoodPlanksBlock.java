@@ -3,7 +3,6 @@ package com.dslovikosky.narnia.common.block.worldwood;
 import com.dslovikosky.narnia.common.constants.Constants;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -18,6 +17,6 @@ public class WorldWoodPlanksBlock extends Block {
                 .strength(2.0F, 3.0F)
                 .sound(SoundType.WOOD)
                 .ignitedByLava()
-                .setId(ResourceKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "world_wood_planks"))));
+                .setId(ResourceKey.create(Registries.BLOCK, Constants.modLocation("world_wood_planks"))));
     }
 }

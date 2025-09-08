@@ -16,8 +16,8 @@ import java.util.stream.IntStream;
 
 public class TtfFontLoader {
     private static final Map<TtfFontId, TrueTypeFont> FONT_CACHE = new HashMap<>();
-    private static final ResourceLocation CALIBRI_FONT = ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "font/calibri.ttf");
-    private static final ResourceLocation NARNIA_FONT = ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "font/narnia_bll.ttf");
+    private static final ResourceLocation CALIBRI_FONT = Constants.modLocation("font/calibri.ttf");
+    private static final ResourceLocation NARNIA_FONT = Constants.modLocation("font/narnia_bll.ttf");
 
     private static final Set<Character> NARNIA_CHARACTER_SET = " abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ".chars().boxed().map(it -> (char) it.byteValue()).collect(Collectors.toSet());
 

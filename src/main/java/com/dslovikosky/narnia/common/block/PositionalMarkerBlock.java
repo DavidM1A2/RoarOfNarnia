@@ -6,7 +6,6 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -30,7 +29,7 @@ public class PositionalMarkerBlock extends Block implements EntityBlock {
                 .noLootTable()
                 .noTerrainParticles()
                 .pushReaction(PushReaction.DESTROY)
-                .setId(ResourceKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "positional_marker"))));
+                .setId(ResourceKey.create(Registries.BLOCK, Constants.modLocation("positional_marker"))));
     }
 
     @Override
