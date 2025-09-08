@@ -8,6 +8,7 @@ import com.dslovikosky.narnia.common.utils.TeleportPlayerToPreTeleportPosition;
 import com.mojang.logging.LogUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -60,6 +61,9 @@ public class RingItem extends Item {
                 final double yMovement = entity.getDeltaMovement().y;
                 if (yMovement > -0.5) {
                     entity.push(0.0, -0.1, 0.0);
+                    if (entity instanceof ServerPlayer serverPlayer && entity.tickCount % 2 == 0) {
+                        serverPlayer.connection.send(new ClientboundSetEntityMotionPacket(entity));
+                    }
                 }
                 if (entity.onGround()) {
                     if (!level.isClientSide()) {
@@ -86,6 +90,9 @@ public class RingItem extends Item {
                 final double yMovement = entity.getDeltaMovement().y;
                 if (yMovement < 0.5) {
                     entity.push(0.0, 0.1, 0.0);
+                    if (entity instanceof ServerPlayer serverPlayer && entity.tickCount % 2 == 0) {
+                        serverPlayer.connection.send(new ClientboundSetEntityMotionPacket(entity));
+                    }
                 }
             }
         }
