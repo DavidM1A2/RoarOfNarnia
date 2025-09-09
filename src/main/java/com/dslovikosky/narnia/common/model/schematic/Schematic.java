@@ -3,10 +3,6 @@ package com.dslovikosky.narnia.common.model.schematic;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.Vec3;
-
-import java.util.Collections;
-import java.util.Map;
 
 public class Schematic {
     private final ResourceLocation id;
@@ -48,13 +44,6 @@ public class Schematic {
 
     public ListTag getEntities() {
         return schematicData.entities();
-    }
-
-    protected Map<String, Vec3> getMarkers() {
-        if (schematicData == null) {
-            return Collections.emptyMap();
-        }
-        return schematicData.markers();
     }
 
     protected void setSchematicData(final SchematicData schematicData) {

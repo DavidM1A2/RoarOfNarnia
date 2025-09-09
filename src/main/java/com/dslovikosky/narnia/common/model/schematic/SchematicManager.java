@@ -1,6 +1,5 @@
 package com.dslovikosky.narnia.common.model.schematic;
 
-import com.dslovikosky.narnia.common.constants.ModBlocks;
 import com.dslovikosky.narnia.common.constants.ModRegistries;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -16,9 +15,7 @@ import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimplePreparableReloadListener;
 import net.minecraft.util.FastBufferedInputStream;
 import net.minecraft.util.profiling.ProfilerFiller;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.io.IOException;
@@ -86,18 +83,7 @@ public class SchematicManager extends SimplePreparableReloadListener<Map<Schemat
             blocks[i] = blockPaletteLookup.get(blockData[i]);
         }
 
-        // Schematic pre-processing - Extract PositionalMarker data out from the schematic and remove unnecessary TEs
-        final boolean generateMarkerBlocks = false;
-        final Map<String, Vec3> markers = new HashMap<>();
-        if (!generateMarkerBlocks) {
-            for (int i = 0; i < blocks.length; i++) {
-                if (blocks[i].getBlock() == ModBlocks.POSITIONAL_MARKER.get()) {
-                    blocks[i] = Blocks.AIR.defaultBlockState();
-                }
-            }
-        }
-
-        return new SchematicData(width, height, length, blocks, blockEntities, entities, markers);
+        return new SchematicData(width, height, length, blocks, blockEntities, entities);
     }
 
     private BlockState parseBlockState(final RegistryAccess registryAccess, final String blockStateString) {

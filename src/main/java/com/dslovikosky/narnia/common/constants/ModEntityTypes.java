@@ -1,7 +1,7 @@
 package com.dslovikosky.narnia.common.constants;
 
-import com.dslovikosky.narnia.common.block.entity.WorldWoodBoat;
-import com.dslovikosky.narnia.common.block.entity.WorldWoodChestBoat;
+import com.dslovikosky.narnia.common.entity.world_wood_boat.WorldWoodBoat;
+import com.dslovikosky.narnia.common.entity.world_wood_boat.WorldWoodChestBoat;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.EntityType;

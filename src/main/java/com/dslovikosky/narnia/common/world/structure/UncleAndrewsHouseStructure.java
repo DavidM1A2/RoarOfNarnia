@@ -1,10 +1,8 @@
 package com.dslovikosky.narnia.common.world.structure;
 
-import com.dslovikosky.narnia.common.constants.ModSchematics;
 import com.dslovikosky.narnia.common.constants.ModStructureTypes;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.StructureType;
@@ -28,8 +26,8 @@ public class UncleAndrewsHouseStructure extends Structure {
         final int zPos = chunkPos.getMinBlockZ();
         final BlockPos blockPos = new BlockPos(xPos, 64, zPos);
 
-        return Optional.of(new GenerationStub(blockPos, builder ->
-                builder.addPiece(new SchematicStructurePiece(blockPos.getX(), blockPos.getY(), blockPos.getZ(), ModSchematics.UNCLE_ANDREWS_HOUSE, Direction.NORTH))));
+        return Optional.of(new GenerationStub(blockPos, builder -> {
+        }));
     }
 
     @Override

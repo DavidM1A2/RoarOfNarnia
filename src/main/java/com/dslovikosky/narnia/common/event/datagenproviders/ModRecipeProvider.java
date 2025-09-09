@@ -10,6 +10,7 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.RecipeProvider;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.SignItem;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Block;
@@ -45,6 +46,25 @@ public class ModRecipeProvider extends RecipeProvider {
         hangingSign(ModItems.WORLD_WOOD_HANGING_SIGN.get(), ModBlocks.WORLD_WOOD_PLANKS.get());
         woodenBoat(ModItems.WORLD_WOOD_BOAT.get(), ModBlocks.WORLD_WOOD_PLANKS.get());
         chestBoat(ModItems.WORLD_WOOD_CHEST_BOAT.get(), ModBlocks.WORLD_WOOD_PLANKS.get());
+
+        shaped(RecipeCategory.TRANSPORTATION, ModItems.YELLOW_RING)
+                .unlockedBy(getHasName(ModItems.SPARKLING_DUST), has(ModItems.SPARKLING_DUST))
+                .define('G', Items.GOLD_INGOT)
+                .define('I', Items.IRON_INGOT)
+                .define('D', ModItems.SPARKLING_DUST)
+                .pattern(" G ")
+                .pattern("IDI")
+                .pattern(" I ")
+                .save(output);
+        shaped(RecipeCategory.TRANSPORTATION, ModItems.GREEN_RING)
+                .unlockedBy(getHasName(ModItems.SPARKLING_DUST), has(ModItems.SPARKLING_DUST))
+                .define('G', Items.EMERALD)
+                .define('I', Items.IRON_INGOT)
+                .define('D', ModItems.SPARKLING_DUST)
+                .pattern(" G ")
+                .pattern("IDI")
+                .pattern(" I ")
+                .save(output);
     }
 
     private void buttonFromPlanks(final RecipeOutput recipeOutput, final ButtonBlock buttonBlock, final Block planks) {

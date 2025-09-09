@@ -18,13 +18,12 @@ public class ModEnglishLanguageProvider extends LanguageProvider {
         addItem(ModItems.GREEN_RING, "Green Ring");
         addItem(ModItems.DEBUG, "Debug");
         addItem(ModItems.ASLANS_CHRONICLE, "Aslan's Chronicle");
+        addItem(ModItems.SPARKLING_DUST, "Sparkling Dust");
 
         addItem(ModItems.WORLD_WOOD_BOAT, "World Wood Boat");
         addItem(ModItems.WORLD_WOOD_CHEST_BOAT, "World Wood Chest Boat");
         addItem(ModItems.WORLD_WOOD_STANDING_SIGN, "World Wood Sign");
         addItem(ModItems.WORLD_WOOD_HANGING_SIGN, "World Wood Hanging Sign");
-
-        addBlock(ModBlocks.POSITIONAL_MARKER, "Positional Marker");
 
         addBlock(ModBlocks.WORLD_WOOD, "World Wood");
         addBlock(ModBlocks.WORLD_WOOD_LOG, "World Wood Log");

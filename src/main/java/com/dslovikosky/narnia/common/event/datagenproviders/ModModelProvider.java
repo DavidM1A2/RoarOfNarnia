@@ -29,8 +29,6 @@ public class ModModelProvider extends ModelProvider {
 
     @Override
     protected void registerModels(BlockModelGenerators blockModels, ItemModelGenerators itemModels) {
-        blockModels.createTrivialCube(ModBlocks.POSITIONAL_MARKER.get());
-
         blockModels.woodProvider(ModBlocks.WORLD_WOOD_LOG.get()).logWithHorizontal(ModBlocks.WORLD_WOOD_LOG.get()).wood(ModBlocks.WORLD_WOOD.get());
         blockModels.woodProvider(ModBlocks.STRIPPED_WORLD_WOOD_LOG.get()).logWithHorizontal(ModBlocks.STRIPPED_WORLD_WOOD_LOG.get()).wood(ModBlocks.STRIPPED_WORLD_WOOD.get());
         blockModels.createTintedLeaves(ModBlocks.WORLD_WOOD_LEAVES.get(), TexturedModel.LEAVES, 0xFF28DC00);
@@ -53,6 +51,7 @@ public class ModModelProvider extends ModelProvider {
         itemModels.generateFlatItem(ModItems.GREEN_RING.get(), ModelTemplates.FLAT_ITEM);
         itemModels.generateFlatItem(ModItems.DEBUG.get(), ModelTemplates.FLAT_ITEM);
         itemModels.generateFlatItem(ModItems.ASLANS_CHRONICLE.get(), ModelTemplates.FLAT_ITEM);
+        itemModels.generateFlatItem(ModItems.SPARKLING_DUST.get(), ModelTemplates.FLAT_ITEM);
 
         itemModels.generateFlatItem(ModItems.WORLD_WOOD_BOAT.get(), ModelTemplates.FLAT_ITEM);
         itemModels.generateFlatItem(ModItems.WORLD_WOOD_CHEST_BOAT.get(), ModelTemplates.FLAT_ITEM);

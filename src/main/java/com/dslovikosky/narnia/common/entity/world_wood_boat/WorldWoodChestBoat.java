@@ -1,4 +1,4 @@
-package com.dslovikosky.narnia.common.block.entity;
+package com.dslovikosky.narnia.common.entity.world_wood_boat;
 
 import com.dslovikosky.narnia.common.constants.ModItems;
 import net.minecraft.world.entity.EntityType;
