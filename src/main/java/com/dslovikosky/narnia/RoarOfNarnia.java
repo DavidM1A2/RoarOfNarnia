@@ -24,6 +24,7 @@ import com.dslovikosky.narnia.common.event.PacketRegistrationHandler;
 import com.dslovikosky.narnia.common.event.RegistryRegister;
 import com.dslovikosky.narnia.common.event.SchematicHandler;
 import com.dslovikosky.narnia.common.event.SignBlockRegister;
+import com.dslovikosky.narnia.common.event.datagenproviders.ModBiomeModifierProvider;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
@@ -34,6 +35,7 @@ import net.neoforged.neoforge.common.NeoForge;
 public class RoarOfNarnia {
     public RoarOfNarnia(final IEventBus modBus) {
         modBus.register(new DataGenerationHandler());
+        modBus.register(new ModBiomeModifierProvider());
         modBus.register(new EntityRegistrationHandler());
         modBus.register(new BlockEntityRendererRegister());
         modBus.register(new SignBlockRegister());
