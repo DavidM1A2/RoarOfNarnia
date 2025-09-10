@@ -5,6 +5,7 @@ import com.dslovikosky.narnia.common.constants.ModDimensions;
 import com.dslovikosky.narnia.common.constants.ModMobEffects;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.food.FoodData;
 import net.minecraft.world.level.Level;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.event.entity.EntityTravelToDimensionEvent;
@@ -31,8 +32,15 @@ public class WoodBetweenTheWorldsHandler {
         player.setData(ModAttachmentTypes.TICKS_IN_WOOD_BETWEEN_THE_WORLDS, ticksInWoodBetweenTheWorlds + 1);
 
         // Re-apply drowsy based on ticksInWoodBetweenTheWorlds
-        if (player.tickCount % 10 == 0) {
-            player.addEffect(new MobEffectInstance(ModMobEffects.DROWSY, 40, ticksInWoodBetweenTheWorlds % TICKS_PER_DROWSY_LEVEL, true, false, true));
+        if (player.tickCount % 20 == 0) {
+            player.addEffect(new MobEffectInstance(ModMobEffects.DROWSY, 100, ticksInWoodBetweenTheWorlds / TICKS_PER_DROWSY_LEVEL, true, true, true));
+        }
+
+        // Feed the player so they never need to eat
+        final FoodData foodData = player.getFoodData();
+        final boolean needsSaturation = foodData.getSaturationLevel() < 4f;
+        if (player.tickCount % 20 == 0 && (needsSaturation || foodData.needsFood())) {
+            foodData.eat(1, needsSaturation ? 1f : 0f);
         }
     }
 
