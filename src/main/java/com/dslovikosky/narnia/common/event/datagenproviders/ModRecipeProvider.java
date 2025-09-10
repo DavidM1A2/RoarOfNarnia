@@ -65,6 +65,13 @@ public class ModRecipeProvider extends RecipeProvider {
                 .pattern("IDI")
                 .pattern(" I ")
                 .save(output);
+
+        shapeless(RecipeCategory.MISC, ModItems.ASLANS_CHRONICLE)
+                .unlockedBy(getHasName(ModItems.SPARKLING_DUST), has(ModItems.SPARKLING_DUST))
+                .requires(Items.PAPER, 3)
+                .requires(Items.LEATHER)
+                .requires(ModItems.SPARKLING_DUST)
+                .save(output);
     }
 
     private void buttonFromPlanks(final RecipeOutput recipeOutput, final ButtonBlock buttonBlock, final Block planks) {
