@@ -25,6 +25,7 @@ import com.dslovikosky.narnia.common.event.PacketRegistrationHandler;
 import com.dslovikosky.narnia.common.event.RegistryRegister;
 import com.dslovikosky.narnia.common.event.SchematicHandler;
 import com.dslovikosky.narnia.common.event.SignBlockRegister;
+import com.dslovikosky.narnia.common.event.WoodBetweenTheWorldsHandler;
 import com.dslovikosky.narnia.common.event.datagenproviders.ModDatapackObjectProvider;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
@@ -66,5 +67,6 @@ public class RoarOfNarnia {
 
         forgeBus.register(new AttachmentHandler());
         forgeBus.register(new SchematicHandler());
+        forgeBus.register(new WoodBetweenTheWorldsHandler());
     }
 }
