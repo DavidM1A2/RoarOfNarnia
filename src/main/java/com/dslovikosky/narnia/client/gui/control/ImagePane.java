@@ -5,6 +5,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.ARGB;
 import org.joml.Matrix3x2fStack;
 
 public class ImagePane extends GuiPane {
@@ -31,7 +32,8 @@ public class ImagePane extends GuiPane {
 
             // Check for invalid texture dimensions
             if (textureHeight > -1 && textureWidth > -1) {
-                guiGraphics.blit(RenderPipelines.GUI_TEXTURED, imageTexture, getX(), getY(), u, v, getWidth(), getHeight(), getWidth(), getHeight(), this.getColor().getRGB());
+                guiGraphics.blit(RenderPipelines.GUI_TEXTURED, imageTexture, getX(), getY(), u, v,
+                        getWidth(), getHeight(), getWidth(), getHeight(), ARGB.color(getColor().getAlpha(), getColor().getRed(), getColor().getGreen(), getColor().getBlue()));
             }
             poseStack.popMatrix();
 

@@ -10,12 +10,12 @@ import net.neoforged.neoforge.client.gui.GuiLayer;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
-public abstract class BaseLayer implements GuiLayer {
+public abstract class BaseGuiLayer implements GuiLayer {
     protected final StackPane contentPane;
     private boolean isLayerValid;
     private boolean isInitialized;
 
-    public BaseLayer() {
+    public BaseGuiLayer() {
         contentPane = new StackPane();
         contentPane.setPrefSize(GuiUtility.getWindowSizeInMCCoords());
         isLayerValid = false;

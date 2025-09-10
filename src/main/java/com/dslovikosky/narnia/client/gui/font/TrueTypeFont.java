@@ -205,7 +205,7 @@ public class TrueTypeFont {
         // We need to flip the bytes so they get drawn correctly
         byteBuffer.flip();
 
-        final GpuTexture texture = RenderSystem.getDevice().createTexture("TrueTypeFont", 0, TextureFormat.RGBA8, width, height, 1, 1);
+        final GpuTexture texture = RenderSystem.getDevice().createTexture("TrueTypeFont", GpuTexture.USAGE_COPY_DST, TextureFormat.RGBA8, width, height, 1, 1);
         texture.setAddressMode(AddressMode.CLAMP_TO_EDGE, AddressMode.CLAMP_TO_EDGE);
         texture.setTextureFilter(FilterMode.NEAREST, FilterMode.NEAREST, false);
 
@@ -260,8 +260,8 @@ public class TrueTypeFont {
             int indexCount = mesh.indexBuffer().remaining() / Integer.BYTES;
 
             // Upload into GPU buffers
-            try (GpuBuffer vertexBuffer = RenderSystem.getDevice().createBuffer(texture::getLabel, 0, mesh.vertexBuffer());
-                 GpuBuffer indexBuffer = RenderSystem.getDevice().createBuffer(texture::getLabel, 0, mesh.indexBuffer())) {
+            try (GpuBuffer vertexBuffer = RenderSystem.getDevice().createBuffer(texture::getLabel, GpuBuffer.USAGE_VERTEX, mesh.vertexBuffer());
+                 GpuBuffer indexBuffer = RenderSystem.getDevice().createBuffer(texture::getLabel, GpuBuffer.USAGE_INDEX, mesh.indexBuffer())) {
 
                 pass.setPipeline(RenderPipelines.GUI_TEXTURED);
                 pass.setVertexBuffer(0, vertexBuffer);
