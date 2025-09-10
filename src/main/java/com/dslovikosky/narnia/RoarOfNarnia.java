@@ -9,6 +9,7 @@ import com.dslovikosky.narnia.common.constants.ModDataComponentTypes;
 import com.dslovikosky.narnia.common.constants.ModEntityTypes;
 import com.dslovikosky.narnia.common.constants.ModFeatures;
 import com.dslovikosky.narnia.common.constants.ModItems;
+import com.dslovikosky.narnia.common.constants.ModMobEffects;
 import com.dslovikosky.narnia.common.constants.ModSchematics;
 import com.dslovikosky.narnia.common.constants.ModSoundEvents;
 import com.dslovikosky.narnia.common.constants.ModStructurePieces;
@@ -59,6 +60,7 @@ public class RoarOfNarnia {
         ModSchematics.SCHEMATICS.register(modBus);
         ModEntityTypes.ENTITY_TYPES.register(modBus);
         ModStructurePlacementTypes.STRUCTURE_PLACEMENTS.register(modBus);
+        ModMobEffects.MOB_EFFECTS.register(modBus);
 
         final IEventBus forgeBus = NeoForge.EVENT_BUS;
 

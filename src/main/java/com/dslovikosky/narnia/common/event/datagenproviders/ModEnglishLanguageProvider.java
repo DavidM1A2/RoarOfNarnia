@@ -4,6 +4,7 @@ import com.dslovikosky.narnia.common.constants.Constants;
 import com.dslovikosky.narnia.common.constants.ModBlocks;
 import com.dslovikosky.narnia.common.constants.ModEntityTypes;
 import com.dslovikosky.narnia.common.constants.ModItems;
+import com.dslovikosky.narnia.common.constants.ModMobEffects;
 import net.minecraft.data.PackOutput;
 import net.neoforged.neoforge.common.data.LanguageProvider;
 
@@ -43,6 +44,8 @@ public class ModEnglishLanguageProvider extends LanguageProvider {
 
         addEntityType(ModEntityTypes.WORLD_WOOD_BOAT, "World Wood Boat");
         addEntityType(ModEntityTypes.WORLD_WOOD_CHEST_BOAT, "World Wood Chest Boat");
+
+        addEffect(ModMobEffects.DROWSY, "Drowsy");
 
         add("sound.narnia.ui.page_turn", "Page Turn");
     }
