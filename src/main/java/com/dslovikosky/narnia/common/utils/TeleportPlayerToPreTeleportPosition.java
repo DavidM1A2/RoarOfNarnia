@@ -1,6 +1,6 @@
 package com.dslovikosky.narnia.common.utils;
 
-import com.dslovikosky.narnia.common.model.PreTeleportLocation;
+import com.dslovikosky.narnia.common.model.attachment_type.PreTeleportLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.portal.TeleportTransition;

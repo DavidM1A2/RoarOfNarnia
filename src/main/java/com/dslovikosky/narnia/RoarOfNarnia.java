@@ -1,5 +1,8 @@
 package com.dslovikosky.narnia;
 
+import com.dslovikosky.narnia.client.event.ClientReloadHandler;
+import com.dslovikosky.narnia.client.event.RenderPipelineRegister;
+import com.dslovikosky.narnia.client.event.WoodBetweenTheWorldsClientHandler;
 import com.dslovikosky.narnia.common.constants.Constants;
 import com.dslovikosky.narnia.common.constants.ModAttachmentTypes;
 import com.dslovikosky.narnia.common.constants.ModBlockEntities;
@@ -19,7 +22,6 @@ import com.dslovikosky.narnia.common.event.AttachmentHandler;
 import com.dslovikosky.narnia.common.event.BlockEntityRendererRegister;
 import com.dslovikosky.narnia.common.event.DataGenerationHandler;
 import com.dslovikosky.narnia.common.event.EntityRegistrationHandler;
-import com.dslovikosky.narnia.common.event.GuiLayerRegister;
 import com.dslovikosky.narnia.common.event.ModColorRegister;
 import com.dslovikosky.narnia.common.event.PacketRegistrationHandler;
 import com.dslovikosky.narnia.common.event.RegistryRegister;
@@ -45,7 +47,8 @@ public class RoarOfNarnia {
         modBus.register(new RegistryRegister());
         if (FMLLoader.getDist() == Dist.CLIENT) {
             modBus.register(new ModColorRegister());
-            modBus.register(new GuiLayerRegister());
+            modBus.register(new ClientReloadHandler());
+            modBus.register(new RenderPipelineRegister());
         }
 
         ModBlocks.BLOCKS.register(modBus);
@@ -68,5 +71,8 @@ public class RoarOfNarnia {
         forgeBus.register(new AttachmentHandler());
         forgeBus.register(new SchematicHandler());
         forgeBus.register(new WoodBetweenTheWorldsHandler());
+        if (FMLLoader.getDist() == Dist.CLIENT) {
+            forgeBus.register(new WoodBetweenTheWorldsClientHandler());
+        }
     }
 }

@@ -3,7 +3,7 @@ package com.dslovikosky.narnia.common.item;
 import com.dslovikosky.narnia.common.constants.Constants;
 import com.dslovikosky.narnia.common.constants.ModAttachmentTypes;
 import com.dslovikosky.narnia.common.constants.ModDimensions;
-import com.dslovikosky.narnia.common.model.PreTeleportLocation;
+import com.dslovikosky.narnia.common.model.attachment_type.PreTeleportLocation;
 import com.dslovikosky.narnia.common.utils.TeleportPlayerToPreTeleportPosition;
 import com.mojang.logging.LogUtils;
 import net.minecraft.core.BlockPos;

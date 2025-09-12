@@ -12,7 +12,10 @@ import net.neoforged.neoforge.event.entity.EntityTravelToDimensionEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 
 public class WoodBetweenTheWorldsHandler {
-    private static final int TICKS_PER_DROWSY_LEVEL = 60 * 20; // 1 min per level
+    public static final int TICKS_PER_DROWSY_LEVEL = 60 * 20; // 1 min per level
+    public static final int MAX_DROWSY_LEVEL = 10;
+    private static final double SWAY_SPEED = 0.05;
+    private static final double SWAY_PUSH_POWER = 0.003;
 
     @SubscribeEvent
     public void onPlayerTickEvent(final PlayerTickEvent.Pre event) {
@@ -23,17 +26,26 @@ public class WoodBetweenTheWorldsHandler {
             return;
         }
 
-        if (level.isClientSide()) {
-            return;
-        }
-
         // ticksInWoodBetweenTheWorlds++
         final int ticksInWoodBetweenTheWorlds = player.getData(ModAttachmentTypes.TICKS_IN_WOOD_BETWEEN_THE_WORLDS);
         player.setData(ModAttachmentTypes.TICKS_IN_WOOD_BETWEEN_THE_WORLDS, ticksInWoodBetweenTheWorlds + 1);
 
+        final int drowsinessAmplitude = Math.min(ticksInWoodBetweenTheWorlds / TICKS_PER_DROWSY_LEVEL, MAX_DROWSY_LEVEL - 1);
+
+        if (level.isClientSide()) {
+            if (drowsinessAmplitude >= MAX_DROWSY_LEVEL / 2) {
+                // Offset sin/cos so we don't go in circles, but instead around "randomly"
+                final double pushForceX = Math.sin(player.tickCount * SWAY_SPEED * 0.6) * drowsinessAmplitude * SWAY_PUSH_POWER;
+                final double pushForceZ = Math.cos(player.tickCount * SWAY_SPEED) * drowsinessAmplitude * SWAY_PUSH_POWER;
+                player.push(pushForceX, 0, pushForceZ);
+            }
+
+            return;
+        }
+
         // Re-apply drowsy based on ticksInWoodBetweenTheWorlds
         if (player.tickCount % 20 == 0) {
-            player.addEffect(new MobEffectInstance(ModMobEffects.DROWSY, 100, ticksInWoodBetweenTheWorlds / TICKS_PER_DROWSY_LEVEL, true, true, true));
+            player.addEffect(new MobEffectInstance(ModMobEffects.DROWSY, 100, drowsinessAmplitude, true, true, true));
         }
 
         // Feed the player so they never need to eat

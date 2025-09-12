@@ -1,4 +1,4 @@
-package com.dslovikosky.narnia.common.model;
+package com.dslovikosky.narnia.common.model.attachment_type;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
