@@ -48,5 +48,6 @@ public class ModEnglishLanguageProvider extends LanguageProvider {
         addEffect(ModMobEffects.DROWSY, "Drowsy");
 
         add("sound.narnia.ui.page_turn", "Page Turn");
+        add("sound.narnia.music.wood_between_the_worlds", "Wood Between the Worlds Music");
     }
 }

@@ -17,5 +17,10 @@ public class ModSoundDefinitionsProvider extends SoundDefinitionsProvider {
                 .subtitle("sound.narnia.ui.page_turn")
                 .replace(false)
                 .with(SoundDefinition.Sound.sound(Constants.modLocation("ui/page_turn"), SoundDefinition.SoundType.SOUND).stream(false)));
+
+        add(ModSoundEvents.WOOD_BETWEEN_THE_WORLDS.get(), SoundDefinition.definition()
+                .subtitle("sound.narnia.music.wood_between_the_worlds")
+                .replace(false)
+                .with(SoundDefinition.Sound.sound(Constants.modLocation("music/wood_between_the_worlds"), SoundDefinition.SoundType.SOUND).stream(true)));
     }
 }
