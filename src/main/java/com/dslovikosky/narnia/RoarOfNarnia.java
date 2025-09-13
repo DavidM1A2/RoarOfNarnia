@@ -25,6 +25,7 @@ import com.dslovikosky.narnia.common.event.EntityRegistrationHandler;
 import com.dslovikosky.narnia.common.event.ModColorRegister;
 import com.dslovikosky.narnia.common.event.PacketRegistrationHandler;
 import com.dslovikosky.narnia.common.event.RegistryRegister;
+import com.dslovikosky.narnia.common.event.RingHandler;
 import com.dslovikosky.narnia.common.event.SchematicHandler;
 import com.dslovikosky.narnia.common.event.SignBlockRegister;
 import com.dslovikosky.narnia.common.event.WoodBetweenTheWorldsHandler;
@@ -71,6 +72,7 @@ public class RoarOfNarnia {
         forgeBus.register(new AttachmentHandler());
         forgeBus.register(new SchematicHandler());
         forgeBus.register(new WoodBetweenTheWorldsHandler());
+        forgeBus.register(new RingHandler());
         if (FMLLoader.getDist() == Dist.CLIENT) {
             forgeBus.register(new WoodBetweenTheWorldsClientHandler());
         }
