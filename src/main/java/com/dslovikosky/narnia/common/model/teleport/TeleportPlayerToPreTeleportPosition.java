@@ -1,4 +1,4 @@
-package com.dslovikosky.narnia.common.utils;
+package com.dslovikosky.narnia.common.model.teleport;
 
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;

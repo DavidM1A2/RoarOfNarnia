@@ -3,9 +3,13 @@ package com.dslovikosky.narnia.common.event;
 import com.dslovikosky.narnia.common.constants.ModAttachmentTypes;
 import com.dslovikosky.narnia.common.constants.ModDimensions;
 import com.dslovikosky.narnia.common.constants.ModMobEffects;
+import com.google.common.collect.BiMap;
+import com.google.common.collect.ImmutableBiMap;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.food.FoodData;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.event.entity.EntityTravelToDimensionEvent;
@@ -14,6 +18,11 @@ import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 public class WoodBetweenTheWorldsHandler {
     public static final int TICKS_PER_DROWSY_LEVEL = 60 * 20; // 1 min per level
     public static final int MAX_DROWSY_LEVEL = 10;
+    public static final BiMap<ChunkPos, ResourceKey<Level>> POOL_LEVEL_MAP = ImmutableBiMap.<ChunkPos, ResourceKey<Level>>builder()
+            .put(new ChunkPos(0, 0), Level.OVERWORLD)
+            .put(new ChunkPos(1, 0), Level.NETHER)
+            .put(new ChunkPos(1, 1), Level.END)
+            .build();
     private static final double SWAY_SPEED = 0.05;
     private static final double SWAY_PUSH_POWER = 0.003;
 

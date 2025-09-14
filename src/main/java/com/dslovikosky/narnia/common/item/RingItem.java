@@ -3,28 +3,24 @@ package com.dslovikosky.narnia.common.item;
 import com.dslovikosky.narnia.common.constants.Constants;
 import com.dslovikosky.narnia.common.constants.ModAttachmentTypes;
 import com.dslovikosky.narnia.common.constants.ModDimensions;
+import com.dslovikosky.narnia.common.event.WoodBetweenTheWorldsHandler;
 import com.dslovikosky.narnia.common.model.attachment_type.PreRingTeleportData;
 import com.dslovikosky.narnia.common.model.attachment_type.PreRingTeleportEntry;
-import com.dslovikosky.narnia.common.utils.TeleportPlayerToPreTeleportPosition;
-import com.mojang.logging.LogUtils;
-import net.minecraft.core.BlockPos;
+import com.dslovikosky.narnia.common.model.teleport.TeleportPlayerToBottomOfCenterPool;
+import com.dslovikosky.narnia.common.model.teleport.TeleportPlayerToPreTeleportPosition;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.portal.TeleportTransition;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
-import org.slf4j.Logger;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Locale;
@@ -66,8 +62,10 @@ public class RingItem extends Item {
                 }
                 if (entity.onGround()) {
                     if (!level.isClientSide()) {
+                        final ChunkPos chunkPos = entity.chunkPosition();
+                        final ResourceKey<Level> returnDimension =
+                                WoodBetweenTheWorldsHandler.POOL_LEVEL_MAP.getOrDefault(chunkPos, Level.OVERWORLD);
                         final PreRingTeleportData preRingTeleportData = entity.getData(ModAttachmentTypes.PRE_RING_TELEPORT_DATA);
-                        final ResourceKey<Level> returnDimension = Level.OVERWORLD;
                         final ServerLevel overworld = level.getServer().getLevel(returnDimension);
                         final PreRingTeleportEntry entry = preRingTeleportData.get(returnDimension)
                                 .orElse(new PreRingTeleportEntry(Vec3.upFromBottomCenterOf(overworld.getSharedSpawnPos(), 1), 0f, 0f));
@@ -81,13 +79,15 @@ public class RingItem extends Item {
     private void tickHeldYellowRing(final Level level, final Entity entity) {
         if (ModDimensions.WOOD_BETWEEN_THE_WORLDS != level.dimension() && !level.isClientSide()) {
             final Vec3 position = entity.position();
+            final ResourceKey<Level> dimension = entity.level().dimension();
 
             final PreRingTeleportData preRingTeleportData = entity.getData(ModAttachmentTypes.PRE_RING_TELEPORT_DATA);
-            preRingTeleportData.set(entity.level().dimension(), new PreRingTeleportEntry(position, entity.getYRot(), entity.getXRot()));
+            preRingTeleportData.set(dimension, new PreRingTeleportEntry(position, entity.getYRot(), entity.getXRot()));
             entity.setData(ModAttachmentTypes.PRE_RING_TELEPORT_DATA, preRingTeleportData);
 
             final ServerLevel woodBetweenTheWorlds = level.getServer().getLevel(ModDimensions.WOOD_BETWEEN_THE_WORLDS);
-            entity.teleport(new TeleportTransition(woodBetweenTheWorlds, entity, new TeleportPlayerToBottomOfCenterPool(woodBetweenTheWorlds)));
+            final ChunkPos entryChunkPos = WoodBetweenTheWorldsHandler.POOL_LEVEL_MAP.inverse().getOrDefault(dimension, ChunkPos.ZERO);
+            entity.teleport(new TeleportTransition(woodBetweenTheWorlds, entity, new TeleportPlayerToBottomOfCenterPool(woodBetweenTheWorlds, entryChunkPos)));
             return;
         }
 
@@ -104,52 +104,5 @@ public class RingItem extends Item {
 
     public enum Type {
         YELLOW, GREEN
-    }
-
-    private record TeleportPlayerToBottomOfCenterPool(ServerLevel level) implements TeleportTransition.PostTeleportTransition {
-        private static final Logger LOG = LogUtils.getLogger();
-
-        @Override
-        public void onTransition(final Entity entity) {
-            final LevelChunk centerChunk = level.getChunk(0, 0);
-
-            double waterXSum = 0;
-            double waterZSum = 0;
-            int waterCount = 0;
-            for (int x = 0; x < 15; x++) {
-                for (int z = 0; z < 15; z++) {
-                    final BlockState blockState = centerChunk.getBlockState(new BlockPos(x, 30, z));
-                    if (blockState.is(Blocks.WATER)) {
-                        waterXSum += x;
-                        waterZSum += z;
-                        waterCount++;
-                    }
-                }
-            }
-
-            Vec3 playerSpawnSpot = null;
-            if (waterCount != 0) {
-                final double waterXCenter = waterXSum / waterCount;
-                final double waterZCenter = waterZSum / waterCount;
-                for (int y = 30; y > 0; y--) {
-                    final BlockState blockState = centerChunk.getBlockState(new BlockPos((int) waterXCenter, y, (int) waterZCenter));
-                    if (!blockState.is(Blocks.WATER)) {
-                        playerSpawnSpot = new Vec3(waterXCenter, y + 2, waterZCenter);
-                        break;
-                    }
-                }
-            }
-
-            if (playerSpawnSpot == null) {
-                LOG.error("Wood between the worlds had an invalid 0,0 chunk, spawning the player at 8, 30, 8");
-                playerSpawnSpot = new Vec3(8, 32, 8);
-            }
-
-            if (entity instanceof ServerPlayer) {
-                ((ServerPlayer) entity).connection.teleport(playerSpawnSpot.x(), playerSpawnSpot.y(), playerSpawnSpot.z(), 0f, 0f);
-            } else {
-                entity.setPos(playerSpawnSpot);
-            }
-        }
     }
 }
