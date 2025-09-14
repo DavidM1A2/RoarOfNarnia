@@ -3,7 +3,8 @@ package com.dslovikosky.narnia.common.item;
 import com.dslovikosky.narnia.common.constants.Constants;
 import com.dslovikosky.narnia.common.constants.ModAttachmentTypes;
 import com.dslovikosky.narnia.common.constants.ModDimensions;
-import com.dslovikosky.narnia.common.model.attachment_type.PreTeleportLocation;
+import com.dslovikosky.narnia.common.model.attachment_type.PreRingTeleportData;
+import com.dslovikosky.narnia.common.model.attachment_type.PreRingTeleportEntry;
 import com.dslovikosky.narnia.common.utils.TeleportPlayerToPreTeleportPosition;
 import com.mojang.logging.LogUtils;
 import net.minecraft.core.BlockPos;
@@ -65,9 +66,12 @@ public class RingItem extends Item {
                 }
                 if (entity.onGround()) {
                     if (!level.isClientSide()) {
-                        final PreTeleportLocation preTeleportLocation = entity.getData(ModAttachmentTypes.PRE_YELLOW_RING_TELEPORT_LOCATION);
-                        final ServerLevel overworld = level.getServer().getLevel(preTeleportLocation.level());
-                        entity.teleport(new TeleportTransition(overworld, entity, new TeleportPlayerToPreTeleportPosition(preTeleportLocation)));
+                        final PreRingTeleportData preRingTeleportData = entity.getData(ModAttachmentTypes.PRE_RING_TELEPORT_DATA);
+                        final ResourceKey<Level> returnDimension = Level.OVERWORLD;
+                        final ServerLevel overworld = level.getServer().getLevel(returnDimension);
+                        final PreRingTeleportEntry entry = preRingTeleportData.get(returnDimension)
+                                .orElse(new PreRingTeleportEntry(Vec3.upFromBottomCenterOf(overworld.getSharedSpawnPos(), 1), 0f, 0f));
+                        entity.teleport(new TeleportTransition(overworld, entity, new TeleportPlayerToPreTeleportPosition(entry.position(), entry.yaw(), entry.pitch())));
                     }
                 }
             }
@@ -76,7 +80,12 @@ public class RingItem extends Item {
 
     private void tickHeldYellowRing(final Level level, final Entity entity) {
         if (ModDimensions.WOOD_BETWEEN_THE_WORLDS != level.dimension() && !level.isClientSide()) {
-            entity.setData(ModAttachmentTypes.PRE_YELLOW_RING_TELEPORT_LOCATION, new PreTeleportLocation(entity.position().x(), entity.position().y(), entity.position().z(), entity.level().dimension()));
+            final Vec3 position = entity.position();
+
+            final PreRingTeleportData preRingTeleportData = entity.getData(ModAttachmentTypes.PRE_RING_TELEPORT_DATA);
+            preRingTeleportData.set(entity.level().dimension(), new PreRingTeleportEntry(position, entity.getYRot(), entity.getXRot()));
+            entity.setData(ModAttachmentTypes.PRE_RING_TELEPORT_DATA, preRingTeleportData);
+
             final ServerLevel woodBetweenTheWorlds = level.getServer().getLevel(ModDimensions.WOOD_BETWEEN_THE_WORLDS);
             entity.teleport(new TeleportTransition(woodBetweenTheWorlds, entity, new TeleportPlayerToBottomOfCenterPool(woodBetweenTheWorlds)));
             return;
