@@ -1,5 +1,6 @@
 package com.dslovikosky.narnia.client.renderer;
 
+import com.dslovikosky.narnia.common.constants.Constants;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
@@ -20,10 +21,10 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class CharnSkyRenderer extends DimensionSpecialEffects {
-    private static final ResourceLocation SUN_TEXTURE = ResourceLocation.withDefaultNamespace("textures/environment/sun.png");
+    private static final ResourceLocation SUN_TEXTURE = Constants.modLocation("textures/environment/charn_sun.png");
     private static final RenderType SUN_RENDER_TYPE = RenderType.celestial(SUN_TEXTURE);
-    private static final int TINT_COLOR = ARGB.color(255, 255, 50, 50); // bright red sun
-    private static final float SUN_SIZE = 30f;
+    private static final int TINT_COLOR = ARGB.color(255, 255, 50, 50);
+    private static final float SUN_SIZE = 50f;
     private static final float SUN_Y = 100f;
 
     public CharnSkyRenderer() {
