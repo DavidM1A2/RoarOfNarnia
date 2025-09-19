@@ -22,5 +22,10 @@ public class ModSoundDefinitionsProvider extends SoundDefinitionsProvider {
                 .subtitle("sound.narnia.music.wood_between_the_worlds")
                 .replace(false)
                 .with(SoundDefinition.Sound.sound(Constants.modLocation("music/wood_between_the_worlds"), SoundDefinition.SoundType.SOUND).stream(true)));
+
+        add(ModSoundEvents.SPELL_CAST.get(), SoundDefinition.definition()
+                .subtitle("sound.narnia.entity.spell_cast")
+                .replace(false)
+                .with(SoundDefinition.Sound.sound(Constants.modLocation("entity/spell_cast"), SoundDefinition.SoundType.SOUND).stream(false)));
     }
 }

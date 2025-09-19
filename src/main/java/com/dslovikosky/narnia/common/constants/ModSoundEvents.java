@@ -11,4 +11,6 @@ public class ModSoundEvents {
     public static final DeferredHolder<SoundEvent, ? extends SoundEvent> PAGE_TURN = SOUND_EVENTS.register("page_turn", SoundEvent::createVariableRangeEvent);
 
     public static final DeferredHolder<SoundEvent, ? extends SoundEvent> WOOD_BETWEEN_THE_WORLDS = SOUND_EVENTS.register("wood_between_the_worlds", SoundEvent::createVariableRangeEvent);
+
+    public static final DeferredHolder<SoundEvent, ? extends SoundEvent> SPELL_CAST = SOUND_EVENTS.register("spell_cast", SoundEvent::createVariableRangeEvent);
 }

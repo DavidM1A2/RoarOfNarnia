@@ -1,0 +1,14 @@
+package com.dslovikosky.narnia.common.constants;
+
+import com.dslovikosky.narnia.common.spell.component.powerSource.CreativeSpellPowerSource;
+import com.dslovikosky.narnia.common.spell.component.powerSource.SpellScrollSpellPowerSource;
+import com.dslovikosky.narnia.common.spell.component.powerSource.base.SpellPowerSource;
+import net.neoforged.neoforge.registries.DeferredHolder;
+import net.neoforged.neoforge.registries.DeferredRegister;
+
+public class ModSpellPowerSources {
+    public static final DeferredRegister<SpellPowerSource<?>> SPELL_POWER_SOURCES = DeferredRegister.create(ModRegistries.SPELL_POWER_SOURCES, Constants.MOD_ID);
+
+    public static final DeferredHolder<SpellPowerSource<?>, CreativeSpellPowerSource> CREATIVE = SPELL_POWER_SOURCES.register("dig", CreativeSpellPowerSource::new);
+    public static final DeferredHolder<SpellPowerSource<?>, SpellScrollSpellPowerSource> SPELL_SCROLL = SPELL_POWER_SOURCES.register("spell_scroll", SpellScrollSpellPowerSource::new);
+}
