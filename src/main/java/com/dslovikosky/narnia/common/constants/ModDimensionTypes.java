@@ -6,4 +6,5 @@ import net.minecraft.world.level.dimension.DimensionType;
 
 public class ModDimensionTypes {
     public static final ResourceKey<DimensionType> WOOD_BETWEEN_THE_WORLDS = ResourceKey.create(Registries.DIMENSION_TYPE, Constants.modLocation("wood_between_the_worlds"));
+    public static final ResourceKey<DimensionType> DARK_CITY_RUINS = ResourceKey.create(Registries.DIMENSION_TYPE, Constants.modLocation("dark_city_ruins"));
 }

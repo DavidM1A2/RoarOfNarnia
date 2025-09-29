@@ -65,6 +65,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.OptionalLong;
 
+import static com.dslovikosky.narnia.client.constants.ModRenderers.CHARN_SKY_RENDERER_ID;
+
 public class ModDatapackObjectProvider {
     @SubscribeEvent
     public void onDataGatherEvent(final GatherDataEvent.Client event) {
@@ -99,6 +101,24 @@ public class ModDatapackObjectProvider {
                             Optional.empty(),
                             new DimensionType.MonsterSettings(false, false, ConstantInt.of(0), 0)
                     ));
+                    bootstrap.register(ModDimensionTypes.DARK_CITY_RUINS, new DimensionType(
+                            OptionalLong.empty(),
+                            false,
+                            false,
+                            false,
+                            false,
+                            1.0,
+                            false,
+                            true,
+                            0,
+                            128,
+                            64,
+                            BlockTags.INFINIBURN_OVERWORLD,
+                            CHARN_SKY_RENDERER_ID,
+                            0.0f,
+                            Optional.empty(),
+                            new DimensionType.MonsterSettings(false, false, ConstantInt.of(0), 0)
+                    ));
                 })
                 .add(Registries.BIOME, bootstrap -> {
                     final HolderGetter<PlacedFeature> placedFeatures = bootstrap.lookup(Registries.PLACED_FEATURE);
@@ -130,20 +150,52 @@ public class ModDatapackObjectProvider {
                                     .creatureGenerationProbability(0f)
                                     .build())
                             .build());
+                    bootstrap.register(ModBiomes.DARK_CITY_RUINS, new Biome.BiomeBuilder()
+                            .hasPrecipitation(false)
+                            .temperature(0.0f)
+                            .temperatureAdjustment(Biome.TemperatureModifier.NONE)
+                            .downfall(0.0f)
+                            .specialEffects(new BiomeSpecialEffects.Builder()
+                                    .fogColor(new Color(50, 0, 0, 0).getRGB())
+                                    .skyColor(new Color(0, 0, 0, 0).getRGB())
+                                    .waterColor(new Color(50, 0, 0, 0).getRGB())
+                                    .waterFogColor(new Color(50, 0, 0, 0).getRGB())
+                                    .foliageColorOverride(new Color(44, 0, 23, 0).getRGB())
+                                    .grassColorOverride(new Color(44, 0, 23, 0).getRGB())
+                                    .grassColorModifier(BiomeSpecialEffects.GrassColorModifier.NONE)
+                                    .build())
+                            .generationSettings(new BiomeGenerationSettings.Builder(placedFeatures, configuredWorldCarver).build())
+                            .mobSpawnSettings(new MobSpawnSettings.Builder()
+                                    .creatureGenerationProbability(0f)
+                                    .build())
+                            .build());
                 })
                 .add(Registries.LEVEL_STEM, bootstrap -> {
                     final HolderGetter<Biome> biomes = bootstrap.lookup(Registries.BIOME);
                     final HolderGetter<DimensionType> dimensionTypes = bootstrap.lookup(Registries.DIMENSION_TYPE);
-                    final List<FlatLayerInfo> flatLayerInfos = List.of(
+                    // Wood between the Worlds
+                    final List<FlatLayerInfo> wbwFlatLayerInfos = List.of(
                             new FlatLayerInfo(1, Blocks.BEDROCK),
                             new FlatLayerInfo(30, Blocks.DIRT),
                             new FlatLayerInfo(1, Blocks.GRASS_BLOCK));
-                    final FlatLevelGeneratorSettings flatLevelGeneratorSettings =
+                    final FlatLevelGeneratorSettings wbwFlatLevelGeneratorSettings =
                             new FlatLevelGeneratorSettings(Optional.of(HolderSet.direct()), biomes.getOrThrow(ModBiomes.WOOD_BETWEEN_THE_WORLDS), Collections.emptyList())
-                                    .withBiomeAndLayers(flatLayerInfos, Optional.empty(), biomes.getOrThrow(ModBiomes.WOOD_BETWEEN_THE_WORLDS));
-                    flatLevelGeneratorSettings.setDecoration();
+                                    .withBiomeAndLayers(wbwFlatLayerInfos, Optional.empty(), biomes.getOrThrow(ModBiomes.WOOD_BETWEEN_THE_WORLDS));
+                    wbwFlatLevelGeneratorSettings.setDecoration();
+                    final FlatLevelSource wbwFlatLevelSource = new FlatLevelSource(wbwFlatLevelGeneratorSettings);
                     bootstrap.register(ModLevelStems.WOOD_BETWEEN_THE_WORLDS,
-                            new LevelStem(dimensionTypes.getOrThrow(ModDimensionTypes.WOOD_BETWEEN_THE_WORLDS), new FlatLevelSource(flatLevelGeneratorSettings)));
+                            new LevelStem(dimensionTypes.getOrThrow(ModDimensionTypes.WOOD_BETWEEN_THE_WORLDS), wbwFlatLevelSource));
+                    // Dark City Ruins
+                    final List<FlatLayerInfo> dcrFlatLayerInfos = List.of(
+                            new FlatLayerInfo(1, Blocks.BEDROCK),
+                            new FlatLayerInfo(30, Blocks.SANDSTONE),
+                            new FlatLayerInfo(1, Blocks.SAND));
+                    final FlatLevelGeneratorSettings dcrFlatLevelGeneratorSettings =
+                            new FlatLevelGeneratorSettings(Optional.of(HolderSet.direct()), biomes.getOrThrow(ModBiomes.DARK_CITY_RUINS), Collections.emptyList())
+                                    .withBiomeAndLayers(dcrFlatLayerInfos, Optional.empty(), biomes.getOrThrow(ModBiomes.DARK_CITY_RUINS));
+                    final FlatLevelSource dcrFlatLevelSource = new FlatLevelSource(dcrFlatLevelGeneratorSettings);
+                    bootstrap.register(ModLevelStems.DARK_CITY_RUINS,
+                            new LevelStem(dimensionTypes.getOrThrow(ModDimensionTypes.DARK_CITY_RUINS), dcrFlatLevelSource));
                 })
                 .add(Registries.CONFIGURED_FEATURE, bootstrap -> {
                     bootstrap.register(ModConfiguredFeatures.SMALL_WATER_POOL, new ConfiguredFeature<>(
