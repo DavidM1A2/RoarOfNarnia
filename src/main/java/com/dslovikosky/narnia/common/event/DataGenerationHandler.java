@@ -5,6 +5,7 @@ import com.dslovikosky.narnia.common.event.datagenproviders.ModEnglishLanguagePr
 import com.dslovikosky.narnia.common.event.datagenproviders.ModItemTagsProvider;
 import com.dslovikosky.narnia.common.event.datagenproviders.ModLootTableProvider;
 import com.dslovikosky.narnia.common.event.datagenproviders.ModModelProvider;
+import com.dslovikosky.narnia.common.event.datagenproviders.ModParticleDescriptionProvider;
 import com.dslovikosky.narnia.common.event.datagenproviders.ModRecipeProvider;
 import com.dslovikosky.narnia.common.event.datagenproviders.ModSoundDefinitionsProvider;
 import net.minecraft.core.HolderLookup;
@@ -30,5 +31,6 @@ public class DataGenerationHandler {
         generator.addProvider(true, new ModLootTableProvider(output, lookupProvider));
         generator.addProvider(true, new ModRecipeProvider.Runner(output, lookupProvider));
         generator.addProvider(true, new ModModelProvider(output));
+        generator.addProvider(true, new ModParticleDescriptionProvider(output));
     }
 }

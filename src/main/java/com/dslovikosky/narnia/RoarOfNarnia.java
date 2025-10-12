@@ -1,6 +1,7 @@
 package com.dslovikosky.narnia;
 
 import com.dslovikosky.narnia.client.event.ClientReloadHandler;
+import com.dslovikosky.narnia.client.event.ParticleRegister;
 import com.dslovikosky.narnia.client.event.RenderPipelineRegister;
 import com.dslovikosky.narnia.client.event.WoodBetweenTheWorldsClientHandler;
 import com.dslovikosky.narnia.common.constants.Constants;
@@ -13,6 +14,7 @@ import com.dslovikosky.narnia.common.constants.ModEntityTypes;
 import com.dslovikosky.narnia.common.constants.ModFeatures;
 import com.dslovikosky.narnia.common.constants.ModItems;
 import com.dslovikosky.narnia.common.constants.ModMobEffects;
+import com.dslovikosky.narnia.common.constants.ModParticleTypes;
 import com.dslovikosky.narnia.common.constants.ModSchematics;
 import com.dslovikosky.narnia.common.constants.ModSoundEvents;
 import com.dslovikosky.narnia.common.constants.ModSpellDeliveryMethods;
@@ -55,6 +57,7 @@ public class RoarOfNarnia {
             modBus.register(new ModColorRegister());
             modBus.register(new ClientReloadHandler());
             modBus.register(new RenderPipelineRegister());
+            modBus.register(new ParticleRegister());
         }
 
         ModBlocks.BLOCKS.register(modBus);
@@ -74,6 +77,7 @@ public class RoarOfNarnia {
         ModSpellEffects.SPELL_EFFECTS.register(modBus);
         ModSpellPowerSources.SPELL_POWER_SOURCES.register(modBus);
         ModSpellDeliveryMethods.SPELL_DELIVERY_METHODS.register(modBus);
+        ModParticleTypes.PARTICLES.register(modBus);
 
         final IEventBus forgeBus = NeoForge.EVENT_BUS;
 
