@@ -43,10 +43,6 @@ public abstract class BaseScreen extends Screen {
 
     @Override
     public void render(final GuiGraphics pGuiGraphics, final int pMouseX, final int pMouseY, final float pPartialTick) {
-        // If we want a gradient background draw that background
-        if (this.drawGradientBackground()) {
-            this.renderBackground(pGuiGraphics, pMouseX, pMouseY, pPartialTick);
-        }
         // Trigger an update if the screen has changed size
         if (!contentPane.getPrefSize().equals(GuiUtility.getWindowSizeInMCCoords())) {
             isScreenValid = false;
@@ -63,6 +59,14 @@ public abstract class BaseScreen extends Screen {
 
     public boolean drawGradientBackground() {
         return true;
+    }
+
+    @Override
+    public void renderBackground(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+        // If we want a gradient background draw that background
+        if (drawGradientBackground()) {
+            super.renderBackground(guiGraphics, mouseX, mouseY, partialTick);
+        }
     }
 
     @Override

@@ -31,7 +31,7 @@ public class LabelComponent extends GuiComponentWithEvents {
                 default -> 0f;
             };
             // Center align text on the y-axis
-            final float yCoord = getY() + this.getHeight() / 2f - this.font.getHeight(this.fitText) / 2f;
+            final float yCoord = getY() + this.getHeight() / 2f - this.font.getBaselineOffset() / 2f;
 
             // Draw the string at (x, y) with the correct color and scale
             this.font.drawString(guiGraphics, xCoord, yCoord, fitText, textAlignment, textColor);

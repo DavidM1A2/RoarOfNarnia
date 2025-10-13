@@ -340,6 +340,12 @@ public class ModEnglishLanguageProvider extends LanguageProvider {
         add("property_error.narnia.registry_entry.missing_entry", "%1$s does not exist");
         add("property_error.narnia.registry_entry.disallowed_entry", "%1$s is not allowed");
 
+        add("screen.narnia.power_source_selection", "Power Source Selection");
+
+        add("key_categories.narnia", "Narnia");
+
+        add("key.narnia.power_source_selection", "Power Source Selection");
+
         add("message.narnia.spell.wrong_dimension", "My mind is too clouded to cast spells here.");
         add("message.narnia.spell.invalid", "Invalid spell. Make sure to have delivery methods on each spell stage!");
         add("message.narnia.spell.power_source_changed", "§oSpells will be cast with %1$s");
