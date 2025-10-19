@@ -173,6 +173,7 @@ public class ModDatapackObjectProvider {
                 .add(Registries.LEVEL_STEM, bootstrap -> {
                     final HolderGetter<Biome> biomes = bootstrap.lookup(Registries.BIOME);
                     final HolderGetter<DimensionType> dimensionTypes = bootstrap.lookup(Registries.DIMENSION_TYPE);
+
                     // Wood between the Worlds
                     final List<FlatLayerInfo> wbwFlatLayerInfos = List.of(
                             new FlatLayerInfo(1, Blocks.BEDROCK),
@@ -185,6 +186,7 @@ public class ModDatapackObjectProvider {
                     final FlatLevelSource wbwFlatLevelSource = new FlatLevelSource(wbwFlatLevelGeneratorSettings);
                     bootstrap.register(ModLevelStems.WOOD_BETWEEN_THE_WORLDS,
                             new LevelStem(dimensionTypes.getOrThrow(ModDimensionTypes.WOOD_BETWEEN_THE_WORLDS), wbwFlatLevelSource));
+
                     // Dark City Ruins
                     final List<FlatLayerInfo> dcrFlatLayerInfos = List.of(
                             new FlatLayerInfo(1, Blocks.BEDROCK),

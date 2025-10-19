@@ -72,10 +72,10 @@ public class RingItem extends Item {
                         final ResourceKey<Level> returnDimension =
                                 WoodBetweenTheWorldsHandler.POOL_LEVEL_MAP.getOrDefault(chunkPos, Level.OVERWORLD);
                         final PreRingTeleportData preRingTeleportData = entity.getData(ModAttachmentTypes.PRE_RING_TELEPORT_DATA);
-                        final ServerLevel overworld = level.getServer().getLevel(returnDimension);
+                        final ServerLevel returnLevel = level.getServer().getLevel(returnDimension);
                         final PreRingTeleportEntry entry = preRingTeleportData.get(returnDimension)
-                                .orElse(new PreRingTeleportEntry(Vec3.upFromBottomCenterOf(overworld.getRespawnData().pos(), 1), 0f, 0f));
-                        entity.teleport(new TeleportTransition(overworld, entry.position(), Vec3.ZERO, entry.yaw(), entry.pitch(), TeleportTransition.DO_NOTHING));
+                                .orElse(new PreRingTeleportEntry(Vec3.upFromBottomCenterOf(returnLevel.getRespawnData().pos(), 1), 0f, 0f));
+                        entity.teleport(new TeleportTransition(returnLevel, entry.position(), Vec3.ZERO, entry.yaw(), entry.pitch(), TeleportTransition.DO_NOTHING));
                     }
                 }
             }

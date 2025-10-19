@@ -22,6 +22,7 @@ public class WoodBetweenTheWorldsHandler {
             .put(new ChunkPos(0, 0), Level.OVERWORLD)
             .put(new ChunkPos(1, 0), Level.NETHER)
             .put(new ChunkPos(1, 1), Level.END)
+            .put(new ChunkPos(0, 1), ModDimensions.DARK_CITY_RUINS)
             .build();
     private static final double SWAY_SPEED = 0.05;
     private static final double SWAY_PUSH_POWER = 0.003;
