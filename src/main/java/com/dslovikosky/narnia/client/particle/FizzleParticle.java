@@ -6,6 +6,7 @@ import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.core.particles.SimpleParticleType;
+import net.minecraft.util.RandomSource;
 import org.jetbrains.annotations.Nullable;
 
 public class FizzleParticle extends NarniaParticle {
@@ -14,7 +15,7 @@ public class FizzleParticle extends NarniaParticle {
     private final SpriteSet spriteSet;
 
     public FizzleParticle(ClientLevel clientLevel, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed, SpriteSet spriteSet) {
-        super(clientLevel, x, y, z, xSpeed, ySpeed, zSpeed);
+        super(clientLevel, x, y, z, xSpeed, ySpeed, zSpeed, spriteSet);
         this.spriteSet = spriteSet;
 
         // 1s
@@ -40,10 +41,8 @@ public class FizzleParticle extends NarniaParticle {
 
     public record Factory(SpriteSet spriteSet) implements ParticleProvider<SimpleParticleType> {
         @Override
-        public @Nullable Particle createParticle(SimpleParticleType type, ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
-            final FizzleParticle particle = new FizzleParticle(level, x, y, z, xSpeed, ySpeed, zSpeed, spriteSet);
-            particle.setSpriteFromAge(spriteSet);
-            return particle;
+        public @Nullable Particle createParticle(SimpleParticleType type, ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed, RandomSource random) {
+            return new FizzleParticle(level, x, y, z, xSpeed, ySpeed, zSpeed, spriteSet);
         }
     }
 }

@@ -6,6 +6,7 @@ import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.core.particles.SimpleParticleType;
+import net.minecraft.util.RandomSource;
 import org.jetbrains.annotations.Nullable;
 
 public class FireParticle extends NarniaParticle {
@@ -16,8 +17,8 @@ public class FireParticle extends NarniaParticle {
     private final double fadeSpeed;
     private final double sinOffset;
 
-    public FireParticle(ClientLevel clientLevel, double x, double y, double z, double ySpeed) {
-        super(clientLevel, x, y, z, 0, ySpeed, 0);
+    public FireParticle(ClientLevel clientLevel, double x, double y, double z, SpriteSet spriteSet, double ySpeed) {
+        super(clientLevel, x, y, z, 0, ySpeed, 0, spriteSet);
         this.fadeSpeed = FADE_SPEED_MIN + random.nextDouble() * (FADE_SPEED_MAX - FADE_SPEED_MIN);
         this.sinOffset = random.nextDouble() * 2 * Math.PI;
 
@@ -38,10 +39,8 @@ public class FireParticle extends NarniaParticle {
 
     public record Factory(SpriteSet spriteSet) implements ParticleProvider<SimpleParticleType> {
         @Override
-        public @Nullable Particle createParticle(SimpleParticleType type, ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
-            final FireParticle particle = new FireParticle(level, x, y, z, ySpeed);
-            particle.pickSprite(spriteSet);
-            return particle;
+        public @Nullable Particle createParticle(SimpleParticleType type, ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed, RandomSource random) {
+            return new FireParticle(level, x, y, z, spriteSet, ySpeed);
         }
     }
 }

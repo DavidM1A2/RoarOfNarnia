@@ -342,7 +342,7 @@ public class ModEnglishLanguageProvider extends LanguageProvider {
 
         add("screen.narnia.power_source_selection", "Power Source Selection");
 
-        add("key_categories.narnia", "Narnia");
+        add("key.category.narnia.narnia", "Narnia");
 
         add("key.narnia.power_source_selection", "Power Source Selection");
 

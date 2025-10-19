@@ -6,11 +6,11 @@ import org.lwjgl.glfw.GLFW;
 public class KeyEvent extends GuiEvent {
     private final int key;
     private final int scanCode;
-    private final char character;
+    private final int character;
     private final int modifiers;
     private final KeyEventType eventType;
 
-    public KeyEvent(final GuiComponentWithEvents source, final int key, final int scanCode, final char character, final int modifiers, final KeyEventType eventType) {
+    public KeyEvent(final GuiComponentWithEvents source, final int key, final int scanCode, final int character, final int modifiers, final KeyEventType eventType) {
         super(source);
         this.key = key;
         this.scanCode = scanCode;
@@ -27,7 +27,7 @@ public class KeyEvent extends GuiEvent {
         return scanCode;
     }
 
-    public char getCharacter() {
+    public int getCharacter() {
         return character;
     }
 

@@ -6,11 +6,12 @@ import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.core.particles.SimpleParticleType;
+import net.minecraft.util.RandomSource;
 import org.jetbrains.annotations.Nullable;
 
 public class DisintegrateParticle extends NarniaParticle {
-    public DisintegrateParticle(ClientLevel clientLevel, double x, double y, double z) {
-        super(clientLevel, x, y, z, 0, 0, 0);
+    public DisintegrateParticle(ClientLevel clientLevel, double x, double y, double z, SpriteSet spriteSet) {
+        super(clientLevel, x, y, z, 0, 0, 0, spriteSet);
         // 1s
         setLifetime(20);
         scale(3f);
@@ -27,10 +28,8 @@ public class DisintegrateParticle extends NarniaParticle {
 
     public record Factory(SpriteSet spriteSet) implements ParticleProvider<SimpleParticleType> {
         @Override
-        public @Nullable Particle createParticle(SimpleParticleType type, ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
-            final DisintegrateParticle particle = new DisintegrateParticle(level, x, y, z);
-            particle.pickSprite(spriteSet);
-            return particle;
+        public @Nullable Particle createParticle(SimpleParticleType type, ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed, RandomSource random) {
+            return new DisintegrateParticle(level, x, y, z, spriteSet);
         }
     }
 }

@@ -6,11 +6,12 @@ import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.core.particles.SimpleParticleType;
+import net.minecraft.util.RandomSource;
 import org.jetbrains.annotations.Nullable;
 
 public class FreezeParticle extends NarniaParticle {
-    public FreezeParticle(ClientLevel clientLevel, double x, double y, double z, int freezeDurationTicks) {
-        super(clientLevel, x, y, z, 0, 0, 0);
+    public FreezeParticle(ClientLevel clientLevel, double x, double y, double z, SpriteSet spriteSet, int freezeDurationTicks) {
+        super(clientLevel, x, y, z, 0, 0, 0, spriteSet);
         // Up to 1 second longer than the freeze duration
         setLifetime(freezeDurationTicks + random.nextInt(20));
         scale(random.nextFloat() + 1f);
@@ -27,10 +28,8 @@ public class FreezeParticle extends NarniaParticle {
 
     public record Factory(SpriteSet spriteSet) implements ParticleProvider<SimpleParticleType> {
         @Override
-        public @Nullable Particle createParticle(SimpleParticleType type, ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
-            final FreezeParticle particle = new FreezeParticle(level, x, y, z, (int) xSpeed);
-            particle.pickSprite(spriteSet);
-            return particle;
+        public @Nullable Particle createParticle(SimpleParticleType type, ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed, RandomSource random) {
+            return new FreezeParticle(level, x, y, z, spriteSet, (int) xSpeed);
         }
     }
 }

@@ -6,13 +6,14 @@ import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.core.particles.SimpleParticleType;
+import net.minecraft.util.RandomSource;
 import org.jetbrains.annotations.Nullable;
 
 public class SelfFizzleParticle extends NarniaParticle {
     private final SpriteSet spriteSet;
 
     public SelfFizzleParticle(ClientLevel clientLevel, double x, double y, double z, SpriteSet spriteSet) {
-        super(clientLevel, x, y, z, 0, 0, 0);
+        super(clientLevel, x, y, z, 0, 0, 0, spriteSet);
         this.spriteSet = spriteSet;
         // 1 second lifespan
         setLifetime(20);
@@ -32,7 +33,7 @@ public class SelfFizzleParticle extends NarniaParticle {
 
     public record Factory(SpriteSet spriteSet) implements ParticleProvider<SimpleParticleType> {
         @Override
-        public @Nullable Particle createParticle(SimpleParticleType type, ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
+        public @Nullable Particle createParticle(SimpleParticleType type, ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed, RandomSource random) {
             final SelfFizzleParticle particle = new SelfFizzleParticle(level, x, y, z, spriteSet);
             particle.setSpriteFromAge(spriteSet);
             return particle;

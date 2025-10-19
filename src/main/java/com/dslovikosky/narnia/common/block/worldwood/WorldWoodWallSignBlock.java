@@ -14,7 +14,7 @@ public class WorldWoodWallSignBlock extends WallSignBlock {
                 .mapColor(ModBlocks.WORLD_WOOD_PLANKS.get().defaultMapColor())
                 .forceSolidOn()
                 .instrument(NoteBlockInstrument.BASS)
-                .noCollission()
+                .noCollision()
                 .strength(1.0F)
                 .ignitedByLava()
                 .setId(ResourceKey.create(Registries.BLOCK, Constants.modLocation("world_wood_wall_sign"))));

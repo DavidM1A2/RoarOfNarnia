@@ -14,7 +14,7 @@ public class WorldWoodSaplingBlock extends SaplingBlock {
     public WorldWoodSaplingBlock() {
         super(ModTreeGrowers.WORLD_WOOD, BlockBehaviour.Properties.of()
                 .mapColor(MapColor.PLANT)
-                .noCollission()
+                .noCollision()
                 .randomTicks()
                 .instabreak()
                 .sound(SoundType.GRASS)

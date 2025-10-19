@@ -7,6 +7,7 @@ import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import org.jetbrains.annotations.Nullable;
 
@@ -19,8 +20,8 @@ public class FeedParticle extends NarniaParticle {
     private final double baseZ;
     private final float height;
 
-    public FeedParticle(ClientLevel clientLevel, double x, double y, double z, int entityId, float offsetDegrees, float radius) {
-        super(clientLevel, x, y, z, 0, 0, 0);
+    public FeedParticle(ClientLevel clientLevel, double x, double y, double z, SpriteSet spriteSet, int entityId, float offsetDegrees, float radius) {
+        super(clientLevel, x, y, z, 0, 0, 0, spriteSet);
         this.offsetDegrees = offsetDegrees;
         this.radius = radius;
         this.entity = clientLevel.getEntity(entityId);
@@ -58,10 +59,8 @@ public class FeedParticle extends NarniaParticle {
 
     public record Factory(SpriteSet spriteSet) implements ParticleProvider<FeedParticleData> {
         @Override
-        public @Nullable Particle createParticle(FeedParticleData type, ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
-            final FeedParticle particle = new FeedParticle(level, x, y, z, type.entityId(), type.offsetDegrees(), type.radius());
-            particle.pickSprite(spriteSet);
-            return particle;
+        public @Nullable Particle createParticle(FeedParticleData type, ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed, RandomSource random) {
+            return new FeedParticle(level, x, y, z, spriteSet, type.entityId(), type.offsetDegrees(), type.radius());
         }
     }
 }

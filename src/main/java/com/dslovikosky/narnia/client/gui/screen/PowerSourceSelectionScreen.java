@@ -87,7 +87,7 @@ public class PowerSourceSelectionScreen extends BaseScreen {
                     this.contentPane.invalidate();
                     // Bound Cursor
                     if (radiusSquared > radiusMaxSquared) {
-                        GLFW.glfwSetCursorPos(minecraft.getWindow().getWindow(), Math.cos(theta) * radiusAbsoluteMax, Math.sin(theta) * radiusAbsoluteMax);
+                        GLFW.glfwSetCursorPos(minecraft.getWindow().handle(), Math.cos(theta) * radiusAbsoluteMax, Math.sin(theta) * radiusAbsoluteMax);
                     }
                 }
             }
@@ -186,7 +186,7 @@ public class PowerSourceSelectionScreen extends BaseScreen {
 
     @Override
     protected void init() {
-        InputConstants.grabOrReleaseMouse(minecraft.getWindow().getWindow(), GLFW.GLFW_CURSOR_DISABLED, 0.0, 0.0);
+        InputConstants.grabOrReleaseMouse(minecraft.getWindow(), GLFW.GLFW_CURSOR_DISABLED, 0.0, 0.0);
         super.init();
     }
 
@@ -202,7 +202,7 @@ public class PowerSourceSelectionScreen extends BaseScreen {
 
     @Override
     public void onClose() {
-        InputConstants.grabOrReleaseMouse(minecraft.getWindow().getWindow(), GLFW.GLFW_CURSOR_NORMAL, GuiUtility.getWindowWidthInMCCoords() / 2.0, GuiUtility.getWindowHeightInMCCoords() / 2.0);
+        InputConstants.grabOrReleaseMouse(minecraft.getWindow(), GLFW.GLFW_CURSOR_NORMAL, GuiUtility.getWindowWidthInMCCoords() / 2.0, GuiUtility.getWindowHeightInMCCoords() / 2.0);
         super.onClose();
     }
 }

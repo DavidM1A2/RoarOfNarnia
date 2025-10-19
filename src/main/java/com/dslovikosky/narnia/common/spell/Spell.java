@@ -63,7 +63,7 @@ public class Spell {
     }
 
     public void attemptToCast(final Entity entity, final Vec3 direction, final boolean isSpellScroll) {
-        if (!entity.level().isClientSide) {
+        if (!entity.level().isClientSide()) {
             if (entity.level().dimension() != ModDimensions.WOOD_BETWEEN_THE_WORLDS) {
                 if (isValid()) {
                     final SpellPowerSource<?> selectedPowerSource;

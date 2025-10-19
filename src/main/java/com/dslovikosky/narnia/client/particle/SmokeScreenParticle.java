@@ -7,6 +7,7 @@ import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import org.jetbrains.annotations.Nullable;
 
 public class SmokeScreenParticle extends NarniaParticle {
@@ -16,8 +17,8 @@ public class SmokeScreenParticle extends NarniaParticle {
     private final float maxScale;
     private final float baseQuadSize;
 
-    public SmokeScreenParticle(ClientLevel clientLevel, double x, double y, double z) {
-        super(clientLevel, x, y, z, 0, 0, 0);
+    public SmokeScreenParticle(ClientLevel clientLevel, double x, double y, double z, SpriteSet spriteSet) {
+        super(clientLevel, x, y, z, 0, 0, 0, spriteSet);
         this.minScale = 3.75f + random.nextFloat() * 1.25f;
         this.maxScale = 7.5f + minScale;
         this.baseQuadSize = quadSize / 5;
@@ -47,10 +48,8 @@ public class SmokeScreenParticle extends NarniaParticle {
 
     public record Factory(SpriteSet spriteSet) implements ParticleProvider<SimpleParticleType> {
         @Override
-        public @Nullable Particle createParticle(SimpleParticleType type, ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
-            final SmokeScreenParticle particle = new SmokeScreenParticle(level, x, y, z);
-            particle.pickSprite(spriteSet);
-            return particle;
+        public @Nullable Particle createParticle(SimpleParticleType type, ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed, RandomSource random) {
+            return new SmokeScreenParticle(level, x, y, z, spriteSet);
         }
     }
 }

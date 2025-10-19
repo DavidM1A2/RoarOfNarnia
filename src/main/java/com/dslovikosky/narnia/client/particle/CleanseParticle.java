@@ -6,6 +6,7 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.SpriteSet;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import org.jetbrains.annotations.Nullable;
 
@@ -19,9 +20,9 @@ public class CleanseParticle extends NarniaParticle {
     private final float radius;
 
     public CleanseParticle(final ClientLevel clientLevel,
-                           final double x, final double y, final double z,
+                           final double x, final double y, final double z, SpriteSet spriteSet,
                            final int entityId, final float offsetDegrees, final float radius) {
-        super(clientLevel, x, y, z, 0, 0, 0);
+        super(clientLevel, x, y, z, 0, 0, 0, spriteSet);
         this.entity = clientLevel.getEntity(entityId);
         this.baseX = x;
         this.baseY = y;
@@ -64,10 +65,8 @@ public class CleanseParticle extends NarniaParticle {
 
     public record Factory(SpriteSet spriteSet) implements ParticleProvider<CleanseParticleData> {
         @Override
-        public @Nullable Particle createParticle(CleanseParticleData type, ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
-            final CleanseParticle particle = new CleanseParticle(level, x, y, z, type.entityId(), type.offsetDegrees(), type.radius());
-            particle.pickSprite(spriteSet);
-            return particle;
+        public @Nullable Particle createParticle(CleanseParticleData type, ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed, RandomSource random) {
+            return new CleanseParticle(level, x, y, z, spriteSet, type.entityId(), type.offsetDegrees(), type.radius());
         }
     }
 }

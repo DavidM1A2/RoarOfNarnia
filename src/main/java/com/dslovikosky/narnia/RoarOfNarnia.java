@@ -47,6 +47,8 @@ import net.neoforged.neoforge.common.NeoForge;
 @Mod(Constants.MOD_ID)
 public class RoarOfNarnia {
     public RoarOfNarnia(final IEventBus modBus) {
+        final FMLLoader fmlLoader = FMLLoader.getCurrent();
+
         modBus.register(new DataGenerationHandler());
         modBus.register(new ModDatapackObjectProvider());
         modBus.register(new EntityRegistrationHandler());
@@ -56,7 +58,7 @@ public class RoarOfNarnia {
         modBus.register(new RegistryRegister());
         modBus.register(new DimensionSpecialEffectsRegister());
         modBus.register(new KeyMappingRegister());
-        if (FMLLoader.getDist() == Dist.CLIENT) {
+        if (fmlLoader.getDist() == Dist.CLIENT) {
             modBus.register(new ModColorRegister());
             modBus.register(new ClientReloadHandler());
             modBus.register(new RenderPipelineRegister());
@@ -88,7 +90,7 @@ public class RoarOfNarnia {
         forgeBus.register(new SchematicHandler());
         forgeBus.register(new WoodBetweenTheWorldsHandler());
         forgeBus.register(new RingHandler());
-        if (FMLLoader.getDist() == Dist.CLIENT) {
+        if (fmlLoader.getDist() == Dist.CLIENT) {
             forgeBus.register(new WoodBetweenTheWorldsClientHandler());
             forgeBus.register(new KeyInputEventHandler());
         }

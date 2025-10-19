@@ -6,6 +6,7 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.SpriteSet;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import org.jetbrains.annotations.Nullable;
 
@@ -15,8 +16,8 @@ public class ArrowTrailParticle extends DelayedNarniaParticle {
     private final double baseY;
     private final double baseZ;
 
-    public ArrowTrailParticle(ClientLevel clientLevel, double x, double y, double z, int delayTicks, int entityId) {
-        super(clientLevel, x, y, z, 0, 0, 0, delayTicks, 2);
+    public ArrowTrailParticle(ClientLevel clientLevel, double x, double y, double z, SpriteSet spriteSet, int delayTicks, int entityId) {
+        super(clientLevel, x, y, z, 0, 0, 0, spriteSet, delayTicks, 2);
         this.entity = clientLevel.getEntity(entityId);
         this.baseX = x;
         this.baseY = y;
@@ -39,10 +40,8 @@ public class ArrowTrailParticle extends DelayedNarniaParticle {
 
     public record Factory(SpriteSet spriteSet) implements ParticleProvider<ArrowTrailParticleData> {
         @Override
-        public @Nullable Particle createParticle(ArrowTrailParticleData type, ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
-            final ArrowTrailParticle particle = new ArrowTrailParticle(level, x, y, z, type.entityId(), type.delayTicks());
-            particle.pickSprite(spriteSet);
-            return particle;
+        public @Nullable Particle createParticle(ArrowTrailParticleData type, ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed, RandomSource random) {
+            return new ArrowTrailParticle(level, x, y, z, spriteSet, type.entityId(), type.delayTicks());
         }
     }
 }

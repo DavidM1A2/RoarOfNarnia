@@ -7,9 +7,9 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.SpriteSet;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
-
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 public class ShieldParticle extends RotatedNarniaParticle {
     private static final double SPIN_SPEED = 0.15;
@@ -19,8 +19,8 @@ public class ShieldParticle extends RotatedNarniaParticle {
     private final float offsetDegrees;
     private final float radius;
 
-    public ShieldParticle(ClientLevel clientLevel, double x, double y, double z, int entityId, int duration, float offsetDegrees, float radius) {
-        super(clientLevel, x, y, z, 0, 0, 0);
+    public ShieldParticle(ClientLevel clientLevel, double x, double y, double z, SpriteSet spriteSet, int entityId, int duration, float offsetDegrees, float radius) {
+        super(clientLevel, x, y, z, 0, 0, 0, spriteSet);
         this.entity = clientLevel.getEntity(entityId);
         this.offsetDegrees = offsetDegrees;
         this.radius = radius;
@@ -63,10 +63,8 @@ public class ShieldParticle extends RotatedNarniaParticle {
 
     public record Factory(SpriteSet spriteSet) implements ParticleProvider<ShieldParticleData> {
         @Override
-        public @Nullable Particle createParticle(ShieldParticleData type, ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
-            final ShieldParticle particle = new ShieldParticle(level, x, y, z, type.entityId(), type.duration(), type.offsetDegrees(), type.radius());
-            particle.pickSprite(spriteSet);
-            return particle;
+        public @Nullable Particle createParticle(ShieldParticleData type, ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed, RandomSource random) {
+            return new ShieldParticle(level, x, y, z, spriteSet, type.entityId(), type.duration(), type.offsetDegrees(), type.radius());
         }
     }
 }

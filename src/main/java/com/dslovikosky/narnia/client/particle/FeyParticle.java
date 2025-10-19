@@ -6,12 +6,13 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.SpriteSet;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
 public class FeyParticle extends NarniaParticle {
-    public FeyParticle(ClientLevel clientLevel, double x, double y, double z, float offsetDegrees, float red, float green, float blue) {
-        super(clientLevel, x, y, z, 0, 0, 0);
+    public FeyParticle(ClientLevel clientLevel, double x, double y, double z, SpriteSet spriteSet, float offsetDegrees, float red, float green, float blue) {
+        super(clientLevel, x, y, z, 0, 0, 0, spriteSet);
 
         setLifetime(20 + random.nextInt(10));
         scale(random.nextFloat() * 0.5f + 0.5f);
@@ -53,10 +54,8 @@ public class FeyParticle extends NarniaParticle {
 
     public record Factory(SpriteSet spriteSet) implements ParticleProvider<FeyParticleData> {
         @Override
-        public @Nullable Particle createParticle(FeyParticleData type, ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
-            final FeyParticle particle = new FeyParticle(level, x, y, z, type.offsetDegrees(), type.red(), type.green(), type.blue());
-            particle.pickSprite(spriteSet);
-            return particle;
+        public @Nullable Particle createParticle(FeyParticleData type, ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed, RandomSource random) {
+            return new FeyParticle(level, x, y, z, spriteSet, type.offsetDegrees(), type.red(), type.green(), type.blue());
         }
     }
 }

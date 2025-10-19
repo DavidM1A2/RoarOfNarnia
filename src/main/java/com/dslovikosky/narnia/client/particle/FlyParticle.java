@@ -6,9 +6,9 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.SpriteSet;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
-
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 public class FlyParticle extends DelayedNarniaParticle {
     private final double startX;
@@ -21,8 +21,8 @@ public class FlyParticle extends DelayedNarniaParticle {
     private final double sideDistance;
     private final double dropSpeed;
 
-    public FlyParticle(ClientLevel clientLevel, double startX, double startY, double startZ, double xSpeed, double ySpeed, double zSpeed, int entityId, int delayTicks) {
-        super(clientLevel, startX, startY, startZ, xSpeed, ySpeed, zSpeed, delayTicks, 8);
+    public FlyParticle(ClientLevel clientLevel, double startX, double startY, double startZ, double xSpeed, double ySpeed, double zSpeed, SpriteSet spriteSet, int entityId, int delayTicks) {
+        super(clientLevel, startX, startY, startZ, xSpeed, ySpeed, zSpeed, spriteSet, delayTicks, 8);
         this.startX = startX;
         this.startY = startY;
         this.startZ = startZ;
@@ -65,10 +65,8 @@ public class FlyParticle extends DelayedNarniaParticle {
 
     public record Factory(SpriteSet spriteSet) implements ParticleProvider<FlyParticleData> {
         @Override
-        public @Nullable Particle createParticle(FlyParticleData type, ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
-            final FlyParticle particle = new FlyParticle(level, x, y, z, xSpeed, ySpeed, zSpeed, type.entityId(), type.delayTicks());
-            particle.pickSprite(spriteSet);
-            return particle;
+        public @Nullable Particle createParticle(FlyParticleData type, ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed, RandomSource random) {
+            return new FlyParticle(level, x, y, z, xSpeed, ySpeed, zSpeed, spriteSet, type.entityId(), type.delayTicks());
         }
     }
 }

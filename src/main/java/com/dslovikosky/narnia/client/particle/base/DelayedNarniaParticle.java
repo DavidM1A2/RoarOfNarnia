@@ -1,6 +1,7 @@
 package com.dslovikosky.narnia.client.particle.base;
 
 import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.particle.SpriteSet;
 
 public abstract class DelayedNarniaParticle extends NarniaParticle {
     private final int delayTicks;
@@ -9,8 +10,8 @@ public abstract class DelayedNarniaParticle extends NarniaParticle {
     public DelayedNarniaParticle(final ClientLevel clientLevel,
                                  final double x, final double y, final double z,
                                  final double xSpeed, final double ySpeed, final double zSpeed,
-                                 final int delayTicks, final int fadeTicks) {
-        super(clientLevel, x, y, z, xSpeed, ySpeed, zSpeed);
+                                 final SpriteSet spriteSet, final int delayTicks, final int fadeTicks) {
+        super(clientLevel, x, y, z, xSpeed, ySpeed, zSpeed, spriteSet);
         alpha = 0f;
         this.delayTicks = delayTicks;
         this.fadeTicks = fadeTicks;

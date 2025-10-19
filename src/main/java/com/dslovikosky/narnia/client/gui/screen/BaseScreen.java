@@ -12,6 +12,8 @@ import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.input.CharacterEvent;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 
 public abstract class BaseScreen extends Screen {
@@ -75,22 +77,22 @@ public abstract class BaseScreen extends Screen {
     }
 
     @Override
-    public boolean charTyped(final char pCodePoint, final int pModifiers) {
+    public boolean charTyped(final CharacterEvent characterEvent) {
         // MIN_VALUE default since we don't know what int the char corresponds to
-        this.contentPane.processKeyInput(new KeyEvent(this.contentPane, Integer.MIN_VALUE, Integer.MIN_VALUE, pCodePoint, pModifiers, KeyEvent.KeyEventType.Type));
-        return super.charTyped(pCodePoint, pModifiers);
+        this.contentPane.processKeyInput(new KeyEvent(this.contentPane, Integer.MIN_VALUE, Integer.MIN_VALUE, characterEvent.codepoint(), characterEvent.modifiers(), KeyEvent.KeyEventType.Type));
+        return super.charTyped(characterEvent);
     }
 
     @Override
-    public boolean keyPressed(final int pKeyCode, final int pScanCode, final int pModifiers) {
-        this.contentPane.processKeyInput(new KeyEvent(this.contentPane, pKeyCode, pScanCode, Character.MIN_VALUE, pModifiers, KeyEvent.KeyEventType.Press));
-        if (super.keyPressed(pKeyCode, pScanCode, pModifiers)) {
+    public boolean keyPressed(final net.minecraft.client.input.KeyEvent keyEvent) {
+        this.contentPane.processKeyInput(new KeyEvent(this.contentPane, keyEvent.key(), keyEvent.scancode(), Character.MIN_VALUE, keyEvent.modifiers(), KeyEvent.KeyEventType.Press));
+        if (super.keyPressed(keyEvent)) {
             return true;
         }
         // If our inventory key closes the screen, test if that key was pressed
         if (this.inventoryToCloseGuiScreen()) {
             // if the keycode is the inventory key bind close the GUI screen
-            if (isInventoryKeybind(pKeyCode, pScanCode)) {
+            if (isInventoryKeybind(keyEvent)) {
                 // Close the screen
                 onClose();
                 return true;
@@ -100,9 +102,9 @@ public abstract class BaseScreen extends Screen {
     }
 
     @Override
-    public boolean keyReleased(final int pKeyCode, final int pScanCode, final int pModifiers) {
-        final boolean result = super.keyReleased(pKeyCode, pScanCode, pModifiers);
-        this.contentPane.processKeyInput(new KeyEvent(this.contentPane, pKeyCode, pScanCode, Character.MIN_VALUE, pModifiers, KeyEvent.KeyEventType.Release));
+    public boolean keyReleased(final net.minecraft.client.input.KeyEvent keyEvent) {
+        final boolean result = super.keyReleased(keyEvent);
+        this.contentPane.processKeyInput(new KeyEvent(this.contentPane, keyEvent.key(), keyEvent.scancode(), Character.MIN_VALUE, keyEvent.modifiers(), KeyEvent.KeyEventType.Release));
         return result;
     }
 
@@ -111,17 +113,17 @@ public abstract class BaseScreen extends Screen {
     }
 
     @Override
-    public boolean mouseClicked(final double pMouseX, final double pMouseY, final int pButton) {
+    public boolean mouseClicked(final MouseButtonEvent event, final boolean isDoubleClick) {
         // Fire the mouse clicked event
-        contentPane.processMouseInput(new MouseEvent(contentPane, (int) Math.round(pMouseX), (int) Math.round(pMouseY), pButton, MouseEvent.EventType.Click));
-        return super.mouseClicked(pMouseX, pMouseY, pButton);
+        contentPane.processMouseInput(new MouseEvent(contentPane, (int) Math.round(event.x()), (int) Math.round(event.y()), event.button(), MouseEvent.EventType.Click));
+        return super.mouseClicked(event, isDoubleClick);
     }
 
     @Override
-    public boolean mouseReleased(final double pMouseX, final double pMouseY, final int pButton) {
+    public boolean mouseReleased(final MouseButtonEvent event) {
         // Fire the release event
-        contentPane.processMouseInput(new MouseEvent(contentPane, (int) Math.round(pMouseX), (int) Math.round(pMouseY), pButton, MouseEvent.EventType.Release));
-        return super.mouseReleased(pMouseX, pMouseY, pButton);
+        contentPane.processMouseInput(new MouseEvent(contentPane, (int) Math.round(event.x()), (int) Math.round(event.y()), event.button(), MouseEvent.EventType.Release));
+        return super.mouseReleased(event);
     }
 
     @Override
@@ -132,9 +134,9 @@ public abstract class BaseScreen extends Screen {
     }
 
     @Override
-    public boolean mouseDragged(final double pMouseX, final double pMouseY, final int pButton, final double pDragX, final double pDragY) {
-        contentPane.processMouseDragInput(new MouseDragEvent(contentPane, (int) Math.round(pMouseX), (int) Math.round(pMouseY), pButton));
-        return super.mouseDragged(pMouseX, pMouseY, pButton, pDragX, pDragY);
+    public boolean mouseDragged(final MouseButtonEvent event, final double mouseX, final double mouseY) {
+        contentPane.processMouseDragInput(new MouseDragEvent(contentPane, (int) Math.round(mouseX), (int) Math.round(mouseY), event.button()));
+        return super.mouseDragged(event, mouseX, mouseY);
     }
 
     @Override
@@ -143,7 +145,7 @@ public abstract class BaseScreen extends Screen {
         super.mouseMoved(pMouseX, pMouseY);
     }
 
-    protected boolean isInventoryKeybind(final int key, final int scanCode) {
-        return Minecraft.getInstance().options.keyInventory.isActiveAndMatches(InputConstants.getKey(key, scanCode));
+    protected boolean isInventoryKeybind(final net.minecraft.client.input.KeyEvent keyEvent) {
+        return Minecraft.getInstance().options.keyInventory.isActiveAndMatches(InputConstants.getKey(keyEvent));
     }
 }

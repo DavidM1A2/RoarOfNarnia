@@ -1,12 +1,13 @@
 package com.dslovikosky.narnia.client.particle.base;
 
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.particle.ParticleRenderType;
-import net.minecraft.client.particle.TextureSheetParticle;
+import net.minecraft.client.particle.SingleQuadParticle;
+import net.minecraft.client.particle.SpriteSet;
+import org.jetbrains.annotations.NotNull;
 
-public abstract class NarniaParticle extends TextureSheetParticle {
-    public NarniaParticle(final ClientLevel clientLevel, final double x, final double y, final double z, final double xSpeed, final double ySpeed, final double zSpeed) {
-        super(clientLevel, x, y, z, xSpeed, ySpeed, zSpeed);
+public abstract class NarniaParticle extends SingleQuadParticle {
+    public NarniaParticle(final ClientLevel clientLevel, final double x, final double y, final double z, final double xSpeed, final double ySpeed, final double zSpeed, final SpriteSet spriteSet) {
+        super(clientLevel, x, y, z, xSpeed, ySpeed, zSpeed, spriteSet.first());
         quadSize = 0.2f;
         xd = xSpeed;
         yd = ySpeed;
@@ -14,8 +15,8 @@ public abstract class NarniaParticle extends TextureSheetParticle {
     }
 
     @Override
-    public ParticleRenderType getRenderType() {
-        return ParticleRenderType.PARTICLE_SHEET_TRANSLUCENT;
+    protected @NotNull Layer getLayer() {
+        return Layer.TRANSLUCENT;
     }
 
     @Override

@@ -6,9 +6,9 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.SpriteSet;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
-
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 public class SelfParticle extends DelayedNarniaParticle {
     private final double startX;
@@ -19,8 +19,8 @@ public class SelfParticle extends DelayedNarniaParticle {
     private final float width;
     private final float height;
 
-    public SelfParticle(ClientLevel clientLevel, double startX, double startY, double startZ, int entityId, float offsetDegrees) {
-        super(clientLevel, startX, startY, startZ, 0, 0, 0, Math.round(offsetDegrees) / 20 + 5, 5);
+    public SelfParticle(ClientLevel clientLevel, double startX, double startY, double startZ, SpriteSet spriteSet, int entityId, float offsetDegrees) {
+        super(clientLevel, startX, startY, startZ, 0, 0, 0, spriteSet, Math.round(offsetDegrees) / 20 + 5, 5);
         this.startX = startX;
         this.startY = startY;
         this.startZ = startZ;
@@ -49,10 +49,8 @@ public class SelfParticle extends DelayedNarniaParticle {
 
     public record Factory(SpriteSet spriteSet) implements ParticleProvider<SelfParticleData> {
         @Override
-        public @Nullable Particle createParticle(SelfParticleData type, ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
-            final SelfParticle particle = new SelfParticle(level, x, y, z, type.entityId(), type.offsetDegrees());
-            particle.pickSprite(spriteSet);
-            return particle;
+        public @Nullable Particle createParticle(SelfParticleData type, ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed, RandomSource random) {
+            return new SelfParticle(level, x, y, z, spriteSet, type.entityId(), type.offsetDegrees());
         }
     }
 }

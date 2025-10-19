@@ -7,6 +7,7 @@ import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.core.particles.SimpleParticleType;
+import net.minecraft.util.RandomSource;
 import org.jetbrains.annotations.Nullable;
 
 public class LightningParticle extends NarniaParticle {
@@ -14,8 +15,8 @@ public class LightningParticle extends NarniaParticle {
 
     private int bounceCount = 0;
 
-    public LightningParticle(ClientLevel clientLevel, double x, double y, double z) {
-        super(clientLevel, x, y, z, 0, 0, 0);
+    public LightningParticle(ClientLevel clientLevel, double x, double y, double z, SpriteSet spriteSet) {
+        super(clientLevel, x, y, z, 0, 0, 0, spriteSet);
         scale(0.8f);
         // 10 second lifespan, or 3 bounces
         setLifetime(10 * 20);
@@ -50,10 +51,8 @@ public class LightningParticle extends NarniaParticle {
 
     public record Factory(SpriteSet spriteSet) implements ParticleProvider<SimpleParticleType> {
         @Override
-        public @Nullable Particle createParticle(SimpleParticleType type, ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
-            final LightningParticle particle = new LightningParticle(level, x, y, z);
-            particle.pickSprite(spriteSet);
-            return particle;
+        public @Nullable Particle createParticle(SimpleParticleType type, ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed, RandomSource random) {
+            return new LightningParticle(level, x, y, z, spriteSet);
         }
     }
 }

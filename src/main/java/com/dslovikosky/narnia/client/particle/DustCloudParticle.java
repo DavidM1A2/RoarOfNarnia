@@ -12,6 +12,7 @@ import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.tags.BiomeTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.biome.Biome;
 import org.jetbrains.annotations.Nullable;
 
@@ -22,8 +23,8 @@ public class DustCloudParticle extends NarniaParticle {
     private final float maxScale;
     private final float baseQuadSize;
 
-    public DustCloudParticle(ClientLevel clientLevel, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
-        super(clientLevel, x, y, z, xSpeed, ySpeed, zSpeed);
+    public DustCloudParticle(ClientLevel clientLevel, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed, SpriteSet spriteSet) {
+        super(clientLevel, x, y, z, xSpeed, ySpeed, zSpeed, spriteSet);
         this.minScale = 1f + random.nextFloat() * 0.5f;
         this.maxScale = 4.5f + minScale;
         this.baseQuadSize = quadSize;
@@ -72,7 +73,7 @@ public class DustCloudParticle extends NarniaParticle {
                 .build();
 
         @Override
-        public @Nullable Particle createParticle(SimpleParticleType type, ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
+        public @Nullable Particle createParticle(SimpleParticleType type, ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed, RandomSource random) {
             // Color the particle based on biome
             final Holder<Biome> biome = level.getBiome(new BlockPos((int) x, (int) y, (int) z));
             final ParticleColor particleColor = biome.tags()
@@ -80,7 +81,7 @@ public class DustCloudParticle extends NarniaParticle {
                     .map(TAG_TO_COLOR::get)
                     .findFirst()
                     .orElse(ParticleColor.GREY);
-            final DustCloudParticle particle = new DustCloudParticle(level, x, y, z, xSpeed, ySpeed, zSpeed);
+            final DustCloudParticle particle = new DustCloudParticle(level, x, y, z, xSpeed, ySpeed, zSpeed, spriteSet);
             particle.setSprite(spriteSet.get(particleColor.index, ParticleColor.values().length));
             return particle;
         }

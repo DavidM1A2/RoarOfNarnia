@@ -7,14 +7,15 @@ import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import org.jetbrains.annotations.Nullable;
 
 public class ProjectileParticle extends NarniaParticle {
     private final float scale;
     private final float baseQuadSize;
 
-    public ProjectileParticle(ClientLevel clientLevel, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed, float scale, float red, float green, float blue) {
-        super(clientLevel, x, y, z, 0, 0, 0);
+    public ProjectileParticle(ClientLevel clientLevel, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed, SpriteSet spriteSet, float scale, float red, float green, float blue) {
+        super(clientLevel, x, y, z, 0, 0, 0, spriteSet);
         this.scale = scale;
 
         // 0.5 second lifespan
@@ -52,10 +53,8 @@ public class ProjectileParticle extends NarniaParticle {
 
     public record Factory(SpriteSet spriteSet) implements ParticleProvider<ProjectileParticleData> {
         @Override
-        public @Nullable Particle createParticle(ProjectileParticleData type, ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
-            final ProjectileParticle particle = new ProjectileParticle(level, x, y, z, xSpeed, ySpeed, zSpeed, type.scale(), type.red(), type.green(), type.blue());
-            particle.pickSprite(spriteSet);
-            return particle;
+        public @Nullable Particle createParticle(ProjectileParticleData type, ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed, RandomSource random) {
+            return new ProjectileParticle(level, x, y, z, xSpeed, ySpeed, zSpeed, spriteSet, type.scale(), type.red(), type.green(), type.blue());
         }
     }
 }

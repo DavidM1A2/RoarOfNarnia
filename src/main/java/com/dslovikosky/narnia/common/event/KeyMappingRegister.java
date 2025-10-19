@@ -7,6 +7,7 @@ import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 public class KeyMappingRegister {
     @SubscribeEvent
     public void onRegisterKeyMappingsEvent(final RegisterKeyMappingsEvent event) {
+        event.registerCategory(ModKeyMappings.NARNIA);
         ModKeyMappings.KEY_MAPPINGS.forEach(event::register);
     }
 }

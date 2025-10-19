@@ -6,11 +6,12 @@ import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.core.particles.SimpleParticleType;
+import net.minecraft.util.RandomSource;
 import org.jetbrains.annotations.Nullable;
 
 public class StrengthParticle extends NarniaParticle {
-    public StrengthParticle(ClientLevel clientLevel, double x, double y, double z) {
-        super(clientLevel, x, y, z, 0, 0, 0);
+    public StrengthParticle(ClientLevel clientLevel, double x, double y, double z, SpriteSet spriteSet) {
+        super(clientLevel, x, y, z, 0, 0, 0, spriteSet);
 
         // 1 second lifespan
         setLifetime(20);
@@ -28,10 +29,8 @@ public class StrengthParticle extends NarniaParticle {
 
     public record Factory(SpriteSet spriteSet) implements ParticleProvider<SimpleParticleType> {
         @Override
-        public @Nullable Particle createParticle(SimpleParticleType type, ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
-            final StrengthParticle particle = new StrengthParticle(level, x, y, z);
-            particle.pickSprite(spriteSet);
-            return particle;
+        public @Nullable Particle createParticle(SimpleParticleType type, ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed, RandomSource random) {
+            return new StrengthParticle(level, x, y, z, spriteSet);
         }
     }
 }

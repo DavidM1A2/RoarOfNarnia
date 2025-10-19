@@ -16,7 +16,7 @@ public class WorldWoodPressurePlateBlock extends PressurePlateBlock {
                 .mapColor(ModBlocks.WORLD_WOOD_PLANKS.get().defaultMapColor())
                 .forceSolidOn()
                 .instrument(NoteBlockInstrument.BASS)
-                .noCollission()
+                .noCollision()
                 .strength(0.5F)
                 .ignitedByLava()
                 .pushReaction(PushReaction.DESTROY)

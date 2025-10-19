@@ -27,8 +27,8 @@ public class HealParticle extends DelayedNarniaParticle {
     private double targetOffsetY;
     private double targetOffsetZ;
 
-    public HealParticle(ClientLevel clientLevel, double x, double y, double z, int entityId, float offsetDegrees) {
-        super(clientLevel, x, y, z, 0, 0, 0, RandomSource.create().nextInt(17), 3);
+    public HealParticle(ClientLevel clientLevel, double x, double y, double z, SpriteSet spriteSet, int entityId, float offsetDegrees) {
+        super(clientLevel, x, y, z, 0, 0, 0, spriteSet, RandomSource.create().nextInt(17), 3);
         this.startX = x;
         this.startY = y;
         this.startZ = z;
@@ -79,10 +79,8 @@ public class HealParticle extends DelayedNarniaParticle {
 
     public record Factory(SpriteSet spriteSet) implements ParticleProvider<HealParticleData> {
         @Override
-        public @Nullable Particle createParticle(HealParticleData type, ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
-            final HealParticle particle = new HealParticle(level, x, y, z, type.entityId(), type.offsetDegrees());
-            particle.pickSprite(spriteSet);
-            return particle;
+        public @Nullable Particle createParticle(HealParticleData type, ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed, RandomSource random) {
+            return new HealParticle(level, x, y, z, spriteSet, type.entityId(), type.offsetDegrees());
         }
     }
 }

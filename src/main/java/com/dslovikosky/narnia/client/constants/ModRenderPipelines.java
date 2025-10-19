@@ -14,7 +14,7 @@ public class ModRenderPipelines {
             .withFragmentShader(Constants.modLocation("post/drowsy_vignette"))
             .withSampler("In")
             .withDepthWrite(false)
-            .withVertexFormat(DefaultVertexFormat.BLIT_SCREEN, VertexFormat.Mode.TRIANGLES)
+            .withVertexFormat(DefaultVertexFormat.POSITION, VertexFormat.Mode.TRIANGLES)
             .withUniform("TimeUniform", UniformType.UNIFORM_BUFFER)
             .withDepthTestFunction(DepthTestFunction.NO_DEPTH_TEST)
             .build();
