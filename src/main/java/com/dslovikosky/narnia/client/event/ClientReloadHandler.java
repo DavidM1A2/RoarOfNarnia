@@ -10,6 +10,6 @@ public class ClientReloadHandler {
     @SubscribeEvent
     public void onAddClientReloadListenersEvent(final AddClientReloadListenersEvent event) {
         event.addListener(ModRenderers.DROWSY_VIGNETTE_ID, (sharedState, backgroundExecutor, barrier, gameExecutor) ->
-                CompletableFuture.runAsync(ModRenderers.DROWSY_VIGNETTE::initialize, gameExecutor).thenCompose(barrier::wait));
+                CompletableFuture.runAsync(ModRenderers.Client.DROWSY_VIGNETTE::initialize, gameExecutor).thenCompose(barrier::wait));
     }
 }

@@ -56,9 +56,9 @@ public class RoarOfNarnia {
         modBus.register(new SignBlockRegister());
         modBus.register(new PacketRegistrationHandler());
         modBus.register(new RegistryRegister());
-        modBus.register(new DimensionSpecialEffectsRegister());
         modBus.register(new KeyMappingRegister());
         if (fmlLoader.getDist() == Dist.CLIENT) {
+            modBus.register(new DimensionSpecialEffectsRegister());
             modBus.register(new ModColorRegister());
             modBus.register(new ClientReloadHandler());
             modBus.register(new RenderPipelineRegister());

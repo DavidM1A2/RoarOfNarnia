@@ -15,12 +15,12 @@ import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 public class WoodBetweenTheWorldsClientHandler {
     @SubscribeEvent
     public void onRenderLevelStageEvent(final RenderLevelStageEvent.AfterWeather event) {
-        ModRenderers.DROWSY_VIGNETTE.render(Minecraft.getInstance().getMainRenderTarget(), event.getLevelRenderState());
+        ModRenderers.Client.DROWSY_VIGNETTE.render(Minecraft.getInstance().getMainRenderTarget(), event.getLevelRenderState());
     }
 
     @SubscribeEvent
     public void onExtractLevelRenderStateEvent(final ExtractLevelRenderStateEvent event) {
-        ModRenderers.DROWSY_VIGNETTE.extract(event.getDeltaTracker(), event.getRenderState());
+        ModRenderers.Client.DROWSY_VIGNETTE.extract(event.getDeltaTracker(), event.getRenderState());
     }
 
     @SubscribeEvent
