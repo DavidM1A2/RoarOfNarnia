@@ -2,6 +2,7 @@ package com.dslovikosky.narnia.common.constants;
 
 import com.dslovikosky.narnia.common.spell.component.powerSource.AlchemySpellPowerSource;
 import com.dslovikosky.narnia.common.spell.component.powerSource.CreativeSpellPowerSource;
+import com.dslovikosky.narnia.common.spell.component.powerSource.HealthSpellPowerSource;
 import com.dslovikosky.narnia.common.spell.component.powerSource.SpellScrollSpellPowerSource;
 import com.dslovikosky.narnia.common.spell.component.powerSource.base.SpellPowerSource;
 import net.neoforged.neoforge.registries.DeferredHolder;
@@ -12,5 +13,6 @@ public class ModSpellPowerSources {
 
     public static final DeferredHolder<SpellPowerSource<?>, CreativeSpellPowerSource> CREATIVE = SPELL_POWER_SOURCES.register("creative", CreativeSpellPowerSource::new);
     public static final DeferredHolder<SpellPowerSource<?>, AlchemySpellPowerSource> ALCHEMY = SPELL_POWER_SOURCES.register("alchemy", AlchemySpellPowerSource::new);
+    public static final DeferredHolder<SpellPowerSource<?>, HealthSpellPowerSource> HEALTH = SPELL_POWER_SOURCES.register("health", HealthSpellPowerSource::new);
     public static final DeferredHolder<SpellPowerSource<?>, SpellScrollSpellPowerSource> SPELL_SCROLL = SPELL_POWER_SOURCES.register("spell_scroll", SpellScrollSpellPowerSource::new);
 }

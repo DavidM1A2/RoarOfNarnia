@@ -57,13 +57,7 @@ public class ModEnglishLanguageProvider extends LanguageProvider {
         add("power_source.narnia.creative.not_enough_power", "You must be in creative mode to cast this spell.");
         add("power_source.narnia.creative.formatted_cost", "%1$s (free)");
 
-        add("power_source.narnia.experience.name", "Experience");
-        add("power_source.narnia.experience.description", "Cast spells using your XP level.");
-        add("power_source.narnia.experience.cost_overview", "One spell cost per XP point (not level)");
-        add("power_source.narnia.experience.not_enough_power", "Not enough experience to cast this spell.");
-        add("power_source.narnia.experience.formatted_cost", "%1$s XP points");
-
-        add("power_source.narnia.health.name", "Blood Magic");
+        add("power_source.narnia.health.name", "Health");
         add("power_source.narnia.health.description", "Cast spells using your health.");
         add("power_source.narnia.health.cost_overview", "Five spell cost per half heart of damage");
         add("power_source.narnia.health.not_enough_power", "Not enough health to cast this spell.");
@@ -81,12 +75,6 @@ public class ModEnglishLanguageProvider extends LanguageProvider {
         add("power_source.narnia.vitae_lantern.cost_overview", "One spell cost per lantern vitae");
         add("power_source.narnia.vitae_lantern.not_enough_power", "You do not have enough total vitae in your lanterns to cast this spell.");
         add("power_source.narnia.vitae_lantern.formatted_cost", "%1$s vitae");
-
-        add("power_source.narnia.crystal.name", "Crystal");
-        add("power_source.narnia.crystal.description", "Cast spells by consuming vitae from nearby magic crystals.");
-        add("power_source.narnia.crystal.cost_overview", "One spell cost per magic crystal vitae");
-        add("power_source.narnia.crystal.not_enough_power", "There is not enough vitae in nearby magic crystals to cast this spell.");
-        add("power_source.narnia.crystal.formatted_cost", "%1$s vitae");
 
         add("power_source.narnia.lunar.name", "Lunar");
         add("power_source.narnia.lunar.description", "Cast spells by consuming vitae obtained at night. The fuller the moon phase, the faster vitae is obtained and the higher the cap.");
