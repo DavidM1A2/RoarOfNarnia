@@ -24,7 +24,7 @@ public class CastEnvironment<T> {
     }
 
     public static <T> CastEnvironment<T> withVitae(final double vitaeAvailable, final double vitaeMaximum, final T context) {
-        return new CastEnvironment<>(vitaeAvailable, vitaeAvailable, context);
+        return new CastEnvironment<>(vitaeAvailable, vitaeMaximum, context);
     }
 
     public double getVitaeAvailable() {

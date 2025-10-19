@@ -1,5 +1,6 @@
 package com.dslovikosky.narnia.common.spell;
 
+import com.dslovikosky.narnia.common.constants.ModAttachmentTypes;
 import com.dslovikosky.narnia.common.constants.ModDimensions;
 import com.dslovikosky.narnia.common.constants.ModSoundEvents;
 import com.dslovikosky.narnia.common.constants.ModSpellPowerSources;
@@ -68,7 +69,7 @@ public class Spell {
                 if (isValid()) {
                     final SpellPowerSource<?> selectedPowerSource;
                     if (entity instanceof Player && !isSpellScroll) {
-                        selectedPowerSource = ModSpellPowerSources.CREATIVE.get();
+                        selectedPowerSource = entity.getData(ModAttachmentTypes.SELECTED_SPELL_POWER_SOURCE);
                     } else {
                         selectedPowerSource = ModSpellPowerSources.SPELL_SCROLL.get();
                     }

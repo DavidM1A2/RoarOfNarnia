@@ -15,15 +15,17 @@ import com.dslovikosky.narnia.client.gui.layout.Position;
 import com.dslovikosky.narnia.client.gui.layout.Spacing;
 import com.dslovikosky.narnia.client.gui.layout.TextAlignment;
 import com.dslovikosky.narnia.common.constants.Constants;
+import com.dslovikosky.narnia.common.constants.ModAttachmentTypes;
 import com.dslovikosky.narnia.common.constants.ModKeyMappings;
 import com.dslovikosky.narnia.common.constants.ModRegistries;
-import com.dslovikosky.narnia.common.constants.ModSpellPowerSources;
+import com.dslovikosky.narnia.common.network.packet.SyncSelectedSpellPowerSourcePacket;
 import com.dslovikosky.narnia.common.spell.component.powerSource.base.CastEnvironment;
 import com.dslovikosky.narnia.common.spell.component.powerSource.base.SpellPowerSource;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
+import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
@@ -37,7 +39,7 @@ public class PowerSourceSelectionScreen extends BaseScreen {
 
     private final List<StackPane> powerSourcePanes = new ArrayList<>();
     private final List<ImagePane> selectionIcons = new ArrayList<>();
-    private final SpellPowerSource<?> previousSpellPowerSource = ModSpellPowerSources.CREATIVE.get();
+    private final SpellPowerSource<?> previousSpellPowerSource = Minecraft.getInstance().player.getData(ModAttachmentTypes.SELECTED_SPELL_POWER_SOURCE);
     private final List<SpellPowerSource<?>> availableSpellPowerSources = ModRegistries.SPELL_POWER_SOURCES.stream().toList();
     private final int pageCount = (availableSpellPowerSources.size() - 1) / POWER_SOURCES_PER_PAGE + 1;
     private SpellPowerSource<?> selectedSpellPowerSource = null;
@@ -202,6 +204,12 @@ public class PowerSourceSelectionScreen extends BaseScreen {
 
     @Override
     public void onClose() {
+        if (selectedSpellPowerSource != null) {
+            final Minecraft minecraft = Minecraft.getInstance();
+            minecraft.player.setData(ModAttachmentTypes.SELECTED_SPELL_POWER_SOURCE, selectedSpellPowerSource);
+            ClientPacketDistributor.sendToServer(new SyncSelectedSpellPowerSourcePacket(selectedSpellPowerSource));
+            minecraft.player.displayClientMessage(Component.translatable("message.narnia.spell.power_source_changed", selectedSpellPowerSource.getName()), false);
+        }
         InputConstants.grabOrReleaseMouse(minecraft.getWindow(), GLFW.GLFW_CURSOR_NORMAL, GuiUtility.getWindowWidthInMCCoords() / 2.0, GuiUtility.getWindowHeightInMCCoords() / 2.0);
         super.onClose();
     }
