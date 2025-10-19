@@ -71,10 +71,10 @@ public class ModEnglishLanguageProvider extends LanguageProvider {
         add("power_source.narnia.health.formatted_cost", "%1$s heart(s)");
 
         add("power_source.narnia.alchemy.name", "Alchemy");
-        add("power_source.narnia.alchemy.description", "Cast spells by consuming gold or astral silver ingots from your inventory.");
-        add("power_source.narnia.alchemy.cost_overview", "Ten (gold) or twenty (astral silver) spell cost per ingot consumed");
-        add("power_source.narnia.alchemy.not_enough_power", "You do not have enough gold or astral silver in your inventory to cast this spell.");
-        add("power_source.narnia.alchemy.formatted_cost", "%1$s gold ingots");
+        add("power_source.narnia.alchemy.description", "Cast spells by consuming sparkling dust from your inventory.");
+        add("power_source.narnia.alchemy.cost_overview", "Thirty spell cost per sparkling dust consumed");
+        add("power_source.narnia.alchemy.not_enough_power", "You do not have enough sparkling dust in your inventory to cast this spell.");
+        add("power_source.narnia.alchemy.formatted_cost", "%1$s sparkling dust");
 
         add("power_source.narnia.vitae_lantern.name", "Vitae Lantern");
         add("power_source.narnia.vitae_lantern.description", "Cast spells by consuming vitae from vitae lanterns in your inventory.");
