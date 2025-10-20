@@ -6,6 +6,7 @@ import com.dslovikosky.narnia.common.spell.component.powerSource.HealthSpellPowe
 import com.dslovikosky.narnia.common.spell.component.powerSource.InnateSpellPowerSource;
 import com.dslovikosky.narnia.common.spell.component.powerSource.LeechSpellPowerSource;
 import com.dslovikosky.narnia.common.spell.component.powerSource.LunarSpellPowerSource;
+import com.dslovikosky.narnia.common.spell.component.powerSource.SolarSpellPowerSource;
 import com.dslovikosky.narnia.common.spell.component.powerSource.SpellScrollSpellPowerSource;
 import com.dslovikosky.narnia.common.spell.component.powerSource.base.SpellPowerSource;
 import net.neoforged.neoforge.registries.DeferredHolder;
@@ -20,5 +21,6 @@ public class ModSpellPowerSources {
     public static final DeferredHolder<SpellPowerSource<?>, InnateSpellPowerSource> INNATE = SPELL_POWER_SOURCES.register("innate", InnateSpellPowerSource::new);
     public static final DeferredHolder<SpellPowerSource<?>, LeechSpellPowerSource> LEECH = SPELL_POWER_SOURCES.register("leech", LeechSpellPowerSource::new);
     public static final DeferredHolder<SpellPowerSource<?>, LunarSpellPowerSource> LUNAR = SPELL_POWER_SOURCES.register("lunar", LunarSpellPowerSource::new);
+    public static final DeferredHolder<SpellPowerSource<?>, SolarSpellPowerSource> SOLAR = SPELL_POWER_SOURCES.register("solar", SolarSpellPowerSource::new);
     public static final DeferredHolder<SpellPowerSource<?>, SpellScrollSpellPowerSource> SPELL_SCROLL = SPELL_POWER_SOURCES.register("spell_scroll", SpellScrollSpellPowerSource::new);
 }

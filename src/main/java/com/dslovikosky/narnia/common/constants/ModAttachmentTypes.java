@@ -39,4 +39,9 @@ public class ModAttachmentTypes {
                     .serialize(Codec.DOUBLE.fieldOf("value"))
                     .sync(new VitaeSyncHandler())
                     .build());
+    public static final DeferredHolder<AttachmentType<?>, AttachmentType<Double>> SOLAR_VITAE = ATTACHMENT_TYPES
+            .register("solar_vitae", () -> AttachmentType.builder(() -> 0.0)
+                    .serialize(Codec.DOUBLE.fieldOf("value"))
+                    .sync(new VitaeSyncHandler())
+                    .build());
 }

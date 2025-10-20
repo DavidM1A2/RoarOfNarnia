@@ -38,6 +38,7 @@ import com.dslovikosky.narnia.common.event.SchematicHandler;
 import com.dslovikosky.narnia.common.event.SignBlockRegister;
 import com.dslovikosky.narnia.common.event.SpellInnateHandler;
 import com.dslovikosky.narnia.common.event.SpellLunarHandler;
+import com.dslovikosky.narnia.common.event.SpellSolarHandler;
 import com.dslovikosky.narnia.common.event.WoodBetweenTheWorldsHandler;
 import com.dslovikosky.narnia.common.event.datagenproviders.ModDatapackObjectProvider;
 import net.neoforged.api.distmarker.Dist;
@@ -97,6 +98,7 @@ public class RoarOfNarnia {
             forgeBus.register(new KeyInputEventHandler());
             forgeBus.register(new SpellInnateHandler());
             forgeBus.register(new SpellLunarHandler());
+            forgeBus.register(new SpellSolarHandler());
         }
     }
 }
