@@ -1,9 +1,9 @@
 package com.dslovikosky.narnia.common.constants;
 
-import com.dslovikosky.narnia.common.model.attachment_type.InnateVitaeSyncHandler;
 import com.dslovikosky.narnia.common.model.attachment_type.PreRingTeleportData;
 import com.dslovikosky.narnia.common.model.attachment_type.SelectedSpellPowerSourceSyncHandler;
 import com.dslovikosky.narnia.common.model.attachment_type.TicksInWoodBetweenTheWorldsSyncHandler;
+import com.dslovikosky.narnia.common.model.attachment_type.VitaeSyncHandler;
 import com.dslovikosky.narnia.common.spell.component.powerSource.base.SpellPowerSource;
 import com.mojang.serialization.Codec;
 import net.neoforged.neoforge.attachment.AttachmentType;
@@ -32,6 +32,11 @@ public class ModAttachmentTypes {
     public static final DeferredHolder<AttachmentType<?>, AttachmentType<Double>> INNATE_VITAE = ATTACHMENT_TYPES
             .register("innate_vitae", () -> AttachmentType.builder(() -> 0.0)
                     .serialize(Codec.DOUBLE.fieldOf("value"))
-                    .sync(new InnateVitaeSyncHandler())
+                    .sync(new VitaeSyncHandler())
+                    .build());
+    public static final DeferredHolder<AttachmentType<?>, AttachmentType<Double>> LUNAR_VITAE = ATTACHMENT_TYPES
+            .register("lunar_vitae", () -> AttachmentType.builder(() -> 0.0)
+                    .serialize(Codec.DOUBLE.fieldOf("value"))
+                    .sync(new VitaeSyncHandler())
                     .build());
 }

@@ -10,7 +10,7 @@ import org.jetbrains.annotations.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
-public class InnateVitaeSyncHandler implements AttachmentSyncHandler<Double> {
+public class VitaeSyncHandler implements AttachmentSyncHandler<Double> {
     @Override
     public boolean sendToPlayer(IAttachmentHolder holder, ServerPlayer to) {
         return holder == to;
