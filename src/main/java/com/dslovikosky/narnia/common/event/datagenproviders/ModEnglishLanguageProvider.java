@@ -95,7 +95,7 @@ public class ModEnglishLanguageProvider extends LanguageProvider {
         add("power_source.narnia.thermal.formatted_cost", "%1$s vitae");
 
         add("power_source.narnia.innate.name", "Innate");
-        add("power_source.narnia.innate.description", "Cast spells by consuming your innate vitae. Gain one vitae per second");
+        add("power_source.narnia.innate.description", "Cast spells by consuming your innate vitae. Gain one vitae per second base, increased for magical worlds.");
         add("power_source.narnia.innate.cost_overview", "One spell cost per innate vitae");
         add("power_source.narnia.innate.not_enough_power", "You do not have enough vitae to cast this spell.");
         add("power_source.narnia.innate.formatted_cost", "%1$s vitae");

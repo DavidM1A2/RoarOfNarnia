@@ -1,5 +1,6 @@
 package com.dslovikosky.narnia.common.constants;
 
+import com.dslovikosky.narnia.common.model.attachment_type.InnateVitaeSyncHandler;
 import com.dslovikosky.narnia.common.model.attachment_type.PreRingTeleportData;
 import com.dslovikosky.narnia.common.model.attachment_type.SelectedSpellPowerSourceSyncHandler;
 import com.dslovikosky.narnia.common.model.attachment_type.TicksInWoodBetweenTheWorldsSyncHandler;
@@ -27,5 +28,10 @@ public class ModAttachmentTypes {
                     .serialize(ModRegistries.SPELL_POWER_SOURCES.byNameCodec().fieldOf("value"))
                     .sync(new SelectedSpellPowerSourceSyncHandler())
                     .copyOnDeath()
+                    .build());
+    public static final DeferredHolder<AttachmentType<?>, AttachmentType<Double>> INNATE_VITAE = ATTACHMENT_TYPES
+            .register("innate_vitae", () -> AttachmentType.builder(() -> 0.0)
+                    .serialize(Codec.DOUBLE.fieldOf("value"))
+                    .sync(new InnateVitaeSyncHandler())
                     .build());
 }
