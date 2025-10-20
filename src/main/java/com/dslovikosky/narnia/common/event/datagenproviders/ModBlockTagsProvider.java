@@ -6,9 +6,11 @@ import com.dslovikosky.narnia.common.constants.ModBlocks;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.world.level.block.Blocks;
 import net.neoforged.neoforge.common.data.BlockTagsProvider;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 @ParametersAreNonnullByDefault
@@ -44,5 +46,7 @@ public class ModBlockTagsProvider extends BlockTagsProvider {
         tag(BlockTags.WALL_SIGNS).add(ModBlocks.WORLD_WOOD_WALL_SIGN.get());
         tag(BlockTags.WALL_HANGING_SIGNS).add(ModBlocks.WORLD_WOOD_WALL_HANGING_SIGN.get());
         tag(BlockTags.CEILING_HANGING_SIGNS).add(ModBlocks.WORLD_WOOD_CEILING_HANGING_SIGN.get());
+
+        tag(ModBlockTags.GRASS_LIKE).addAll(List.of(Blocks.GRASS_BLOCK, Blocks.MYCELIUM, Blocks.PODZOL, Blocks.CRIMSON_NYLIUM, Blocks.WARPED_NYLIUM, Blocks.MOSS_BLOCK, Blocks.ROOTED_DIRT));
     }
 }

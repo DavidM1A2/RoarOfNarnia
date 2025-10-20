@@ -35,7 +35,7 @@ public class CastEnvironment<T> {
         return vitaeMaximum;
     }
 
-    protected T getContext() {
+    public T getContext() {
         return context;
     }
 }
