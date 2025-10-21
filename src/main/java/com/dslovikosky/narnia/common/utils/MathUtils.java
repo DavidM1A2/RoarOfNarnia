@@ -54,4 +54,17 @@ public class MathUtils {
         rotation.normalize();
         return rotation;
     }
+
+    public static Vec3 getNormal(final Vec3 source) {
+        return getNormal(source, new Vec3(0.0, 1.0, 0.0));
+    }
+
+    public static Vec3 getNormal(final Vec3 source, final Vec3 upBasis) {
+        final Vec3 leftRightDir = source.cross(upBasis).normalize();
+        // Edge case when the vector we're getting the normal for is 0, 1, 0
+        if (leftRightDir == Vec3.ZERO) {
+            return Vec3.ZERO;
+        }
+        return leftRightDir.cross(source).normalize();
+    }
 }
