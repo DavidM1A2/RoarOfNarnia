@@ -70,12 +70,6 @@ public class ModEnglishLanguageProvider extends LanguageProvider {
         add("power_source.narnia.alchemy.not_enough_power", "You do not have enough sparkling dust in your inventory to cast this spell.");
         add("power_source.narnia.alchemy.formatted_cost", "%1$s sparkling dust");
 
-        add("power_source.narnia.vitae_lantern.name", "Vitae Lantern");
-        add("power_source.narnia.vitae_lantern.description", "Cast spells by consuming vitae from vitae lanterns in your inventory.");
-        add("power_source.narnia.vitae_lantern.cost_overview", "One spell cost per lantern vitae");
-        add("power_source.narnia.vitae_lantern.not_enough_power", "You do not have enough total vitae in your lanterns to cast this spell.");
-        add("power_source.narnia.vitae_lantern.formatted_cost", "%1$s vitae");
-
         add("power_source.narnia.lunar.name", "Lunar");
         add("power_source.narnia.lunar.description", "Cast spells by consuming vitae obtained at night. The fuller the moon phase, the faster vitae is obtained and the higher the cap.");
         add("power_source.narnia.lunar.cost_overview", "One spell cost per lunar vitae");

@@ -2,6 +2,8 @@ package com.dslovikosky.narnia.common.constants;
 
 import com.dslovikosky.narnia.common.model.attachment_type.PreRingTeleportData;
 import com.dslovikosky.narnia.common.model.attachment_type.SelectedSpellPowerSourceSyncHandler;
+import com.dslovikosky.narnia.common.model.attachment_type.ThermalData;
+import com.dslovikosky.narnia.common.model.attachment_type.ThermalDataSyncHandler;
 import com.dslovikosky.narnia.common.model.attachment_type.TicksInWoodBetweenTheWorldsSyncHandler;
 import com.dslovikosky.narnia.common.model.attachment_type.VitaeSyncHandler;
 import com.dslovikosky.narnia.common.spell.component.powerSource.base.SpellPowerSource;
@@ -43,5 +45,10 @@ public class ModAttachmentTypes {
             .register("solar_vitae", () -> AttachmentType.builder(() -> 0.0)
                     .serialize(Codec.DOUBLE.fieldOf("value"))
                     .sync(new VitaeSyncHandler())
+                    .build());
+    public static final DeferredHolder<AttachmentType<?>, AttachmentType<ThermalData>> THERMAL_DATA = ATTACHMENT_TYPES
+            .register("thermal_vitae", () -> AttachmentType.builder(() -> new ThermalData(0.0, 0.0))
+                    .serialize(ThermalData.CODEC.fieldOf("value"))
+                    .sync(new ThermalDataSyncHandler())
                     .build());
 }
