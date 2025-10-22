@@ -1,5 +1,6 @@
 package com.dslovikosky.narnia;
 
+import com.dslovikosky.narnia.client.event.ClientLateRenderHandler;
 import com.dslovikosky.narnia.client.event.ClientReloadHandler;
 import com.dslovikosky.narnia.client.event.ParticleRegister;
 import com.dslovikosky.narnia.client.event.RenderPipelineRegister;
@@ -96,13 +97,14 @@ public class RoarOfNarnia {
         forgeBus.register(new SchematicHandler());
         forgeBus.register(new WoodBetweenTheWorldsHandler());
         forgeBus.register(new RingHandler());
+        forgeBus.register(new SpellInnateHandler());
+        forgeBus.register(new SpellLunarHandler());
+        forgeBus.register(new SpellSolarHandler());
+        forgeBus.register(new SpellThermalHandler());
         if (fmlLoader.getDist() == Dist.CLIENT) {
             forgeBus.register(new WoodBetweenTheWorldsClientHandler());
             forgeBus.register(new KeyInputEventHandler());
-            forgeBus.register(new SpellInnateHandler());
-            forgeBus.register(new SpellLunarHandler());
-            forgeBus.register(new SpellSolarHandler());
-            forgeBus.register(new SpellThermalHandler());
+            forgeBus.register(new ClientLateRenderHandler());
         }
     }
 }

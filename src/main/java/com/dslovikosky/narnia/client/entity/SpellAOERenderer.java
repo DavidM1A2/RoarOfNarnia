@@ -1,12 +1,13 @@
 package com.dslovikosky.narnia.client.entity;
 
+import com.dslovikosky.narnia.client.renderer.CustomLateEntityRenderer;
 import com.dslovikosky.narnia.common.constants.Constants;
 import com.dslovikosky.narnia.common.entity.spell.SpellAOEEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.state.CameraRenderState;
@@ -22,7 +23,7 @@ import java.awt.Color;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-public class SpellAOERenderer extends EntityRenderer<SpellAOEEntity, SpellAOERenderState> {
+public class SpellAOERenderer extends EntityRenderer<SpellAOEEntity, SpellAOERenderState> implements CustomLateEntityRenderer<SpellAOERenderState> {
     private static final int TEXTURE_HEIGHT = 128;
     private static final int SPRITE_HEIGHT = 16;
     private static final int SPRITE_COUNT = TEXTURE_HEIGHT / SPRITE_HEIGHT;
@@ -58,7 +59,7 @@ public class SpellAOERenderer extends EntityRenderer<SpellAOEEntity, SpellAOERen
     }
 
     @Override
-    public void submit(SpellAOERenderState renderState, PoseStack poseStack, SubmitNodeCollector nodeCollector, CameraRenderState cameraRenderState) {
+    public void submit(SpellAOERenderState renderState, PoseStack poseStack, MultiBufferSource multiBufferSource, CameraRenderState cameraRenderState) {
         final int lifespanTicks = renderState.getLifespanTicks();
         if (lifespanTicks <= 0) {
             return;
@@ -80,39 +81,40 @@ public class SpellAOERenderer extends EntityRenderer<SpellAOEEntity, SpellAOERen
         final int latitudes = (int) Math.ceil(7 + radius / 3);
         final int longitudes = (int) Math.ceil(7 + radius / 3);
 
-        nodeCollector.submitCustomGeometry(poseStack, RenderType.ENTITY_TRANSLUCENT.apply(SPELL_AOE_TEXTURE, false), (pose, buffer) -> {
-            poseStack.pushPose();
+        final VertexConsumer buffer = multiBufferSource.getBuffer(RenderType.ENTITY_TRANSLUCENT.apply(SPELL_AOE_TEXTURE, false));
 
-            final Matrix4f rotationMatrix = pose.pose();
+        poseStack.pushPose();
 
-            // Algorithm from https://stackoverflow.com/questions/43412525/algorithm-to-draw-a-sphere-using-quadrilaterals
-            for (int latitude = 1; latitude <= latitudes; latitude++) {
-                final double lat0 = Math.PI * (((double) (latitude - 1) / latitudes) - 0.5f);
-                final double z0 = radius * Math.sin(lat0);
-                final double zr0 = Math.cos(lat0);
+        final PoseStack.Pose pose = poseStack.last();
+        final Matrix4f rotationMatrix = pose.pose();
 
-                final double lat1 = Math.PI * (((double) latitude / latitudes) - 0.5f);
-                final double z1 = radius * Math.sin(lat1);
-                final double zr1 = Math.cos(lat1);
+        // Algorithm from https://stackoverflow.com/questions/43412525/algorithm-to-draw-a-sphere-using-quadrilaterals
+        for (int latitude = 1; latitude <= latitudes; latitude++) {
+            final double lat0 = Math.PI * (((double) (latitude - 1) / latitudes) - 0.5f);
+            final double z0 = radius * Math.sin(lat0);
+            final double zr0 = Math.cos(lat0);
 
-                for (int longitude = 1; longitude <= longitudes; longitude++) {
-                    final double long0 = 2 * Math.PI * ((double) (longitude - 1) / longitudes);
-                    final double x0 = radius * Math.cos(long0);
-                    final double y0 = radius * Math.sin(long0);
+            final double lat1 = Math.PI * (((double) latitude / latitudes) - 0.5f);
+            final double z1 = radius * Math.sin(lat1);
+            final double zr1 = Math.cos(lat1);
 
-                    final double long1 = 2 * Math.PI * ((double) longitude / longitudes);
-                    final double x1 = radius * Math.cos(long1);
-                    final double y1 = radius * Math.sin(long1);
+            for (int longitude = 1; longitude <= longitudes; longitude++) {
+                final double long0 = 2 * Math.PI * ((double) (longitude - 1) / longitudes);
+                final double x0 = radius * Math.cos(long0);
+                final double y0 = radius * Math.sin(long0);
 
-                    drawVertex(rotationMatrix, pose, buffer, x0 * zr0, z0, y0 * zr0, 0f, startV, red, green, blue, alpha);
-                    drawVertex(rotationMatrix, pose, buffer, x1 * zr0, z0, y1 * zr0, 1f, startV, red, green, blue, alpha);
-                    drawVertex(rotationMatrix, pose, buffer, x1 * zr1, z1, y1 * zr1, 1f, endV, red, green, blue, alpha);
-                    drawVertex(rotationMatrix, pose, buffer, x0 * zr1, z1, y0 * zr1, 0f, endV, red, green, blue, alpha);
-                }
+                final double long1 = 2 * Math.PI * ((double) longitude / longitudes);
+                final double x1 = radius * Math.cos(long1);
+                final double y1 = radius * Math.sin(long1);
+
+                drawVertex(rotationMatrix, pose, buffer, x0 * zr0, z0, y0 * zr0, 0f, startV, red, green, blue, alpha);
+                drawVertex(rotationMatrix, pose, buffer, x1 * zr0, z0, y1 * zr0, 1f, startV, red, green, blue, alpha);
+                drawVertex(rotationMatrix, pose, buffer, x1 * zr1, z1, y1 * zr1, 1f, endV, red, green, blue, alpha);
+                drawVertex(rotationMatrix, pose, buffer, x0 * zr1, z1, y0 * zr1, 0f, endV, red, green, blue, alpha);
             }
+        }
 
-            poseStack.popPose();
-        });
+        poseStack.popPose();
     }
 
 
