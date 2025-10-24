@@ -1,5 +1,6 @@
 package com.dslovikosky.narnia.common.utils;
 
+import net.minecraft.util.Tuple;
 import net.minecraft.world.phys.Vec3;
 import org.joml.AxisAngle4d;
 import org.joml.Quaternionf;
@@ -62,9 +63,28 @@ public class MathUtils {
     public static Vec3 getNormal(final Vec3 source, final Vec3 upBasis) {
         final Vec3 leftRightDir = source.cross(upBasis).normalize();
         // Edge case when the vector we're getting the normal for is 0, 1, 0
-        if (leftRightDir == Vec3.ZERO) {
-            return Vec3.ZERO;
+        if (leftRightDir == net.minecraft.world.phys.Vec3.ZERO) {
+            return net.minecraft.world.phys.Vec3.ZERO;
         }
         return leftRightDir.cross(source).normalize();
+    }
+
+    // Returns a pair of vectors that are both orthogonal to the original vector. The called on vector must be unit length
+    public static Tuple<Vec3, Vec3> getOrthogonalVectors(final Vec3 vec3) {
+        if (vec3 == Vec3.ZERO) {
+            return new Tuple<>(vec3, vec3);
+        }
+
+        Vec3 leftRightDirection = Y_UNIT_VECTOR.cross(vec3);
+        if (leftRightDirection == Vec3.ZERO) {
+            leftRightDirection = X_UNIT_VECTOR;
+        }
+        final Vec3 upDownDirection = leftRightDirection.cross(vec3);
+
+        return new Tuple<>(leftRightDirection, upDownDirection);
+    }
+
+    public static double log(double base, double logNumber) {
+        return Math.log(logNumber) / Math.log(base);
     }
 }

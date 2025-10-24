@@ -6,6 +6,7 @@ import com.dslovikosky.narnia.common.entity.spell.SpellAOEEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
@@ -137,7 +138,7 @@ public class SpellAOERenderer extends EntityRenderer<SpellAOEEntity, SpellAOERen
                 .setColor(r, g, b, a)
                 .setUv(u, v)
                 .setOverlay(OverlayTexture.NO_OVERLAY)
-                .setUv2(15, 15)
+                .setLight(LightTexture.FULL_BRIGHT)
                 .setNormal(pose, 0f, 0f, 1f);
     }
 }

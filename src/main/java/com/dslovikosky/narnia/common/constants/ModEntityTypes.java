@@ -1,6 +1,7 @@
 package com.dslovikosky.narnia.common.constants;
 
 import com.dslovikosky.narnia.common.entity.spell.SpellAOEEntity;
+import com.dslovikosky.narnia.common.entity.spell.SpellChainEntity;
 import com.dslovikosky.narnia.common.entity.world_wood_boat.WorldWoodBoat;
 import com.dslovikosky.narnia.common.entity.world_wood_boat.WorldWoodChestBoat;
 import net.minecraft.core.registries.Registries;
@@ -46,5 +47,16 @@ public class ModEntityTypes {
                     .sized(0f, 0f)
                     .noSummon()
                     .build(ResourceKey.create(Registries.ENTITY_TYPE, Constants.modLocation("spell_aoe")))
+    );
+    public static final DeferredHolder<EntityType<?>, EntityType<SpellChainEntity>> SPELL_CHAIN = ENTITY_TYPES.register(
+            "spell_chain",
+            () -> EntityType.Builder.<SpellChainEntity>of(SpellChainEntity::new, MobCategory.MISC)
+                    .setTrackingRange(50)
+                    .setUpdateInterval(100)
+                    .setShouldReceiveVelocityUpdates(false)
+                    .noLootTable()
+                    .sized(0f, 0f)
+                    .noSummon()
+                    .build(ResourceKey.create(Registries.ENTITY_TYPE, Constants.modLocation("spell_chain")))
     );
 }
