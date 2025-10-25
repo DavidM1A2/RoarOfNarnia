@@ -27,7 +27,7 @@ public class SelfParticle extends DelayedNarniaParticle {
         this.entity = clientLevel.getEntity(entityId);
         this.offsetDegrees = offsetDegrees;
         this.width = entity == null ? 1f : entity.getBbWidth();
-        this.height = entity == null ? 1f : entity.getBbHeight();
+        this.height = entity == null ? 1f : entity.getBbHeight() / 2;
 
         // 1 second lifespan
         setLifetime(20 + Math.round(offsetDegrees) / 20);

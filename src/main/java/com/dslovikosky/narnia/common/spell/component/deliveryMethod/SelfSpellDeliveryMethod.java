@@ -1,6 +1,8 @@
 package com.dslovikosky.narnia.common.spell.component.deliveryMethod;
 
 import com.dslovikosky.narnia.common.constants.Constants;
+import com.dslovikosky.narnia.common.constants.ModParticleTypes;
+import com.dslovikosky.narnia.common.particle.SelfParticleData;
 import com.dslovikosky.narnia.common.spell.component.DeliveryTransitionState;
 import com.dslovikosky.narnia.common.spell.component.SpellComponentInstance;
 import com.dslovikosky.narnia.common.spell.component.deliveryMethod.base.SpellDeliveryMethod;
@@ -20,7 +22,16 @@ public class SelfSpellDeliveryMethod extends SpellDeliveryMethod {
         if (entity != null) {
             this.procEffects(state);
             this.transitionFrom(state);
+
+            final int numParticles = 10;
+            final Vec3 particlePosition = entity.getPosition(1f).add(0.0, entity.getBbHeight() / 2.0, 0.0);
+            for (int i = 0; i < numParticles; i++) {
+                state.getLevel().sendParticles(new SelfParticleData(entity.getId(), (float) i / numParticles * 360),
+                        particlePosition.x(), particlePosition.y(), particlePosition.z(), 1, 0.0, 0.0, 0.0, 0.0);
+            }
         } else {
+            state.getLevel().sendParticles(ModParticleTypes.SELF_FIZZLE.get(),
+                    position.x(), position.y(), position.z(), 1, 0.0, 0.0, 0.0, 0.0);
         }
     }
 
