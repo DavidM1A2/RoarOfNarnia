@@ -1,5 +1,6 @@
 package com.dslovikosky.narnia.client.entity;
 
+import com.dslovikosky.narnia.client.constants.ModRenderPipelines;
 import com.dslovikosky.narnia.client.renderer.CustomLateEntityRenderer;
 import com.dslovikosky.narnia.common.constants.Constants;
 import com.dslovikosky.narnia.common.entity.spell.SpellChainEntity;
@@ -8,13 +9,12 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.state.CameraRenderState;
-import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.phys.AABB;
@@ -44,6 +44,18 @@ public class SpellChainRenderer extends EntityRenderer<SpellChainEntity, SpellCh
 
     // The texture used by the model
     private static final ResourceLocation SPELL_CHAIN_TEXTURE = Constants.modLocation("textures/entity/spell/chain.png");
+
+    public static final RenderType RENDER_TYPE = RenderType.create(
+            Constants.modLocation("spell_chain").toString(),
+            1536,
+            true,
+            true,
+            ModRenderPipelines.SPELL_ENTITY,
+            RenderType.CompositeState.builder()
+                    .setTextureState(new RenderStateShard.TextureStateShard(SPELL_CHAIN_TEXTURE, false))
+                    .setLightmapState(RenderStateShard.NO_LIGHTMAP)
+                    .setOverlayState(RenderStateShard.OVERLAY)
+                    .createCompositeState(false));
 
     public SpellChainRenderer(EntityRendererProvider.Context context) {
         super(context);
@@ -84,7 +96,7 @@ public class SpellChainRenderer extends EntityRenderer<SpellChainEntity, SpellCh
         }
 
         // How to make good looking lightning: https://developer.download.nvidia.com/SDK/10/direct3d/Source/Lightning/doc/lightning_doc.pdf
-        final VertexConsumer buffer = multiBufferSource.getBuffer(RenderType.ENTITY_CUTOUT_NO_CULL.apply(SPELL_CHAIN_TEXTURE, false));
+        final VertexConsumer buffer = multiBufferSource.getBuffer(RENDER_TYPE);
 
         final double distance = startPos.distanceTo(endPos);
         final double numJitters = distance / APPROXIMATE_BLOCKS_PER_JITTER;
@@ -205,10 +217,10 @@ public class SpellChainRenderer extends EntityRenderer<SpellChainEntity, SpellCh
         final Matrix4f rotationMatrix = pose.pose();
         final float rotationPerSprite = 180f / SPRITE_COUNT;
         for (int i = 0; i < SPRITE_COUNT; i++) {
-            drawVertex(rotationMatrix, pose, buffer, 0.0, -width, 0.0, 0f, 0f);
-            drawVertex(rotationMatrix, pose, buffer, segmentLength, -width, 0.0, (float) segmentLength, 0f);
-            drawVertex(rotationMatrix, pose, buffer, segmentLength, width, 0.0, (float) segmentLength, 1f);
-            drawVertex(rotationMatrix, pose, buffer, 0.0, width, 0.0, 0f, 1f);
+            drawVertex(rotationMatrix, buffer, 0.0, -width, 0.0, 0f, 0f);
+            drawVertex(rotationMatrix, buffer, segmentLength, -width, 0.0, (float) segmentLength, 0f);
+            drawVertex(rotationMatrix, buffer, segmentLength, width, 0.0, (float) segmentLength, 1f);
+            drawVertex(rotationMatrix, buffer, 0.0, width, 0.0, 0f, 1f);
             matrixStack.mulPose(Axis.XP.rotationDegrees(rotationPerSprite));
         }
 
@@ -220,7 +232,6 @@ public class SpellChainRenderer extends EntityRenderer<SpellChainEntity, SpellCh
 
     private void drawVertex(
             final Matrix4f rotationMatrix,
-            final PoseStack.Pose pose,
             final VertexConsumer buffer,
             final double x,
             final double y,
@@ -231,10 +242,6 @@ public class SpellChainRenderer extends EntityRenderer<SpellChainEntity, SpellCh
         buffer
                 .addVertex(rotationMatrix, (float) x, (float) y, (float) z)
                 .setColor(255, 255, 0, 255)
-                .setUv(u, v)
-                .setOverlay(OverlayTexture.NO_OVERLAY)
-                .setLight(LightTexture.FULL_BRIGHT)
-                .setUv2(15, 15)
-                .setNormal(pose, 0f, 0f, 1f);
+                .setUv(u, v);
     }
 }

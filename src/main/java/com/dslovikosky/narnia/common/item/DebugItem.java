@@ -33,22 +33,26 @@ public class DebugItem extends Item {
 
     @Override
     public InteractionResult use(Level level, Player player, InteractionHand hand) {
-        final SpellDeliveryMethodInstance deliveryMethod = new SpellDeliveryMethodInstance(ModSpellDeliveryMethods.PROJECTILE.get());
-        deliveryMethod.setDefaults();
-        ModSpellDeliveryMethods.PROJECTILE.get().setSpeed(deliveryMethod, 3);
-//        ModSpellDeliveryMethods.CHAIN.get().setMaxDistance(deliveryMethod, 20);
-//        ModSpellDeliveryMethods.CHAIN.get().setMaxHops(deliveryMethod, 5);
+        final SpellDeliveryMethodInstance deliveryMethod1 = new SpellDeliveryMethodInstance(ModSpellDeliveryMethods.PROJECTILE.get());
+        deliveryMethod1.setDefaults();
+        ModSpellDeliveryMethods.PROJECTILE.get().setSpeed(deliveryMethod1, 5);
+        final SpellStage spellStage1 = new SpellStage();
+        spellStage1.setDeliveryInstance(deliveryMethod1);
 
+        final SpellDeliveryMethodInstance deliveryMethod2 = new SpellDeliveryMethodInstance(ModSpellDeliveryMethods.AOE.get());
+        deliveryMethod2.setDefaults();
+//        ModSpellDeliveryMethods.CHAIN.get().setMaxDistance(deliveryMethod2, 20);
+//        ModSpellDeliveryMethods.CHAIN.get().setMaxHops(deliveryMethod2, 5);
         final SpellEffectInstance effect = new SpellEffectInstance(ModSpellEffects.DIG.get());
         effect.setDefaults();
-
-        final SpellStage spellStage = new SpellStage();
-        spellStage.setDeliveryInstance(deliveryMethod);
-        spellStage.getEffects()[0] = effect;
+        final SpellStage spellStage2 = new SpellStage();
+        spellStage2.setDeliveryInstance(deliveryMethod2);
+        spellStage2.getEffects()[0] = effect;
 
         final Spell spell = new Spell();
         spell.setName("Test");
-        spell.getSpellStages().add(spellStage);
+        spell.getSpellStages().add(spellStage1);
+        spell.getSpellStages().add(spellStage2);
 
         spell.attemptToCast(player, player.getLookAngle(), false);
 

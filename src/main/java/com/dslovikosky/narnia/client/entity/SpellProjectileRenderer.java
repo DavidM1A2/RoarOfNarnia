@@ -1,18 +1,18 @@
 package com.dslovikosky.narnia.client.entity;
 
+import com.dslovikosky.narnia.client.constants.ModRenderPipelines;
 import com.dslovikosky.narnia.client.renderer.CustomLateEntityRenderer;
 import com.dslovikosky.narnia.common.constants.Constants;
 import com.dslovikosky.narnia.common.entity.spell.SpellProjectileEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
-import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.state.CameraRenderState;
-import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix4f;
@@ -21,11 +21,23 @@ import java.awt.Color;
 import java.util.Random;
 
 public class SpellProjectileRenderer extends EntityRenderer<SpellProjectileEntity, SpellProjectileRenderState> implements CustomLateEntityRenderer<SpellProjectileRenderState> {
-    private static final int IN_PLANE_ROTATION_SPEED = 3;
-    private static final int PLANE_ROTATION_SPEED = 2;
-
     // The texture used by the model
     private static final ResourceLocation SPELL_PROJECTILE_TEXTURE = Constants.modLocation("textures/entity/spell/projectile.png");
+
+    public static final RenderType RENDER_TYPE = RenderType.create(
+            Constants.modLocation("spell_projectile").toString(),
+            1536,
+            true,
+            true,
+            ModRenderPipelines.SPELL_ENTITY,
+            RenderType.CompositeState.builder()
+                    .setTextureState(new RenderStateShard.TextureStateShard(SPELL_PROJECTILE_TEXTURE, false))
+                    .setLightmapState(RenderStateShard.NO_LIGHTMAP)
+                    .setOverlayState(RenderStateShard.OVERLAY)
+                    .createCompositeState(false));
+
+    private static final int IN_PLANE_ROTATION_SPEED = 3;
+    private static final int PLANE_ROTATION_SPEED = 2;
 
     public SpellProjectileRenderer(EntityRendererProvider.Context context) {
         super(context);
@@ -54,7 +66,7 @@ public class SpellProjectileRenderer extends EntityRenderer<SpellProjectileEntit
 
         poseStack.translate(0.0, renderState.boundingBoxHeight / 2, 0.0);
 
-        final VertexConsumer buffer = multiBufferSource.getBuffer(RenderType.ENTITY_TRANSLUCENT.apply(SPELL_PROJECTILE_TEXTURE, false));
+        final VertexConsumer buffer = multiBufferSource.getBuffer(RENDER_TYPE);
 
         final float tickCount = renderState.ageInTicks + renderState.partialTick;
         final Color color = renderState.getColor();
@@ -105,15 +117,14 @@ public class SpellProjectileRenderer extends EntityRenderer<SpellProjectileEntit
         final PoseStack.Pose pose = matrixStack.last();
         final Matrix4f rotationMatrix = pose.pose();
 
-        drawVertex(rotationMatrix, pose, buffer, -1, -1, 0, 0f, 0f, red, green, blue);
-        drawVertex(rotationMatrix, pose, buffer, 1, -1, 0, 1f, 0f, red, green, blue);
-        drawVertex(rotationMatrix, pose, buffer, 1, 1, 0, 1f, 1f, red, green, blue);
-        drawVertex(rotationMatrix, pose, buffer, -1, 1, 0, 0f, 1f, red, green, blue);
+        drawVertex(rotationMatrix, buffer, -1, -1, 0, 0f, 0f, red, green, blue);
+        drawVertex(rotationMatrix, buffer, 1, -1, 0, 1f, 0f, red, green, blue);
+        drawVertex(rotationMatrix, buffer, 1, 1, 0, 1f, 1f, red, green, blue);
+        drawVertex(rotationMatrix, buffer, -1, 1, 0, 0f, 1f, red, green, blue);
     }
 
     private void drawVertex(
             final Matrix4f rotationMatrix,
-            final PoseStack.Pose pose,
             final VertexConsumer buffer,
             final double x,
             final double y,
@@ -127,10 +138,6 @@ public class SpellProjectileRenderer extends EntityRenderer<SpellProjectileEntit
         buffer
                 .addVertex(rotationMatrix, (float) x, (float) y, (float) z)
                 .setColor(r, g, b, 255)
-                .setUv(u, v)
-                .setOverlay(OverlayTexture.NO_OVERLAY)
-                .setLight(LightTexture.FULL_BRIGHT)
-                .setUv2(15, 15)
-                .setNormal(pose, 0f, 0f, 1f);
+                .setUv(u, v);
     }
 }

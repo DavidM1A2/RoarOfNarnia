@@ -1,5 +1,6 @@
 package com.dslovikosky.narnia.client.entity;
 
+import com.dslovikosky.narnia.client.constants.ModRenderPipelines;
 import com.dslovikosky.narnia.client.renderer.CustomLateEntityRenderer;
 import com.dslovikosky.narnia.common.constants.Constants;
 import com.dslovikosky.narnia.common.entity.spell.SpellAOEEntity;
@@ -8,6 +9,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -31,6 +33,18 @@ public class SpellAOERenderer extends EntityRenderer<SpellAOEEntity, SpellAOERen
 
     // The texture used by the model
     private static final ResourceLocation SPELL_AOE_TEXTURE = Constants.modLocation("textures/entity/spell/aoe.png");
+
+    public static final RenderType RENDER_TYPE = RenderType.create(
+            Constants.modLocation("spell_aoe").toString(),
+            1536,
+            true,
+            true,
+            ModRenderPipelines.SPELL_ENTITY,
+            RenderType.CompositeState.builder()
+                    .setTextureState(new RenderStateShard.TextureStateShard(SPELL_AOE_TEXTURE, false))
+                    .setLightmapState(RenderStateShard.NO_LIGHTMAP)
+                    .setOverlayState(RenderStateShard.OVERLAY)
+                    .createCompositeState(false));
 
     public SpellAOERenderer(EntityRendererProvider.Context context) {
         super(context);
@@ -82,7 +96,7 @@ public class SpellAOERenderer extends EntityRenderer<SpellAOEEntity, SpellAOERen
         final int latitudes = (int) Math.ceil(7 + radius / 3);
         final int longitudes = (int) Math.ceil(7 + radius / 3);
 
-        final VertexConsumer buffer = multiBufferSource.getBuffer(RenderType.ENTITY_TRANSLUCENT.apply(SPELL_AOE_TEXTURE, false));
+        final VertexConsumer buffer = multiBufferSource.getBuffer(RENDER_TYPE);
 
         poseStack.pushPose();
 

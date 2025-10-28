@@ -8,5 +8,6 @@ public class RenderPipelineRegister {
     @SubscribeEvent
     public void onRegisterRenderPipelinesEvent(final RegisterRenderPipelinesEvent event) {
         event.registerPipeline(ModRenderPipelines.DROWSY_VIGNETTE);
+        event.registerPipeline(ModRenderPipelines.SPELL_ENTITY);
     }
 }
