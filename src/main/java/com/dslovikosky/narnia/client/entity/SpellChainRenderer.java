@@ -71,7 +71,7 @@ public class SpellChainRenderer extends EntityRenderer<SpellChainEntity, SpellCh
         reusedState.setEndPos(entity.getEndPos());
         // Seed the RNG object with the spell object's UUID, so it looks different each time. Change
         // the seed every 2 ticks, so the lightning changes shape rapidly
-        reusedState.setRandom(new Random(entity.getUUID().getMostSignificantBits() + (long) reusedState.ageInTicks));
+        reusedState.setRandom(new Random(entity.getUUID().getMostSignificantBits() + (long) reusedState.ageInTicks / 2));
     }
 
     @Override

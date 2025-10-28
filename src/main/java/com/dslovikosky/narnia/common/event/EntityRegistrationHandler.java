@@ -2,6 +2,7 @@ package com.dslovikosky.narnia.common.event;
 
 import com.dslovikosky.narnia.client.entity.SpellAOERenderer;
 import com.dslovikosky.narnia.client.entity.SpellChainRenderer;
+import com.dslovikosky.narnia.client.entity.SpellProjectileRenderer;
 import com.dslovikosky.narnia.client.entity.WorldWoodBoatRenderer;
 import com.dslovikosky.narnia.client.entity.WorldWoodChestBoatRenderer;
 import com.dslovikosky.narnia.common.constants.ModEntityTypes;
@@ -27,5 +28,6 @@ public class EntityRegistrationHandler {
         event.registerEntityRenderer(ModEntityTypes.WORLD_WOOD_CHEST_BOAT.get(), WorldWoodChestBoatRenderer::new);
         event.registerEntityRenderer(ModEntityTypes.SPELL_AOE.get(), SpellAOERenderer::new);
         event.registerEntityRenderer(ModEntityTypes.SPELL_CHAIN.get(), SpellChainRenderer::new);
+        event.registerEntityRenderer(ModEntityTypes.SPELL_PROJECTILE.get(), SpellProjectileRenderer::new);
     }
 }
