@@ -3,7 +3,9 @@ package com.dslovikosky.narnia.common.utils;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.phys.Vec3;
 import org.joml.AxisAngle4d;
+import org.joml.Matrix3d;
 import org.joml.Quaternionf;
+import org.joml.Vector3d;
 
 public class MathUtils {
     private static final Vec3 X_UNIT_VECTOR = new Vec3(1.0, 0.0, 0.0);
@@ -15,6 +17,11 @@ public class MathUtils {
         }
         final double power = Math.pow(10, decimalPlaces);
         return Math.round(it * power) / power;
+    }
+
+    public static Vec3 rotateAround(Vec3 baseVec, Vec3 axis, double radians) {
+        final Vector3d result = new Vector3d(baseVec.x, baseVec.y, baseVec.z).mul(new Matrix3d().rotate(-radians, axis.x(), axis.y(), axis.z()));
+        return new Vec3(result.x, result.y, result.z);
     }
 
     /**
@@ -63,8 +70,8 @@ public class MathUtils {
     public static Vec3 getNormal(final Vec3 source, final Vec3 upBasis) {
         final Vec3 leftRightDir = source.cross(upBasis).normalize();
         // Edge case when the vector we're getting the normal for is 0, 1, 0
-        if (leftRightDir == net.minecraft.world.phys.Vec3.ZERO) {
-            return net.minecraft.world.phys.Vec3.ZERO;
+        if (leftRightDir == Vec3.ZERO) {
+            return Vec3.ZERO;
         }
         return leftRightDir.cross(source).normalize();
     }
