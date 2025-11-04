@@ -1,11 +1,15 @@
 package com.dslovikosky.narnia.client.particle.base;
 
+import com.dslovikosky.narnia.client.constants.ModRenderPipelines;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.SingleQuadParticle;
 import net.minecraft.client.particle.SpriteSet;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import org.jetbrains.annotations.NotNull;
 
 public abstract class NarniaParticle extends SingleQuadParticle {
+    protected static final Layer TRANSLUCENT_NO_DEPTH = new Layer(true, TextureAtlas.LOCATION_PARTICLES, ModRenderPipelines.TRANSLUCENT_PARTICLE_NO_DEPTH);
+
     public NarniaParticle(final ClientLevel clientLevel, final double x, final double y, final double z, final double xSpeed, final double ySpeed, final double zSpeed, final SpriteSet spriteSet) {
         super(clientLevel, x, y, z, xSpeed, ySpeed, zSpeed, spriteSet.first());
         quadSize = 0.2f;

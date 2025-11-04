@@ -8,6 +8,7 @@ import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class FeyParticle extends NarniaParticle {
@@ -37,6 +38,11 @@ public class FeyParticle extends NarniaParticle {
         rCol = red;
         gCol = green;
         bCol = blue;
+    }
+
+    @Override
+    protected @NotNull Layer getLayer() {
+        return TRANSLUCENT_NO_DEPTH;
     }
 
     @Override

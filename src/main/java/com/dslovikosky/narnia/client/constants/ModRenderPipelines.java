@@ -9,6 +9,8 @@ import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.renderer.RenderPipelines;
 
+import java.util.List;
+
 public class ModRenderPipelines {
     public static final RenderPipeline DROWSY_VIGNETTE = RenderPipeline.builder()
             .withLocation(Constants.modLocation("pipeline/drowsy_vignette"))
@@ -33,4 +35,13 @@ public class ModRenderPipelines {
             .withCull(false)
             .withDepthWrite(false)
             .build();
+
+    public static final RenderPipeline TRANSLUCENT_PARTICLE_NO_DEPTH = RenderPipeline.builder(RenderPipelines.PARTICLE_SNIPPET)
+            .withLocation(Constants.modLocation("pipeline/translucent_particle_no_depth"))
+            .withBlend(BlendFunction.TRANSLUCENT)
+            .withCull(false)
+            .withDepthWrite(false)
+            .build();
+
+    public static final List<RenderPipeline> LIST = List.of(DROWSY_VIGNETTE, SPELL_ENTITY, TRANSLUCENT_PARTICLE_NO_DEPTH);
 }

@@ -8,6 +8,7 @@ import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class ProjectileParticle extends NarniaParticle {
@@ -30,6 +31,11 @@ public class ProjectileParticle extends NarniaParticle {
         rCol = red;
         gCol = green;
         bCol = blue;
+    }
+
+    @Override
+    protected @NotNull Layer getLayer() {
+        return TRANSLUCENT_NO_DEPTH;
     }
 
     @Override
