@@ -58,7 +58,7 @@ public class RotateSpellDeliveryMethod extends SpellDeliveryMethod {
 
         final Vec3 position = state.getPosition();
         newState.getLevel().sendParticles(ModParticleTypes.ROTATE.get(), position.x(), position.y(), position.z(),
-                1, 0.0, 0.0, 0.0, 0.0);
+                0, newDir.x(), newDir.y(), newDir.z(), 1.0);
     }
 
     @Override

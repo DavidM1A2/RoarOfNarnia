@@ -3,7 +3,6 @@ package com.dslovikosky.narnia.client.particle;
 import com.dslovikosky.narnia.client.particle.base.RotatedNarniaParticle;
 import com.dslovikosky.narnia.common.utils.MathUtils;
 import com.mojang.math.Axis;
-import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleProvider;
@@ -12,6 +11,7 @@ import net.minecraft.client.renderer.state.QuadParticleRenderState;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Quaternionf;
 
@@ -24,7 +24,7 @@ public class RotateParticle extends RotatedNarniaParticle {
         super(clientLevel, x, y, z, 0, 0, 0, spriteSet);
         this.baseRotation = MathUtils.computeRotationTo(BASE_DIRECTION, new Vec3(xDir, yDir, zDir));
         // 0.5 second lifespan
-        setLifetime(10);
+        setLifetime(160);
         scale(1f);
         // No movement
         xd = 0.0;
@@ -33,10 +33,15 @@ public class RotateParticle extends RotatedNarniaParticle {
     }
 
     @Override
-    protected void extractRotatedQuad(QuadParticleRenderState reusedState, Camera camera, Quaternionf orientation, float partialTick) {
+    protected @NotNull Layer getLayer() {
+        return TRANSLUCENT_NO_CULL;
+    }
+
+    @Override
+    protected void extractRotatedQuad(QuadParticleRenderState reusedState, Quaternionf orientation, float x, float y, float z, float partialTick) {
         // Render the particle twice, once at the standard rotation, and once 90 degrees more rotated.
-        super.extractRotatedQuad(reusedState, camera, orientation, partialTick);
-        super.extractRotatedQuad(reusedState, camera, rotation, partialTick);
+        extractRotatedQuadBase(reusedState, rotation, x, y, z, partialTick);
+        extractRotatedQuadBase(reusedState, ninetyDegreeRotatedRotation, x, y, z, partialTick);
     }
 
     @Override

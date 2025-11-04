@@ -36,6 +36,12 @@ public class ModRenderPipelines {
             .withDepthWrite(false)
             .build();
 
+    public static final RenderPipeline TRANSLUCENT_PARTICLE_NO_CULL = RenderPipeline.builder(RenderPipelines.PARTICLE_SNIPPET)
+            .withLocation(Constants.modLocation("pipeline/translucent_particle_no_cull"))
+            .withBlend(BlendFunction.TRANSLUCENT)
+            .withCull(false)
+            .build();
+
     public static final RenderPipeline TRANSLUCENT_PARTICLE_NO_DEPTH = RenderPipeline.builder(RenderPipelines.PARTICLE_SNIPPET)
             .withLocation(Constants.modLocation("pipeline/translucent_particle_no_depth"))
             .withBlend(BlendFunction.TRANSLUCENT)
@@ -43,5 +49,5 @@ public class ModRenderPipelines {
             .withDepthWrite(false)
             .build();
 
-    public static final List<RenderPipeline> LIST = List.of(DROWSY_VIGNETTE, SPELL_ENTITY, TRANSLUCENT_PARTICLE_NO_DEPTH);
+    public static final List<RenderPipeline> LIST = List.of(DROWSY_VIGNETTE, SPELL_ENTITY, TRANSLUCENT_PARTICLE_NO_CULL, TRANSLUCENT_PARTICLE_NO_DEPTH);
 }

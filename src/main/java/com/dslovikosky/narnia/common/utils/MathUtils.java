@@ -2,7 +2,6 @@ package com.dslovikosky.narnia.common.utils;
 
 import net.minecraft.util.Tuple;
 import net.minecraft.world.phys.Vec3;
-import org.joml.AxisAngle4d;
 import org.joml.Matrix3d;
 import org.joml.Quaternionf;
 import org.joml.Vector3d;
@@ -29,38 +28,7 @@ public class MathUtils {
      * https://stackoverflow.com/questions/1171849/finding-quaternion-representing-the-rotation-from-one-vector-to-another/1171995#1171995
      */
     public static Quaternionf computeRotationTo(final Vec3 source, final Vec3 target) {
-        final Vec3 normalizedBasis = source.normalize();
-        final Vec3 normalizedTarget = target.normalize();
-        final double angleBetweenVectors = normalizedBasis.dot(normalizedTarget);
-
-        // If the angle is close to -1 it indicates the vectors are at a 180deg angle, eg: <---- and ---->
-        // In this case we have to rotate the vector by 180 degrees around either the X or Y axis. The reason we
-        // try X OR Y is that the vectors might be parallel to the X or Y axis, so pick the one which isn't parallel
-        if (angleBetweenVectors < -0.999999) {
-            var orthogonalVec = X_UNIT_VECTOR.cross(normalizedBasis);
-            if (orthogonalVec.length() < 0.00001) {
-                orthogonalVec = Y_UNIT_VECTOR.cross(normalizedBasis);
-            }
-
-            return new Quaternionf(new AxisAngle4d(180, orthogonalVec.normalize().toVector3f()));
-        }
-
-        // If the angle is close to 1 it indicates the vectors are perfectly parallel, eg: ----> and ---->
-        // In this case we do no rotations and return the unit quaternion
-        if (angleBetweenVectors > 0.999999) {
-            return new Quaternionf();
-        }
-
-        // The default case is our vectors are at some angle from one another. Compute the rotation quaternion needed
-        final Vec3 cross = normalizedBasis.cross(target);
-        final Quaternionf rotation = new Quaternionf(
-                cross.x,
-                cross.y,
-                cross.z,
-                Math.sqrt(normalizedBasis.lengthSqr() * normalizedTarget.lengthSqr()) + angleBetweenVectors
-        );
-        rotation.normalize();
-        return rotation;
+        return new Quaternionf().rotateTo(source.toVector3f(), target.toVector3f());
     }
 
     public static Vec3 getNormal(final Vec3 source) {

@@ -114,7 +114,7 @@ public class AOESpellDeliveryMethod extends SpellDeliveryMethod {
                 final double c = Math.pow(RANDOM.nextDouble(), 1.0 / 3.0) * radius;
                 final Vec3 position = centerPos.add(x * c, y * c, z * c);
                 level.sendParticles(ModParticleTypes.FIZZLE.get(),
-                        position.x(), position.y(), position.z(), 1, 0.0, 1.0, 0.0, 0.1);
+                        position.x(), position.y(), position.z(), 0, 0.0, 1.0, 0.0, 0.1);
             });
         }
     }

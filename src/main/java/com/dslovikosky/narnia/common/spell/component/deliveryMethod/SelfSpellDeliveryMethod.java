@@ -27,11 +27,11 @@ public class SelfSpellDeliveryMethod extends SpellDeliveryMethod {
             final Vec3 particlePosition = entity.getPosition(1f).add(0.0, entity.getBbHeight() / 2.0, 0.0);
             for (int i = 0; i < numParticles; i++) {
                 state.getLevel().sendParticles(new SelfParticleData(entity.getId(), (float) i / numParticles * 360),
-                        particlePosition.x(), particlePosition.y(), particlePosition.z(), 1, 0.0, 0.0, 0.0, 0.0);
+                        particlePosition.x(), particlePosition.y(), particlePosition.z(), 0, 0.0, 0.0, 0.0, 0.0);
             }
         } else {
             state.getLevel().sendParticles(ModParticleTypes.SELF_FIZZLE.get(),
-                    position.x(), position.y(), position.z(), 1, 0.0, 0.0, 0.0, 0.0);
+                    position.x(), position.y(), position.z(), 0, 0.0, 0.0, 0.0, 0.0);
         }
     }
 

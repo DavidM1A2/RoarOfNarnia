@@ -14,6 +14,10 @@ public abstract class RotatedNarniaParticle extends NarniaParticle {
 
     @Override
     protected void extractRotatedQuad(QuadParticleRenderState reusedState, Quaternionf orientation, float x, float y, float z, float partialTick) {
-        super.extractRotatedQuad(reusedState, this.rotation, x, y, z, partialTick);
+        extractRotatedQuadBase(reusedState, this.rotation, x, y, z, partialTick);
+    }
+
+    protected void extractRotatedQuadBase(final QuadParticleRenderState reusedState, final Quaternionf orientation, final float x, final float y, final float z, final float partialTick) {
+        super.extractRotatedQuad(reusedState, orientation, x, y, z, partialTick);
     }
 }
