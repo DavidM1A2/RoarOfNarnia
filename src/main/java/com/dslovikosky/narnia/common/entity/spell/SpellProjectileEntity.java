@@ -246,7 +246,7 @@ public class SpellProjectileEntity extends Entity implements IEntityWithComplexS
                     blockHitResult.getLocation(),
                     hitPos,
                     direction,
-                    MathUtils.getNormal(getDeltaMovement()),
+                    MathUtils.getNormal(direction),
                     Optional.ofNullable(casterEntityId).map(level::getEntity).orElse(null),
                     null,
                     this
@@ -254,7 +254,7 @@ public class SpellProjectileEntity extends Entity implements IEntityWithComplexS
 
             // Proc the effects and transition
             currentDeliveryMethod.procEffects(state);
-            currentDeliveryMethod.transitionFrom(state.copy(result.getLocation().subtract(direction.scale(HIT_DELIVERY_TRANSITION_OFFSET)), state.getNormal()));
+            currentDeliveryMethod.transitionFrom(state.copy(result.getLocation().subtract(direction.scale(HIT_DELIVERY_TRANSITION_OFFSET))));
         } else if (result.getType() == HitResult.Type.ENTITY && result instanceof EntityHitResult entityHitResult) {
             final Entity entityHit = entityHitResult.getEntity();
             final DeliveryTransitionState state = new DeliveryTransitionState(
@@ -264,7 +264,7 @@ public class SpellProjectileEntity extends Entity implements IEntityWithComplexS
                     result.getLocation(),
                     BlockPos.containing(entityHitResult.getLocation()),
                     direction,
-                    MathUtils.getNormal(getDeltaMovement()),
+                    MathUtils.getNormal(direction),
                     Optional.ofNullable(casterEntityId).map(level::getEntity).orElse(null),
                     entityHit,
                     this
