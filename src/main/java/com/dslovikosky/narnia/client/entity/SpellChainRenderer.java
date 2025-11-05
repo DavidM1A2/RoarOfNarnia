@@ -45,7 +45,7 @@ public class SpellChainRenderer extends EntityRenderer<SpellChainEntity, SpellCh
     // The texture used by the model
     private static final ResourceLocation SPELL_CHAIN_TEXTURE = Constants.modLocation("textures/entity/spell/chain.png");
 
-    public static final RenderType RENDER_TYPE = RenderType.create(
+    private static final RenderType RENDER_TYPE = RenderType.create(
             Constants.modLocation("spell_chain").toString(),
             1536,
             true,

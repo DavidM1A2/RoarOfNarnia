@@ -34,7 +34,7 @@ public class SpellAOERenderer extends EntityRenderer<SpellAOEEntity, SpellAOERen
     // The texture used by the model
     private static final ResourceLocation SPELL_AOE_TEXTURE = Constants.modLocation("textures/entity/spell/aoe.png");
 
-    public static final RenderType RENDER_TYPE = RenderType.create(
+    private static final RenderType RENDER_TYPE = RenderType.create(
             Constants.modLocation("spell_aoe").toString(),
             1536,
             true,

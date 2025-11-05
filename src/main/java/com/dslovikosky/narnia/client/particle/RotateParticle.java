@@ -24,7 +24,7 @@ public class RotateParticle extends RotatedNarniaParticle {
         super(clientLevel, x, y, z, 0, 0, 0, spriteSet);
         this.baseRotation = MathUtils.computeRotationTo(BASE_DIRECTION, new Vec3(xDir, yDir, zDir));
         // 0.5 second lifespan
-        setLifetime(160);
+        setLifetime(10);
         scale(1f);
         // No movement
         xd = 0.0;

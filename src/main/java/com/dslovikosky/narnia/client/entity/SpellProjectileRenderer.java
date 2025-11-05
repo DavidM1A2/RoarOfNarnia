@@ -24,7 +24,7 @@ public class SpellProjectileRenderer extends EntityRenderer<SpellProjectileEntit
     // The texture used by the model
     private static final ResourceLocation SPELL_PROJECTILE_TEXTURE = Constants.modLocation("textures/entity/spell/projectile.png");
 
-    public static final RenderType RENDER_TYPE = RenderType.create(
+    private static final RenderType RENDER_TYPE = RenderType.create(
             Constants.modLocation("spell_projectile").toString(),
             1536,
             true,
