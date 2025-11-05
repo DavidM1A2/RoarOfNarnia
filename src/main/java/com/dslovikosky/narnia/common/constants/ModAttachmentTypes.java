@@ -1,5 +1,6 @@
 package com.dslovikosky.narnia.common.constants;
 
+import com.dslovikosky.narnia.common.model.attachment_type.DelayedDeliveryEntry;
 import com.dslovikosky.narnia.common.model.attachment_type.PreRingTeleportData;
 import com.dslovikosky.narnia.common.model.attachment_type.SelectedSpellPowerSourceSyncHandler;
 import com.dslovikosky.narnia.common.model.attachment_type.ThermalData;
@@ -12,6 +13,10 @@ import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Function;
 
 public class ModAttachmentTypes {
     public static final DeferredRegister<AttachmentType<?>> ATTACHMENT_TYPES = DeferredRegister.create(NeoForgeRegistries.ATTACHMENT_TYPES, Constants.MOD_ID);
@@ -51,4 +56,12 @@ public class ModAttachmentTypes {
                     .serialize(ThermalData.CODEC.fieldOf("value"))
                     .sync(new ThermalDataSyncHandler())
                     .build());
+    public static final DeferredHolder<AttachmentType<?>, AttachmentType<List<DelayedDeliveryEntry>>> DELAYED_DELIVERY_ENTRIES = ATTACHMENT_TYPES
+            .register("delayed_delivery_entries", () -> AttachmentType.<List<DelayedDeliveryEntry>>builder(() -> new ArrayList<>())
+                    .serialize(mutableListOf(DelayedDeliveryEntry.CODEC).fieldOf("value"))
+                    .build());
+
+    private static <T> Codec<List<T>> mutableListOf(Codec<T> elementCodec) {
+        return elementCodec.listOf().xmap(ArrayList::new, Function.identity());
+    }
 }

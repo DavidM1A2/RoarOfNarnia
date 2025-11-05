@@ -28,6 +28,7 @@ import com.dslovikosky.narnia.common.constants.ModStructureTypes;
 import com.dslovikosky.narnia.common.event.AttachmentHandler;
 import com.dslovikosky.narnia.common.event.BlockEntityRendererRegister;
 import com.dslovikosky.narnia.common.event.DataGenerationHandler;
+import com.dslovikosky.narnia.common.event.DelayedDeliveryEntryHandler;
 import com.dslovikosky.narnia.common.event.DimensionSpecialEffectsRegister;
 import com.dslovikosky.narnia.common.event.EntityRegistrationHandler;
 import com.dslovikosky.narnia.common.event.KeyInputEventHandler;
@@ -101,6 +102,7 @@ public class RoarOfNarnia {
         forgeBus.register(new SpellLunarHandler());
         forgeBus.register(new SpellSolarHandler());
         forgeBus.register(new SpellThermalHandler());
+        forgeBus.register(new DelayedDeliveryEntryHandler());
         if (fmlLoader.getDist() == Dist.CLIENT) {
             forgeBus.register(new WoodBetweenTheWorldsClientHandler());
             forgeBus.register(new KeyInputEventHandler());

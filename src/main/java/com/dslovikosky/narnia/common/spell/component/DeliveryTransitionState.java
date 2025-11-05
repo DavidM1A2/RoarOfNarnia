@@ -183,6 +183,21 @@ public class DeliveryTransitionState {
         );
     }
 
+    public DeliveryTransitionState copy(final Vec3 position, final BlockPos blockPosition, final Vec3 direction, final Vec3 normal) {
+        return new DeliveryTransitionState(
+                spell,
+                stageIndex,
+                position,
+                blockPosition,
+                direction,
+                normal,
+                level,
+                casterEntityId,
+                entityId,
+                deliveryEntityId
+        );
+    }
+
     public SpellStage getCurrentStage() {
         return this.spell.getStage(this.stageIndex);
     }
