@@ -43,9 +43,10 @@ public class DebugItem extends Item {
         final SpellStage spellStage1 = new SpellStage();
         spellStage1.setDeliveryInstance(deliveryMethod1);
 
-        final SpellDeliveryMethodInstance deliveryMethod2 = new SpellDeliveryMethodInstance(ModSpellDeliveryMethods.DELAY.get());
+        final SpellDeliveryMethodInstance deliveryMethod2 = new SpellDeliveryMethodInstance(ModSpellDeliveryMethods.WALL.get());
         deliveryMethod2.setDefaults();
-        ModSpellDeliveryMethods.DELAY.get().setDelay(deliveryMethod2, 4);
+        ModSpellDeliveryMethods.WALL.get().setHeight(deliveryMethod2, 4);
+        ModSpellDeliveryMethods.WALL.get().setWidth(deliveryMethod2, 4);
         final SpellStage spellStage2 = new SpellStage();
         spellStage2.setDeliveryInstance(deliveryMethod2);
 

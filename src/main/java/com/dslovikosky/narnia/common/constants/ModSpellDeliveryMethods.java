@@ -7,6 +7,7 @@ import com.dslovikosky.narnia.common.spell.component.deliveryMethod.DelaySpellDe
 import com.dslovikosky.narnia.common.spell.component.deliveryMethod.ProjectileSpellDeliveryMethod;
 import com.dslovikosky.narnia.common.spell.component.deliveryMethod.RotateSpellDeliveryMethod;
 import com.dslovikosky.narnia.common.spell.component.deliveryMethod.SelfSpellDeliveryMethod;
+import com.dslovikosky.narnia.common.spell.component.deliveryMethod.WallSpellDeliveryMethod;
 import com.dslovikosky.narnia.common.spell.component.deliveryMethod.base.SpellDeliveryMethod;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -21,4 +22,5 @@ public class ModSpellDeliveryMethods {
     public static final DeferredHolder<SpellDeliveryMethod, RotateSpellDeliveryMethod> ROTATE = SPELL_DELIVERY_METHODS.register("rotate", RotateSpellDeliveryMethod::new);
     public static final DeferredHolder<SpellDeliveryMethod, ConeSpellDeliveryMethod> CONE = SPELL_DELIVERY_METHODS.register("cone", ConeSpellDeliveryMethod::new);
     public static final DeferredHolder<SpellDeliveryMethod, DelaySpellDeliveryMethod> DELAY = SPELL_DELIVERY_METHODS.register("delay", DelaySpellDeliveryMethod::new);
+    public static final DeferredHolder<SpellDeliveryMethod, WallSpellDeliveryMethod> WALL = SPELL_DELIVERY_METHODS.register("wall", WallSpellDeliveryMethod::new);
 }

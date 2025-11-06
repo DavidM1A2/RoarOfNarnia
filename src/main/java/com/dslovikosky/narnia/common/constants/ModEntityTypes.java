@@ -4,6 +4,7 @@ import com.dslovikosky.narnia.common.entity.spell.SpellAOEEntity;
 import com.dslovikosky.narnia.common.entity.spell.SpellChainEntity;
 import com.dslovikosky.narnia.common.entity.spell.SpellConeEntity;
 import com.dslovikosky.narnia.common.entity.spell.SpellProjectileEntity;
+import com.dslovikosky.narnia.common.entity.spell.SpellWallEntity;
 import com.dslovikosky.narnia.common.entity.world_wood_boat.WorldWoodBoat;
 import com.dslovikosky.narnia.common.entity.world_wood_boat.WorldWoodChestBoat;
 import net.minecraft.core.registries.Registries;
@@ -82,5 +83,16 @@ public class ModEntityTypes {
                     .sized(0f, 0f)
                     .noSummon()
                     .build(ResourceKey.create(Registries.ENTITY_TYPE, Constants.modLocation("spell_cone")))
+    );
+    public static final DeferredHolder<EntityType<?>, EntityType<SpellWallEntity>> SPELL_WALL = ENTITY_TYPES.register(
+            "spell_wall",
+            () -> EntityType.Builder.<SpellWallEntity>of(SpellWallEntity::new, MobCategory.MISC)
+                    .setTrackingRange(50)
+                    .setUpdateInterval(100)
+                    .setShouldReceiveVelocityUpdates(false)
+                    .noLootTable()
+                    .sized(0f, 0f)
+                    .noSummon()
+                    .build(ResourceKey.create(Registries.ENTITY_TYPE, Constants.modLocation("spell_wall")))
     );
 }
