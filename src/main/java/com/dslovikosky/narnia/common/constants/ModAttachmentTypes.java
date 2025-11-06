@@ -3,12 +3,12 @@ package com.dslovikosky.narnia.common.constants;
 import com.dslovikosky.narnia.common.model.attachment_type.DelayedDeliveryEntry;
 import com.dslovikosky.narnia.common.model.attachment_type.PreRingTeleportData;
 import com.dslovikosky.narnia.common.model.attachment_type.SelectedSpellPowerSourceSyncHandler;
+import com.dslovikosky.narnia.common.model.attachment_type.SpellCharmData;
 import com.dslovikosky.narnia.common.model.attachment_type.ThermalData;
-import com.dslovikosky.narnia.common.model.attachment_type.ThermalDataSyncHandler;
 import com.dslovikosky.narnia.common.model.attachment_type.TicksInWoodBetweenTheWorldsSyncHandler;
-import com.dslovikosky.narnia.common.model.attachment_type.VitaeSyncHandler;
 import com.dslovikosky.narnia.common.spell.component.powerSource.base.SpellPowerSource;
 import com.mojang.serialization.Codec;
+import net.minecraft.network.codec.ByteBufCodecs;
 import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -16,6 +16,7 @@ import net.neoforged.neoforge.registries.NeoForgeRegistries;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.function.Function;
 
 public class ModAttachmentTypes {
@@ -39,26 +40,31 @@ public class ModAttachmentTypes {
     public static final DeferredHolder<AttachmentType<?>, AttachmentType<Double>> INNATE_VITAE = ATTACHMENT_TYPES
             .register("innate_vitae", () -> AttachmentType.builder(() -> 0.0)
                     .serialize(Codec.DOUBLE.fieldOf("value"))
-                    .sync(new VitaeSyncHandler())
+                    .sync(ByteBufCodecs.DOUBLE)
                     .build());
     public static final DeferredHolder<AttachmentType<?>, AttachmentType<Double>> LUNAR_VITAE = ATTACHMENT_TYPES
             .register("lunar_vitae", () -> AttachmentType.builder(() -> 0.0)
                     .serialize(Codec.DOUBLE.fieldOf("value"))
-                    .sync(new VitaeSyncHandler())
+                    .sync(ByteBufCodecs.DOUBLE)
                     .build());
     public static final DeferredHolder<AttachmentType<?>, AttachmentType<Double>> SOLAR_VITAE = ATTACHMENT_TYPES
             .register("solar_vitae", () -> AttachmentType.builder(() -> 0.0)
                     .serialize(Codec.DOUBLE.fieldOf("value"))
-                    .sync(new VitaeSyncHandler())
+                    .sync(ByteBufCodecs.DOUBLE)
                     .build());
     public static final DeferredHolder<AttachmentType<?>, AttachmentType<ThermalData>> THERMAL_DATA = ATTACHMENT_TYPES
             .register("thermal_vitae", () -> AttachmentType.builder(() -> new ThermalData(0.0, 0.0))
                     .serialize(ThermalData.CODEC.fieldOf("value"))
-                    .sync(new ThermalDataSyncHandler())
+                    .sync(ThermalData.STREAM_CODEC)
                     .build());
     public static final DeferredHolder<AttachmentType<?>, AttachmentType<List<DelayedDeliveryEntry>>> DELAYED_DELIVERY_ENTRIES = ATTACHMENT_TYPES
             .register("delayed_delivery_entries", () -> AttachmentType.<List<DelayedDeliveryEntry>>builder(() -> new ArrayList<>())
                     .serialize(mutableListOf(DelayedDeliveryEntry.CODEC).fieldOf("value"))
+                    .build());
+    public static final DeferredHolder<AttachmentType<?>, AttachmentType<SpellCharmData>> SPELL_CHARM_DATA = ATTACHMENT_TYPES
+            .register("spell_charm_data", () -> AttachmentType.builder(() -> new SpellCharmData(0, UUID.randomUUID()))
+                    .serialize(SpellCharmData.CODEC.fieldOf("value"))
+                    .sync(SpellCharmData.STREAM_CODEC)
                     .build());
 
     private static <T> Codec<List<T>> mutableListOf(Codec<T> elementCodec) {

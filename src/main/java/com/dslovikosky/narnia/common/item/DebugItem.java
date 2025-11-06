@@ -33,7 +33,7 @@ public class DebugItem extends Item {
 
     @Override
     public InteractionResult use(Level level, Player player, InteractionHand hand) {
-        final SpellEffectInstance effect = new SpellEffectInstance(ModSpellEffects.BURN.get());
+        final SpellEffectInstance effect = new SpellEffectInstance(ModSpellEffects.CHARM.get());
         effect.setDefaults();
 
         final SpellDeliveryMethodInstance deliveryMethod1 = new SpellDeliveryMethodInstance(ModSpellDeliveryMethods.PROJECTILE.get());
@@ -44,9 +44,18 @@ public class DebugItem extends Item {
         spellStage1.setDeliveryInstance(deliveryMethod1);
         spellStage1.getEffects()[0] = effect;
 
+        final SpellDeliveryMethodInstance deliveryMethod2 = new SpellDeliveryMethodInstance(ModSpellDeliveryMethods.PROJECTILE.get());
+        deliveryMethod2.setDefaults();
+        ModSpellDeliveryMethods.PROJECTILE.get().setSpeed(deliveryMethod2, 5);
+        ModSpellDeliveryMethods.PROJECTILE.get().setRange(deliveryMethod2, 25);
+        final SpellStage spellStage2 = new SpellStage();
+        spellStage2.setDeliveryInstance(deliveryMethod2);
+        spellStage2.getEffects()[0] = effect;
+
         final Spell spell = new Spell();
         spell.setName("Test");
         spell.getSpellStages().add(spellStage1);
+        spell.getSpellStages().add(spellStage2);
 
         spell.attemptToCast(player, player.getLookAngle(), false);
 

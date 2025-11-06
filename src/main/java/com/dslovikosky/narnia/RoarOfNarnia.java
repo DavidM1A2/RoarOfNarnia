@@ -39,6 +39,7 @@ import com.dslovikosky.narnia.common.event.RegistryRegister;
 import com.dslovikosky.narnia.common.event.RingHandler;
 import com.dslovikosky.narnia.common.event.SchematicHandler;
 import com.dslovikosky.narnia.common.event.SignBlockRegister;
+import com.dslovikosky.narnia.common.event.SpellCharmHandler;
 import com.dslovikosky.narnia.common.event.SpellInnateHandler;
 import com.dslovikosky.narnia.common.event.SpellLunarHandler;
 import com.dslovikosky.narnia.common.event.SpellSolarHandler;
@@ -103,6 +104,7 @@ public class RoarOfNarnia {
         forgeBus.register(new SpellSolarHandler());
         forgeBus.register(new SpellThermalHandler());
         forgeBus.register(new DelayedDeliveryEntryHandler());
+        forgeBus.register(new SpellCharmHandler());
         if (fmlLoader.getDist() == Dist.CLIENT) {
             forgeBus.register(new WoodBetweenTheWorldsClientHandler());
             forgeBus.register(new KeyInputEventHandler());

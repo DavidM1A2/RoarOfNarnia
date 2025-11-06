@@ -33,16 +33,16 @@ public class BurnSpellEffect extends DurationSpellEffect {
             }
             entity.setRemainingFireTicks((int) Math.max(entity.getRemainingFireTicks(), Math.ceil(getDuration(instance) * 20)));
         } else {
-            final ServerLevel world = state.getLevel();
+            final ServerLevel level = state.getLevel();
             final Vec3 reverseHitDir = state.getDirection().reverse();
             final Vec3 position = state.getPosition();
             final BlockPos blockPosition = BlockPos.containing(state.getPosition().add(reverseHitDir.scale(0.01)));
             boolean setBlockOnFire = false;
-            if (world.isEmptyBlock(blockPosition)) {
-                if (!world.isEmptyBlock(blockPosition.below())) {
+            if (level.isEmptyBlock(blockPosition)) {
+                if (!level.isEmptyBlock(blockPosition.below())) {
                     state.getLevel().sendParticles(ModParticleTypes.FIRE.get(), position.x(), position.y(), position.z(), 0,
                             0.01 * (RANDOM.nextDouble() - 0.5), 0.1, 0.01 * (RANDOM.nextDouble() - 0.5), 1.0);
-                    world.setBlockAndUpdate(blockPosition, Blocks.FIRE.defaultBlockState());
+                    level.setBlockAndUpdate(blockPosition, Blocks.FIRE.defaultBlockState());
                     setBlockOnFire = true;
                 }
             }
