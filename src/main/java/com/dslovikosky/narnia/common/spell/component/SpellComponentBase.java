@@ -3,7 +3,11 @@ package com.dslovikosky.narnia.common.spell.component;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
+import java.util.Random;
+
 public abstract class SpellComponentBase {
+    protected static final Random RANDOM = new Random();
+
     private final ResourceLocation id;
     private final ResourceLocation icon;
 

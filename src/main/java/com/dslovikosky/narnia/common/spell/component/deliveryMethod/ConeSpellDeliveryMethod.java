@@ -16,11 +16,8 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
 import java.awt.Color;
-import java.util.Random;
 
 public class ConeSpellDeliveryMethod extends SpellDeliveryMethod {
-    private static final Random RANDOM = new Random();
-
     private static final double SHELL_ONLY_MARGIN = 1.5;
 
     private static final String NBT_RADIUS = "radius";

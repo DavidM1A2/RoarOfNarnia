@@ -13,11 +13,8 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.phys.Vec3;
 
 import java.awt.Color;
-import java.util.Random;
 
 public class WallSpellDeliveryMethod extends SpellDeliveryMethod {
-    private static final Random RANDOM = new Random();
-
     private static final String NBT_WIDTH = "width";
     private static final String NBT_HEIGHT = "height";
     private static final String NBT_COLOR = "color";

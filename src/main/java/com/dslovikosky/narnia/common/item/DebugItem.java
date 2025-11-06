@@ -33,43 +33,20 @@ public class DebugItem extends Item {
 
     @Override
     public InteractionResult use(Level level, Player player, InteractionHand hand) {
-        final SpellEffectInstance effect = new SpellEffectInstance(ModSpellEffects.DIG.get());
+        final SpellEffectInstance effect = new SpellEffectInstance(ModSpellEffects.BURN.get());
         effect.setDefaults();
 
         final SpellDeliveryMethodInstance deliveryMethod1 = new SpellDeliveryMethodInstance(ModSpellDeliveryMethods.PROJECTILE.get());
         deliveryMethod1.setDefaults();
         ModSpellDeliveryMethods.PROJECTILE.get().setSpeed(deliveryMethod1, 5);
-        ModSpellDeliveryMethods.PROJECTILE.get().setRange(deliveryMethod1, 5);
+        ModSpellDeliveryMethods.PROJECTILE.get().setRange(deliveryMethod1, 25);
         final SpellStage spellStage1 = new SpellStage();
         spellStage1.setDeliveryInstance(deliveryMethod1);
-
-        final SpellDeliveryMethodInstance deliveryMethod2 = new SpellDeliveryMethodInstance(ModSpellDeliveryMethods.WALL.get());
-        deliveryMethod2.setDefaults();
-        ModSpellDeliveryMethods.WALL.get().setHeight(deliveryMethod2, 4);
-        ModSpellDeliveryMethods.WALL.get().setWidth(deliveryMethod2, 4);
-        final SpellStage spellStage2 = new SpellStage();
-        spellStage2.setDeliveryInstance(deliveryMethod2);
-
-        final SpellDeliveryMethodInstance deliveryMethod3 = new SpellDeliveryMethodInstance(ModSpellDeliveryMethods.PROJECTILE.get());
-        deliveryMethod3.setDefaults();
-        ModSpellDeliveryMethods.PROJECTILE.get().setSpeed(deliveryMethod3, 8);
-        final SpellStage spellStage3 = new SpellStage();
-        spellStage3.setDeliveryInstance(deliveryMethod3);
-//
-//        final SpellDeliveryMethodInstance deliveryMethod4 = new SpellDeliveryMethodInstance(ModSpellDeliveryMethods.AOE.get());
-//        deliveryMethod4.setDefaults();
-//        final SpellStage spellStage4 = new SpellStage();
-//        spellStage4.setDeliveryInstance(deliveryMethod4);
-//        spellStage4.getEffects()[0] = effect;
-
-        spellStage3.getEffects()[0] = effect;
+        spellStage1.getEffects()[0] = effect;
 
         final Spell spell = new Spell();
         spell.setName("Test");
         spell.getSpellStages().add(spellStage1);
-        spell.getSpellStages().add(spellStage2);
-        spell.getSpellStages().add(spellStage3);
-//        spell.getSpellStages().add(spellStage4);
 
         spell.attemptToCast(player, player.getLookAngle(), false);
 

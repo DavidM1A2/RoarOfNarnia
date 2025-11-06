@@ -14,11 +14,9 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.phys.Vec3;
 
 import java.awt.Color;
-import java.util.Random;
 import java.util.stream.IntStream;
 
 public class AOESpellDeliveryMethod extends SpellDeliveryMethod {
-    private static final Random RANDOM = new Random();
     private static final String NBT_RADIUS = "radius";
     private static final String NBT_SHELL_ONLY = "shell_only";
     private static final String NBT_COLOR = "color";
