@@ -24,6 +24,6 @@ public abstract class DurationSpellEffect extends SpellEffect {
     }
 
     public double getDuration(final SpellComponentInstance<?> instance) {
-        return instance.getData().getDouble(NBT_DURATION).get();
+        return instance.getData().getDoubleOr(NBT_DURATION, 0.0);
     }
 }

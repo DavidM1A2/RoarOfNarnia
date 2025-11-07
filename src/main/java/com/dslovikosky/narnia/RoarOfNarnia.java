@@ -2,6 +2,7 @@ package com.dslovikosky.narnia;
 
 import com.dslovikosky.narnia.client.event.ClientLateRenderHandler;
 import com.dslovikosky.narnia.client.event.ClientReloadHandler;
+import com.dslovikosky.narnia.client.event.ClientSpellFreezeHandler;
 import com.dslovikosky.narnia.client.event.ParticleRegister;
 import com.dslovikosky.narnia.client.event.RenderPipelineRegister;
 import com.dslovikosky.narnia.client.event.WoodBetweenTheWorldsClientHandler;
@@ -40,6 +41,7 @@ import com.dslovikosky.narnia.common.event.RingHandler;
 import com.dslovikosky.narnia.common.event.SchematicHandler;
 import com.dslovikosky.narnia.common.event.SignBlockRegister;
 import com.dslovikosky.narnia.common.event.SpellCharmHandler;
+import com.dslovikosky.narnia.common.event.SpellFreezeHandler;
 import com.dslovikosky.narnia.common.event.SpellInnateHandler;
 import com.dslovikosky.narnia.common.event.SpellLunarHandler;
 import com.dslovikosky.narnia.common.event.SpellSolarHandler;
@@ -105,10 +107,12 @@ public class RoarOfNarnia {
         forgeBus.register(new SpellThermalHandler());
         forgeBus.register(new DelayedDeliveryEntryHandler());
         forgeBus.register(new SpellCharmHandler());
+        forgeBus.register(new SpellFreezeHandler());
         if (fmlLoader.getDist() == Dist.CLIENT) {
             forgeBus.register(new WoodBetweenTheWorldsClientHandler());
             forgeBus.register(new KeyInputEventHandler());
             forgeBus.register(new ClientLateRenderHandler());
+            forgeBus.register(new ClientSpellFreezeHandler());
         }
     }
 }

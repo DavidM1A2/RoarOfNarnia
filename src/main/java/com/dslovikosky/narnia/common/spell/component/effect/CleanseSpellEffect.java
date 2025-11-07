@@ -3,6 +3,7 @@ package com.dslovikosky.narnia.common.spell.component.effect;
 import com.dslovikosky.narnia.common.constants.Constants;
 import com.dslovikosky.narnia.common.constants.ModAttachmentTypes;
 import com.dslovikosky.narnia.common.model.attachment_type.SpellCharmData;
+import com.dslovikosky.narnia.common.model.attachment_type.SpellFreezeData;
 import com.dslovikosky.narnia.common.particle.CleanseParticleData;
 import com.dslovikosky.narnia.common.spell.component.DeliveryTransitionState;
 import com.dslovikosky.narnia.common.spell.component.SpellComponentInstance;
@@ -17,6 +18,7 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -94,6 +96,7 @@ public class CleanseSpellEffect extends SpellEffect {
             // Unfreeze and uncharm the player
             if (entity instanceof Player player && getSpellEffects(instance)) {
                 player.setData(ModAttachmentTypes.SPELL_CHARM_DATA, new SpellCharmData(0, UUID.randomUUID()));
+                player.setData(ModAttachmentTypes.SPELL_FREEZE_DATA, new SpellFreezeData(0, Vec3.ZERO, 0, 0));
             }
 
             // Show cleanse particles spinning around the hit entity

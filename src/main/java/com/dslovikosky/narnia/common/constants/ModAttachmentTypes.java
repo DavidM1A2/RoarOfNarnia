@@ -4,11 +4,13 @@ import com.dslovikosky.narnia.common.model.attachment_type.DelayedDeliveryEntry;
 import com.dslovikosky.narnia.common.model.attachment_type.PreRingTeleportData;
 import com.dslovikosky.narnia.common.model.attachment_type.SelectedSpellPowerSourceSyncHandler;
 import com.dslovikosky.narnia.common.model.attachment_type.SpellCharmData;
+import com.dslovikosky.narnia.common.model.attachment_type.SpellFreezeData;
 import com.dslovikosky.narnia.common.model.attachment_type.ThermalData;
 import com.dslovikosky.narnia.common.model.attachment_type.TicksInWoodBetweenTheWorldsSyncHandler;
 import com.dslovikosky.narnia.common.spell.component.powerSource.base.SpellPowerSource;
 import com.mojang.serialization.Codec;
 import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -65,6 +67,11 @@ public class ModAttachmentTypes {
             .register("spell_charm_data", () -> AttachmentType.builder(() -> new SpellCharmData(0, UUID.randomUUID()))
                     .serialize(SpellCharmData.CODEC.fieldOf("value"))
                     .sync(SpellCharmData.STREAM_CODEC)
+                    .build());
+    public static final DeferredHolder<AttachmentType<?>, AttachmentType<SpellFreezeData>> SPELL_FREEZE_DATA = ATTACHMENT_TYPES
+            .register("spell_freeze_data", () -> AttachmentType.builder(() -> new SpellFreezeData(0, Vec3.ZERO, 0f, 0f))
+                    .serialize(SpellFreezeData.CODEC.fieldOf("value"))
+                    .sync(SpellFreezeData.STREAM_CODEC)
                     .build());
 
     private static <T> Codec<List<T>> mutableListOf(Codec<T> elementCodec) {
