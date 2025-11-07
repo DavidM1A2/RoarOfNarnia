@@ -9,6 +9,7 @@ import com.dslovikosky.narnia.common.spell.component.effect.ExplosionSpellEffect
 import com.dslovikosky.narnia.common.spell.component.effect.ExtinguishSpellEffect;
 import com.dslovikosky.narnia.common.spell.component.effect.FeedSpellEffect;
 import com.dslovikosky.narnia.common.spell.component.effect.FreezeSpellEffect;
+import com.dslovikosky.narnia.common.spell.component.effect.GrowSpellEffect;
 import com.dslovikosky.narnia.common.spell.component.effect.base.SpellEffect;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -25,4 +26,5 @@ public class ModSpellEffects {
     public static final DeferredHolder<SpellEffect, ExtinguishSpellEffect> EXTINGUISH = SPELL_EFFECTS.register("extinguish", ExtinguishSpellEffect::new);
     public static final DeferredHolder<SpellEffect, FeedSpellEffect> FEED = SPELL_EFFECTS.register("feed", FeedSpellEffect::new);
     public static final DeferredHolder<SpellEffect, FreezeSpellEffect> FREEZE = SPELL_EFFECTS.register("freeze", FreezeSpellEffect::new);
+    public static final DeferredHolder<SpellEffect, GrowSpellEffect> GROW = SPELL_EFFECTS.register("grow", GrowSpellEffect::new);
 }
