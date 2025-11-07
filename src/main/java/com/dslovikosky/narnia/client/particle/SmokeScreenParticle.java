@@ -21,11 +21,11 @@ public class SmokeScreenParticle extends NarniaParticle {
         super(clientLevel, x, y, z, 0, 0, 0, spriteSet);
         this.minScale = 3.75f + random.nextFloat() * 1.25f;
         this.maxScale = 7.5f + minScale;
-        this.baseQuadSize = quadSize / 5;
 
         // 15-20 second lifespan
         setLifetime(random.nextInt(100) + 300);
         scale(minScale);
+        this.baseQuadSize = quadSize / 5;
 
         // Particle moves outwards
         xd = (random.nextDouble() - 0.5) * SPEED;
