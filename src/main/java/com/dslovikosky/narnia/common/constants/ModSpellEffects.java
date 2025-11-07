@@ -12,6 +12,7 @@ import com.dslovikosky.narnia.common.spell.component.effect.FreezeSpellEffect;
 import com.dslovikosky.narnia.common.spell.component.effect.GrowSpellEffect;
 import com.dslovikosky.narnia.common.spell.component.effect.HealSpellEffect;
 import com.dslovikosky.narnia.common.spell.component.effect.LightningSpellEffect;
+import com.dslovikosky.narnia.common.spell.component.effect.PushSpellEffect;
 import com.dslovikosky.narnia.common.spell.component.effect.base.SpellEffect;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -31,4 +32,5 @@ public class ModSpellEffects {
     public static final DeferredHolder<SpellEffect, GrowSpellEffect> GROW = SPELL_EFFECTS.register("grow", GrowSpellEffect::new);
     public static final DeferredHolder<SpellEffect, HealSpellEffect> HEAL = SPELL_EFFECTS.register("heal", HealSpellEffect::new);
     public static final DeferredHolder<SpellEffect, LightningSpellEffect> LIGHTNING = SPELL_EFFECTS.register("lightning", LightningSpellEffect::new);
+    public static final DeferredHolder<SpellEffect, PushSpellEffect> PUSH = SPELL_EFFECTS.register("push", PushSpellEffect::new);
 }
