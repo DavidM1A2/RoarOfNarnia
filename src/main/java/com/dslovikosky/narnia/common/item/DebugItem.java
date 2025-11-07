@@ -33,8 +33,8 @@ public class DebugItem extends Item {
 
     @Override
     public InteractionResult use(Level level, Player player, InteractionHand hand) {
-        final SpellEffectInstance effect = new SpellEffectInstance(ModSpellEffects.DISINTEGRATE.get());
-        ModSpellEffects.DISINTEGRATE.get().setStrength(effect, 30);
+        final SpellEffectInstance effect = new SpellEffectInstance(ModSpellEffects.EXPLOSION.get());
+        ModSpellEffects.EXPLOSION.get().setRadius(effect, 10);
         effect.setDefaults();
 
         final SpellDeliveryMethodInstance deliveryMethod1 = new SpellDeliveryMethodInstance(ModSpellDeliveryMethods.PROJECTILE.get());

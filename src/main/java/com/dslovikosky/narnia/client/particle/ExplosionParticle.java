@@ -1,11 +1,13 @@
 package com.dslovikosky.narnia.client.particle;
 
 import com.dslovikosky.narnia.client.particle.base.NarniaParticle;
+import com.dslovikosky.narnia.common.spell.component.effect.ExplosionSpellEffect;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.core.particles.SimpleParticleType;
+import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import org.jetbrains.annotations.Nullable;
 
@@ -22,7 +24,7 @@ public class ExplosionParticle extends NarniaParticle {
         this.sinOffset = random.nextDouble() * 2 * Math.PI;
 
         // 1.5 - 2 second lifespan
-        // setLifetime(Mth.lerp(explosionRadius / ExplosionSpellEffect.MAX_RADIUS, 60.0, 160.0).toInt());
+        setLifetime((int) Mth.lerp(explosionRadius / ExplosionSpellEffect.MAX_RADIUS, 60.0, 160.0));
         scale(random.nextFloat() * 3f + 1f);
 
         // Random motion
