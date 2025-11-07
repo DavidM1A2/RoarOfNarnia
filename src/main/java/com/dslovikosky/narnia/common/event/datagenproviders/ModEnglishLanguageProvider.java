@@ -328,6 +328,10 @@ public class ModEnglishLanguageProvider extends LanguageProvider {
 
         add("key.narnia.power_source_selection", "Power Source Selection");
 
+        add("death.attack.narnia.spell", "%1$s was slain by the spell %2$s");
+        add("death.attack.narnia.spell.suicide", "%1$s played with dangerous magic");
+        add("death.attack.narnia.spell.player", "%1$s was slain by %2$s casting %3$s");
+
         add("message.narnia.spell.wrong_dimension", "My mind is too clouded to cast spells here.");
         add("message.narnia.spell.invalid", "Invalid spell. Make sure to have delivery methods on each spell stage!");
         add("message.narnia.spell.power_source_changed", "§oSpells will be cast with %1$s");

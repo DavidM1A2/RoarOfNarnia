@@ -4,6 +4,7 @@ import com.dslovikosky.narnia.common.constants.ModBiomeModifiers;
 import com.dslovikosky.narnia.common.constants.ModBiomes;
 import com.dslovikosky.narnia.common.constants.ModBlocks;
 import com.dslovikosky.narnia.common.constants.ModConfiguredFeatures;
+import com.dslovikosky.narnia.common.constants.ModDamageTypes;
 import com.dslovikosky.narnia.common.constants.ModDimensionTypes;
 import com.dslovikosky.narnia.common.constants.ModFeatures;
 import com.dslovikosky.narnia.common.constants.ModLevelStems;
@@ -21,6 +22,7 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.util.valueproviders.ClampedNormalInt;
 import net.minecraft.util.valueproviders.ConstantInt;
 import net.minecraft.util.valueproviders.UniformInt;
+import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.BiomeGenerationSettings;
 import net.minecraft.world.level.biome.BiomeSpecialEffects;
@@ -249,6 +251,9 @@ public class ModDatapackObjectProvider {
                                     RandomOffsetPlacement.of(UniformInt.of(3, 13), ConstantInt.of(0)),
                                     HeightmapPlacement.onHeightmap(Heightmap.Types.WORLD_SURFACE_WG)
                             )));
+                })
+                .add(Registries.DAMAGE_TYPE, bootstrap -> {
+                    bootstrap.register(ModDamageTypes.SPELL, new DamageType("narnia.spell", 0f));
                 });
         event.createDatapackRegistryObjects(builder);
     }

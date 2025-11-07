@@ -4,6 +4,7 @@ import com.dslovikosky.narnia.common.spell.component.effect.BurnSpellEffect;
 import com.dslovikosky.narnia.common.spell.component.effect.CharmSpellEffect;
 import com.dslovikosky.narnia.common.spell.component.effect.CleanseSpellEffect;
 import com.dslovikosky.narnia.common.spell.component.effect.DigSpellEffect;
+import com.dslovikosky.narnia.common.spell.component.effect.DisintegrateSpellEffect;
 import com.dslovikosky.narnia.common.spell.component.effect.base.SpellEffect;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -15,4 +16,5 @@ public class ModSpellEffects {
     public static final DeferredHolder<SpellEffect, CharmSpellEffect> CHARM = SPELL_EFFECTS.register("charm", CharmSpellEffect::new);
     public static final DeferredHolder<SpellEffect, CleanseSpellEffect> CLEANSE = SPELL_EFFECTS.register("cleanse", CleanseSpellEffect::new);
     public static final DeferredHolder<SpellEffect, DigSpellEffect> DIG = SPELL_EFFECTS.register("dig", DigSpellEffect::new);
+    public static final DeferredHolder<SpellEffect, DisintegrateSpellEffect> DISINTEGRATE = SPELL_EFFECTS.register("disintegrate", DisintegrateSpellEffect::new);
 }
