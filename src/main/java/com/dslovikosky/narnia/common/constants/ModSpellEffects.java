@@ -7,6 +7,7 @@ import com.dslovikosky.narnia.common.spell.component.effect.DigSpellEffect;
 import com.dslovikosky.narnia.common.spell.component.effect.DisintegrateSpellEffect;
 import com.dslovikosky.narnia.common.spell.component.effect.ExplosionSpellEffect;
 import com.dslovikosky.narnia.common.spell.component.effect.ExtinguishSpellEffect;
+import com.dslovikosky.narnia.common.spell.component.effect.FeedSpellEffect;
 import com.dslovikosky.narnia.common.spell.component.effect.base.SpellEffect;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -21,4 +22,5 @@ public class ModSpellEffects {
     public static final DeferredHolder<SpellEffect, DisintegrateSpellEffect> DISINTEGRATE = SPELL_EFFECTS.register("disintegrate", DisintegrateSpellEffect::new);
     public static final DeferredHolder<SpellEffect, ExplosionSpellEffect> EXPLOSION = SPELL_EFFECTS.register("explosion", ExplosionSpellEffect::new);
     public static final DeferredHolder<SpellEffect, ExtinguishSpellEffect> EXTINGUISH = SPELL_EFFECTS.register("extinguish", ExtinguishSpellEffect::new);
+    public static final DeferredHolder<SpellEffect, FeedSpellEffect> FEED = SPELL_EFFECTS.register("feed", FeedSpellEffect::new);
 }

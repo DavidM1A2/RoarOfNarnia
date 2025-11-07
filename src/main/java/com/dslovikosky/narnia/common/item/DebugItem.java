@@ -33,7 +33,8 @@ public class DebugItem extends Item {
 
     @Override
     public InteractionResult use(Level level, Player player, InteractionHand hand) {
-        final SpellEffectInstance effect = new SpellEffectInstance(ModSpellEffects.EXTINGUISH.get());
+        final SpellEffectInstance effect = new SpellEffectInstance(ModSpellEffects.FEED.get());
+        ModSpellEffects.FEED.get().setHungerAmount(effect, 10);
         effect.setDefaults();
 
         final SpellDeliveryMethodInstance deliveryMethod1 = new SpellDeliveryMethodInstance(ModSpellDeliveryMethods.PROJECTILE.get());
