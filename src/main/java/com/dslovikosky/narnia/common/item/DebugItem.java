@@ -33,8 +33,7 @@ public class DebugItem extends Item {
 
     @Override
     public InteractionResult use(Level level, Player player, InteractionHand hand) {
-        final SpellEffectInstance effect = new SpellEffectInstance(ModSpellEffects.EXPLOSION.get());
-        ModSpellEffects.EXPLOSION.get().setRadius(effect, 10);
+        final SpellEffectInstance effect = new SpellEffectInstance(ModSpellEffects.EXTINGUISH.get());
         effect.setDefaults();
 
         final SpellDeliveryMethodInstance deliveryMethod1 = new SpellDeliveryMethodInstance(ModSpellDeliveryMethods.PROJECTILE.get());
@@ -43,7 +42,7 @@ public class DebugItem extends Item {
         ModSpellDeliveryMethods.PROJECTILE.get().setRange(deliveryMethod1, 25);
         final SpellStage spellStage1 = new SpellStage();
         spellStage1.setDeliveryInstance(deliveryMethod1);
-//        spellStage1.getEffects()[0] = effect;
+        spellStage1.getEffects()[0] = effect;
 
         final SpellDeliveryMethodInstance deliveryMethod2 = new SpellDeliveryMethodInstance(ModSpellDeliveryMethods.PROJECTILE.get());
         deliveryMethod2.setDefaults();
