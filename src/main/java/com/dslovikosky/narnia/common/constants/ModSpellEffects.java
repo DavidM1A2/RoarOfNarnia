@@ -16,6 +16,7 @@ import com.dslovikosky.narnia.common.spell.component.effect.PushSpellEffect;
 import com.dslovikosky.narnia.common.spell.component.effect.SmokeScreenSpellEffect;
 import com.dslovikosky.narnia.common.spell.component.effect.SpeedSpellEffect;
 import com.dslovikosky.narnia.common.spell.component.effect.SummonArrowEffect;
+import com.dslovikosky.narnia.common.spell.component.effect.TeleportSpellEffect;
 import com.dslovikosky.narnia.common.spell.component.effect.base.SpellEffect;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -39,4 +40,5 @@ public class ModSpellEffects {
     public static final DeferredHolder<SpellEffect, SmokeScreenSpellEffect> SMOKE_SCREEN = SPELL_EFFECTS.register("smoke_screen", SmokeScreenSpellEffect::new);
     public static final DeferredHolder<SpellEffect, SpeedSpellEffect> SPEED = SPELL_EFFECTS.register("speed", SpeedSpellEffect::new);
     public static final DeferredHolder<SpellEffect, SummonArrowEffect> SUMMON_ARROW = SPELL_EFFECTS.register("summon_arrow", SummonArrowEffect::new);
+    public static final DeferredHolder<SpellEffect, TeleportSpellEffect> TELEPORT = SPELL_EFFECTS.register("teleport", TeleportSpellEffect::new);
 }
