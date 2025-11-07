@@ -41,7 +41,7 @@ public class ArrowTrailParticle extends DelayedNarniaParticle {
     public record Factory(SpriteSet spriteSet) implements ParticleProvider<ArrowTrailParticleData> {
         @Override
         public @Nullable Particle createParticle(ArrowTrailParticleData type, ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed, RandomSource random) {
-            return new ArrowTrailParticle(level, x, y, z, spriteSet, type.entityId(), type.delayTicks());
+            return new ArrowTrailParticle(level, x, y, z, spriteSet, type.delayTicks(), type.entityId());
         }
     }
 }
