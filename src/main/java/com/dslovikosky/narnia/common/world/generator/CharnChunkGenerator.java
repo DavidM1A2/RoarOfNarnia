@@ -52,21 +52,33 @@ public class CharnChunkGenerator extends ChunkGenerator {
 
             for (int x = startX; x < startX + 16; x++) {
                 for (int z = startZ; z < startZ + 16; z++) {
-                    // ---- Distance & Plateau ----
                     final double dist = Math.sqrt(x * x + z * z);
                     final double radius = 400.0;
-                    final double plateau = 35.0 * Math.pow(Math.max(0.0, 1.0 - (dist / radius)), 2.0);
 
-                    // ---- Small-scale variation ----
+                    // Smooth raised-cosine dome
+                    final double t = Math.min(1.0, dist / radius);
+                    final double plateau = 35.0 * 0.5 * (Math.cos(Math.PI * t) + 1.0);
+
+                    // Base and mid noise for rolling terrain
                     final double baseNoise = detailNoise.getValue(x * 0.01, z * 0.01);
-                    final double midNoise = detailNoise.getValue(x * 0.04, z * 0.04);
-                    final double shaped = baseNoise * 4.0 + (midNoise * 1.2);
+                    final double midNoise = detailNoise.getValue(x * 0.03, z * 0.03);
+                    double detail = baseNoise * 3.0 + midNoise * 1.2;
 
-                    // ---- Flatten near center ----
-                    final double flatness = Math.min(1.0, dist / (radius * 0.6));
-                    final double detail = shaped * flatness;
+                    // Smoothly reduce roughness near plateau center (flat top)
+                    final double flatness = Math.min(1.0, dist / (radius * 0.7));
+                    detail *= flatness;
 
-                    // ---- Combine ----
+                    // --- Gentle rim erosion ---
+                    // Low-frequency noise for broad collapse shapes
+                    double erosionNoise = detailNoise.getValue(x * 0.005, z * 0.005);
+                    double rimStart = radius * 0.6;
+                    double rimEnd = radius * 1.0;
+                    double erosionMask = Math.max(0.0, Math.min(1.0, (dist - rimStart) / (rimEnd - rimStart)));
+
+                    // Blend in erosion softly
+                    detail -= erosionNoise * 2.0 * erosionMask * (1.0 - flatness * 0.5);
+
+                    // Combine plateau + detail
                     final int height = (int) (64 + plateau + detail);
 
                     // ---- Place blocks ----
@@ -85,14 +97,34 @@ public class CharnChunkGenerator extends ChunkGenerator {
     @Override
     public int getBaseHeight(int x, int z, Heightmap.Types type, LevelHeightAccessor level, RandomState random) {
         final SimplexNoise detailNoise = new SimplexNoise(random.getOrCreateRandomFactory(RANDOM).fromHashOf(TERRAIN));
+
         final double dist = Math.sqrt(x * x + z * z);
         final double radius = 400.0;
-        final double plateau = 35.0 * Math.pow(Math.max(0.0, 1.0 - (dist / radius)), 2.0);
+
+        // Smooth raised-cosine dome
+        final double t = Math.min(1.0, dist / radius);
+        final double plateau = 35.0 * 0.5 * (Math.cos(Math.PI * t) + 1.0);
+
+        // Base and mid noise for rolling terrain
         final double baseNoise = detailNoise.getValue(x * 0.01, z * 0.01);
-        final double midNoise = detailNoise.getValue(x * 0.04, z * 0.04);
-        final double shaped = baseNoise * 4.0 + (midNoise * 1.2);
-        final double flatness = Math.min(1.0, dist / (radius * 0.6));
-        final double detail = shaped * flatness;
+        final double midNoise = detailNoise.getValue(x * 0.03, z * 0.03);
+        double detail = baseNoise * 3.0 + midNoise * 1.2;
+
+        // Smoothly reduce roughness near plateau center (flat top)
+        final double flatness = Math.min(1.0, dist / (radius * 0.7));
+        detail *= flatness;
+
+        // --- Gentle rim erosion ---
+        // Low-frequency noise for broad collapse shapes
+        double erosionNoise = detailNoise.getValue(x * 0.005, z * 0.005);
+        double rimStart = radius * 0.6;
+        double rimEnd = radius * 1.0;
+        double erosionMask = Math.max(0.0, Math.min(1.0, (dist - rimStart) / (rimEnd - rimStart)));
+
+        // Blend in erosion softly
+        detail -= erosionNoise * 2.0 * erosionMask * (1.0 - flatness * 0.5);
+
+        // Combine plateau + detail
         return (int) (64 + plateau + detail);
     }
 
