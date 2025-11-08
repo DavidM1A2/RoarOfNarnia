@@ -43,6 +43,72 @@ public class CharnChunkGenerator extends ChunkGenerator {
     }
 
     @Override
+    public CompletableFuture<ChunkAccess> fillFromNoise(Blender blender, RandomState randomState, StructureManager structureManager, ChunkAccess chunk) {
+        return CompletableFuture.supplyAsync(() -> {
+            final ChunkPos pos = chunk.getPos();
+            final int startX = pos.getMinBlockX();
+            final int startZ = pos.getMinBlockZ();
+            final SimplexNoise detailNoise = new SimplexNoise(randomState.getOrCreateRandomFactory(RANDOM).fromHashOf(TERRAIN));
+
+            for (int x = startX; x < startX + 16; x++) {
+                for (int z = startZ; z < startZ + 16; z++) {
+                    // ---- Distance & Plateau ----
+                    final double dist = Math.sqrt(x * x + z * z);
+                    final double radius = 400.0;
+                    final double plateau = 35.0 * Math.pow(Math.max(0.0, 1.0 - (dist / radius)), 2.0);
+
+                    // ---- Small-scale variation ----
+                    final double baseNoise = detailNoise.getValue(x * 0.01, z * 0.01);
+                    final double midNoise = detailNoise.getValue(x * 0.04, z * 0.04);
+                    final double shaped = baseNoise * 4.0 + (midNoise * 1.2);
+
+                    // ---- Flatten near center ----
+                    final double flatness = Math.min(1.0, dist / (radius * 0.6));
+                    final double detail = shaped * flatness;
+
+                    // ---- Combine ----
+                    final int height = (int) (64 + plateau + detail);
+
+                    // ---- Place blocks ----
+                    chunk.setBlockState(new BlockPos(x, chunk.getMinY(), z), Blocks.BEDROCK.defaultBlockState());
+                    for (int y = chunk.getMinY() + 1; y < height; y++) {
+                        chunk.setBlockState(new BlockPos(x, y, z), Blocks.SANDSTONE.defaultBlockState());
+                    }
+                    chunk.setBlockState(new BlockPos(x, height, z), Blocks.SAND.defaultBlockState());
+                }
+            }
+
+            return chunk;
+        });
+    }
+
+    @Override
+    public int getBaseHeight(int x, int z, Heightmap.Types type, LevelHeightAccessor level, RandomState random) {
+        final SimplexNoise detailNoise = new SimplexNoise(random.getOrCreateRandomFactory(RANDOM).fromHashOf(TERRAIN));
+        final double dist = Math.sqrt(x * x + z * z);
+        final double radius = 400.0;
+        final double plateau = 35.0 * Math.pow(Math.max(0.0, 1.0 - (dist / radius)), 2.0);
+        final double baseNoise = detailNoise.getValue(x * 0.01, z * 0.01);
+        final double midNoise = detailNoise.getValue(x * 0.04, z * 0.04);
+        final double shaped = baseNoise * 4.0 + (midNoise * 1.2);
+        final double flatness = Math.min(1.0, dist / (radius * 0.6));
+        final double detail = shaped * flatness;
+        return (int) (64 + plateau + detail);
+    }
+
+    @Override
+    public NoiseColumn getBaseColumn(int x, int z, LevelHeightAccessor level, RandomState random) {
+        final int height = getBaseHeight(x, z, Heightmap.Types.WORLD_SURFACE_WG, level, random);
+        final BlockState[] states = new BlockState[height];
+        states[0] = Blocks.BEDROCK.defaultBlockState();
+        for (int i = 1; i < height - 1; i++) {
+            states[i] = Blocks.SANDSTONE.defaultBlockState();
+        }
+        states[height - 1] = Blocks.SAND.defaultBlockState();
+        return new NoiseColumn(level.getMinY(), states);
+    }
+
+    @Override
     protected MapCodec<? extends ChunkGenerator> codec() {
         return CODEC;
     }
@@ -65,31 +131,6 @@ public class CharnChunkGenerator extends ChunkGenerator {
     }
 
     @Override
-    public CompletableFuture<ChunkAccess> fillFromNoise(Blender blender, RandomState randomState, StructureManager structureManager, ChunkAccess chunk) {
-        return CompletableFuture.supplyAsync(() -> {
-            final ChunkPos pos = chunk.getPos();
-            final int startX = pos.getMinBlockX();
-            final int startZ = pos.getMinBlockZ();
-            final SimplexNoise noise = new SimplexNoise(randomState.getOrCreateRandomFactory(RANDOM).fromHashOf(TERRAIN));
-
-            for (int x = startX; x < startX + 16; x++) {
-                for (int z = startZ; z < startZ + 16; z++) {
-                    final double noiseHeight = noise.getValue(x * 0.02, z * 0.02);
-                    final int height = 64 + (int) (noiseHeight * 5);
-
-                    chunk.setBlockState(new BlockPos(x, chunk.getMinY(), z), Blocks.BEDROCK.defaultBlockState());
-                    for (int y = chunk.getMinY() + 1; y < height; y++) {
-                        chunk.setBlockState(new BlockPos(x, y, z), Blocks.SANDSTONE.defaultBlockState());
-                    }
-                    chunk.setBlockState(new BlockPos(x, height, z), Blocks.SAND.defaultBlockState());
-                }
-            }
-
-            return chunk;
-        });
-    }
-
-    @Override
     public int getSeaLevel() {
         return 63;
     }
@@ -97,25 +138,6 @@ public class CharnChunkGenerator extends ChunkGenerator {
     @Override
     public int getMinY() {
         return 0;
-    }
-
-    @Override
-    public int getBaseHeight(int x, int z, Heightmap.Types type, LevelHeightAccessor level, RandomState random) {
-        final SimplexNoise noise = new SimplexNoise(random.getOrCreateRandomFactory(RANDOM).fromHashOf(TERRAIN));
-        final double noiseHeight = noise.getValue(x * 0.02, z * 0.02);
-        return 64 + (int) (noiseHeight * 5);
-    }
-
-    @Override
-    public NoiseColumn getBaseColumn(int x, int z, LevelHeightAccessor level, RandomState random) {
-        final int height = getBaseHeight(x, z, Heightmap.Types.WORLD_SURFACE_WG, level, random);
-        final BlockState[] states = new BlockState[height];
-        states[0] = Blocks.BEDROCK.defaultBlockState();
-        for (int i = 1; i < height - 1; i++) {
-            states[i] = Blocks.SANDSTONE.defaultBlockState();
-        }
-        states[height - 1] = Blocks.SAND.defaultBlockState();
-        return new NoiseColumn(level.getMinY(), states);
     }
 
     @Override
