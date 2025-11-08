@@ -11,6 +11,7 @@ import com.dslovikosky.narnia.common.constants.ModLevelStems;
 import com.dslovikosky.narnia.common.constants.ModPlacedFeatures;
 import com.dslovikosky.narnia.common.world.feature.WaterPoolFeature;
 import com.dslovikosky.narnia.common.world.feature.WorldWoodTreeConfiguration;
+import com.dslovikosky.narnia.common.world.generator.CharnChunkGenerator;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderSet;
@@ -190,16 +191,9 @@ public class ModDatapackObjectProvider {
                             new LevelStem(dimensionTypes.getOrThrow(ModDimensionTypes.WOOD_BETWEEN_THE_WORLDS), wbwFlatLevelSource));
 
                     // Dark City Ruins
-                    final List<FlatLayerInfo> dcrFlatLayerInfos = List.of(
-                            new FlatLayerInfo(1, Blocks.BEDROCK),
-                            new FlatLayerInfo(30, Blocks.SANDSTONE),
-                            new FlatLayerInfo(1, Blocks.SAND));
-                    final FlatLevelGeneratorSettings dcrFlatLevelGeneratorSettings =
-                            new FlatLevelGeneratorSettings(Optional.of(HolderSet.direct()), biomes.getOrThrow(ModBiomes.DARK_CITY_RUINS), Collections.emptyList())
-                                    .withBiomeAndLayers(dcrFlatLayerInfos, Optional.empty(), biomes.getOrThrow(ModBiomes.DARK_CITY_RUINS));
-                    final FlatLevelSource dcrFlatLevelSource = new FlatLevelSource(dcrFlatLevelGeneratorSettings);
+                    final CharnChunkGenerator charnChunkGenerator = new CharnChunkGenerator(biomes.getOrThrow(ModBiomes.DARK_CITY_RUINS));
                     bootstrap.register(ModLevelStems.DARK_CITY_RUINS,
-                            new LevelStem(dimensionTypes.getOrThrow(ModDimensionTypes.DARK_CITY_RUINS), dcrFlatLevelSource));
+                            new LevelStem(dimensionTypes.getOrThrow(ModDimensionTypes.DARK_CITY_RUINS), charnChunkGenerator));
                 })
                 .add(Registries.CONFIGURED_FEATURE, bootstrap -> {
                     bootstrap.register(ModConfiguredFeatures.SMALL_WATER_POOL, new ConfiguredFeature<>(

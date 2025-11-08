@@ -10,6 +10,7 @@ import com.dslovikosky.narnia.common.constants.Constants;
 import com.dslovikosky.narnia.common.constants.ModAttachmentTypes;
 import com.dslovikosky.narnia.common.constants.ModBlockEntities;
 import com.dslovikosky.narnia.common.constants.ModBlocks;
+import com.dslovikosky.narnia.common.constants.ModChunkGenerators;
 import com.dslovikosky.narnia.common.constants.ModCreativeTabs;
 import com.dslovikosky.narnia.common.constants.ModDataComponentTypes;
 import com.dslovikosky.narnia.common.constants.ModEntityDataSerializers;
@@ -94,6 +95,7 @@ public class RoarOfNarnia {
         ModSpellDeliveryMethods.SPELL_DELIVERY_METHODS.register(modBus);
         ModParticleTypes.PARTICLES.register(modBus);
         ModEntityDataSerializers.ENTITY_DATA_SERIALIZERS.register(modBus);
+        ModChunkGenerators.CHUNK_GENERATORS.register(modBus);
 
         final IEventBus forgeBus = NeoForge.EVENT_BUS;
 
