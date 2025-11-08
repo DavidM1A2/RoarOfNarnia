@@ -10,6 +10,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.WorldGenRegion;
+import net.minecraft.util.Mth;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.LevelHeightAccessor;
 import net.minecraft.world.level.NoiseColumn;
@@ -37,6 +38,7 @@ public class CharnChunkGenerator extends ChunkGenerator {
             it -> it.group(RegistryOps.retrieveElement(ModBiomes.DARK_CITY_RUINS)).apply(it, it.stable(CharnChunkGenerator::new)));
     private static final ResourceLocation RANDOM = Constants.modLocation("charn_noise");
     private static final ResourceLocation TERRAIN = Constants.modLocation("charn_noise_terrain");
+    private static final ResourceLocation RIVER = Constants.modLocation("charn_noise_river");
 
     public CharnChunkGenerator(final Holder<Biome> biome) {
         super(new FixedBiomeSource(biome));
@@ -59,34 +61,56 @@ public class CharnChunkGenerator extends ChunkGenerator {
                     final double t = Math.min(1.0, dist / radius);
                     final double plateau = 35.0 * 0.5 * (Math.cos(Math.PI * t) + 1.0);
 
-                    // Base and mid noise for rolling terrain
+                    // --- Terrain shape (same as before) ---
                     final double baseNoise = detailNoise.getValue(x * 0.01, z * 0.01);
                     final double midNoise = detailNoise.getValue(x * 0.03, z * 0.03);
                     double detail = baseNoise * 3.0 + midNoise * 1.2;
-
-                    // Smoothly reduce roughness near plateau center (flat top)
                     final double flatness = Math.min(1.0, dist / (radius * 0.7));
                     detail *= flatness;
-
-                    // --- Gentle rim erosion ---
-                    // Low-frequency noise for broad collapse shapes
                     double erosionNoise = detailNoise.getValue(x * 0.005, z * 0.005);
                     double rimStart = radius * 0.6;
                     double rimEnd = radius * 1.0;
                     double erosionMask = Math.max(0.0, Math.min(1.0, (dist - rimStart) / (rimEnd - rimStart)));
-
-                    // Blend in erosion softly
                     detail -= erosionNoise * 2.0 * erosionMask * (1.0 - flatness * 0.5);
 
-                    // Combine plateau + detail
-                    final int height = (int) (64 + plateau + detail);
+                    double baseHeight = 64 + plateau + detail;
+
+                    // --- Natural narrow rivers ---
+                    double riverBase = detailNoise.getValue(x * 0.0015, z * 0.0015);
+                    double riverWarp = detailNoise.getValue((x + 2000) * 0.006, (z - 2000) * 0.006) * 0.5; // warps direction a bit
+                    double riverCombined = riverBase + riverWarp * 0.4;
+
+                    // Rivers form where noise crosses near zero (ridge detection)
+                    double riverVal = Math.abs(riverCombined);
+
+                    // Sharper falloff → thinner rivers
+                    double riverMask = 1.0 - Mth.clamp((riverVal - 0.03) * 10.0, 0.0, 1.0);
+
+                    // Make rivers rare and thin
+                    riverMask = Math.pow(riverMask, 7.0);
+
+                    // Keep rivers out of the plateau
+                    double plateauInfluence = Mth.clamp(dist / (radius * 0.6), 0.0, 1.0);
+                    riverMask *= plateauInfluence;
+
+                    // Depth
+                    double riverDepth = riverMask * 6.0;
+                    final double heightVal = baseHeight - riverDepth;
+                    final int height = (int) heightVal;
 
                     // ---- Place blocks ----
                     chunk.setBlockState(new BlockPos(x, chunk.getMinY(), z), Blocks.BEDROCK.defaultBlockState());
                     for (int y = chunk.getMinY() + 1; y < height; y++) {
                         chunk.setBlockState(new BlockPos(x, y, z), Blocks.SANDSTONE.defaultBlockState());
                     }
-                    chunk.setBlockState(new BlockPos(x, height, z), Blocks.SAND.defaultBlockState());
+
+                    // Choose surface based on river presence
+                    BlockState surface = (riverDepth > 1.0)
+                            ? Blocks.COARSE_DIRT.defaultBlockState()  // dry riverbed
+                            : Blocks.SAND.defaultBlockState();
+
+                    chunk.setBlockState(new BlockPos(x, height, z), surface);
+
                 }
             }
 
@@ -105,27 +129,44 @@ public class CharnChunkGenerator extends ChunkGenerator {
         final double t = Math.min(1.0, dist / radius);
         final double plateau = 35.0 * 0.5 * (Math.cos(Math.PI * t) + 1.0);
 
-        // Base and mid noise for rolling terrain
+        // --- Terrain shape (same as before) ---
         final double baseNoise = detailNoise.getValue(x * 0.01, z * 0.01);
         final double midNoise = detailNoise.getValue(x * 0.03, z * 0.03);
         double detail = baseNoise * 3.0 + midNoise * 1.2;
-
-        // Smoothly reduce roughness near plateau center (flat top)
         final double flatness = Math.min(1.0, dist / (radius * 0.7));
         detail *= flatness;
-
-        // --- Gentle rim erosion ---
-        // Low-frequency noise for broad collapse shapes
         double erosionNoise = detailNoise.getValue(x * 0.005, z * 0.005);
         double rimStart = radius * 0.6;
         double rimEnd = radius * 1.0;
         double erosionMask = Math.max(0.0, Math.min(1.0, (dist - rimStart) / (rimEnd - rimStart)));
-
-        // Blend in erosion softly
         detail -= erosionNoise * 2.0 * erosionMask * (1.0 - flatness * 0.5);
 
-        // Combine plateau + detail
-        return (int) (64 + plateau + detail);
+        double baseHeight = 64 + plateau + detail;
+
+        // --- Natural narrow rivers ---
+        double riverBase = detailNoise.getValue(x * 0.0015, z * 0.0015);
+        double riverWarp = detailNoise.getValue((x + 2000) * 0.006, (z - 2000) * 0.006) * 0.5; // warps direction a bit
+        double riverCombined = riverBase + riverWarp * 0.4;
+
+        // Rivers form where noise crosses near zero (ridge detection)
+        double riverVal = Math.abs(riverCombined);
+
+        // Sharper falloff → thinner rivers
+        double riverMask = 1.0 - Mth.clamp((riverVal - 0.03) * 10.0, 0.0, 1.0);
+
+        // Make rivers rare and thin
+        riverMask = Math.pow(riverMask, 7.0);
+
+        // Keep rivers out of the plateau
+        double plateauInfluence = Mth.clamp(dist / (radius * 0.6), 0.0, 1.0);
+        riverMask *= plateauInfluence;
+
+        // Depth
+        double riverDepth = riverMask * 6.0;
+        final double heightVal = baseHeight - riverDepth;
+        final int height = (int) heightVal;
+
+        return height;
     }
 
     @Override
