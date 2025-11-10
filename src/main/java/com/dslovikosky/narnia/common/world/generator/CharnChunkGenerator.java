@@ -61,26 +61,31 @@ public class CharnChunkGenerator extends ChunkGenerator {
                     final double riverMask = river.mask();
                     final double riverDepth = river.depth();
 
-                    double heightVal = baseHeight - riverDepth;
+                    final double roadMask = computeRoadMask(x, z, 0, 0);
 
-                    // Flatten slightly if road
-                    final double roadMask = computeRoadMask(x, z, noise, 0, 0);
-                    if (roadMask > 0.4) {
-                        heightVal = Mth.lerp(0.9, heightVal, baseHeight);
+                    final boolean isRoadCenter = roadMask > 0.45;
+                    final boolean isRoadEdge = roadMask > 0.35;
+                    final boolean isRiver = riverMask > 0.1;
+
+                    final double heightDouble;
+                    if (isRoadCenter || isRoadEdge) {
+                        heightDouble = baseHeight;
+                    } else {
+                        heightDouble = baseHeight - riverDepth;
                     }
 
-                    final int height = (int) Math.floor(heightVal);
+                    final int height = (int) Math.floor(heightDouble);
 
                     chunk.setBlockState(new BlockPos(x, chunk.getMinY(), z), Blocks.BEDROCK.defaultBlockState());
                     for (int y = chunk.getMinY() + 1; y < height; y++) {
                         chunk.setBlockState(new BlockPos(x, y, z), Blocks.SANDSTONE.defaultBlockState());
                     }
 
-                    if (roadMask > 0.45) {
+                    if (isRoadCenter) {
                         chunk.setBlockState(new BlockPos(x, height, z), Blocks.STONE_BRICKS.defaultBlockState());
-                    } else if (roadMask > 0.35) {
+                    } else if (isRoadEdge) {
                         chunk.setBlockState(new BlockPos(x, height, z), Blocks.COBBLESTONE.defaultBlockState());
-                    } else if (riverMask > 0.1) {
+                    } else if (isRiver) {
                         chunk.setBlockState(new BlockPos(x, height, z), Blocks.COARSE_DIRT.defaultBlockState());
                     } else {
                         chunk.setBlockState(new BlockPos(x, height, z), Blocks.SAND.defaultBlockState());
@@ -212,15 +217,14 @@ public class CharnChunkGenerator extends ChunkGenerator {
      * The result represents how strongly this coordinate should be part of a road.
      * A value near 1.0 means “center of a main road”.
      */
-    private double computeRoadMask(final double x, final double z, final SimplexNoise noise, final double cityCenterX, final double cityCenterZ) {
+    private double computeRoadMask(final double x, final double z, final double cityCenterX, final double cityCenterZ) {
         final double cityFadeRadius = 400.0;
-        final double maxCityRadius = 600.0;
+        final double maxCityRadius = 425.0;
 
         // --- Compute geometry relative to center ---
         double dx = x - cityCenterX;
         double dz = z - cityCenterZ;
         double dist = Math.sqrt(dx * dx + dz * dz);
-        double angle = Math.atan2(dz, dx);
 
         // --- 1. Radial roads (spokes) ---
         double radialMask = computeRadialRoadMask(dx, dz, Math.PI / 4.0, 5.0); // spacing, width in blocks
@@ -234,10 +238,6 @@ public class CharnChunkGenerator extends ChunkGenerator {
         // --- 4. Fade out beyond city limits ---
         double fade = 1.0 - Mth.clamp((dist - cityFadeRadius) / (maxCityRadius - cityFadeRadius), 0.0, 1.0);
         roadMask *= fade;
-
-        // --- 5. Add small noise-based warp for natural imperfections ---
-        double warp = noise.getValue(x * 0.005, z * 0.005) * 0.15;
-        roadMask = Mth.clamp(roadMask - Math.abs(warp), 0.0, 1.0);
 
         return roadMask;
     }
