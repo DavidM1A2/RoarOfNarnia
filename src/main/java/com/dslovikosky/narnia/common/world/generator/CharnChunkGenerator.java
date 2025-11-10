@@ -38,7 +38,6 @@ public class CharnChunkGenerator extends ChunkGenerator {
             it -> it.group(RegistryOps.retrieveElement(ModBiomes.DARK_CITY_RUINS)).apply(it, it.stable(CharnChunkGenerator::new)));
     private static final ResourceLocation RANDOM = Constants.modLocation("charn_noise");
     private static final ResourceLocation TERRAIN = Constants.modLocation("charn_noise_terrain");
-    private static final ResourceLocation RIVER = Constants.modLocation("charn_noise_river");
 
     public CharnChunkGenerator(final Holder<Biome> biome) {
         super(new FixedBiomeSource(biome));
@@ -64,31 +63,31 @@ public class CharnChunkGenerator extends ChunkGenerator {
                     final double roadMask = computeRoadMask(x, z, 0, 0);
 
                     final boolean isRoadCenter = roadMask > 0.45;
-                    final boolean isRoadEdge = roadMask > 0.35;
+                    final boolean isRoadEdge = roadMask > 0.32;
                     final boolean isRiver = riverMask > 0.1;
 
-                    final double heightDouble;
-                    if (isRoadCenter || isRoadEdge) {
-                        heightDouble = baseHeight;
-                    } else {
-                        heightDouble = baseHeight - riverDepth;
-                    }
+                    final int groundHeight = (int) Math.floor(baseHeight);
+                    final int riverHeight = (int) Math.floor(baseHeight - riverDepth);
 
-                    final int height = (int) Math.floor(heightDouble);
-
+                    // Create bedrock layer
                     chunk.setBlockState(new BlockPos(x, chunk.getMinY(), z), Blocks.BEDROCK.defaultBlockState());
-                    for (int y = chunk.getMinY() + 1; y < height; y++) {
+
+                    // Fill from bedrock to surface with sandstone
+                    for (int y = chunk.getMinY() + 1; y < (isRiver ? riverHeight : groundHeight); y++) {
                         chunk.setBlockState(new BlockPos(x, y, z), Blocks.SANDSTONE.defaultBlockState());
                     }
 
+                    // If we're generating a river, set the top 3 layers to dirt. If not, set the top 3 layers to sand
+                    for (int y = (isRiver ? riverHeight : groundHeight) - 2; y <= (isRiver ? riverHeight : groundHeight); y++) {
+                        chunk.setBlockState(new BlockPos(x, y, z), isRiver ? Blocks.COARSE_DIRT.defaultBlockState() : Blocks.SAND.defaultBlockState());
+                    }
+
+                    // If we're generating a road, set the top layer to stone bricks or cobblestone
                     if (isRoadCenter) {
-                        chunk.setBlockState(new BlockPos(x, height, z), Blocks.STONE_BRICKS.defaultBlockState());
+                        chunk.setBlockState(new BlockPos(x, groundHeight, z), Blocks.STONE_BRICKS.defaultBlockState());
                     } else if (isRoadEdge) {
-                        chunk.setBlockState(new BlockPos(x, height, z), Blocks.COBBLESTONE.defaultBlockState());
-                    } else if (isRiver) {
-                        chunk.setBlockState(new BlockPos(x, height, z), Blocks.COARSE_DIRT.defaultBlockState());
-                    } else {
-                        chunk.setBlockState(new BlockPos(x, height, z), Blocks.SAND.defaultBlockState());
+                        chunk.setBlockState(new BlockPos(x, groundHeight, z), Blocks.COBBLESTONE.defaultBlockState());
+                        chunk.setBlockState(new BlockPos(x, groundHeight + 1, z), Blocks.COBBLESTONE.defaultBlockState());
                     }
                 }
             }
