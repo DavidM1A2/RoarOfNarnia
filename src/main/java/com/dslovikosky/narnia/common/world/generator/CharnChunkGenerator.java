@@ -50,67 +50,41 @@ public class CharnChunkGenerator extends ChunkGenerator {
             final ChunkPos pos = chunk.getPos();
             final int startX = pos.getMinBlockX();
             final int startZ = pos.getMinBlockZ();
-            final SimplexNoise detailNoise = new SimplexNoise(randomState.getOrCreateRandomFactory(RANDOM).fromHashOf(TERRAIN));
+            final SimplexNoise noise = new SimplexNoise(randomState.getOrCreateRandomFactory(RANDOM).fromHashOf(TERRAIN));
 
             for (int x = startX; x < startX + 16; x++) {
                 for (int z = startZ; z < startZ + 16; z++) {
-                    final double dist = Math.sqrt(x * x + z * z);
-                    final double radius = 400.0;
+                    final double baseHeight = computeBaseTerrain(x, z, noise, 200.0, 64.0, 30.0);
 
-                    // Smooth raised-cosine dome
-                    final double t = Math.min(1.0, dist / radius);
-                    final double plateau = 35.0 * 0.5 * (Math.cos(Math.PI * t) + 1.0);
+                    final RiverInfo river = computeRiver(x, z, noise, 200.0);
 
-                    // --- Terrain shape (same as before) ---
-                    final double baseNoise = detailNoise.getValue(x * 0.01, z * 0.01);
-                    final double midNoise = detailNoise.getValue(x * 0.03, z * 0.03);
-                    double detail = baseNoise * 3.0 + midNoise * 1.2;
-                    final double flatness = Math.min(1.0, dist / (radius * 0.7));
-                    detail *= flatness;
-                    double erosionNoise = detailNoise.getValue(x * 0.005, z * 0.005);
-                    double rimStart = radius * 0.6;
-                    double rimEnd = radius * 1.0;
-                    double erosionMask = Math.max(0.0, Math.min(1.0, (dist - rimStart) / (rimEnd - rimStart)));
-                    detail -= erosionNoise * 2.0 * erosionMask * (1.0 - flatness * 0.5);
+                    final double riverMask = river.mask();
+                    final double riverDepth = river.depth();
 
-                    double baseHeight = 64 + plateau + detail;
+                    double heightVal = baseHeight - riverDepth;
 
-                    // --- Natural narrow rivers ---
-                    double riverBase = detailNoise.getValue(x * 0.0015, z * 0.0015);
-                    double riverWarp = detailNoise.getValue((x + 2000) * 0.006, (z - 2000) * 0.006) * 0.5; // warps direction a bit
-                    double riverCombined = riverBase + riverWarp * 0.4;
+                    // Flatten slightly if road
+                    final double roadMask = computeRoadMask(x, z, noise, 0, 0);
+                    if (roadMask > 0.4) {
+                        heightVal = Mth.lerp(0.9, heightVal, baseHeight);
+                    }
 
-                    // Rivers form where noise crosses near zero (ridge detection)
-                    double riverVal = Math.abs(riverCombined);
+                    final int height = (int) Math.floor(heightVal);
 
-                    // Sharper falloff → thinner rivers
-                    double riverMask = 1.0 - Mth.clamp((riverVal - 0.03) * 10.0, 0.0, 1.0);
-
-                    // Make rivers rare and thin
-                    riverMask = Math.pow(riverMask, 7.0);
-
-                    // Keep rivers out of the plateau
-                    double plateauInfluence = Mth.clamp(dist / (radius * 0.6), 0.0, 1.0);
-                    riverMask *= plateauInfluence;
-
-                    // Depth
-                    double riverDepth = riverMask * 6.0;
-                    final double heightVal = baseHeight - riverDepth;
-                    final int height = (int) heightVal;
-
-                    // ---- Place blocks ----
                     chunk.setBlockState(new BlockPos(x, chunk.getMinY(), z), Blocks.BEDROCK.defaultBlockState());
                     for (int y = chunk.getMinY() + 1; y < height; y++) {
                         chunk.setBlockState(new BlockPos(x, y, z), Blocks.SANDSTONE.defaultBlockState());
                     }
 
-                    // Choose surface based on river presence
-                    BlockState surface = (riverDepth > 1.0)
-                            ? Blocks.COARSE_DIRT.defaultBlockState()  // dry riverbed
-                            : Blocks.SAND.defaultBlockState();
-
-                    chunk.setBlockState(new BlockPos(x, height, z), surface);
-
+                    if (roadMask > 0.45) {
+                        chunk.setBlockState(new BlockPos(x, height, z), Blocks.STONE_BRICKS.defaultBlockState());
+                    } else if (roadMask > 0.35) {
+                        chunk.setBlockState(new BlockPos(x, height, z), Blocks.COBBLESTONE.defaultBlockState());
+                    } else if (riverMask > 0.1) {
+                        chunk.setBlockState(new BlockPos(x, height, z), Blocks.COARSE_DIRT.defaultBlockState());
+                    } else {
+                        chunk.setBlockState(new BlockPos(x, height, z), Blocks.SAND.defaultBlockState());
+                    }
                 }
             }
 
@@ -122,51 +96,187 @@ public class CharnChunkGenerator extends ChunkGenerator {
     public int getBaseHeight(int x, int z, Heightmap.Types type, LevelHeightAccessor level, RandomState random) {
         final SimplexNoise detailNoise = new SimplexNoise(random.getOrCreateRandomFactory(RANDOM).fromHashOf(TERRAIN));
 
-        final double dist = Math.sqrt(x * x + z * z);
-        final double radius = 400.0;
+        final double baseHeight = computeBaseTerrain(x, z, detailNoise, 200.0, 64.0, 30.0);
 
-        // Smooth raised-cosine dome
-        final double t = Math.min(1.0, dist / radius);
-        final double plateau = 35.0 * 0.5 * (Math.cos(Math.PI * t) + 1.0);
+        final RiverInfo river = computeRiver(x, z, detailNoise, 200.0);
 
-        // --- Terrain shape (same as before) ---
-        final double baseNoise = detailNoise.getValue(x * 0.01, z * 0.01);
-        final double midNoise = detailNoise.getValue(x * 0.03, z * 0.03);
+        final double riverDepth = river.depth();
+        return (int) (baseHeight - riverDepth);
+    }
+
+    /**
+     * Computes the total terrain height at (x, z).
+     * Combines the large-scale dome with fine terrain detail.
+     */
+    private double computeBaseTerrain(final double x, final double z, final SimplexNoise noise, final double domeRadius, final double baseY, final double domeHeight) {
+        double dome = computeDomeHeight(x, z, domeRadius, domeHeight);
+        double detail = computeTerrainDetail(x, z, noise, domeRadius);
+        return baseY + dome + detail;
+    }
+
+    /**
+     * Computes local terrain variation (hills, erosion, flatness)
+     * that sits on top of the macro dome shape.
+     *
+     * @param x          world X (relative to center)
+     * @param z          world Z (relative to center)
+     * @param noise      the noise generator
+     * @param domeRadius the overall dome radius (used for flatness/erosion zones)
+     * @return height offset to add/subtract from the dome
+     */
+    private double computeTerrainDetail(final double x, final double z, final SimplexNoise noise, final double domeRadius) {
+        // Multi-frequency noise for fractal detail
+        double baseNoise = noise.getValue(x * 0.01, z * 0.01);
+        double midNoise = noise.getValue(x * 0.03, z * 0.03);
         double detail = baseNoise * 3.0 + midNoise * 1.2;
-        final double flatness = Math.min(1.0, dist / (radius * 0.7));
+
+        // Flatten the center — smooth “city plains”
+        double dist = Math.sqrt(x * x + z * z);
+        double flatness = Math.min(1.0, dist / (domeRadius * 0.7));
         detail *= flatness;
-        double erosionNoise = detailNoise.getValue(x * 0.005, z * 0.005);
-        double rimStart = radius * 0.6;
-        double rimEnd = radius * 1.0;
+
+        // Erode the rim
+        double erosionNoise = noise.getValue(x * 0.005, z * 0.005);
+        double rimStart = domeRadius * 0.6;
+        double rimEnd = domeRadius * 1.0;
         double erosionMask = Math.max(0.0, Math.min(1.0, (dist - rimStart) / (rimEnd - rimStart)));
         detail -= erosionNoise * 2.0 * erosionMask * (1.0 - flatness * 0.5);
 
-        double baseHeight = 64 + plateau + detail;
+        return detail;
+    }
 
-        // --- Natural narrow rivers ---
-        double riverBase = detailNoise.getValue(x * 0.0015, z * 0.0015);
-        double riverWarp = detailNoise.getValue((x + 2000) * 0.006, (z - 2000) * 0.006) * 0.5; // warps direction a bit
+    /**
+     * Computes a smooth raised-cosine dome height.
+     * Used for the overall island or plateau shape.
+     *
+     * @param x      world X (relative to center)
+     * @param z      world Z (relative to center)
+     * @param radius how far the dome extends (e.g. 200)
+     * @param height how tall the dome is (e.g. 30)
+     * @return dome height contribution (0 at rim, heightScale at center)
+     */
+    private double computeDomeHeight(final double x, final double z, final double radius, final double height) {
+        double dist = Math.sqrt(x * x + z * z);
+        double t = Math.min(1.0, dist / radius);
+        return height * 0.5 * (Math.cos(Math.PI * t) + 1.0);
+    }
+
+    /**
+     * Computes the river mask and depth for the given (x, z) coordinate.
+     * <p>
+     * Rivers form where the low-frequency noise crosses zero, and their
+     * thickness/depth are controlled by falloff and exponent shaping.
+     *
+     * @param x          world X (relative to center)
+     * @param z          world Z (relative to center)
+     * @param noise      the noise generator
+     * @param domeRadius plateau radius (used to suppress rivers near the center)
+     * @return RiverInfo record containing mask (0–1) and depth (blocks)
+     */
+    private RiverInfo computeRiver(final double x, final double z, final SimplexNoise noise, final double domeRadius) {
+        // --- Step 1: Base smooth noise field ---
+        // Very low frequency → broad, continent-scale curves
+        double riverBase = noise.getValue(x * 0.0015, z * 0.0015);
+
+        // Slight warp to avoid uniform sine-wave patterns
+        double riverWarp = noise.getValue((x + 2000) * 0.006, (z - 2000) * 0.006) * 0.5;
+
+        // Combine base and warp to create gentle direction bending
         double riverCombined = riverBase + riverWarp * 0.4;
 
-        // Rivers form where noise crosses near zero (ridge detection)
+        // --- Step 2: Detect “near-zero” crossings for riverbeds ---
+        // The closer riverCombined is to 0, the closer we are to a river
         double riverVal = Math.abs(riverCombined);
 
-        // Sharper falloff → thinner rivers
+        // Sharper falloff = thinner rivers
         double riverMask = 1.0 - Mth.clamp((riverVal - 0.03) * 10.0, 0.0, 1.0);
 
-        // Make rivers rare and thin
+        // Make them rare and thinner with a power curve
         riverMask = Math.pow(riverMask, 7.0);
 
-        // Keep rivers out of the plateau
-        double plateauInfluence = Mth.clamp(dist / (radius * 0.6), 0.0, 1.0);
+        // --- Step 3: Plateau suppression ---
+        // Keep rivers out of the central plateau region
+        double dist = Math.sqrt(x * x + z * z);
+        double plateauInfluence = Mth.clamp(dist / (domeRadius * 0.6), 0.0, 1.0);
         riverMask *= plateauInfluence;
 
-        // Depth
+        // --- Step 4: Depth scaling ---
         double riverDepth = riverMask * 6.0;
-        final double heightVal = baseHeight - riverDepth;
-        final int height = (int) heightVal;
 
-        return height;
+        return new RiverInfo(riverMask, riverDepth);
+    }
+
+    /**
+     * Computes the city road mask value (0–1) for the given world position.
+     * <p>
+     * The result represents how strongly this coordinate should be part of a road.
+     * A value near 1.0 means “center of a main road”.
+     */
+    private double computeRoadMask(final double x, final double z, final SimplexNoise noise, final double cityCenterX, final double cityCenterZ) {
+        final double cityFadeRadius = 400.0;
+        final double maxCityRadius = 600.0;
+
+        // --- Compute geometry relative to center ---
+        double dx = x - cityCenterX;
+        double dz = z - cityCenterZ;
+        double dist = Math.sqrt(dx * dx + dz * dz);
+        double angle = Math.atan2(dz, dx);
+
+        // --- 1. Radial roads (spokes) ---
+        double radialMask = computeRadialRoadMask(dx, dz, Math.PI / 4.0, 5.0); // spacing, width in blocks
+
+        // --- 2. Ring roads (concentric circles) ---
+        double ringMask = computeRingRoadMask(dist, new double[]{100.0, 200.0, 350.0}, 8.0);
+
+        // --- 3. Combine & shape ---
+        double roadMask = Math.max(radialMask, ringMask);
+
+        // --- 4. Fade out beyond city limits ---
+        double fade = 1.0 - Mth.clamp((dist - cityFadeRadius) / (maxCityRadius - cityFadeRadius), 0.0, 1.0);
+        roadMask *= fade;
+
+        // --- 5. Add small noise-based warp for natural imperfections ---
+        double warp = noise.getValue(x * 0.005, z * 0.005) * 0.15;
+        roadMask = Mth.clamp(roadMask - Math.abs(warp), 0.0, 1.0);
+
+        return roadMask;
+    }
+
+    /**
+     * Returns a mask (0–1) indicating proximity to a radial (spoke) road
+     * with a constant world-space width (not widening with distance).
+     */
+    private double computeRadialRoadMask(final double x, final double z, final double spacing, final double width) {
+        double angle = Math.atan2(z, x);
+
+        // Find the nearest spoke index
+        double nearestSpoke = Math.round(angle / spacing);
+        double spokeAngle = nearestSpoke * spacing;
+
+        // Compute perpendicular distance from point to that spoke line
+        double sin = Math.sin(spokeAngle);
+        double cos = Math.cos(spokeAngle);
+        double perpendicularDist = Math.abs(-sin * x + cos * z); // distance in blocks
+
+        // Convert distance into a mask 0..1
+        return 1.0 - Mth.clamp(perpendicularDist / width, 0.0, 1.0);
+    }
+
+    /**
+     * Returns a mask (0–1) for proximity to a circular ring road.
+     *
+     * @param dist      distance from city center
+     * @param radii     radii for ring roads
+     * @param thickness half-width of the ring in blocks
+     */
+    private double computeRingRoadMask(final double dist, final double[] radii, final double thickness) {
+        double ringMask = 0.0;
+        for (double r : radii) {
+            double d = Math.abs(dist - r);
+            double ring = 1.0 - Mth.clamp(d / thickness, 0.0, 1.0);
+            ringMask = Math.max(ringMask, ring);
+        }
+        return ringMask;
     }
 
     @Override
@@ -216,5 +326,8 @@ public class CharnChunkGenerator extends ChunkGenerator {
     @Override
     public void addDebugScreenInfo(List<String> info, RandomState random, BlockPos pos) {
         info.add("Charn City Generator");
+    }
+
+    private record RiverInfo(double mask, double depth) {
     }
 }
