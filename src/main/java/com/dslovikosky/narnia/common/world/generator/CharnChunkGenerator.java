@@ -26,6 +26,7 @@ import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.RandomState;
 import net.minecraft.world.level.levelgen.blending.Blender;
 import net.minecraft.world.level.levelgen.synth.SimplexNoise;
+import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
@@ -66,28 +67,42 @@ public class CharnChunkGenerator extends ChunkGenerator {
                     final boolean isRoadEdge = roadMask > 0.32;
                     final boolean isRiver = riverMask > 0.1;
 
-                    final int groundHeight = (int) Math.floor(baseHeight);
-                    final int riverHeight = (int) Math.floor(baseHeight - riverDepth);
+                    final int groundHeight;
+                    if (isRoadCenter || isRoadEdge) {
+                        // "Flatten" the height around roads so roads are flat
+                        final Pair<Double, Double> roadCenter = findRoadCenter(x, z, 6, 0, 0);
+                        final double roadHeight = computeBaseTerrain(roadCenter.getLeft(), roadCenter.getRight(), noise, 200.0, 64.0, 30.0);
+                        groundHeight = (int) Math.floor(roadHeight);
+                    } else {
+                        groundHeight = (int) Math.floor(baseHeight);
+                    }
+
+                    // Sometimes a flattened road leads to a base height that is actually lower than the river
+                    final int riverHeight = Math.min(groundHeight, (int) Math.floor(baseHeight - riverDepth));
+
+                    final BlockPos.MutableBlockPos mutablePos = new BlockPos.MutableBlockPos();
 
                     // Create bedrock layer
-                    chunk.setBlockState(new BlockPos(x, chunk.getMinY(), z), Blocks.BEDROCK.defaultBlockState());
+                    chunk.setBlockState(mutablePos.set(x, chunk.getMinY(), z), Blocks.BEDROCK.defaultBlockState());
 
                     // Fill from bedrock to surface with sandstone
                     for (int y = chunk.getMinY() + 1; y < (isRiver ? riverHeight : groundHeight); y++) {
-                        chunk.setBlockState(new BlockPos(x, y, z), Blocks.SANDSTONE.defaultBlockState());
+                        chunk.setBlockState(mutablePos.set(x, y, z), Blocks.SANDSTONE.defaultBlockState());
                     }
 
                     // If we're generating a river, set the top 3 layers to dirt. If not, set the top 3 layers to sand
                     for (int y = (isRiver ? riverHeight : groundHeight) - 2; y <= (isRiver ? riverHeight : groundHeight); y++) {
-                        chunk.setBlockState(new BlockPos(x, y, z), isRiver ? Blocks.COARSE_DIRT.defaultBlockState() : Blocks.SAND.defaultBlockState());
+                        chunk.setBlockState(mutablePos.set(x, y, z), isRiver ? Blocks.COARSE_DIRT.defaultBlockState() : Blocks.SAND.defaultBlockState());
                     }
 
                     // If we're generating a road, set the top layer to stone bricks or cobblestone
                     if (isRoadCenter) {
-                        chunk.setBlockState(new BlockPos(x, groundHeight, z), Blocks.STONE_BRICKS.defaultBlockState());
+                        chunk.setBlockState(mutablePos.set(x, groundHeight - 1, z), Blocks.STONE_BRICKS.defaultBlockState());
+                        chunk.setBlockState(mutablePos.set(x, groundHeight, z), Blocks.STONE_BRICKS.defaultBlockState());
                     } else if (isRoadEdge) {
-                        chunk.setBlockState(new BlockPos(x, groundHeight, z), Blocks.COBBLESTONE.defaultBlockState());
-                        chunk.setBlockState(new BlockPos(x, groundHeight + 1, z), Blocks.COBBLESTONE.defaultBlockState());
+                        chunk.setBlockState(mutablePos.set(x, groundHeight - 1, z), Blocks.COBBLESTONE.defaultBlockState());
+                        chunk.setBlockState(mutablePos.set(x, groundHeight, z), Blocks.COBBLESTONE.defaultBlockState());
+                        chunk.setBlockState(mutablePos.set(x, groundHeight + 1, z), Blocks.COBBLESTONE.defaultBlockState());
                     }
                 }
             }
@@ -210,6 +225,47 @@ public class CharnChunkGenerator extends ChunkGenerator {
         return new RiverInfo(riverMask, riverDepth);
     }
 
+    private Pair<Double, Double> findRoadCenter(double x, double z, int maxSteps, double cityCenterX, double cityCenterZ) {
+        for (int step = 0; step < maxSteps; step++) {
+            double mask = computeRoadMask(x, z, cityCenterX, cityCenterZ);
+            if (mask > 0.96) break; // early exit if we're at the center
+
+            double maskXPlus = computeRoadMask(x + 1, z, cityCenterX, cityCenterZ);
+            double maskXMinus = computeRoadMask(x - 1, z, cityCenterX, cityCenterZ);
+            double maskZPlus = computeRoadMask(x, z + 1, cityCenterX, cityCenterZ);
+            double maskZMinus = computeRoadMask(x, z - 1, cityCenterX, cityCenterZ);
+
+            // move toward steepest ascent
+            double maxMask = mask;
+            double dx = 0, dz = 0;
+            if (maskXPlus > maxMask) {
+                maxMask = maskXPlus;
+                dx = 1;
+                dz = 0;
+            }
+            if (maskXMinus > maxMask) {
+                maxMask = maskXMinus;
+                dx = -1;
+                dz = 0;
+            }
+            if (maskZPlus > maxMask) {
+                maxMask = maskZPlus;
+                dx = 0;
+                dz = 1;
+            }
+            if (maskZMinus > maxMask) {
+                maxMask = maskZMinus;
+                dx = 0;
+                dz = -1;
+            }
+
+            if (dx == 0 && dz == 0) break; // no improvement, we're at peak
+            x += dx;
+            z += dz;
+        }
+        return Pair.of(x, z);
+    }
+
     /**
      * Computes the city road mask value (0–1) for the given world position.
      * <p>
@@ -261,13 +317,6 @@ public class CharnChunkGenerator extends ChunkGenerator {
         return 1.0 - Mth.clamp(perpendicularDist / width, 0.0, 1.0);
     }
 
-    /**
-     * Returns a mask (0–1) for proximity to a circular ring road.
-     *
-     * @param dist      distance from city center
-     * @param radii     radii for ring roads
-     * @param thickness half-width of the ring in blocks
-     */
     private double computeRingRoadMask(final double dist, final double[] radii, final double thickness) {
         double ringMask = 0.0;
         for (double r : radii) {
