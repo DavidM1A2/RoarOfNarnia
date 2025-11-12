@@ -63,14 +63,14 @@ public class CharnChunkGenerator extends ChunkGenerator {
 
                     final double roadMask = computeRoadMask(x, z, 0, 0);
 
-                    final boolean isRoadCenter = roadMask > 0.45;
-                    final boolean isRoadEdge = roadMask > 0.32;
+                    final boolean isRoadCenter = roadMask > 0.4;
+                    final boolean isRoadEdge = roadMask > 0;
                     final boolean isRiver = riverMask > 0.1;
 
                     final int groundHeight;
                     if (isRoadCenter || isRoadEdge) {
                         // "Flatten" the height around roads so roads are flat
-                        final Pair<Double, Double> roadCenter = findRoadCenter(x, z, 6, 0, 0);
+                        final Pair<Double, Double> roadCenter = findRoadCenter(x, z, 4, 0, 0);
                         final double roadHeight = computeBaseTerrain(roadCenter.getLeft(), roadCenter.getRight(), noise, 200.0, 64.0, 30.0);
                         groundHeight = (int) Math.floor(roadHeight);
                     } else {
@@ -273,58 +273,26 @@ public class CharnChunkGenerator extends ChunkGenerator {
      * A value near 1.0 means “center of a main road”.
      */
     private double computeRoadMask(final double x, final double z, final double cityCenterX, final double cityCenterZ) {
-        final double cityFadeRadius = 400.0;
-        final double maxCityRadius = 425.0;
+        final double roadSpacing = 128.0;
+        final double roadHalfWidth = 4.0;
 
-        // --- Compute geometry relative to center ---
         double dx = x - cityCenterX;
         double dz = z - cityCenterZ;
-        double dist = Math.sqrt(dx * dx + dz * dz);
 
-        // --- 1. Radial roads (spokes) ---
-        double radialMask = computeRadialRoadMask(dx, dz, Math.PI / 4.0, 5.0); // spacing, width in blocks
+        // Find distance to the nearest vertical and horizontal road centerlines
+        double distToXCenter = Math.abs(Mth.positiveModulo(dx + roadSpacing / 2.0, roadSpacing) - roadSpacing / 2.0);
+        double distToZCenter = Math.abs(Mth.positiveModulo(dz + roadSpacing / 2.0, roadSpacing) - roadSpacing / 2.0);
 
-        // --- 2. Ring roads (concentric circles) ---
-        double ringMask = computeRingRoadMask(dist, new double[]{100.0, 200.0, 350.0}, 8.0);
+        // Distance to the closest road (either along X or Z)
+        double dist = Math.min(distToXCenter, distToZCenter);
 
-        // --- 3. Combine & shape ---
-        double roadMask = Math.max(radialMask, ringMask);
-
-        // --- 4. Fade out beyond city limits ---
-        double fade = 1.0 - Mth.clamp((dist - cityFadeRadius) / (maxCityRadius - cityFadeRadius), 0.0, 1.0);
-        roadMask *= fade;
-
-        return roadMask;
-    }
-
-    /**
-     * Returns a mask (0–1) indicating proximity to a radial (spoke) road
-     * with a constant world-space width (not widening with distance).
-     */
-    private double computeRadialRoadMask(final double x, final double z, final double spacing, final double width) {
-        double angle = Math.atan2(z, x);
-
-        // Find the nearest spoke index
-        double nearestSpoke = Math.round(angle / spacing);
-        double spokeAngle = nearestSpoke * spacing;
-
-        // Compute perpendicular distance from point to that spoke line
-        double sin = Math.sin(spokeAngle);
-        double cos = Math.cos(spokeAngle);
-        double perpendicularDist = Math.abs(-sin * x + cos * z); // distance in blocks
-
-        // Convert distance into a mask 0..1
-        return 1.0 - Mth.clamp(perpendicularDist / width, 0.0, 1.0);
-    }
-
-    private double computeRingRoadMask(final double dist, final double[] radii, final double thickness) {
-        double ringMask = 0.0;
-        for (double r : radii) {
-            double d = Math.abs(dist - r);
-            double ring = 1.0 - Mth.clamp(d / thickness, 0.0, 1.0);
-            ringMask = Math.max(ringMask, ring);
+        // Convert distance to mask using a smooth falloff:
+        // 1.0 at dist = 0, fades smoothly to 0.0 at dist = roadHalfWidth
+        if (dist >= roadHalfWidth) {
+            return 0.0;
+        } else {
+            return 0.5 * (Math.cos(Math.PI * dist / roadHalfWidth) + 1.0);
         }
-        return ringMask;
     }
 
     @Override
@@ -377,5 +345,8 @@ public class CharnChunkGenerator extends ChunkGenerator {
     }
 
     private record RiverInfo(double mask, double depth) {
+    }
+
+    private record RoadMask(double total, double center, double edge) {
     }
 }
