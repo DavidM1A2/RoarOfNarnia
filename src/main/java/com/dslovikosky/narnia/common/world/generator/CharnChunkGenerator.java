@@ -54,7 +54,7 @@ public class CharnChunkGenerator extends ChunkGenerator {
 
             for (int x = startX; x < startX + 16; x++) {
                 for (int z = startZ; z < startZ + 16; z++) {
-                    final double baseHeight = computeBaseTerrain(x, z, noise, 200.0, 64.0, 30.0);
+                    final double baseHeight = computeBaseTerrain(x, z, noise, 64.0);
 
                     final RiverInfo river = computeRiver(x, z, noise, 200.0);
 
@@ -71,7 +71,7 @@ public class CharnChunkGenerator extends ChunkGenerator {
                     if (isRoadCenter || isRoadEdge) {
                         // "Flatten" the height around roads so roads are flat
                         final Pair<Double, Double> roadCenter = findRoadCenter(x, z, 4, 0, 0);
-                        final double roadHeight = computeBaseTerrain(roadCenter.getLeft(), roadCenter.getRight(), noise, 200.0, 64.0, 30.0);
+                        final double roadHeight = computeBaseTerrain(roadCenter.getLeft(), roadCenter.getRight(), noise, 64.0);
                         groundHeight = (int) Math.floor(roadHeight);
                     } else {
                         groundHeight = (int) Math.floor(baseHeight);
@@ -115,7 +115,7 @@ public class CharnChunkGenerator extends ChunkGenerator {
     public int getBaseHeight(int x, int z, Heightmap.Types type, LevelHeightAccessor level, RandomState random) {
         final SimplexNoise detailNoise = new SimplexNoise(random.getOrCreateRandomFactory(RANDOM).fromHashOf(TERRAIN));
 
-        final double baseHeight = computeBaseTerrain(x, z, detailNoise, 200.0, 64.0, 30.0);
+        final double baseHeight = computeBaseTerrain(x, z, detailNoise, 64.0);
 
         final RiverInfo river = computeRiver(x, z, detailNoise, 200.0);
 
@@ -123,75 +123,39 @@ public class CharnChunkGenerator extends ChunkGenerator {
         return (int) (baseHeight - riverDepth);
     }
 
-    /**
-     * Computes the total terrain height at (x, z).
-     * Combines the large-scale dome with fine terrain detail.
-     */
-    private double computeBaseTerrain(final double x, final double z, final SimplexNoise noise, final double domeRadius, final double baseY, final double domeHeight) {
-        double dome = computeDomeHeight(x, z, domeRadius, domeHeight);
-        double detail = computeTerrainDetail(x, z, noise, domeRadius);
-        return baseY + dome + detail;
+    private double computeBaseTerrain(final double x, final double z, final SimplexNoise noise, final double baseY) {
+        double mountainHeight = computeMountainHeight(x, z, noise);
+        double detail = computeTerrainDetail(x, z, noise);
+        return baseY + mountainHeight + detail;
     }
 
-    /**
-     * Computes local terrain variation (hills, erosion, flatness)
-     * that sits on top of the macro dome shape.
-     *
-     * @param x          world X (relative to center)
-     * @param z          world Z (relative to center)
-     * @param noise      the noise generator
-     * @param domeRadius the overall dome radius (used for flatness/erosion zones)
-     * @return height offset to add/subtract from the dome
-     */
-    private double computeTerrainDetail(final double x, final double z, final SimplexNoise noise, final double domeRadius) {
+    private double computeTerrainDetail(final double x, final double z, final SimplexNoise noise) {
         // Multi-frequency noise for fractal detail
         double baseNoise = noise.getValue(x * 0.01, z * 0.01);
         double midNoise = noise.getValue(x * 0.03, z * 0.03);
-        double detail = baseNoise * 3.0 + midNoise * 1.2;
-
-        // Flatten the center — smooth “city plains”
-        double dist = Math.sqrt(x * x + z * z);
-        double flatness = Math.min(1.0, dist / (domeRadius * 0.7));
-        detail *= flatness;
-
-        // Erode the rim
-        double erosionNoise = noise.getValue(x * 0.005, z * 0.005);
-        double rimStart = domeRadius * 0.6;
-        double rimEnd = domeRadius * 1.0;
-        double erosionMask = Math.max(0.0, Math.min(1.0, (dist - rimStart) / (rimEnd - rimStart)));
-        detail -= erosionNoise * 2.0 * erosionMask * (1.0 - flatness * 0.5);
-
-        return detail;
+        return baseNoise * 3.0 + midNoise * 1.2;
     }
 
-    /**
-     * Computes a smooth raised-cosine dome height.
-     * Used for the overall island or plateau shape.
-     *
-     * @param x      world X (relative to center)
-     * @param z      world Z (relative to center)
-     * @param radius how far the dome extends (e.g. 200)
-     * @param height how tall the dome is (e.g. 30)
-     * @return dome height contribution (0 at rim, heightScale at center)
-     */
-    private double computeDomeHeight(final double x, final double z, final double radius, final double height) {
-        double dist = Math.sqrt(x * x + z * z);
-        double t = Math.min(1.0, dist / radius);
-        return height * 0.5 * (Math.cos(Math.PI * t) + 1.0);
+    private double computeMountainHeight(final double x, final double z, final SimplexNoise noise) {
+        // Base frequency controls how far apart mountains are (lower = more spaced out)
+        double mountainFrequency = 1.0 / 1000.0;
+        double mountainHeight = 40.0;
+
+        // Multi-octave gentle variation
+        double n1 = noise.getValue(x * mountainFrequency, z * mountainFrequency);
+        double n2 = noise.getValue(x * mountainFrequency * 2.0, z * mountainFrequency * 2.0) * 0.5;
+        double n3 = noise.getValue(x * mountainFrequency * 4.0, z * mountainFrequency * 4.0) * 0.25;
+
+        double combined = (n1 + n2 + n3) / 1.75;
+
+        // Use a smooth "ridge" function — peaks are more rounded, not sharp
+        double height = Math.pow(Math.abs(combined), 1.3) * mountainHeight;
+
+        // Add slow global slope variation (adds more natural continental feel)
+        double slope = noise.getValue(x * 0.0002, z * 0.0002) * 10.0;
+        return height + slope;
     }
 
-    /**
-     * Computes the river mask and depth for the given (x, z) coordinate.
-     * <p>
-     * Rivers form where the low-frequency noise crosses zero, and their
-     * thickness/depth are controlled by falloff and exponent shaping.
-     *
-     * @param x          world X (relative to center)
-     * @param z          world Z (relative to center)
-     * @param noise      the noise generator
-     * @param domeRadius plateau radius (used to suppress rivers near the center)
-     * @return RiverInfo record containing mask (0–1) and depth (blocks)
-     */
     private RiverInfo computeRiver(final double x, final double z, final SimplexNoise noise, final double domeRadius) {
         // --- Step 1: Base smooth noise field ---
         // Very low frequency → broad, continent-scale curves
@@ -266,12 +230,6 @@ public class CharnChunkGenerator extends ChunkGenerator {
         return Pair.of(x, z);
     }
 
-    /**
-     * Computes the city road mask value (0–1) for the given world position.
-     * <p>
-     * The result represents how strongly this coordinate should be part of a road.
-     * A value near 1.0 means “center of a main road”.
-     */
     private double computeRoadMask(final double x, final double z, final double cityCenterX, final double cityCenterZ) {
         final double roadSpacing = 128.0;
         final double roadHalfWidth = 4.0;
