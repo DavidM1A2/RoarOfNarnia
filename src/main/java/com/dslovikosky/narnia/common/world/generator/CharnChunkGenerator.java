@@ -44,6 +44,7 @@ public class CharnChunkGenerator extends ChunkGenerator {
     private static final int CITY_CELL_SIZE = 128;
     private static final double ROAD_WIDTH = 8.0;
     private static final double ALLEY_WIDTH = 5.0;
+    private static final int ALLEY_SPACING = 24;
 
     public CharnChunkGenerator(final Holder<Biome> biome) {
         super(new FixedBiomeSource(biome));
@@ -236,8 +237,8 @@ public class CharnChunkGenerator extends ChunkGenerator {
         final int cellX = Math.floorDiv(x, CITY_CELL_SIZE);
         final int cellZ = Math.floorDiv(z, CITY_CELL_SIZE);
 
-        final double[] verticals = computeAlleyVerticals(x, z, CITY_CELL_SIZE, 16, randomFactory);
-        final double[] horizontals = computeAlleyHorizontals(x, z, CITY_CELL_SIZE, 16, randomFactory);
+        final double[] verticals = computeAlleyVerticals(x, z, CITY_CELL_SIZE, ALLEY_SPACING, randomFactory);
+        final double[] horizontals = computeAlleyHorizontals(x, z, CITY_CELL_SIZE, ALLEY_SPACING, randomFactory);
 
         // Convert to local coordinates
         final double localX = x - cellX * CITY_CELL_SIZE;
@@ -311,8 +312,8 @@ public class CharnChunkGenerator extends ChunkGenerator {
         int cellX = Math.floorDiv(x, CITY_CELL_SIZE);
         int cellZ = Math.floorDiv(z, CITY_CELL_SIZE);
 
-        final double[] alleyVerticals = computeAlleyVerticals(x, z, CITY_CELL_SIZE, 16, randomFactory);
-        final double[] alleyHorizontals = computeAlleyHorizontals(x, z, CITY_CELL_SIZE, 16, randomFactory);
+        final double[] alleyVerticals = computeAlleyVerticals(x, z, CITY_CELL_SIZE, ALLEY_SPACING, randomFactory);
+        final double[] alleyHorizontals = computeAlleyHorizontals(x, z, CITY_CELL_SIZE, ALLEY_SPACING, randomFactory);
 
         // Convert to local coordinates
         final int localX = x - cellX * CITY_CELL_SIZE;
@@ -347,7 +348,7 @@ public class CharnChunkGenerator extends ChunkGenerator {
             }
         }
 
-        return new PlotInfo((int) minX + cellX * CITY_CELL_SIZE, (int) minZ + cellZ * CITY_CELL_SIZE, maxX - minX, maxZ - minZ);
+        return new PlotInfo((int) minX + cellX * CITY_CELL_SIZE, (int) minZ + cellZ * CITY_CELL_SIZE, maxX - minX, maxZ - minZ, PlotType.NORMAL);
     }
 
     private LocalMaxima findLocalMaxima(int x, int z, final int maxSteps, final BiFunction<Integer, Integer, Double> func) {
@@ -442,13 +443,15 @@ public class CharnChunkGenerator extends ChunkGenerator {
         info.add("Charn City Generator");
     }
 
+    private enum PlotType {NORMAL, WATERFRONT}
+
     private record RiverInfo(double mask, double depth) {
     }
 
     private record LocalMaxima(int x, int z, double value) {
     }
 
-    private record PlotInfo(int originX, int originZ, double sizeX, double sizeZ) {
+    private record PlotInfo(int originX, int originZ, double sizeX, double sizeZ, PlotType type) {
         public boolean contains(int x, int z) {
             return x >= originX && x < originX + sizeX
                     && z >= originZ && z < originZ + sizeZ;
