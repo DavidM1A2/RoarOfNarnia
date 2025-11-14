@@ -41,6 +41,9 @@ public class CharnChunkGenerator extends ChunkGenerator {
             it -> it.group(RegistryOps.retrieveElement(ModBiomes.DARK_CITY_RUINS)).apply(it, it.stable(CharnChunkGenerator::new)));
     private static final ResourceLocation RANDOM = Constants.modLocation("charn_noise");
     private static final ResourceLocation TERRAIN = Constants.modLocation("charn_noise_terrain");
+    private static final int CITY_CELL_SIZE = 128;
+    private static final double ROAD_WIDTH = 8.0;
+    private static final double ALLEY_WIDTH = 5.0;
 
     public CharnChunkGenerator(final Holder<Biome> biome) {
         super(new FixedBiomeSource(biome));
@@ -70,10 +73,13 @@ public class CharnChunkGenerator extends ChunkGenerator {
                     final LocalMaxima alleyCenter = findLocalMaxima(x, z, 3, (xPos, zPos) -> computeAlleyMask(xPos, zPos, randomFactory, river));
                     final double centerAlleyMask = alleyCenter.value();
 
+                    final PlotInfo plotInfo = getPlotAt(x, z, randomFactory);
+
                     final boolean isRoadCenter = roadMask > 0.4;
                     final boolean isAlley = centerAlleyMask > 0.4 && !isRoadCenter;
                     final boolean isRoadEdge = roadMask > 0 && !isRoadCenter && !isAlley;
                     final boolean isRiver = riverMask > 0.1;
+                    final boolean isPlot = plotInfo.contains(x, z) && !isRoadCenter && !isAlley && !isRoadEdge && !isRiver;
 
                     final int groundHeight;
                     if (isRoadCenter || isRoadEdge) {
@@ -113,6 +119,8 @@ public class CharnChunkGenerator extends ChunkGenerator {
                         chunk.setBlockState(mutablePos.set(x, groundHeight + 1, z), Blocks.COBBLESTONE.defaultBlockState());
                     } else if (isAlley) {
                         chunk.setBlockState(mutablePos.set(x, groundHeight, z), Blocks.GRAVEL.defaultBlockState());
+                    } else if (isPlot) {
+                        chunk.setBlockState(mutablePos.set(x, groundHeight, z), Blocks.WHITE_WOOL.defaultBlockState());
                     }
                 }
             }
@@ -122,7 +130,7 @@ public class CharnChunkGenerator extends ChunkGenerator {
     }
 
     @Override
-    public int getBaseHeight(int x, int z, Heightmap.Types type, LevelHeightAccessor level, RandomState random) {
+    public int getBaseHeight(final int x, final int z, final Heightmap.Types type, final LevelHeightAccessor level, final RandomState random) {
         final SimplexNoise detailNoise = new SimplexNoise(random.getOrCreateRandomFactory(RANDOM).fromHashOf(TERRAIN));
 
         final double baseHeight = computeBaseTerrain(x, z, detailNoise, 64.0);
@@ -133,20 +141,20 @@ public class CharnChunkGenerator extends ChunkGenerator {
         return (int) (baseHeight - riverDepth);
     }
 
-    private double computeBaseTerrain(final double x, final double z, final SimplexNoise noise, final double baseY) {
+    private double computeBaseTerrain(final int x, final int z, final SimplexNoise noise, final double baseY) {
         double mountainHeight = computeMountainHeight(x, z, noise);
         double detail = computeTerrainDetail(x, z, noise);
         return baseY + mountainHeight + detail;
     }
 
-    private double computeTerrainDetail(final double x, final double z, final SimplexNoise noise) {
+    private double computeTerrainDetail(final int x, final int z, final SimplexNoise noise) {
         // Multi-frequency noise for fractal detail
         double baseNoise = noise.getValue(x * 0.01, z * 0.01);
         double midNoise = noise.getValue(x * 0.03, z * 0.03);
         return baseNoise * 3.0 + midNoise * 1.2;
     }
 
-    private double computeMountainHeight(final double x, final double z, final SimplexNoise noise) {
+    private double computeMountainHeight(final int x, final int z, final SimplexNoise noise) {
         // Base frequency controls how far apart mountains are (lower = more spaced out)
         double mountainFrequency = 1.0 / 1000.0;
         double mountainHeight = 40.0;
@@ -166,7 +174,7 @@ public class CharnChunkGenerator extends ChunkGenerator {
         return height + slope;
     }
 
-    private RiverInfo computeRiver(final double x, final double z, final SimplexNoise noise) {
+    private RiverInfo computeRiver(final int x, final int z, final SimplexNoise noise) {
         // --- Step 1: Base smooth noise field ---
         // Very low frequency → broad, continent-scale curves
         double riverBase = noise.getValue(x * 0.0015, z * 0.0015);
@@ -193,27 +201,24 @@ public class CharnChunkGenerator extends ChunkGenerator {
         return new RiverInfo(riverMask, riverDepth);
     }
 
-    private double computeRoadMask(final double x, final double z) {
-        final double roadSpacing = 128.0;
-        final double roadHalfWidth = 4.0;
-
+    private double computeRoadMask(final int x, final int z) {
         // Find distance to the nearest vertical and horizontal road centerlines
-        double distToXCenter = Math.abs(Mth.positiveModulo(x + roadSpacing / 2.0, roadSpacing) - roadSpacing / 2.0);
-        double distToZCenter = Math.abs(Mth.positiveModulo(z + roadSpacing / 2.0, roadSpacing) - roadSpacing / 2.0);
+        double distToXCenter = Math.abs(Mth.positiveModulo(x + CITY_CELL_SIZE / 2.0, CITY_CELL_SIZE) - CITY_CELL_SIZE / 2.0);
+        double distToZCenter = Math.abs(Mth.positiveModulo(z + CITY_CELL_SIZE / 2.0, CITY_CELL_SIZE) - CITY_CELL_SIZE / 2.0);
 
         // Distance to the closest road (either along X or Z)
         double dist = Math.min(distToXCenter, distToZCenter);
 
         // Convert distance to mask using a smooth falloff:
         // 1.0 at dist = 0, fades smoothly to 0.0 at dist = roadHalfWidth
-        if (dist >= roadHalfWidth) {
+        if (dist >= ROAD_WIDTH / 2) {
             return 0.0;
         } else {
-            return 0.5 * (Math.cos(Math.PI * dist / roadHalfWidth) + 1.0);
+            return 0.5 * (Math.cos(Math.PI * dist / (ROAD_WIDTH / 2)) + 1.0);
         }
     }
 
-    private double computeAlleyMask(final double x, final double z, final PositionalRandomFactory randomFactory, final RiverInfo river) {
+    private double computeAlleyMask(final int x, final int z, final PositionalRandomFactory randomFactory, final RiverInfo river) {
         double alleyMask = computeAlleyMaskRaw(x, z, randomFactory);
 
         // Fade out alleys around rivers
@@ -226,59 +231,126 @@ public class CharnChunkGenerator extends ChunkGenerator {
      * Computes a "mask" for alleys at a given world position.
      * 1.0 = center of alley, 0.0 = outside.
      */
-    private double computeAlleyMaskRaw(final double x, final double z, final PositionalRandomFactory randomFactory) {
-        final int cellSize = 128;
-        final double alleyWidth = 1.5;
-        final int minSpacing = 25;
-
+    private double computeAlleyMaskRaw(final int x, final int z, final PositionalRandomFactory randomFactory) {
         // Which city cell are we in
-        final int cellX = Math.floorDiv((int) x, cellSize);
-        final int cellZ = Math.floorDiv((int) z, cellSize);
+        final int cellX = Math.floorDiv(x, CITY_CELL_SIZE);
+        final int cellZ = Math.floorDiv(z, CITY_CELL_SIZE);
 
-        final RandomSource rand = randomFactory.at(cellX, 0, cellZ);
-
-        // Choose how many alleys to spawn in this cell (1–3 each direction)
-        int numVertical = 1 + rand.nextInt(3);
-        int numHorizontal = 1 + rand.nextInt(3);
-
-        // Evenly space them but add random jitter
-        double[] verticals = new double[numVertical];
-        double[] horizontals = new double[numHorizontal];
-
-        double spacingV = (double) cellSize / (numVertical + 1);
-        double spacingH = (double) cellSize / (numHorizontal + 1);
-
-        for (int i = 0; i < numVertical; i++) {
-            verticals[i] = (i + 1) * spacingV + rand.nextDouble() * (spacingV - minSpacing);
-        }
-
-        for (int i = 0; i < numHorizontal; i++) {
-            horizontals[i] = (i + 1) * spacingH + rand.nextDouble() * (spacingH - minSpacing);
-        }
+        final double[] verticals = computeAlleyVerticals(x, z, CITY_CELL_SIZE, 16, randomFactory);
+        final double[] horizontals = computeAlleyHorizontals(x, z, CITY_CELL_SIZE, 16, randomFactory);
 
         // Convert to local coordinates
-        double localX = x - cellX * cellSize;
-        double localZ = z - cellZ * cellSize;
+        final double localX = x - cellX * CITY_CELL_SIZE;
+        final double localZ = z - cellZ * CITY_CELL_SIZE;
 
-        // Distance to nearest vertical/horizontal alley
-        double nearestV = Double.POSITIVE_INFINITY;
-        for (double v : verticals) {
-            nearestV = Math.min(nearestV, Math.abs(v - localX));
+        // Distance to nearest vertical/horizontal alleys
+        double nearestVertical = Double.POSITIVE_INFINITY;
+        for (double vertical : verticals) {
+            nearestVertical = Math.min(nearestVertical, Math.abs(vertical - localX));
         }
-
-        double nearestH = Double.POSITIVE_INFINITY;
-        for (double h : horizontals) {
-            nearestH = Math.min(nearestH, Math.abs(h - localZ));
+        double nearestHorizontal = Double.POSITIVE_INFINITY;
+        for (double horizontal : horizontals) {
+            nearestHorizontal = Math.min(nearestHorizontal, Math.abs(horizontal - localZ));
         }
 
         // Smooth cosine falloff
-        double maskV = nearestV < alleyWidth ? 0.5 * (Math.cos(Math.PI * nearestV / alleyWidth) + 1.0) : 0.0;
-        double maskH = nearestH < alleyWidth ? 0.5 * (Math.cos(Math.PI * nearestH / alleyWidth) + 1.0) : 0.0;
+        final double falloffScale = 0.56; // computed for threshold 0.4 to give ~5 block width
+        final double halfWidth = ALLEY_WIDTH / 2.0;
+
+        final double maskV = nearestVertical < halfWidth * falloffScale
+                ? 0.5 * (Math.cos(Math.PI * nearestVertical / (halfWidth * falloffScale)) + 1.0)
+                : 0.0;
+
+        final double maskH = nearestHorizontal < halfWidth * falloffScale
+                ? 0.5 * (Math.cos(Math.PI * nearestHorizontal / (halfWidth * falloffScale)) + 1.0)
+                : 0.0;
 
         return Math.max(maskV, maskH);
     }
 
-    private LocalMaxima findLocalMaxima(double x, double z, final int maxSteps, final BiFunction<Double, Double, Double> func) {
+    private double[] computeAlleyVerticals(final int x, final int z, final int cellSize, final int minSpacing, final PositionalRandomFactory randomFactory) {
+        // Which city cell are we in
+        final int cellX = Math.floorDiv(x, cellSize);
+        final int cellZ = Math.floorDiv(z, cellSize);
+        final RandomSource rand = randomFactory.at(cellX, 0, cellZ);
+
+        // Evenly space them but add random jitter.
+        // Choose how many alleys to spawn in this cell (1–3 each direction)
+        final int numVerticals = 1 + rand.nextInt(3);
+        final double[] verticals = new double[numVerticals];
+        final double spacingVertical = (double) cellSize / (numVerticals + 1);
+        for (int i = 0; i < numVerticals; i++) {
+            verticals[i] = (i + 1) * spacingVertical + rand.nextDouble() * (spacingVertical - minSpacing);
+            // Snap all alley lines to half-block centers for consistency
+            verticals[i] = Math.floor(verticals[i]) + 0.5;
+        }
+
+        return verticals;
+    }
+
+    private double[] computeAlleyHorizontals(final int x, final int z, final int cellSize, final int minSpacing, final PositionalRandomFactory randomFactory) {
+        // Which city cell are we in
+        final int cellX = Math.floorDiv(x, cellSize);
+        final int cellZ = Math.floorDiv(z, cellSize);
+        final RandomSource rand = randomFactory.at(cellX, 0, cellZ);
+
+        // Evenly space them but add random jitter.
+        // Choose how many alleys to spawn in this cell (1–3 each direction)
+        final int numHorizontals = 1 + rand.nextInt(3);
+        final double[] horizontals = new double[numHorizontals];
+        final double spacingHorizontal = (double) cellSize / (numHorizontals + 1);
+        for (int i = 0; i < numHorizontals; i++) {
+            horizontals[i] = (i + 1) * spacingHorizontal + rand.nextDouble() * (spacingHorizontal - minSpacing);
+            // Snap all alley lines to half-block centers for consistency
+            horizontals[i] = Math.floor(horizontals[i]) + 0.5;
+        }
+        return horizontals;
+    }
+
+    private PlotInfo getPlotAt(final int x, final int z, final PositionalRandomFactory randomFactory) {
+        int cellX = Math.floorDiv(x, CITY_CELL_SIZE);
+        int cellZ = Math.floorDiv(z, CITY_CELL_SIZE);
+
+        final double[] alleyVerticals = computeAlleyVerticals(x, z, CITY_CELL_SIZE, 16, randomFactory);
+        final double[] alleyHorizontals = computeAlleyHorizontals(x, z, CITY_CELL_SIZE, 16, randomFactory);
+
+        // Convert to local coordinates
+        final int localX = x - cellX * CITY_CELL_SIZE;
+        final int localZ = z - cellZ * CITY_CELL_SIZE;
+
+        // Compute consistent “effective” half-widths (to be on block center)
+        final double effectiveRoadHalfWidth = ROAD_WIDTH / 2.0;
+        final double effectiveAlleyHalfWidth = ALLEY_WIDTH / 2.0;
+        final int roadOrAlleyMargin = 1;
+
+        double minX = 0.0;
+        double maxX = 0.0;
+        for (int i = 0; i < alleyVerticals.length + 1; i++) {
+            double potentialMinX = i == 0 ? effectiveRoadHalfWidth : alleyVerticals[i - 1] + effectiveAlleyHalfWidth;
+            double potentialMaxX = i == alleyVerticals.length ? CITY_CELL_SIZE - effectiveRoadHalfWidth : alleyVerticals[i] - effectiveAlleyHalfWidth;
+            if (potentialMinX <= localX && localX <= potentialMaxX) {
+                minX = potentialMinX + roadOrAlleyMargin;
+                maxX = potentialMaxX - roadOrAlleyMargin + 0.5;
+                break;
+            }
+        }
+
+        double minZ = 0.0;
+        double maxZ = 0.0;
+        for (int i = 0; i < alleyHorizontals.length + 1; i++) {
+            double potentialMinZ = i == 0 ? effectiveRoadHalfWidth : alleyHorizontals[i - 1] + effectiveAlleyHalfWidth;
+            double potentialMaxZ = i == alleyHorizontals.length ? CITY_CELL_SIZE - effectiveRoadHalfWidth : alleyHorizontals[i] - effectiveAlleyHalfWidth;
+            if (potentialMinZ <= localZ && localZ <= potentialMaxZ) {
+                minZ = potentialMinZ + roadOrAlleyMargin;
+                maxZ = potentialMaxZ - roadOrAlleyMargin + 0.5;
+                break;
+            }
+        }
+
+        return new PlotInfo((int) minX + cellX * CITY_CELL_SIZE, (int) minZ + cellZ * CITY_CELL_SIZE, maxX - minX, maxZ - minZ);
+    }
+
+    private LocalMaxima findLocalMaxima(int x, int z, final int maxSteps, final BiFunction<Integer, Integer, Double> func) {
         double maxValue = 0.0;
         for (int step = 0; step < maxSteps; step++) {
             double currentValue = func.apply(x, z);
@@ -289,7 +361,7 @@ public class CharnChunkGenerator extends ChunkGenerator {
 
             // move toward steepest ascent
             maxValue = currentValue;
-            double dx = 0, dz = 0;
+            int dx = 0, dz = 0;
             if (xPositive > maxValue) {
                 maxValue = xPositive;
                 dx = 1;
@@ -373,6 +445,13 @@ public class CharnChunkGenerator extends ChunkGenerator {
     private record RiverInfo(double mask, double depth) {
     }
 
-    private record LocalMaxima(double x, double z, double value) {
+    private record LocalMaxima(int x, int z, double value) {
+    }
+
+    private record PlotInfo(int originX, int originZ, double sizeX, double sizeZ) {
+        public boolean contains(int x, int z) {
+            return x >= originX && x < originX + sizeX
+                    && z >= originZ && z < originZ + sizeZ;
+        }
     }
 }
