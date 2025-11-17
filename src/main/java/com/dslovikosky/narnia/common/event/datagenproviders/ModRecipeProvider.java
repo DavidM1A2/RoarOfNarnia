@@ -75,6 +75,7 @@ public class ModRecipeProvider extends RecipeProvider {
                 .save(output);
 
         smeltingResultFromBase(ModBlocks.DARK_CITY_SMOOTH_STONE.get(), ModBlocks.DARK_CITY_STONE.get());
+
         shaped(RecipeCategory.BUILDING_BLOCKS, new ItemStack(ModBlocks.DARK_CITY_STONE_BRICKS, 4))
                 .unlockedBy(getHasName(ModBlocks.DARK_CITY_STONE), has(ModBlocks.DARK_CITY_STONE))
                 .define('S', ModBlocks.DARK_CITY_STONE)
@@ -93,6 +94,11 @@ public class ModRecipeProvider extends RecipeProvider {
                 .requires(ModBlocks.DARK_CITY_STONE_BRICKS)
                 .requires(Items.VINE)
                 .save(output);
+
+        stonecutterResultFromBase(RecipeCategory.BUILDING_BLOCKS, ModBlocks.DARK_CITY_SLATE_SLAB, ModBlocks.DARK_CITY_SLATE, 2);
+        slab(RecipeCategory.BUILDING_BLOCKS, ModBlocks.DARK_CITY_SLATE_SLAB, ModBlocks.DARK_CITY_SLATE);
+        stonecutterResultFromBase(RecipeCategory.BUILDING_BLOCKS, ModBlocks.DARK_CITY_SLATE_STAIRS, ModBlocks.DARK_CITY_SLATE);
+        stairs(output, ModBlocks.DARK_CITY_SLATE_STAIRS.get(), ModBlocks.DARK_CITY_SLATE.get());
     }
 
     private void buttonFromPlanks(final RecipeOutput recipeOutput, final ButtonBlock buttonBlock, final Block planks) {

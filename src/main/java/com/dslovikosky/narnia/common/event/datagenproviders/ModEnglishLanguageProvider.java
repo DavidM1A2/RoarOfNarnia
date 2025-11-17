@@ -44,12 +44,19 @@ public class ModEnglishLanguageProvider extends LanguageProvider {
 
         addBlock(ModBlocks.DARK_CITY_STONE, "Dark City Stone");
         addBlock(ModBlocks.DARK_CITY_SMOOTH_STONE, "Dark City Smooth Stone");
+        addBlock(ModBlocks.DARK_CITY_WINDOW, "Dark City Window");
+        addBlock(ModBlocks.DARK_CITY_DOOR, "Dark City Door");
+
         addBlock(ModBlocks.DARK_CITY_STONE_BRICKS, "Dark City Stone Bricks");
         addBlock(ModBlocks.DARK_CITY_STONE_BRICK_STAIRS, "Dark City Stone Brick Stairs");
         addBlock(ModBlocks.DARK_CITY_STONE_BRICK_SLAB, "Dark City Stone Brick Slab");
         addBlock(ModBlocks.DARK_CITY_STONE_BRICK_WALL, "Dark City Stone Brick Wall");
         addBlock(ModBlocks.MOSSY_DARK_CITY_STONE_BRICKS, "Mossy Dark City Stone Bricks");
         addBlock(ModBlocks.CHISELED_DARK_CITY_STONE_BRICKS, "Chiseled Dark City Stone Bricks");
+
+        addBlock(ModBlocks.DARK_CITY_SLATE, "Dark City Slate");
+        addBlock(ModBlocks.DARK_CITY_SLATE_SLAB, "Dark City Slate Slab");
+        addBlock(ModBlocks.DARK_CITY_SLATE_STAIRS, "Dark City Slate Stairs");
 
         addEntityType(ModEntityTypes.WORLD_WOOD_BOAT, "World Wood Boat");
         addEntityType(ModEntityTypes.WORLD_WOOD_CHEST_BOAT, "World Wood Chest Boat");

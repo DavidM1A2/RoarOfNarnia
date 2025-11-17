@@ -47,16 +47,26 @@ public class ModModelProvider extends ModelProvider {
         createDoor(blockModels, ModBlocks.WORLD_WOOD_DOOR.get());
         blockModels.createHangingSign(ModBlocks.WORLD_WOOD_PLANKS.get(), ModBlocks.WORLD_WOOD_CEILING_HANGING_SIGN.get(), ModBlocks.WORLD_WOOD_WALL_HANGING_SIGN.get());
 
+        blockModels.createTrivialCube(ModBlocks.DARK_CITY_STONE.get());
+        blockModels.createTrivialCube(ModBlocks.DARK_CITY_SMOOTH_STONE.get());
+        blockModels.createTrivialBlock(ModBlocks.DARK_CITY_WINDOW.get(), TexturedModel.CUBE.updateTemplate(template ->
+                template.extend().renderType(RenderType.CUTOUT.getName()).build()));
+        createDoor(blockModels, ModBlocks.DARK_CITY_DOOR.get());
+
         blockModels.family(ModBlocks.DARK_CITY_STONE_BRICKS.get())
                 .generateFor(new BlockFamily.Builder(ModBlocks.DARK_CITY_STONE_BRICKS.get())
                         .stairs(ModBlocks.DARK_CITY_STONE_BRICK_STAIRS.get())
                         .slab(ModBlocks.DARK_CITY_STONE_BRICK_SLAB.get())
                         .wall(ModBlocks.DARK_CITY_STONE_BRICK_WALL.get())
                         .getFamily());
-        blockModels.createTrivialCube(ModBlocks.DARK_CITY_STONE.get());
-        blockModels.createTrivialCube(ModBlocks.DARK_CITY_SMOOTH_STONE.get());
         blockModels.createTrivialCube(ModBlocks.MOSSY_DARK_CITY_STONE_BRICKS.get());
         blockModels.createAxisAlignedPillarBlock(ModBlocks.CHISELED_DARK_CITY_STONE_BRICKS.get(), TexturedModel.COLUMN);
+
+        blockModels.family(ModBlocks.DARK_CITY_SLATE.get())
+                .generateFor(new BlockFamily.Builder(ModBlocks.DARK_CITY_SLATE.get())
+                        .stairs(ModBlocks.DARK_CITY_SLATE_STAIRS.get())
+                        .slab(ModBlocks.DARK_CITY_SLATE_SLAB.get())
+                        .getFamily());
 
         itemModels.generateFlatItem(ModItems.YELLOW_RING.get(), ModelTemplates.FLAT_ITEM);
         itemModels.generateFlatItem(ModItems.GREEN_RING.get(), ModelTemplates.FLAT_ITEM);

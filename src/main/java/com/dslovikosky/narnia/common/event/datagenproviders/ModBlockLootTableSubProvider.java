@@ -61,12 +61,19 @@ public class ModBlockLootTableSubProvider extends BlockLootSubProvider {
 
         dropSelf(ModBlocks.DARK_CITY_STONE.get());
         dropSelf(ModBlocks.DARK_CITY_SMOOTH_STONE.get());
+        dropSelf(ModBlocks.DARK_CITY_WINDOW.get());
+        add(ModBlocks.DARK_CITY_DOOR.get(), createDoorTable(ModBlocks.DARK_CITY_DOOR.get()));
+
         dropSelf(ModBlocks.DARK_CITY_STONE_BRICKS.get());
         dropSelf(ModBlocks.DARK_CITY_STONE_BRICK_STAIRS.get());
         add(ModBlocks.DARK_CITY_STONE_BRICK_SLAB.get(), createSlabItemTable(ModBlocks.DARK_CITY_STONE_BRICK_SLAB.get()));
         dropSelf(ModBlocks.DARK_CITY_STONE_BRICK_WALL.get());
         dropSelf(ModBlocks.MOSSY_DARK_CITY_STONE_BRICKS.get());
         dropSelf(ModBlocks.CHISELED_DARK_CITY_STONE_BRICKS.get());
+
+        dropSelf(ModBlocks.DARK_CITY_SLATE.get());
+        dropSelf(ModBlocks.DARK_CITY_SLATE_SLAB.get());
+        dropSelf(ModBlocks.DARK_CITY_SLATE_STAIRS.get());
     }
 
     private LootItemCondition.Builder hasShearsOrSilkTouch() {
