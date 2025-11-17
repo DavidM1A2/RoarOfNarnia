@@ -75,6 +75,8 @@ public class ModRecipeProvider extends RecipeProvider {
                 .save(output);
 
         smeltingResultFromBase(ModBlocks.DARK_CITY_SMOOTH_STONE.get(), ModBlocks.DARK_CITY_STONE.get());
+        stonecutterResultFromBase(RecipeCategory.BUILDING_BLOCKS, ModBlocks.DARK_CITY_SMOOTH_STONE_SLAB, ModBlocks.DARK_CITY_SMOOTH_STONE, 2);
+        slab(RecipeCategory.BUILDING_BLOCKS, ModBlocks.DARK_CITY_SMOOTH_STONE_SLAB, ModBlocks.DARK_CITY_SMOOTH_STONE);
 
         shaped(RecipeCategory.BUILDING_BLOCKS, new ItemStack(ModBlocks.DARK_CITY_STONE_BRICKS, 4))
                 .unlockedBy(getHasName(ModBlocks.DARK_CITY_STONE), has(ModBlocks.DARK_CITY_STONE))
@@ -94,6 +96,7 @@ public class ModRecipeProvider extends RecipeProvider {
                 .requires(ModBlocks.DARK_CITY_STONE_BRICKS)
                 .requires(Items.VINE)
                 .save(output);
+        trapDoor(output, ModBlocks.DARK_CITY_STONE_BRICK_TRAPDOOR.get(), ModBlocks.DARK_CITY_STONE_BRICKS.get());
 
         stonecutterResultFromBase(RecipeCategory.BUILDING_BLOCKS, ModBlocks.DARK_CITY_SLATE_SLAB, ModBlocks.DARK_CITY_SLATE, 2);
         slab(RecipeCategory.BUILDING_BLOCKS, ModBlocks.DARK_CITY_SLATE_SLAB, ModBlocks.DARK_CITY_SLATE);

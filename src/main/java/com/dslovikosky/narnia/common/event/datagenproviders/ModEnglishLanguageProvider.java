@@ -44,6 +44,7 @@ public class ModEnglishLanguageProvider extends LanguageProvider {
 
         addBlock(ModBlocks.DARK_CITY_STONE, "Dark City Stone");
         addBlock(ModBlocks.DARK_CITY_SMOOTH_STONE, "Dark City Smooth Stone");
+        addBlock(ModBlocks.DARK_CITY_SMOOTH_STONE_SLAB, "Dark City Smooth Stone Slab");
         addBlock(ModBlocks.DARK_CITY_WINDOW, "Dark City Window");
         addBlock(ModBlocks.DARK_CITY_DOOR, "Dark City Door");
 
@@ -53,6 +54,7 @@ public class ModEnglishLanguageProvider extends LanguageProvider {
         addBlock(ModBlocks.DARK_CITY_STONE_BRICK_WALL, "Dark City Stone Brick Wall");
         addBlock(ModBlocks.MOSSY_DARK_CITY_STONE_BRICKS, "Mossy Dark City Stone Bricks");
         addBlock(ModBlocks.CHISELED_DARK_CITY_STONE_BRICKS, "Chiseled Dark City Stone Bricks");
+        addBlock(ModBlocks.DARK_CITY_STONE_BRICK_TRAPDOOR, "Dark City Stone Brick Trapdoor");
 
         addBlock(ModBlocks.DARK_CITY_SLATE, "Dark City Slate");
         addBlock(ModBlocks.DARK_CITY_SLATE_SLAB, "Dark City Slate Slab");

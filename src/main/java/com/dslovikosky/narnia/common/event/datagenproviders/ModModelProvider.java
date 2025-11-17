@@ -49,6 +49,7 @@ public class ModModelProvider extends ModelProvider {
 
         blockModels.createTrivialCube(ModBlocks.DARK_CITY_STONE.get());
         blockModels.createAxisAlignedPillarBlock(ModBlocks.DARK_CITY_SMOOTH_STONE.get(), TexturedModel.COLUMN);
+        createStandaloneSlab(blockModels, ModBlocks.DARK_CITY_SMOOTH_STONE.get(), ModBlocks.DARK_CITY_SMOOTH_STONE_SLAB.get());
         blockModels.createTrivialBlock(ModBlocks.DARK_CITY_WINDOW.get(), TexturedModel.CUBE.updateTemplate(template ->
                 template.extend().renderType(RenderType.CUTOUT.getName()).build()));
         createDoor(blockModels, ModBlocks.DARK_CITY_DOOR.get());
@@ -58,6 +59,7 @@ public class ModModelProvider extends ModelProvider {
                         .stairs(ModBlocks.DARK_CITY_STONE_BRICK_STAIRS.get())
                         .slab(ModBlocks.DARK_CITY_STONE_BRICK_SLAB.get())
                         .wall(ModBlocks.DARK_CITY_STONE_BRICK_WALL.get())
+                        .trapdoor(ModBlocks.DARK_CITY_STONE_BRICK_TRAPDOOR.get())
                         .getFamily());
         blockModels.createTrivialCube(ModBlocks.MOSSY_DARK_CITY_STONE_BRICKS.get());
         blockModels.createAxisAlignedPillarBlock(ModBlocks.CHISELED_DARK_CITY_STONE_BRICKS.get(), TexturedModel.COLUMN);
@@ -110,5 +112,13 @@ public class ModModelProvider extends ModelProvider {
         final MultiVariant multiVariantTopRightOpen = BlockModelGenerators.plainVariant(withRenderType(ModelTemplates.DOOR_TOP_RIGHT_OPEN, RenderType.cutout().getName()).create(doorBlock, textureMapping, blockModels.modelOutput));
         blockModels.registerSimpleFlatItemModel(doorBlock.asItem());
         blockModels.blockStateOutput.accept(BlockModelGenerators.createDoor(doorBlock, multiVariantBottomLeft, multiVariantBottomLeftOpen, multiVariantBottomRight, multiVariantBottomRightOpen, multiVariantTopLeft, multiVariantTopLeftOpen, multiVariantTopRight, multiVariantTopRightOpen));
+    }
+
+    private void createStandaloneSlab(final BlockModelGenerators blockModels, final Block baseBlock, final Block slabBlock) {
+        final TextureMapping baseTextureMapping = TextureMapping.cube(TextureMapping.getBlockTexture(baseBlock, "_top"));
+        final MultiVariant slabBottomVariant = BlockModelGenerators.plainVariant(ModelTemplates.SLAB_BOTTOM.create(slabBlock, baseTextureMapping, blockModels.modelOutput));
+        final MultiVariant slabTopVariant = BlockModelGenerators.plainVariant(ModelTemplates.SLAB_TOP.create(slabBlock, baseTextureMapping, blockModels.modelOutput));
+        final MultiVariant slabDoubleVariant = BlockModelGenerators.plainVariant(ModelTemplates.CUBE_COLUMN.createWithOverride(slabBlock, "_double", baseTextureMapping, blockModels.modelOutput));
+        blockModels.blockStateOutput.accept(BlockModelGenerators.createSlab(slabBlock, slabBottomVariant, slabTopVariant, slabDoubleVariant));
     }
 }

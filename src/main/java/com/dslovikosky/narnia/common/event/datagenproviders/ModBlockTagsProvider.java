@@ -51,6 +51,8 @@ public class ModBlockTagsProvider extends BlockTagsProvider {
 
         tag(BlockTags.MINEABLE_WITH_PICKAXE).add(ModBlocks.DARK_CITY_STONE.get());
         tag(BlockTags.MINEABLE_WITH_PICKAXE).add(ModBlocks.DARK_CITY_SMOOTH_STONE.get());
+        tag(BlockTags.MINEABLE_WITH_PICKAXE).add(ModBlocks.DARK_CITY_SMOOTH_STONE_SLAB.get());
+        tag(BlockTags.SLABS).add(ModBlocks.DARK_CITY_SMOOTH_STONE_SLAB.get());
         tag(BlockTags.MINEABLE_WITH_PICKAXE).add(ModBlocks.DARK_CITY_WINDOW.get());
         tag(BlockTags.DOORS).add(ModBlocks.DARK_CITY_DOOR.get());
 
@@ -63,6 +65,8 @@ public class ModBlockTagsProvider extends BlockTagsProvider {
         tag(BlockTags.WALLS).add(ModBlocks.DARK_CITY_STONE_BRICK_WALL.get());
         tag(BlockTags.MINEABLE_WITH_PICKAXE).add(ModBlocks.MOSSY_DARK_CITY_STONE_BRICKS.get());
         tag(BlockTags.MINEABLE_WITH_PICKAXE).add(ModBlocks.CHISELED_DARK_CITY_STONE_BRICKS.get());
+        tag(BlockTags.MINEABLE_WITH_PICKAXE).add(ModBlocks.DARK_CITY_STONE_BRICK_TRAPDOOR.get());
+        tag(BlockTags.TRAPDOORS).add(ModBlocks.DARK_CITY_STONE_BRICK_TRAPDOOR.get());
 
         tag(BlockTags.MINEABLE_WITH_PICKAXE).add(ModBlocks.DARK_CITY_SLATE.get());
         tag(BlockTags.MINEABLE_WITH_PICKAXE).add(ModBlocks.DARK_CITY_SLATE_SLAB.get());
