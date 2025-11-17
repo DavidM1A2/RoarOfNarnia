@@ -1,13 +1,13 @@
 package com.dslovikosky.narnia.common.constants;
 
 import com.dslovikosky.narnia.common.block.dark_city.ChiseledDarkCityStoneBricks;
+import com.dslovikosky.narnia.common.block.dark_city.DarkCityCobblestone;
 import com.dslovikosky.narnia.common.block.dark_city.DarkCityDoor;
 import com.dslovikosky.narnia.common.block.dark_city.DarkCitySlate;
 import com.dslovikosky.narnia.common.block.dark_city.DarkCitySlateSlab;
 import com.dslovikosky.narnia.common.block.dark_city.DarkCitySlateStairs;
 import com.dslovikosky.narnia.common.block.dark_city.DarkCitySmoothStone;
 import com.dslovikosky.narnia.common.block.dark_city.DarkCitySmoothStoneSlab;
-import com.dslovikosky.narnia.common.block.dark_city.DarkCityStone;
 import com.dslovikosky.narnia.common.block.dark_city.DarkCityStoneBrickSlab;
 import com.dslovikosky.narnia.common.block.dark_city.DarkCityStoneBrickStairs;
 import com.dslovikosky.narnia.common.block.dark_city.DarkCityStoneBrickTrapDoor;
@@ -64,7 +64,7 @@ public class ModBlocks {
     public static final DeferredBlock<WorldWoodSlabBlock> WORLD_WOOD_SLAB = BLOCKS.register("world_wood_slab", WorldWoodSlabBlock::new);
     public static final DeferredBlock<WorldWoodTrapDoorBlock> WORLD_WOOD_TRAP_DOOR = BLOCKS.register("world_wood_trap_door", WorldWoodTrapDoorBlock::new);
 
-    public static final DeferredBlock<DarkCityStone> DARK_CITY_STONE = BLOCKS.register("dark_city_stone", DarkCityStone::new);
+    public static final DeferredBlock<DarkCityCobblestone> DARK_CITY_COBBLESTONE = BLOCKS.register("dark_city_cobblestone", DarkCityCobblestone::new);
     public static final DeferredBlock<DarkCityDoor> DARK_CITY_DOOR = BLOCKS.register("dark_city_door", DarkCityDoor::new);
     public static final DeferredBlock<DarkCitySmoothStone> DARK_CITY_SMOOTH_STONE = BLOCKS.register("dark_city_smooth_stone", DarkCitySmoothStone::new);
     public static final DeferredBlock<DarkCitySmoothStoneSlab> DARK_CITY_SMOOTH_STONE_SLAB = BLOCKS.register("dark_city_smooth_stone_slab", DarkCitySmoothStoneSlab::new);

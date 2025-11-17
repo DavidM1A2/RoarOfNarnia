@@ -42,7 +42,7 @@ public class ModEnglishLanguageProvider extends LanguageProvider {
         addBlock(ModBlocks.WORLD_WOOD_TRAP_DOOR, "World Wood Trapdoor");
         addBlock(ModBlocks.WORLD_WOOD_PRESSURE_PLATE, "World Wood Pressure Plate");
 
-        addBlock(ModBlocks.DARK_CITY_STONE, "Dark City Stone");
+        addBlock(ModBlocks.DARK_CITY_COBBLESTONE, "Dark City Cobblestone");
         addBlock(ModBlocks.DARK_CITY_SMOOTH_STONE, "Dark City Smooth Stone");
         addBlock(ModBlocks.DARK_CITY_SMOOTH_STONE_SLAB, "Dark City Smooth Stone Slab");
         addBlock(ModBlocks.DARK_CITY_WINDOW, "Dark City Window");

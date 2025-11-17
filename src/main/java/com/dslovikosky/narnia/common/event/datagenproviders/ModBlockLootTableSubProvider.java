@@ -59,7 +59,7 @@ public class ModBlockLootTableSubProvider extends BlockLootSubProvider {
         add(ModBlocks.WORLD_WOOD_SLAB.get(), createSlabItemTable(ModBlocks.WORLD_WOOD_SLAB.get()));
         dropSelf(ModBlocks.WORLD_WOOD_TRAP_DOOR.get());
 
-        dropSelf(ModBlocks.DARK_CITY_STONE.get());
+        dropSelf(ModBlocks.DARK_CITY_COBBLESTONE.get());
         dropSelf(ModBlocks.DARK_CITY_SMOOTH_STONE.get());
         dropSelf(ModBlocks.DARK_CITY_SMOOTH_STONE_SLAB.get());
         dropSelf(ModBlocks.DARK_CITY_WINDOW.get());

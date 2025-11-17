@@ -49,7 +49,7 @@ public class ModBlockTagsProvider extends BlockTagsProvider {
 
         tag(ModBlockTags.GRASS_LIKE).addAll(List.of(Blocks.GRASS_BLOCK, Blocks.MYCELIUM, Blocks.PODZOL, Blocks.CRIMSON_NYLIUM, Blocks.WARPED_NYLIUM, Blocks.MOSS_BLOCK, Blocks.ROOTED_DIRT));
 
-        tag(BlockTags.MINEABLE_WITH_PICKAXE).add(ModBlocks.DARK_CITY_STONE.get());
+        tag(BlockTags.MINEABLE_WITH_PICKAXE).add(ModBlocks.DARK_CITY_COBBLESTONE.get());
         tag(BlockTags.MINEABLE_WITH_PICKAXE).add(ModBlocks.DARK_CITY_SMOOTH_STONE.get());
         tag(BlockTags.MINEABLE_WITH_PICKAXE).add(ModBlocks.DARK_CITY_SMOOTH_STONE_SLAB.get());
         tag(BlockTags.SLABS).add(ModBlocks.DARK_CITY_SMOOTH_STONE_SLAB.get());

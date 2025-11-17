@@ -15,6 +15,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.SignItem;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.ButtonBlock;
 import net.minecraft.world.level.block.DoorBlock;
 import net.minecraft.world.level.block.FenceBlock;
@@ -74,17 +75,25 @@ public class ModRecipeProvider extends RecipeProvider {
                 .requires(ModItems.SPARKLING_DUST)
                 .save(output);
 
-        smeltingResultFromBase(ModBlocks.DARK_CITY_SMOOTH_STONE.get(), ModBlocks.DARK_CITY_STONE.get());
+        smeltingResultFromBase(ModBlocks.DARK_CITY_SMOOTH_STONE.get(), ModBlocks.DARK_CITY_COBBLESTONE.get());
         stonecutterResultFromBase(RecipeCategory.BUILDING_BLOCKS, ModBlocks.DARK_CITY_SMOOTH_STONE_SLAB, ModBlocks.DARK_CITY_SMOOTH_STONE, 2);
         slab(RecipeCategory.BUILDING_BLOCKS, ModBlocks.DARK_CITY_SMOOTH_STONE_SLAB, ModBlocks.DARK_CITY_SMOOTH_STONE);
+        shaped(RecipeCategory.BUILDING_BLOCKS, new ItemStack(ModBlocks.DARK_CITY_WINDOW, 4))
+                .unlockedBy(getHasName(ModBlocks.DARK_CITY_COBBLESTONE), has(ModBlocks.DARK_CITY_COBBLESTONE))
+                .define('S', ModBlocks.DARK_CITY_COBBLESTONE)
+                .define('I', Blocks.IRON_BARS)
+                .pattern(" I ")
+                .pattern("ISI")
+                .pattern(" I ")
+                .save(output);
 
         shaped(RecipeCategory.BUILDING_BLOCKS, new ItemStack(ModBlocks.DARK_CITY_STONE_BRICKS, 4))
-                .unlockedBy(getHasName(ModBlocks.DARK_CITY_STONE), has(ModBlocks.DARK_CITY_STONE))
-                .define('S', ModBlocks.DARK_CITY_STONE)
+                .unlockedBy(getHasName(ModBlocks.DARK_CITY_COBBLESTONE), has(ModBlocks.DARK_CITY_COBBLESTONE))
+                .define('S', ModBlocks.DARK_CITY_COBBLESTONE)
                 .pattern("SS")
                 .pattern("SS")
                 .save(output);
-        stonecutterResultFromBase(RecipeCategory.BUILDING_BLOCKS, ModBlocks.DARK_CITY_STONE_BRICKS, ModBlocks.DARK_CITY_STONE);
+        stonecutterResultFromBase(RecipeCategory.BUILDING_BLOCKS, ModBlocks.DARK_CITY_STONE_BRICKS, ModBlocks.DARK_CITY_COBBLESTONE);
         stonecutterResultFromBase(RecipeCategory.BUILDING_BLOCKS, ModBlocks.DARK_CITY_STONE_BRICK_SLAB, ModBlocks.DARK_CITY_STONE_BRICKS, 2);
         slab(RecipeCategory.BUILDING_BLOCKS, ModBlocks.DARK_CITY_STONE_BRICK_SLAB, ModBlocks.DARK_CITY_STONE_BRICKS);
         stonecutterResultFromBase(RecipeCategory.BUILDING_BLOCKS, ModBlocks.DARK_CITY_STONE_BRICK_WALL, ModBlocks.DARK_CITY_STONE_BRICKS);
@@ -96,6 +105,7 @@ public class ModRecipeProvider extends RecipeProvider {
                 .requires(ModBlocks.DARK_CITY_STONE_BRICKS)
                 .requires(Items.VINE)
                 .save(output);
+        stonecutterResultFromBase(RecipeCategory.BUILDING_BLOCKS, ModBlocks.CHISELED_DARK_CITY_STONE_BRICKS, ModBlocks.DARK_CITY_STONE_BRICKS);
         trapDoor(output, ModBlocks.DARK_CITY_STONE_BRICK_TRAPDOOR.get(), ModBlocks.DARK_CITY_STONE_BRICKS.get());
 
         stonecutterResultFromBase(RecipeCategory.BUILDING_BLOCKS, ModBlocks.DARK_CITY_SLATE_SLAB, ModBlocks.DARK_CITY_SLATE, 2);

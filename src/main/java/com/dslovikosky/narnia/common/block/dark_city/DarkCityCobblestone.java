@@ -9,14 +9,14 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 import net.minecraft.world.level.material.MapColor;
 
-public class DarkCityStone extends Block {
-    public DarkCityStone() {
+public class DarkCityCobblestone extends Block {
+    public DarkCityCobblestone() {
         super(BlockBehaviour.Properties.of()
                 .mapColor(MapColor.STONE)
                 .instrument(NoteBlockInstrument.BASEDRUM)
                 .requiresCorrectToolForDrops()
                 .strength(1.5F, 6.0F)
                 .sound(SoundType.STONE)
-                .setId(ResourceKey.create(Registries.BLOCK, Constants.modLocation("dark_city_stone"))));
+                .setId(ResourceKey.create(Registries.BLOCK, Constants.modLocation("dark_city_cobblestone"))));
     }
 }

@@ -47,7 +47,7 @@ public class ModModelProvider extends ModelProvider {
         createDoor(blockModels, ModBlocks.WORLD_WOOD_DOOR.get());
         blockModels.createHangingSign(ModBlocks.WORLD_WOOD_PLANKS.get(), ModBlocks.WORLD_WOOD_CEILING_HANGING_SIGN.get(), ModBlocks.WORLD_WOOD_WALL_HANGING_SIGN.get());
 
-        blockModels.createTrivialCube(ModBlocks.DARK_CITY_STONE.get());
+        blockModels.createTrivialCube(ModBlocks.DARK_CITY_COBBLESTONE.get());
         blockModels.createAxisAlignedPillarBlock(ModBlocks.DARK_CITY_SMOOTH_STONE.get(), TexturedModel.COLUMN);
         createStandaloneSlab(blockModels, ModBlocks.DARK_CITY_SMOOTH_STONE.get(), ModBlocks.DARK_CITY_SMOOTH_STONE_SLAB.get());
         blockModels.createTrivialBlock(ModBlocks.DARK_CITY_WINDOW.get(), TexturedModel.CUBE.updateTemplate(template ->
