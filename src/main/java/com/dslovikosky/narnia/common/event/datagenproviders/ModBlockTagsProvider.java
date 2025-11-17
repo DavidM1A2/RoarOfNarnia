@@ -48,5 +48,17 @@ public class ModBlockTagsProvider extends BlockTagsProvider {
         tag(BlockTags.CEILING_HANGING_SIGNS).add(ModBlocks.WORLD_WOOD_CEILING_HANGING_SIGN.get());
 
         tag(ModBlockTags.GRASS_LIKE).addAll(List.of(Blocks.GRASS_BLOCK, Blocks.MYCELIUM, Blocks.PODZOL, Blocks.CRIMSON_NYLIUM, Blocks.WARPED_NYLIUM, Blocks.MOSS_BLOCK, Blocks.ROOTED_DIRT));
+
+        tag(BlockTags.MINEABLE_WITH_PICKAXE).add(ModBlocks.DARK_CITY_STONE.get());
+        tag(BlockTags.MINEABLE_WITH_PICKAXE).add(ModBlocks.DARK_CITY_SMOOTH_STONE.get());
+        tag(BlockTags.MINEABLE_WITH_PICKAXE).add(ModBlocks.DARK_CITY_STONE_BRICKS.get());
+        tag(BlockTags.MINEABLE_WITH_PICKAXE).add(ModBlocks.DARK_CITY_STONE_BRICK_STAIRS.get());
+        tag(BlockTags.STAIRS).add(ModBlocks.DARK_CITY_STONE_BRICK_STAIRS.get());
+        tag(BlockTags.MINEABLE_WITH_PICKAXE).add(ModBlocks.DARK_CITY_STONE_BRICK_SLAB.get());
+        tag(BlockTags.SLABS).add(ModBlocks.DARK_CITY_STONE_BRICK_SLAB.get());
+        tag(BlockTags.MINEABLE_WITH_PICKAXE).add(ModBlocks.DARK_CITY_STONE_BRICK_WALL.get());
+        tag(BlockTags.WALLS).add(ModBlocks.DARK_CITY_STONE_BRICK_WALL.get());
+        tag(BlockTags.MINEABLE_WITH_PICKAXE).add(ModBlocks.MOSSY_DARK_CITY_STONE_BRICKS.get());
+        tag(BlockTags.MINEABLE_WITH_PICKAXE).add(ModBlocks.CHISELED_DARK_CITY_STONE_BRICKS.get());
     }
 }

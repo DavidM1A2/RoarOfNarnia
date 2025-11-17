@@ -1,5 +1,13 @@
 package com.dslovikosky.narnia.common.constants;
 
+import com.dslovikosky.narnia.common.block.dark_city.ChiseledDarkCityStoneBricks;
+import com.dslovikosky.narnia.common.block.dark_city.DarkCitySmoothStone;
+import com.dslovikosky.narnia.common.block.dark_city.DarkCityStone;
+import com.dslovikosky.narnia.common.block.dark_city.DarkCityStoneBrickSlab;
+import com.dslovikosky.narnia.common.block.dark_city.DarkCityStoneBrickStairs;
+import com.dslovikosky.narnia.common.block.dark_city.DarkCityStoneBrickWall;
+import com.dslovikosky.narnia.common.block.dark_city.DarkCityStoneBricks;
+import com.dslovikosky.narnia.common.block.dark_city.MossyDarkCityStoneBricks;
 import com.dslovikosky.narnia.common.block.worldwood.StrippedWorldWoodBlock;
 import com.dslovikosky.narnia.common.block.worldwood.StrippedWorldWoodLogBlock;
 import com.dslovikosky.narnia.common.block.worldwood.WorldWoodBlock;
@@ -48,4 +56,13 @@ public class ModBlocks {
     public static final DeferredBlock<WorldWoodSaplingBlock> WORLD_WOOD_SAPLING = BLOCKS.register("world_wood_sapling", WorldWoodSaplingBlock::new);
     public static final DeferredBlock<WorldWoodSlabBlock> WORLD_WOOD_SLAB = BLOCKS.register("world_wood_slab", WorldWoodSlabBlock::new);
     public static final DeferredBlock<WorldWoodTrapDoorBlock> WORLD_WOOD_TRAP_DOOR = BLOCKS.register("world_wood_trap_door", WorldWoodTrapDoorBlock::new);
+
+    public static final DeferredBlock<DarkCityStone> DARK_CITY_STONE = BLOCKS.register("dark_city_stone", DarkCityStone::new);
+    public static final DeferredBlock<DarkCitySmoothStone> DARK_CITY_SMOOTH_STONE = BLOCKS.register("dark_city_smooth_stone", DarkCitySmoothStone::new);
+    public static final DeferredBlock<DarkCityStoneBricks> DARK_CITY_STONE_BRICKS = BLOCKS.register("dark_city_stone_bricks", DarkCityStoneBricks::new);
+    public static final DeferredBlock<DarkCityStoneBrickStairs> DARK_CITY_STONE_BRICK_STAIRS = BLOCKS.register("dark_city_stone_brick_stairs", DarkCityStoneBrickStairs::new);
+    public static final DeferredBlock<DarkCityStoneBrickWall> DARK_CITY_STONE_BRICK_WALL = BLOCKS.register("dark_city_stone_brick_wall", DarkCityStoneBrickWall::new);
+    public static final DeferredBlock<DarkCityStoneBrickSlab> DARK_CITY_STONE_BRICK_SLAB = BLOCKS.register("dark_city_stone_brick_slab", DarkCityStoneBrickSlab::new);
+    public static final DeferredBlock<MossyDarkCityStoneBricks> MOSSY_DARK_CITY_STONE_BRICKS = BLOCKS.register("mossy_dark_city_stone_bricks", MossyDarkCityStoneBricks::new);
+    public static final DeferredBlock<ChiseledDarkCityStoneBricks> CHISELED_DARK_CITY_STONE_BRICKS = BLOCKS.register("chiseled_dark_city_stone_bricks", ChiseledDarkCityStoneBricks::new);
 }
