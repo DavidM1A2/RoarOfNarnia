@@ -2,10 +2,12 @@ package com.dslovikosky.narnia.common.world.generator;
 
 import com.dslovikosky.narnia.common.constants.Constants;
 import com.dslovikosky.narnia.common.constants.ModBiomes;
+import com.dslovikosky.narnia.common.constants.ModBlocks;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceLocation;
@@ -20,6 +22,7 @@ import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.BiomeManager;
 import net.minecraft.world.level.biome.FixedBiomeSource;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.ChunkGenerator;
@@ -71,15 +74,16 @@ public class CharnChunkGenerator extends ChunkGenerator {
 
                     final double roadMask = computeRoadMask(x, z);
 
-                    final LocalMaxima alleyCenter = findLocalMaxima(x, z, 3, (xPos, zPos) -> computeAlleyMask(xPos, zPos, randomFactory, river));
+                    final LocalMaxima alleyCenter = findLocalMaxima(x, z, 3, (xPos, zPos) -> computeAlleyMask(xPos, zPos, randomFactory));
                     final double centerAlleyMask = alleyCenter.value();
 
                     final PlotInfo plotInfo = getPlotAt(x, z, randomFactory);
 
-                    final boolean isRoadCenter = roadMask > 0.4;
-                    final boolean isAlley = centerAlleyMask > 0.4 && !isRoadCenter;
-                    final boolean isRoadEdge = roadMask > 0 && !isRoadCenter && !isAlley;
                     final boolean isRiver = riverMask > 0.1;
+                    final boolean isRoadCenter = roadMask > 0.4;
+                    final boolean isAlley = centerAlleyMask > 0.4 && !isRoadCenter && !isRiver;
+                    final boolean isRoadEdge = roadMask > 0 && !isRoadCenter && !isAlley;
+                    final boolean isBridge = isRiver && (isRoadEdge || isRoadCenter);
                     final boolean isPlot = plotInfo.contains(x, z) && !isRoadCenter && !isAlley && !isRoadEdge && !isRiver;
 
                     final int groundHeight;
@@ -111,17 +115,23 @@ public class CharnChunkGenerator extends ChunkGenerator {
                     }
 
                     // If we're generating a road, set the top layer to stone bricks or cobblestone
+                    final BlockState verticalDarkCitySmoothStone = ModBlocks.DARK_CITY_SMOOTH_STONE.get()
+                            .defaultBlockState()
+                            .setValue(RotatedPillarBlock.AXIS, Direction.Axis.Y);
                     if (isRoadCenter) {
-                        chunk.setBlockState(mutablePos.set(x, groundHeight - 1, z), Blocks.STONE_BRICKS.defaultBlockState());
-                        chunk.setBlockState(mutablePos.set(x, groundHeight, z), Blocks.STONE_BRICKS.defaultBlockState());
+                        chunk.setBlockState(mutablePos.set(x, groundHeight - 1, z), verticalDarkCitySmoothStone);
+                        chunk.setBlockState(mutablePos.set(x, groundHeight, z), verticalDarkCitySmoothStone);
                     } else if (isRoadEdge) {
-                        chunk.setBlockState(mutablePos.set(x, groundHeight - 1, z), Blocks.COBBLESTONE.defaultBlockState());
-                        chunk.setBlockState(mutablePos.set(x, groundHeight, z), Blocks.COBBLESTONE.defaultBlockState());
-                        chunk.setBlockState(mutablePos.set(x, groundHeight + 1, z), Blocks.COBBLESTONE.defaultBlockState());
+                        chunk.setBlockState(mutablePos.set(x, groundHeight - 1, z), ModBlocks.DARK_CITY_COBBLESTONE.get().defaultBlockState());
+                        chunk.setBlockState(mutablePos.set(x, groundHeight, z), ModBlocks.DARK_CITY_COBBLESTONE.get().defaultBlockState());
+                        if (isBridge) {
+                            chunk.setBlockState(mutablePos.set(x, groundHeight + 1, z), ModBlocks.DARK_CITY_STONE_BRICK_WALL.get().defaultBlockState());
+                            chunk.markPosForPostprocessing(mutablePos.set(x, groundHeight + 1, z));
+                        }
                     } else if (isAlley) {
-                        chunk.setBlockState(mutablePos.set(x, groundHeight, z), Blocks.GRAVEL.defaultBlockState());
+                        chunk.setBlockState(mutablePos.set(x, groundHeight, z), ModBlocks.DARK_CITY_COBBLESTONE.get().defaultBlockState());
                     } else if (isPlot) {
-                        chunk.setBlockState(mutablePos.set(x, groundHeight, z), Blocks.WHITE_WOOL.defaultBlockState());
+                        // chunk.setBlockState(mutablePos.set(x, groundHeight, z), Blocks.WHITE_WOOL.defaultBlockState());
                     }
                 }
             }
@@ -219,20 +229,11 @@ public class CharnChunkGenerator extends ChunkGenerator {
         }
     }
 
-    private double computeAlleyMask(final int x, final int z, final PositionalRandomFactory randomFactory, final RiverInfo river) {
-        double alleyMask = computeAlleyMaskRaw(x, z, randomFactory);
-
-        // Fade out alleys around rivers
-        double fade = 1.0 - Mth.clamp(river.mask() * 20.0, 0.0, 1.0);
-
-        return alleyMask * fade;
-    }
-
     /**
      * Computes a "mask" for alleys at a given world position.
      * 1.0 = center of alley, 0.0 = outside.
      */
-    private double computeAlleyMaskRaw(final int x, final int z, final PositionalRandomFactory randomFactory) {
+    private double computeAlleyMask(final int x, final int z, final PositionalRandomFactory randomFactory) {
         // Which city cell are we in
         final int cellX = Math.floorDiv(x, CITY_CELL_SIZE);
         final int cellZ = Math.floorDiv(z, CITY_CELL_SIZE);
