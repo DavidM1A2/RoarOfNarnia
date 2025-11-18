@@ -157,7 +157,7 @@ public class CharnChunkGenerator extends ChunkGenerator {
 
     private double computeMountainHeight(final int x, final int z, final SimplexNoise noise) {
         // Base frequency controls how far apart mountains are (lower = more spaced out)
-        double mountainFrequency = 1.0 / 1000.0;
+        double mountainFrequency = 1.0 / 1400.0;
         double mountainHeight = 40.0;
 
         // Multi-octave gentle variation
