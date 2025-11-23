@@ -3,7 +3,6 @@ package com.dslovikosky.narnia.common.world.generator;
 import com.dslovikosky.narnia.common.constants.Constants;
 import com.dslovikosky.narnia.common.constants.ModBiomes;
 import com.dslovikosky.narnia.common.constants.ModBlocks;
-import com.dslovikosky.narnia.common.constants.ModRegistries;
 import com.dslovikosky.narnia.common.constants.ModSchematics;
 import com.dslovikosky.narnia.common.model.schematic.Schematic;
 import com.mojang.serialization.MapCodec;
@@ -12,6 +11,8 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
 import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.WorldGenRegion;
@@ -52,7 +53,6 @@ public class CharnChunkGenerator extends ChunkGenerator {
     private static final List<Supplier<Schematic>> DARK_CITY_SCHEMATICS = List.of(ModSchematics.DARK_CITY_SMALL_1);
     private static final ResourceLocation RANDOM = Constants.modLocation("charn_noise");
     private static final ResourceLocation TERRAIN = Constants.modLocation("charn_noise_terrain");
-    private static final ResourceLocation BUILDING = Constants.modLocation("charn_noise_building");
     private static final int CITY_CELL_SIZE = 128;
     private static final double ROAD_WIDTH = 8.0;
     private static final double ALLEY_WIDTH = 5.0;
@@ -410,7 +410,7 @@ public class CharnChunkGenerator extends ChunkGenerator {
 
     private List<BuildingPlacement> placeBuildingsInPlot(PlotInfo plot, SimplexNoise noise, PositionalRandomFactory randomFactory) {
         final List<BuildingPlacement> result = new ArrayList<>();
-        final List<Schematic> allSchematics = ModRegistries.SCHEMATIC.stream().toList();
+        final List<Schematic> allSchematics = DARK_CITY_SCHEMATICS.stream().map(Supplier::get).toList();
 
         final int plotX = plot.x();
         final int plotZ = plot.z();
@@ -624,9 +624,6 @@ public class CharnChunkGenerator extends ChunkGenerator {
     }
 
     private record PlotInfo(int x, int z, int width, int height) {
-        public boolean contains(int xPos, int zPos) {
-            return xPos >= x && xPos < x + width && zPos >= z && zPos < z + height;
-        }
     }
 
     private record BuildingPlacement(Schematic schematic, int x, int y, int z, Rotation rotation) {
@@ -655,9 +652,9 @@ public class CharnChunkGenerator extends ChunkGenerator {
             final int schematicWidth = schematic.getWidth();
             final int schematicLength = schematic.getLength();
 
+            // --- Calculate rotated schematic coordinates ---
             int schematicX = 0;
             int schematicZ = 0;
-
             switch (rotation) {
                 case NONE -> {
                     schematicX = relativeX;
@@ -677,17 +674,62 @@ public class CharnChunkGenerator extends ChunkGenerator {
                 }
             }
 
-            if (schematicX < 0 || schematicZ < 0 || schematicX >= schematicWidth || schematicZ >= schematicLength) {
-                return;
-            }
+            // Skip if out of bounds
+            if (schematicX < 0 || schematicZ < 0 || schematicX >= schematicWidth || schematicZ >= schematicLength) return;
 
+            // --- Paste blocks ---
             for (int schematicY = 0; schematicY < schematic.getHeight(); schematicY++) {
-                final BlockState state = schematic.getBlock(schematicX, schematicY, schematicZ);
+                BlockState state = schematic.getBlock(schematicX, schematicY, schematicZ);
                 chunk.setBlockState(new BlockPos(worldX, y + schematicY, worldZ), state.rotate(rotation));
             }
-            // Place some buffer blocks under the structure so it's not floating
+
+            // --- Paste buffer blocks under structure ---
             for (int bufferY = -5; bufferY < 0; bufferY++) {
-                chunk.setBlockState(new BlockPos(worldX, y + bufferY, worldZ), ModBlocks.DARK_CITY_SMOOTH_STONE.get().defaultBlockState());
+                chunk.setBlockState(new BlockPos(worldX, y + bufferY, worldZ),
+                        ModBlocks.DARK_CITY_SMOOTH_STONE.get().defaultBlockState());
+            }
+
+            // --- Paste tile entities ---
+            final ListTag blockEntities = schematic.getBlockEntities();
+            for (int i = 0; i < blockEntities.size(); i++) {
+                final CompoundTag blockEntityTag = blockEntities.getCompoundOrEmpty(i);
+                final int[] posTag = blockEntityTag.getIntArray("Pos").orElse(new int[3]);
+                final int sx = posTag[0];
+                final int sy = posTag[1];
+                final int sz = posTag[2];
+
+                // Transform schematic coordinates (sx, sz) into world coordinates
+                final int teWorldX;
+                final int teWorldZ;
+                switch (rotation) {
+                    case NONE -> {
+                        teWorldX = x + sx;
+                        teWorldZ = z + sz;
+                    }
+                    case CLOCKWISE_90 -> {
+                        teWorldX = x + (schematicLength - 1) - sz;
+                        teWorldZ = z + sx;
+                    }
+                    case CLOCKWISE_180 -> {
+                        teWorldX = x + (schematicWidth - 1) - sx;
+                        teWorldZ = z + (schematicLength - 1) - sz;
+                    }
+                    case COUNTERCLOCKWISE_90 -> {
+                        teWorldX = x + sz;
+                        teWorldZ = z + (schematicWidth - 1) - sx;
+                    }
+                    default -> throw new IllegalStateException("Unexpected rotation: " + rotation);
+                }
+
+                // Only place tile-entities for this column (match worldX/worldZ)
+                if (teWorldX != worldX || teWorldZ != worldZ) continue;
+
+                // Set tile entity NBT
+                final CompoundTag data = blockEntityTag.getCompound("Data").get();
+                data.putInt("x", teWorldX);
+                data.putInt("y", y + sy);
+                data.putInt("z", teWorldZ);
+                chunk.setBlockEntityNbt(data);
             }
         }
     }
