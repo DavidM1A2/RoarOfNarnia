@@ -323,7 +323,6 @@ public class CharnChunkGenerator extends ChunkGenerator {
         // Compute consistent “effective” half-widths (to be on block center)
         final double effectiveRoadHalfWidth = ROAD_WIDTH / 2.0;
         final double effectiveAlleyHalfWidth = ALLEY_WIDTH / 2.0;
-        final int roadOrAlleyMargin = 1;
 
         double minX = 0.0;
         double maxX = 0.0;
@@ -331,8 +330,8 @@ public class CharnChunkGenerator extends ChunkGenerator {
             double potentialMinX = i == 0 ? effectiveRoadHalfWidth : alleyVerticals[i - 1] + effectiveAlleyHalfWidth;
             double potentialMaxX = i == alleyVerticals.length ? CITY_CELL_SIZE - effectiveRoadHalfWidth : alleyVerticals[i] - effectiveAlleyHalfWidth;
             if (potentialMinX <= localX && localX <= potentialMaxX) {
-                minX = potentialMinX + roadOrAlleyMargin;
-                maxX = potentialMaxX - roadOrAlleyMargin + 0.5;
+                minX = potentialMinX;
+                maxX = potentialMaxX + 0.5;
                 break;
             }
         }
@@ -343,8 +342,8 @@ public class CharnChunkGenerator extends ChunkGenerator {
             double potentialMinZ = i == 0 ? effectiveRoadHalfWidth : alleyHorizontals[i - 1] + effectiveAlleyHalfWidth;
             double potentialMaxZ = i == alleyHorizontals.length ? CITY_CELL_SIZE - effectiveRoadHalfWidth : alleyHorizontals[i] - effectiveAlleyHalfWidth;
             if (potentialMinZ <= localZ && localZ <= potentialMaxZ) {
-                minZ = potentialMinZ + roadOrAlleyMargin;
-                maxZ = potentialMaxZ - roadOrAlleyMargin + 0.5;
+                minZ = potentialMinZ;
+                maxZ = potentialMaxZ + 0.5;
                 break;
             }
         }
