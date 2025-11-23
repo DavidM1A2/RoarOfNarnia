@@ -38,6 +38,10 @@ public class Schematic {
         return schematicData.blocks();
     }
 
+    public BlockState getBlock(final int x, final int y, final int z) {
+        return getBlocks()[y * getWidth() * getLength() + z * getWidth() + x];
+    }
+
     public ListTag getBlockEntities() {
         return schematicData.blockEntities();
     }

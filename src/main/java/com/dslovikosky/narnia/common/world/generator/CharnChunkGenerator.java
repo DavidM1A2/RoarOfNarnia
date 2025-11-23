@@ -3,6 +3,9 @@ package com.dslovikosky.narnia.common.world.generator;
 import com.dslovikosky.narnia.common.constants.Constants;
 import com.dslovikosky.narnia.common.constants.ModBiomes;
 import com.dslovikosky.narnia.common.constants.ModBlocks;
+import com.dslovikosky.narnia.common.constants.ModRegistries;
+import com.dslovikosky.narnia.common.constants.ModSchematics;
+import com.dslovikosky.narnia.common.model.schematic.Schematic;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -23,6 +26,7 @@ import net.minecraft.world.level.biome.BiomeManager;
 import net.minecraft.world.level.biome.FixedBiomeSource;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.RotatedPillarBlock;
+import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.ChunkGenerator;
@@ -33,17 +37,22 @@ import net.minecraft.world.level.levelgen.blending.Blender;
 import net.minecraft.world.level.levelgen.synth.SimplexNoise;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.BiFunction;
+import java.util.function.Supplier;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 public class CharnChunkGenerator extends ChunkGenerator {
     public static final MapCodec<CharnChunkGenerator> CODEC = RecordCodecBuilder.mapCodec(
             it -> it.group(RegistryOps.retrieveElement(ModBiomes.DARK_CITY_RUINS)).apply(it, it.stable(CharnChunkGenerator::new)));
+    private static final List<Supplier<Schematic>> DARK_CITY_SCHEMATICS = List.of(ModSchematics.DARK_CITY_SMALL_1);
     private static final ResourceLocation RANDOM = Constants.modLocation("charn_noise");
     private static final ResourceLocation TERRAIN = Constants.modLocation("charn_noise_terrain");
+    private static final ResourceLocation BUILDING = Constants.modLocation("charn_noise_building");
     private static final int CITY_CELL_SIZE = 128;
     private static final double ROAD_WIDTH = 8.0;
     private static final double ALLEY_WIDTH = 5.0;
@@ -78,6 +87,12 @@ public class CharnChunkGenerator extends ChunkGenerator {
                     final double centerAlleyMask = alleyCenter.value();
 
                     final PlotInfo plotInfo = getPlotAt(x, z, randomFactory);
+                    final List<BuildingPlacement> buildings = placeBuildingsInPlot(plotInfo, noise, randomFactory);
+                    int finalX = x;
+                    int finalZ = z;
+                    final Optional<BuildingPlacement> buildingOpt = buildings.stream()
+                            .filter(placement -> placement.contains(finalX, finalZ))
+                            .findFirst();
 
                     final boolean isRiver = riverMask > 0.1;
                     final boolean isRoadCenter = roadMask > 0.4;
@@ -130,8 +145,8 @@ public class CharnChunkGenerator extends ChunkGenerator {
                         }
                     } else if (isAlley) {
                         chunk.setBlockState(mutablePos.set(x, groundHeight, z), ModBlocks.DARK_CITY_COBBLESTONE.get().defaultBlockState());
-                    } else if (isPlot) {
-                        // chunk.setBlockState(mutablePos.set(x, groundHeight, z), Blocks.WHITE_WOOL.defaultBlockState());
+                    } else if (buildingOpt.isPresent()) {
+                        buildingOpt.get().pasteColumn(chunk, x, z);
                     }
                 }
             }
@@ -348,7 +363,7 @@ public class CharnChunkGenerator extends ChunkGenerator {
             }
         }
 
-        return new PlotInfo((int) minX + cellX * CITY_CELL_SIZE, (int) minZ + cellZ * CITY_CELL_SIZE, maxX - minX, maxZ - minZ, PlotType.NORMAL);
+        return new PlotInfo((int) minX + cellX * CITY_CELL_SIZE, (int) minZ + cellZ * CITY_CELL_SIZE, (int) Math.round(maxX - minX), (int) Math.round(maxZ - minZ));
     }
 
     private LocalMaxima findLocalMaxima(int x, int z, final int maxSteps, final BiFunction<Integer, Integer, Double> func) {
@@ -392,6 +407,153 @@ public class CharnChunkGenerator extends ChunkGenerator {
             z += dz;
         }
         return new LocalMaxima(x, z, maxValue);
+    }
+
+    private List<BuildingPlacement> placeBuildingsInPlot(PlotInfo plot, SimplexNoise noise, PositionalRandomFactory randomFactory) {
+        final List<BuildingPlacement> result = new ArrayList<>();
+        final List<Schematic> allSchematics = ModRegistries.SCHEMATIC.stream().toList();
+
+        final int plotX = plot.x();
+        final int plotZ = plot.z();
+        final int plotWidth = plot.width();
+        final int plotHeight = plot.height();
+
+        final RandomSource randomSource = randomFactory.at(plotX, 0, plotZ);
+
+        // Track occupied tiles with a 2D boolean array
+        final boolean[][] occupied = new boolean[plotWidth][plotHeight];
+
+        // Mark river tiles as occupied
+        for (int dx = 0; dx < plotWidth; dx++) {
+            for (int dz = 0; dz < plotHeight; dz++) {
+                final int worldX = plotX + dx;
+                final int worldZ = plotZ + dz;
+                final RiverInfo river = computeRiver(worldX, worldZ, noise);
+                if (river.depth() >= 1.0) {
+                    // mark river tile as occupied
+                    occupied[dx][dz] = true;
+                }
+            }
+        }
+
+        final List<Direction> edges = Direction.Plane.HORIZONTAL.shuffledCopy(randomSource);
+        for (Direction edge : edges) {
+            // Face the edge
+            final Rotation rotation = switch (edge) {
+                case SOUTH -> Rotation.NONE;
+                case NORTH -> Rotation.CLOCKWISE_180;
+                case WEST -> Rotation.CLOCKWISE_90;
+                case EAST -> Rotation.COUNTERCLOCKWISE_90;
+                default -> throw new RuntimeException();
+            };
+
+            final int maxCursor = (edge == Direction.NORTH || edge == Direction.SOUTH) ? plotWidth : plotHeight;
+            int cursor = 0;
+
+            while (cursor < maxCursor) {
+                // Filter schematics that fit within the remaining space and plot bounds
+                int finalCursor = cursor;
+                final List<Schematic> fittingSchematics = allSchematics.stream().filter(schematic -> {
+                    final int schematicWidth = (rotation == Rotation.NONE || rotation == Rotation.CLOCKWISE_180) ? schematic.getWidth() : schematic.getLength();
+                    final int schematicLength = (rotation == Rotation.NONE || rotation == Rotation.CLOCKWISE_180) ? schematic.getLength() : schematic.getWidth();
+                    return switch (edge) {
+                        case NORTH, SOUTH -> schematicWidth <= maxCursor - finalCursor && schematicLength <= plotHeight;
+                        case WEST, EAST -> schematicWidth <= plotWidth && schematicLength <= maxCursor - finalCursor;
+                        default -> false;
+                    };
+                }).toList();
+
+                if (fittingSchematics.isEmpty()) {
+                    break; // No schematic fits, move to next edge
+                }
+
+                final Schematic schematic = fittingSchematics.get(randomSource.nextInt(fittingSchematics.size()));
+                final int schematicWidth = (rotation == Rotation.NONE || rotation == Rotation.CLOCKWISE_180) ? schematic.getWidth() : schematic.getLength();
+                final int schematicLength = (rotation == Rotation.NONE || rotation == Rotation.CLOCKWISE_180) ? schematic.getLength() : schematic.getWidth();
+
+                // Calculate placement coordinates
+                int placementX = plotX;
+                int placementZ = plotZ;
+
+                switch (edge) {
+                    case NORTH -> {
+                        placementX = plotX + cursor;
+                        placementZ = plotZ;
+                    }
+                    case SOUTH -> {
+                        placementX = plotX + cursor;
+                        placementZ = plotZ + plotHeight - schematicLength;
+                    }
+                    case WEST -> {
+                        placementX = plotX;
+                        placementZ = plotZ + cursor;
+                    }
+                    case EAST -> {
+                        placementX = plotX + plotWidth - schematicWidth;
+                        placementZ = plotZ + cursor;
+                    }
+                }
+
+                // Check footprint against plot bounds
+                if (placementX < plotX || placementZ < plotZ
+                        || placementX + schematicWidth > plotX + plotWidth
+                        || placementZ + schematicLength > plotZ + plotHeight) {
+                    cursor += 1;
+                    continue;
+                }
+
+                // Check if footprint overlaps any occupied tiles
+                boolean overlaps = false;
+                outer:
+                for (int x = 0; x < schematicWidth; x++) {
+                    for (int z = 0; z < schematicLength; z++) {
+                        int relX = placementX - plotX + x;
+                        int relZ = placementZ - plotZ + z;
+                        if (occupied[relX][relZ]) {
+                            overlaps = true;
+                            break outer;
+                        }
+                    }
+                }
+
+                if (overlaps) {
+                    cursor += 1;
+                    continue;
+                }
+
+                // Sample ground height and place building
+                final int groundHeight = sampleGroundHeightForFootprint(placementX, placementZ, schematicWidth, schematicLength, noise);
+
+                result.add(new BuildingPlacement(schematic, placementX, groundHeight, placementZ, rotation));
+
+                // Mark tiles as occupied
+                for (int x = 0; x < schematicWidth; x++) {
+                    for (int z = 0; z < schematicLength; z++) {
+                        int relX = placementX - plotX + x;
+                        int relZ = placementZ - plotZ + z;
+                        occupied[relX][relZ] = true;
+                    }
+                }
+
+                cursor += schematicWidth + 1;
+            }
+        }
+
+        return result;
+    }
+
+    private int sampleGroundHeightForFootprint(int gx, int gz, int width, int length, SimplexNoise noise) {
+        int best = Integer.MAX_VALUE;
+        final int step = Math.max(1, Math.min(width, length) / 4);
+
+        for (int x = gx; x < gx + width; x += step) {
+            for (int z = gz; z < gz + length; z += step) {
+                double h = computeBaseTerrain(x, z, noise, 64.0);
+                best = Math.min(best, (int) Math.floor(h));
+            }
+        }
+
+        return best;
     }
 
     @Override
@@ -443,18 +605,74 @@ public class CharnChunkGenerator extends ChunkGenerator {
         info.add("Charn City Generator");
     }
 
-    private enum PlotType {NORMAL, WATERFRONT}
-
     private record RiverInfo(double mask, double depth) {
     }
 
     private record LocalMaxima(int x, int z, double value) {
     }
 
-    private record PlotInfo(int originX, int originZ, double sizeX, double sizeZ, PlotType type) {
-        public boolean contains(int x, int z) {
-            return x >= originX && x < originX + sizeX
-                    && z >= originZ && z < originZ + sizeZ;
+    private record PlotInfo(int x, int z, int width, int height) {
+        public boolean contains(int xPos, int zPos) {
+            return xPos >= x && xPos < x + width && zPos >= z && zPos < z + height;
+        }
+    }
+
+    private record BuildingPlacement(Schematic schematic, int x, int y, int z, Rotation rotation) {
+        public int getWidth() {
+            return switch (rotation) {
+                case NONE, CLOCKWISE_180 -> schematic.getWidth();
+                case CLOCKWISE_90, COUNTERCLOCKWISE_90 -> schematic.getLength();
+            };
+        }
+
+        public int getLength() {
+            return switch (rotation) {
+                case NONE, CLOCKWISE_180 -> schematic.getLength();
+                case CLOCKWISE_90, COUNTERCLOCKWISE_90 -> schematic.getWidth();
+            };
+        }
+
+        public boolean contains(int xPos, int zPos) {
+            return xPos >= x && xPos < x + getWidth() && zPos >= z && zPos < z + getLength();
+        }
+
+        // Paste a single column of this building into a chunk
+        public void pasteColumn(ChunkAccess chunk, int worldX, int worldZ) {
+            final int relativeX = worldX - x;
+            final int relativeZ = worldZ - z;
+            final int schematicWidth = schematic.getWidth();
+            final int schematicLength = schematic.getLength();
+
+            int schematicX = 0;
+            int schematicZ = 0;
+
+            switch (rotation) {
+                case NONE -> {
+                    schematicX = relativeX;
+                    schematicZ = relativeZ;
+                }
+                case CLOCKWISE_90 -> {
+                    schematicX = relativeZ;
+                    schematicZ = (schematicWidth - 1) - relativeX;
+                }
+                case CLOCKWISE_180 -> {
+                    schematicX = (schematicWidth - 1) - relativeX;
+                    schematicZ = (schematicLength - 1) - relativeZ;
+                }
+                case COUNTERCLOCKWISE_90 -> {
+                    schematicX = (schematicLength - 1) - relativeZ;
+                    schematicZ = relativeX;
+                }
+            }
+
+            if (schematicX < 0 || schematicZ < 0 || schematicX >= schematicWidth || schematicZ >= schematicLength) {
+                return;
+            }
+
+            for (int schematicY = 0; schematicY < schematic.getHeight(); schematicY++) {
+                final BlockState state = schematic.getBlock(schematicX, schematicY, schematicZ);
+                chunk.setBlockState(new BlockPos(worldX, y + schematicY, worldZ), state.rotate(rotation));
+            }
         }
     }
 }
