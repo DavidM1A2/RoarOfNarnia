@@ -99,7 +99,6 @@ public class CharnChunkGenerator extends ChunkGenerator {
                     final boolean isAlley = centerAlleyMask > 0.4 && !isRoadCenter && !isRiver;
                     final boolean isRoadEdge = roadMask > 0 && !isRoadCenter && !isAlley;
                     final boolean isBridge = isRiver && (isRoadEdge || isRoadCenter);
-                    final boolean isPlot = plotInfo.contains(x, z) && !isRoadCenter && !isAlley && !isRoadEdge && !isRiver;
 
                     final int groundHeight;
                     if (isRoadCenter || isRoadEdge) {
@@ -521,8 +520,26 @@ public class CharnChunkGenerator extends ChunkGenerator {
                     continue;
                 }
 
-                // Sample ground height and place building
-                final int groundHeight = sampleGroundHeightForFootprint(placementX, placementZ, schematicWidth, schematicLength, noise);
+                // Sample ground height specifically at the door instead of footprint
+                int doorX = placementX;
+                int doorZ = placementZ;
+
+                switch (edge) {
+                    case NORTH -> doorZ = plotZ - 1;               // just north of the plot
+                    case SOUTH -> doorZ = plotZ + plotHeight;      // just south of the plot
+                    case WEST -> doorX = plotX - 1;               // just west of the plot
+                    case EAST -> doorX = plotX + plotWidth;       // just east of the plot
+                }
+
+                // Center the door along the building side
+                if (edge == Direction.NORTH || edge == Direction.SOUTH) {
+                    doorX = placementX + schematicWidth / 2;
+                } else {
+                    doorZ = placementZ + schematicLength / 2;
+                }
+
+                // Sample height at the door position
+                final int groundHeight = sampleGroundHeightAtRoad(doorX, doorZ, noise, randomFactory);
 
                 result.add(new BuildingPlacement(schematic, placementX, groundHeight, placementZ, rotation));
 
@@ -542,18 +559,13 @@ public class CharnChunkGenerator extends ChunkGenerator {
         return result;
     }
 
-    private int sampleGroundHeightForFootprint(int gx, int gz, int width, int length, SimplexNoise noise) {
-        int best = Integer.MAX_VALUE;
-        final int step = Math.max(1, Math.min(width, length) / 4);
-
-        for (int x = gx; x < gx + width; x += step) {
-            for (int z = gz; z < gz + length; z += step) {
-                double h = computeBaseTerrain(x, z, noise, 64.0);
-                best = Math.min(best, (int) Math.floor(h));
-            }
-        }
-
-        return best;
+    private int sampleGroundHeightAtRoad(int doorX, int doorZ, SimplexNoise noise, PositionalRandomFactory randomFactory) {
+        final LocalMaxima bestMax = findLocalMaxima(doorX, doorZ, 4, (x, z) -> {
+            double roadMask = computeRoadMask(x, z);
+            double alleyMask = computeAlleyMask(x, z, randomFactory);
+            return Math.max(roadMask, alleyMask);
+        });
+        return (int) Math.floor(computeBaseTerrain(bestMax.x(), bestMax.z(), noise, 64.0));
     }
 
     @Override
@@ -672,6 +684,10 @@ public class CharnChunkGenerator extends ChunkGenerator {
             for (int schematicY = 0; schematicY < schematic.getHeight(); schematicY++) {
                 final BlockState state = schematic.getBlock(schematicX, schematicY, schematicZ);
                 chunk.setBlockState(new BlockPos(worldX, y + schematicY, worldZ), state.rotate(rotation));
+            }
+            // Place some buffer blocks under the structure so it's not floating
+            for (int bufferY = -5; bufferY < 0; bufferY++) {
+                chunk.setBlockState(new BlockPos(worldX, y + bufferY, worldZ), ModBlocks.DARK_CITY_SMOOTH_STONE.get().defaultBlockState());
             }
         }
     }
