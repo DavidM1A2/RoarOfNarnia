@@ -185,7 +185,11 @@ public class CharnBuildings {
                     }
                 }
 
-                cursor += schematicWidth + 1;
+                if (edge == Direction.NORTH || edge == Direction.SOUTH) {
+                    cursor += schematicWidth + 1;
+                } else { // WEST or EAST
+                    cursor += schematicLength + 1;
+                }
             }
         }
 
@@ -231,14 +235,14 @@ public class CharnBuildings {
                 }
                 case CLOCKWISE_90 -> {
                     schematicX = relativeZ;
-                    schematicZ = (schematicWidth - 1) - relativeX;
+                    schematicZ = (schematicLength - 1) - relativeX;
                 }
                 case CLOCKWISE_180 -> {
                     schematicX = (schematicWidth - 1) - relativeX;
                     schematicZ = (schematicLength - 1) - relativeZ;
                 }
                 case COUNTERCLOCKWISE_90 -> {
-                    schematicX = (schematicLength - 1) - relativeZ;
+                    schematicX = (schematicWidth - 1) - relativeZ;
                     schematicZ = relativeX;
                 }
             }
