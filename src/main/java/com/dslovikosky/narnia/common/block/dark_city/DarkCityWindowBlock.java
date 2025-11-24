@@ -8,8 +8,8 @@ import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.TransparentBlock;
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 
-public class DarkCityWindow extends TransparentBlock {
-    public DarkCityWindow() {
+public class DarkCityWindowBlock extends TransparentBlock {
+    public DarkCityWindowBlock() {
         super(Properties.of()
                 .instrument(NoteBlockInstrument.HAT)
                 .requiresCorrectToolForDrops()

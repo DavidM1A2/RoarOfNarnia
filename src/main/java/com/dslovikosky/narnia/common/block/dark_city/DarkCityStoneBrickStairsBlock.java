@@ -1,22 +1,22 @@
 package com.dslovikosky.narnia.common.block.dark_city;
 
 import com.dslovikosky.narnia.common.constants.Constants;
+import com.dslovikosky.narnia.common.constants.ModBlocks;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.block.SoundType;
-import net.minecraft.world.level.block.WallBlock;
-import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.StairBlock;
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 import net.minecraft.world.level.material.MapColor;
 
-public class DarkCityStoneBrickWall extends WallBlock {
-    public DarkCityStoneBrickWall() {
-        super(BlockBehaviour.Properties.of()
+public class DarkCityStoneBrickStairsBlock extends StairBlock {
+    public DarkCityStoneBrickStairsBlock() {
+        super(ModBlocks.DARK_CITY_STONE_BRICKS.get().defaultBlockState(), Properties.of()
                 .mapColor(MapColor.STONE)
                 .instrument(NoteBlockInstrument.BASEDRUM)
                 .requiresCorrectToolForDrops()
                 .strength(1.5F, 6.0F)
                 .sound(SoundType.STONE)
-                .setId(ResourceKey.create(Registries.BLOCK, Constants.modLocation("dark_city_stone_brick_wall"))));
+                .setId(ResourceKey.create(Registries.BLOCK, Constants.modLocation("dark_city_stone_brick_stairs"))));
     }
 }

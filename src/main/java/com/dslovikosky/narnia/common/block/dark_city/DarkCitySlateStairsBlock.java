@@ -9,8 +9,8 @@ import net.minecraft.world.level.block.StairBlock;
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 import net.minecraft.world.level.material.MapColor;
 
-public class DarkCitySlateStairs extends StairBlock {
-    public DarkCitySlateStairs() {
+public class DarkCitySlateStairsBlock extends StairBlock {
+    public DarkCitySlateStairsBlock() {
         super(ModBlocks.DARK_CITY_SLATE.get().defaultBlockState(), Properties.of()
                 .mapColor(MapColor.STONE)
                 .instrument(NoteBlockInstrument.BASEDRUM)

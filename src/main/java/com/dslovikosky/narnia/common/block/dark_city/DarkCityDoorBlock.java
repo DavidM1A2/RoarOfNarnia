@@ -11,8 +11,8 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 import net.minecraft.world.level.material.PushReaction;
 
-public class DarkCityDoor extends DoorBlock {
-    public DarkCityDoor() {
+public class DarkCityDoorBlock extends DoorBlock {
+    public DarkCityDoorBlock() {
         super(ModBlockSetTypes.DARK_CITY, BlockBehaviour.Properties.of()
                 .mapColor(ModBlocks.DARK_CITY_COBBLESTONE.get().defaultMapColor())
                 .instrument(NoteBlockInstrument.BASEDRUM)

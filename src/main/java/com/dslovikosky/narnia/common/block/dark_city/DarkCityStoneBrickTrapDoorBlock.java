@@ -9,8 +9,8 @@ import net.minecraft.world.level.block.TrapDoorBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
 
-public class DarkCityStoneBrickTrapDoor extends TrapDoorBlock {
-    public DarkCityStoneBrickTrapDoor() {
+public class DarkCityStoneBrickTrapDoorBlock extends TrapDoorBlock {
+    public DarkCityStoneBrickTrapDoorBlock() {
         super(ModBlockSetTypes.DARK_CITY, BlockBehaviour.Properties.of()
                 .mapColor(MapColor.METAL)
                 .requiresCorrectToolForDrops()

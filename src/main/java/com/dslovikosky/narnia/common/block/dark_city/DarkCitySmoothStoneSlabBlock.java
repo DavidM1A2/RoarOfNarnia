@@ -8,14 +8,14 @@ import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 import net.minecraft.world.level.material.MapColor;
 
-public class DarkCityStoneBrickSlab extends SlabBlock {
-    public DarkCityStoneBrickSlab() {
+public class DarkCitySmoothStoneSlabBlock extends SlabBlock {
+    public DarkCitySmoothStoneSlabBlock() {
         super(Properties.of()
                 .mapColor(MapColor.STONE)
                 .instrument(NoteBlockInstrument.BASEDRUM)
                 .requiresCorrectToolForDrops()
                 .strength(1.5F, 6.0F)
                 .sound(SoundType.STONE)
-                .setId(ResourceKey.create(Registries.BLOCK, Constants.modLocation("dark_city_stone_brick_slab"))));
+                .setId(ResourceKey.create(Registries.BLOCK, Constants.modLocation("dark_city_smooth_stone_slab"))));
     }
 }
