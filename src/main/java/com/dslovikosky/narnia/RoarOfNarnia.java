@@ -82,7 +82,7 @@ public class RoarOfNarnia {
         ModDataComponentTypes.DATA_COMPONENT_TYPES.register(modBus);
         ModFeatures.FEATURES.register(modBus);
         ModAttachmentTypes.ATTACHMENT_TYPES.register(modBus);
-        ModBlockEntities.BLOCK_ENTITIES.register(modBus);
+        ModBlockEntities.BLOCK_ENTITY_TYPES.register(modBus);
         ModStructurePieces.STRUCTURE_PIECES.register(modBus);
         ModStructureTypes.STRUCTURE_TYPES.register(modBus);
         ModSoundEvents.SOUND_EVENTS.register(modBus);

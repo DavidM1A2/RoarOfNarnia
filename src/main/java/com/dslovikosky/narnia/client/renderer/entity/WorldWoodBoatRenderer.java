@@ -1,4 +1,4 @@
-package com.dslovikosky.narnia.client.entity;
+package com.dslovikosky.narnia.client.renderer.entity;
 
 import com.dslovikosky.narnia.common.constants.Constants;
 import net.minecraft.client.model.geom.ModelLayerLocation;

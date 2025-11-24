@@ -76,6 +76,8 @@ public class ModBlockLootTableSubProvider extends BlockLootSubProvider {
         dropSelf(ModBlocks.DARK_CITY_SLATE.get());
         dropSelf(ModBlocks.DARK_CITY_SLATE_SLAB.get());
         dropSelf(ModBlocks.DARK_CITY_SLATE_STAIRS.get());
+
+        add(ModBlocks.CHARN_BELL.get(), noDrop());
     }
 
     private LootItemCondition.Builder hasShearsOrSilkTouch() {

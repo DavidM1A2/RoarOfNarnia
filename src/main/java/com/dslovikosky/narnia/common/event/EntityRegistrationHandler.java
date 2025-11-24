@@ -1,12 +1,12 @@
 package com.dslovikosky.narnia.common.event;
 
-import com.dslovikosky.narnia.client.entity.SpellAOERenderer;
-import com.dslovikosky.narnia.client.entity.SpellChainRenderer;
-import com.dslovikosky.narnia.client.entity.SpellConeRenderer;
-import com.dslovikosky.narnia.client.entity.SpellProjectileRenderer;
-import com.dslovikosky.narnia.client.entity.SpellWallRenderer;
-import com.dslovikosky.narnia.client.entity.WorldWoodBoatRenderer;
-import com.dslovikosky.narnia.client.entity.WorldWoodChestBoatRenderer;
+import com.dslovikosky.narnia.client.renderer.entity.SpellAOERenderer;
+import com.dslovikosky.narnia.client.renderer.entity.SpellChainRenderer;
+import com.dslovikosky.narnia.client.renderer.entity.SpellConeRenderer;
+import com.dslovikosky.narnia.client.renderer.entity.SpellProjectileRenderer;
+import com.dslovikosky.narnia.client.renderer.entity.SpellWallRenderer;
+import com.dslovikosky.narnia.client.renderer.entity.WorldWoodBoatRenderer;
+import com.dslovikosky.narnia.client.renderer.entity.WorldWoodChestBoatRenderer;
 import com.dslovikosky.narnia.common.constants.ModEntityTypes;
 import net.minecraft.client.model.BoatModel;
 import net.neoforged.bus.api.SubscribeEvent;

@@ -60,6 +60,8 @@ public class ModEnglishLanguageProvider extends LanguageProvider {
         addBlock(ModBlocks.DARK_CITY_SLATE_SLAB, "Dark City Slate Slab");
         addBlock(ModBlocks.DARK_CITY_SLATE_STAIRS, "Dark City Slate Stairs");
 
+        addBlock(ModBlocks.CHARN_BELL, "Charn Bell");
+
         addEntityType(ModEntityTypes.WORLD_WOOD_BOAT, "World Wood Boat");
         addEntityType(ModEntityTypes.WORLD_WOOD_CHEST_BOAT, "World Wood Chest Boat");
 

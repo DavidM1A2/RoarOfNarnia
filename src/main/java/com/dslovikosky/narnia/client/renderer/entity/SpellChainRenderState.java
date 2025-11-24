@@ -1,4 +1,4 @@
-package com.dslovikosky.narnia.client.entity;
+package com.dslovikosky.narnia.client.renderer.entity;
 
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.world.phys.Vec3;

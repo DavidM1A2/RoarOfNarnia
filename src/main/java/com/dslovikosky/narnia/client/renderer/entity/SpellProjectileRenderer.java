@@ -1,4 +1,4 @@
-package com.dslovikosky.narnia.client.entity;
+package com.dslovikosky.narnia.client.renderer.entity;
 
 import com.dslovikosky.narnia.client.constants.ModRenderPipelines;
 import com.dslovikosky.narnia.client.renderer.CustomLateEntityRenderer;

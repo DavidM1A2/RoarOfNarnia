@@ -64,6 +64,8 @@ public class ModModelProvider extends ModelProvider {
         blockModels.createTrivialCube(ModBlocks.MOSSY_DARK_CITY_STONE_BRICKS.get());
         blockModels.createAxisAlignedPillarBlock(ModBlocks.CHISELED_DARK_CITY_STONE_BRICKS.get(), TexturedModel.COLUMN);
 
+        blockModels.createAirLikeBlock(ModBlocks.CHARN_BELL.get(), ModBlocks.CHARN_BELL.asItem());
+
         blockModels.family(ModBlocks.DARK_CITY_SLATE.get())
                 .generateFor(new BlockFamily.Builder(ModBlocks.DARK_CITY_SLATE.get())
                         .stairs(ModBlocks.DARK_CITY_SLATE_STAIRS.get())
@@ -78,6 +80,8 @@ public class ModModelProvider extends ModelProvider {
 
         itemModels.generateFlatItem(ModItems.WORLD_WOOD_BOAT.get(), ModelTemplates.FLAT_ITEM);
         itemModels.generateFlatItem(ModItems.WORLD_WOOD_CHEST_BOAT.get(), ModelTemplates.FLAT_ITEM);
+
+        itemModels.generateFlatItem(ModBlocks.CHARN_BELL.asItem(), ModelTemplates.FLAT_ITEM);
     }
 
     private void createSapling(final BlockModelGenerators blockModels, final Block block, final BlockModelGenerators.PlantType plantType) {
