@@ -4,6 +4,7 @@ import com.dslovikosky.narnia.common.constants.ModBlocks;
 import com.dslovikosky.narnia.common.constants.ModSchematics;
 import com.dslovikosky.narnia.common.model.schematic.Schematic;
 import com.dslovikosky.narnia.common.world.generator.util.FieldTraversal;
+import com.google.common.collect.ImmutableList;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -14,13 +15,19 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.levelgen.PositionalRandomFactory;
 import net.minecraft.world.level.levelgen.synth.SimplexNoise;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
 public class CharnBuildings {
-    private static final List<Supplier<Schematic>> DARK_CITY_SCHEMATICS = List.of(ModSchematics.DARK_CITY_SMALL_1);
+    private static final List<Pair<Supplier<Schematic>, Integer>> DARK_CITY_SCHEMATICS = ImmutableList.<Pair<Supplier<Schematic>, Integer>>builder()
+            .add(Pair.of(ModSchematics.DARK_CITY_SMALL_1, 0))
+            .add(Pair.of(ModSchematics.DARK_CITY_GARDEN_1, -5))
+            .add(Pair.of(ModSchematics.DARK_CITY_LARGE_1, 0))
+            .add(Pair.of(ModSchematics.DARK_CITY_TOWER_1, 0))
+            .build();
 
     private final CharnTerrain charnTerrain;
     private final CharnRivers charnRivers;
@@ -34,7 +41,6 @@ public class CharnBuildings {
 
     public List<BuildingPlacement> placeBuildingsInPlot(CharnRoads.Plot plot, SimplexNoise noise, PositionalRandomFactory randomFactory) {
         final List<BuildingPlacement> result = new ArrayList<>();
-        final List<Schematic> allSchematics = DARK_CITY_SCHEMATICS.stream().map(Supplier::get).toList();
 
         final int plotX = plot.x();
         final int plotZ = plot.z();
@@ -76,7 +82,8 @@ public class CharnBuildings {
             while (cursor < maxCursor) {
                 // Filter schematics that fit within the remaining space and plot bounds
                 int finalCursor = cursor;
-                final List<Schematic> fittingSchematics = allSchematics.stream().filter(schematic -> {
+                final List<Pair<Supplier<Schematic>, Integer>> fittingSchematics = DARK_CITY_SCHEMATICS.stream().filter(entry -> {
+                    final Schematic schematic = entry.getLeft().get();
                     final int schematicWidth = (rotation == Rotation.NONE || rotation == Rotation.CLOCKWISE_180) ? schematic.getWidth() : schematic.getLength();
                     final int schematicLength = (rotation == Rotation.NONE || rotation == Rotation.CLOCKWISE_180) ? schematic.getLength() : schematic.getWidth();
                     return switch (edge) {
@@ -90,7 +97,9 @@ public class CharnBuildings {
                     break; // No schematic fits, move to next edge
                 }
 
-                final Schematic schematic = fittingSchematics.get(randomSource.nextInt(fittingSchematics.size()));
+                final Pair<Supplier<Schematic>, Integer> schematicEntry = fittingSchematics.get(randomSource.nextInt(fittingSchematics.size()));
+                final Schematic schematic = schematicEntry.getLeft().get();
+                final int placementYOffset = schematicEntry.getRight();
                 final int schematicWidth = (rotation == Rotation.NONE || rotation == Rotation.CLOCKWISE_180) ? schematic.getWidth() : schematic.getLength();
                 final int schematicLength = (rotation == Rotation.NONE || rotation == Rotation.CLOCKWISE_180) ? schematic.getLength() : schematic.getWidth();
 
@@ -165,7 +174,7 @@ public class CharnBuildings {
                 // Sample height at the door position
                 final int groundHeight = sampleGroundHeightAtRoad(doorX, doorZ, noise, randomFactory);
 
-                result.add(new BuildingPlacement(schematic, placementX, groundHeight, placementZ, rotation));
+                result.add(new BuildingPlacement(schematic, placementX, groundHeight + placementYOffset, placementZ, rotation));
 
                 // Mark tiles as occupied
                 for (int x = 0; x < schematicWidth; x++) {

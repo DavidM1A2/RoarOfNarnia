@@ -114,7 +114,7 @@ public class ModDatapackObjectProvider {
                             false,
                             true,
                             0,
-                            128,
+                            256,
                             64,
                             BlockTags.INFINIBURN_OVERWORLD,
                             CHARN_SKY_RENDERER_ID,
