@@ -1,5 +1,6 @@
 package com.dslovikosky.narnia.client.renderer.block;
 
+import com.dslovikosky.narnia.common.block.CharnBellBlock;
 import com.dslovikosky.narnia.common.block_entity.CharnBellBlockEntity;
 import com.dslovikosky.narnia.common.constants.Constants;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -12,6 +13,7 @@ import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.state.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ARGB;
 import net.minecraft.world.phys.Vec3;
@@ -37,9 +39,6 @@ public class CharnBellBlockEntityRenderer implements BlockEntityRenderer<CharnBe
 
     @Override
     public void submit(final BlockEntityRenderState renderState, final PoseStack poseStack, final SubmitNodeCollector nodeCollector, final CameraRenderState cameraRenderState) {
-        poseStack.pushPose();
-
-
         nodeCollector.submitCustomGeometry(poseStack, RenderType.entityCutout(TEXTURE), (pose, consumer) -> {
             final PoseStack stack = new PoseStack();
             stack.pushPose();
@@ -49,11 +48,12 @@ public class CharnBellBlockEntityRenderer implements BlockEntityRenderer<CharnBe
             newPose.normal().mul(pose.normal());
 
             stack.translate(0.5, -0.5, 0.5);
+            final Direction direction = renderState.blockState.getValue(CharnBellBlock.FACING);
+            final float extraRotation = direction == Direction.EAST || direction == Direction.WEST ? 180 : 0;
+            stack.rotateAround(Axis.YP.rotationDegrees(direction.toYRot() + extraRotation), 0, 1, 0);
             stack.rotateAround(Axis.ZP.rotationDegrees(180), 0, 1, 0);
 
             model.renderToBuffer(stack, consumer, renderState.lightCoords, OverlayTexture.NO_OVERLAY, ARGB.color(255, 255, 255));
         });
-
-        poseStack.popPose();
     }
 }

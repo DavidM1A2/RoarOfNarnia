@@ -4,6 +4,7 @@ import com.dslovikosky.narnia.common.block_entity.CharnBellBlockEntity;
 import com.dslovikosky.narnia.common.constants.Constants;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -17,11 +18,19 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
 public class CharnBellBlock extends HorizontalDirectionalBlock implements EntityBlock {
-    private static final VoxelShape SHAPE = box(1.0, 0.0, 1.0, 15.0, 16.0, 15.0);
+    private static final VoxelShape SHAPE_NS = Shapes.or(
+            box(2.0, 1.0, 7.5, 14.0, 16.0, 8.5),
+            box(0.0, 0.0, 0.0, 16.0, 1.0, 16.0)
+    );
+    private static final VoxelShape SHAPE_EW = Shapes.or(
+            box(7.5, 1.0, 2.0, 8.5, 16.0, 14.0),
+            box(0.0, 0.0, 0.0, 16.0, 1.0, 16.0)
+    );
 
     private static final MapCodec<CharnBellBlock> CODEC = simpleCodec(CharnBellBlock::new);
 
@@ -60,6 +69,7 @@ public class CharnBellBlock extends HorizontalDirectionalBlock implements Entity
 
     @Override
     protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
-        return SHAPE;
+        final Direction direction = state.getValue(FACING);
+        return direction == Direction.WEST || direction == Direction.EAST ? SHAPE_EW : SHAPE_NS;
     }
 }
