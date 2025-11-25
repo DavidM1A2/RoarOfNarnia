@@ -4,16 +4,31 @@ package com.dslovikosky.narnia.client.renderer.block;// Made with Blockbench 5.0
 
 
 import com.dslovikosky.narnia.client.renderer.block.base.BlockBenchModel;
+import com.dslovikosky.narnia.common.constants.Constants;
+import net.minecraft.client.animation.KeyframeAnimation;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.CubeDeformation;
 import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
+import net.minecraft.resources.ResourceLocation;
+import net.neoforged.neoforge.client.entity.animation.json.AnimationHolder;
 
-public class CharnBellBlockEntityModel extends BlockBenchModel {
-    @Override
-    public LayerDefinition getLayerDefinition() {
+import java.util.function.Function;
+
+public class CharnBellBlockEntityModel extends BlockBenchModel<BlockEntityRenderState> {
+    private static final AnimationHolder ANIMATION = getAnimation(Constants.modLocation("charn_bell"));
+    private final KeyframeAnimation ring;
+
+    public CharnBellBlockEntityModel(final Function<ResourceLocation, RenderType> renderType) {
+        super(getLayerDefinition(), renderType);
+        ring = ANIMATION.get().bake(root);
+    }
+
+    private static LayerDefinition getLayerDefinition() {
         final MeshDefinition meshDefinition = new MeshDefinition();
         final PartDefinition partDefinition = meshDefinition.getRoot();
 
@@ -35,12 +50,18 @@ public class CharnBellBlockEntityModel extends BlockBenchModel {
                 .texOffs(18, 23).addBox(-2.0F, -15.0F, -0.5F, 4.0F, 1.0F, 1.0F, new CubeDeformation(0.0F))
                 .texOffs(18, 30).addBox(-1.0F, -16.0F, -0.5F, 2.0F, 1.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 0.0F, 0.0F));
 
-        PartDefinition bell = stand.addOrReplaceChild("bell", CubeListBuilder.create().texOffs(8, 31).addBox(-0.5F, -3.0F, -0.5F, 1.0F, 2.0F, 1.0F, new CubeDeformation(0.0F))
-                .texOffs(0, 26).addBox(-1.0F, -1.0F, -1.0F, 2.0F, 1.0F, 2.0F, new CubeDeformation(0.0F))
-                .texOffs(16, 17).addBox(-1.5F, 0.0F, -1.5F, 3.0F, 3.0F, 3.0F, new CubeDeformation(0.0F))
-                .texOffs(0, 17).addBox(-2.0F, 3.0F, -2.0F, 4.0F, 1.0F, 4.0F, new CubeDeformation(0.0F))
-                .texOffs(12, 32).addBox(-0.5F, 4.0F, -0.5F, 1.0F, 1.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, -11.0F, 0.0F));
+        PartDefinition bell = stand.addOrReplaceChild("bell", CubeListBuilder.create().texOffs(8, 31).addBox(-0.5F, 0.0F, -0.5F, 1.0F, 2.0F, 1.0F, new CubeDeformation(0.0F))
+                .texOffs(0, 26).addBox(-1.0F, 2.0F, -1.0F, 2.0F, 1.0F, 2.0F, new CubeDeformation(0.0F))
+                .texOffs(16, 17).addBox(-1.5F, 3.0F, -1.5F, 3.0F, 3.0F, 3.0F, new CubeDeformation(0.0F))
+                .texOffs(0, 17).addBox(-2.0F, 6.0F, -2.0F, 4.0F, 1.0F, 4.0F, new CubeDeformation(0.0F))
+                .texOffs(12, 32).addBox(-0.5F, 7.0F, -0.5F, 1.0F, 1.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, -14.0F, 0.0F));
 
         return LayerDefinition.create(meshDefinition, 64, 64);
+    }
+
+    @Override
+    public void setupAnim(final BlockEntityRenderState renderState) {
+        super.setupAnim(renderState);
+        this.ring.apply(System.currentTimeMillis() % 3000L, 1f);
     }
 }

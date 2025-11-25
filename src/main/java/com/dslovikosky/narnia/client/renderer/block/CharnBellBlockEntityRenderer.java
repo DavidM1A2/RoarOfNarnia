@@ -25,7 +25,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 public class CharnBellBlockEntityRenderer implements BlockEntityRenderer<CharnBellBlockEntity, BlockEntityRenderState> {
     private static final ResourceLocation TEXTURE = Constants.modLocation("textures/block_entity/charn_bell.png");
-    private final CharnBellBlockEntityModel model = new CharnBellBlockEntityModel();
+    private static final CharnBellBlockEntityModel MODEL = new CharnBellBlockEntityModel(RenderType::entityCutout);
 
     @Override
     public BlockEntityRenderState createRenderState() {
@@ -39,7 +39,7 @@ public class CharnBellBlockEntityRenderer implements BlockEntityRenderer<CharnBe
 
     @Override
     public void submit(final BlockEntityRenderState renderState, final PoseStack poseStack, final SubmitNodeCollector nodeCollector, final CameraRenderState cameraRenderState) {
-        nodeCollector.submitCustomGeometry(poseStack, RenderType.entityCutout(TEXTURE), (pose, consumer) -> {
+        nodeCollector.submitCustomGeometry(poseStack, MODEL.renderType(TEXTURE), (pose, consumer) -> {
             final PoseStack stack = new PoseStack();
             stack.pushPose();
 
@@ -53,7 +53,8 @@ public class CharnBellBlockEntityRenderer implements BlockEntityRenderer<CharnBe
             stack.rotateAround(Axis.YP.rotationDegrees(direction.toYRot() + extraRotation), 0, 1, 0);
             stack.rotateAround(Axis.ZP.rotationDegrees(180), 0, 1, 0);
 
-            model.renderToBuffer(stack, consumer, renderState.lightCoords, OverlayTexture.NO_OVERLAY, ARGB.color(255, 255, 255));
+            MODEL.setupAnim(renderState);
+            MODEL.renderToBuffer(stack, consumer, renderState.lightCoords, OverlayTexture.NO_OVERLAY, ARGB.color(255, 255, 255));
         });
     }
 }

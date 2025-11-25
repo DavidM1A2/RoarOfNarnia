@@ -1,20 +1,14 @@
 package com.dslovikosky.narnia.client.renderer.block.base;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.model.Model;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.resources.ResourceLocation;
 
-public abstract class BlockBenchModel {
-    private final ModelPart root;
+import java.util.function.Function;
 
-    public BlockBenchModel() {
-        this.root = getLayerDefinition().bakeRoot();
-    }
-
-    protected abstract LayerDefinition getLayerDefinition();
-
-    public void renderToBuffer(final PoseStack poseStack, final VertexConsumer vertexConsumer, final int packedLight, final int packedOverlay, final int color) {
-        this.root.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
+public abstract class BlockBenchModel<S> extends Model<S> {
+    public BlockBenchModel(final LayerDefinition layerDefinition, final Function<ResourceLocation, RenderType> renderType) {
+        super(layerDefinition.bakeRoot(), renderType);
     }
 }
