@@ -13,19 +13,21 @@ import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.client.entity.animation.json.AnimationHolder;
 
 import java.util.function.Function;
 
-public class CharnBellBlockEntityModel extends BlockBenchModel<BlockEntityRenderState> {
-    private static final AnimationHolder ANIMATION = getAnimation(Constants.modLocation("charn_bell"));
-    private final KeyframeAnimation ring;
+public class CharnBellBlockEntityModel extends BlockBenchModel<CharnBellBlockEntityRenderState> {
+    private static final AnimationHolder RING_NORTH = getAnimation(Constants.modLocation("charn_bell/ring_north"));
+    private static final AnimationHolder RING_SOUTH = getAnimation(Constants.modLocation("charn_bell/ring_south"));
+    private final KeyframeAnimation ringNorth;
+    private final KeyframeAnimation ringSouth;
 
     public CharnBellBlockEntityModel(final Function<ResourceLocation, RenderType> renderType) {
         super(getLayerDefinition(), renderType);
-        ring = ANIMATION.get().bake(root);
+        ringNorth = RING_NORTH.get().bake(root);
+        ringSouth = RING_SOUTH.get().bake(root);
     }
 
     private static LayerDefinition getLayerDefinition() {
@@ -60,8 +62,8 @@ public class CharnBellBlockEntityModel extends BlockBenchModel<BlockEntityRender
     }
 
     @Override
-    public void setupAnim(final BlockEntityRenderState renderState) {
+    public void setupAnim(final CharnBellBlockEntityRenderState renderState) {
         super.setupAnim(renderState);
-        this.ring.apply(System.currentTimeMillis() % 3000L, 1f);
+        (renderState.hitNorth ? ringNorth : ringSouth).apply(System.currentTimeMillis() - renderState.lastHitTime, 1f);
     }
 }

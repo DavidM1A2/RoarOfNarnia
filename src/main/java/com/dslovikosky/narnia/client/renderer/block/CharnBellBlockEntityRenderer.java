@@ -9,7 +9,6 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
-import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.state.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
@@ -23,22 +22,24 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-public class CharnBellBlockEntityRenderer implements BlockEntityRenderer<CharnBellBlockEntity, BlockEntityRenderState> {
+public class CharnBellBlockEntityRenderer implements BlockEntityRenderer<CharnBellBlockEntity, CharnBellBlockEntityRenderState> {
     private static final ResourceLocation TEXTURE = Constants.modLocation("textures/block_entity/charn_bell.png");
     private static final CharnBellBlockEntityModel MODEL = new CharnBellBlockEntityModel(RenderType::entityCutout);
 
     @Override
-    public BlockEntityRenderState createRenderState() {
-        return new BlockEntityRenderState();
+    public CharnBellBlockEntityRenderState createRenderState() {
+        return new CharnBellBlockEntityRenderState();
     }
 
     @Override
-    public void extractRenderState(final CharnBellBlockEntity blockEntity, final BlockEntityRenderState renderState, final float partialTick, final Vec3 cameraPosition, @Nullable final ModelFeatureRenderer.CrumblingOverlay breakProgress) {
+    public void extractRenderState(final CharnBellBlockEntity blockEntity, final CharnBellBlockEntityRenderState renderState, final float partialTick, final Vec3 cameraPosition, @Nullable final ModelFeatureRenderer.CrumblingOverlay breakProgress) {
         BlockEntityRenderer.super.extractRenderState(blockEntity, renderState, partialTick, cameraPosition, breakProgress);
+        renderState.hitNorth = blockEntity.isHitNorth();
+        renderState.lastHitTime = blockEntity.getLastHitTime();
     }
 
     @Override
-    public void submit(final BlockEntityRenderState renderState, final PoseStack poseStack, final SubmitNodeCollector nodeCollector, final CameraRenderState cameraRenderState) {
+    public void submit(final CharnBellBlockEntityRenderState renderState, final PoseStack poseStack, final SubmitNodeCollector nodeCollector, final CameraRenderState cameraRenderState) {
         nodeCollector.submitCustomGeometry(poseStack, MODEL.renderType(TEXTURE), (pose, consumer) -> {
             final PoseStack stack = new PoseStack();
             stack.pushPose();
