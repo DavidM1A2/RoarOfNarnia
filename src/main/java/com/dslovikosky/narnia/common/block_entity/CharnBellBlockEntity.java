@@ -67,7 +67,7 @@ public class CharnBellBlockEntity extends BlockEntity {
                     final RandomSource random = player.getRandom();
                     level.addParticle(new DustParticleOptions(ARGB.color(100, 100, 100), 4f),
                             player.getRandomX(10),
-                            player.getY((random.nextDouble() - 0.5) * 4),
+                            player.getY((random.nextDouble() - 0.25) * 4),
                             player.getRandomZ(10),
                             (random.nextDouble() - 0.5) * 0.5,
                             -random.nextDouble() * 0.2 - 0.2,
