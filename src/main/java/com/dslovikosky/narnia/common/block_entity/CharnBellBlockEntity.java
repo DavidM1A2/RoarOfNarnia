@@ -1,5 +1,6 @@
 package com.dslovikosky.narnia.common.block_entity;
 
+import com.dslovikosky.narnia.client.proxy.ClientProxy;
 import com.dslovikosky.narnia.common.constants.ModBlockEntities;
 import com.dslovikosky.narnia.common.constants.ModSoundEvents;
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -49,6 +50,9 @@ public class CharnBellBlockEntity extends BlockEntity {
         }
         if (ticksRinging == 110) {
             level.playPlayerSound(ModSoundEvents.CHARN_EARTH_SHAKE.get(), SoundSource.BLOCKS, 1f, 1f);
+            if (level.isClientSide()) {
+                ClientProxy.CHARN_SCREEN_SHAKE_HANDLER.start(0.0f, 8f, 9f);
+            }
         }
         if (ticksRinging == RING_DURATION.toSeconds() * 20 - 10) {
             if (!level.isClientSide()) {

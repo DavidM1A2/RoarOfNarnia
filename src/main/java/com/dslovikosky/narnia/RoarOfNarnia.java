@@ -6,6 +6,7 @@ import com.dslovikosky.narnia.client.event.ClientSpellFreezeHandler;
 import com.dslovikosky.narnia.client.event.ParticleRegister;
 import com.dslovikosky.narnia.client.event.RenderPipelineRegister;
 import com.dslovikosky.narnia.client.event.WoodBetweenTheWorldsClientHandler;
+import com.dslovikosky.narnia.client.proxy.ClientProxy;
 import com.dslovikosky.narnia.common.constants.Constants;
 import com.dslovikosky.narnia.common.constants.ModAttachmentTypes;
 import com.dslovikosky.narnia.common.constants.ModBlockEntities;
@@ -115,6 +116,7 @@ public class RoarOfNarnia {
             forgeBus.register(new KeyInputEventHandler());
             forgeBus.register(new ClientLateRenderHandler());
             forgeBus.register(new ClientSpellFreezeHandler());
+            forgeBus.register(ClientProxy.CHARN_SCREEN_SHAKE_HANDLER);
         }
     }
 }
