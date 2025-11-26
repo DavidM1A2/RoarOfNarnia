@@ -4,14 +4,19 @@ import com.dslovikosky.narnia.client.proxy.ClientProxy;
 import com.dslovikosky.narnia.common.constants.ModBlockEntities;
 import com.dslovikosky.narnia.common.constants.ModSoundEvents;
 import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.ARGB;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LightningBolt;
 import net.minecraft.world.level.Level;
@@ -52,6 +57,22 @@ public class CharnBellBlockEntity extends BlockEntity {
             level.playPlayerSound(ModSoundEvents.CHARN_EARTH_SHAKE.get(), SoundSource.BLOCKS, 1f, 1f);
             if (level.isClientSide()) {
                 ClientProxy.CHARN_SCREEN_SHAKE_HANDLER.start(0.0f, 8f, 9f);
+            }
+        }
+        if (ticksRinging > 110) {
+            if (level.isClientSide()) {
+                final int particlesAtStage = (ticksRinging > 220) ? 3 : (ticksRinging > 180) ? 2 : 1;
+                for (int i = 0; i < particlesAtStage; i++) {
+                    final LocalPlayer player = Minecraft.getInstance().player;
+                    final RandomSource random = player.getRandom();
+                    level.addParticle(new DustParticleOptions(ARGB.color(100, 100, 100), 4f),
+                            player.getRandomX(10),
+                            player.getY((random.nextDouble() - 0.5) * 4),
+                            player.getRandomZ(10),
+                            (random.nextDouble() - 0.5) * 0.5,
+                            -random.nextDouble() * 0.2 - 0.2,
+                            (random.nextDouble() - 0.5) * 0.5);
+                }
             }
         }
         if (ticksRinging == RING_DURATION.toSeconds() * 20 - 10) {
