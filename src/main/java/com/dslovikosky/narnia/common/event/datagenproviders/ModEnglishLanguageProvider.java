@@ -65,6 +65,8 @@ public class ModEnglishLanguageProvider extends LanguageProvider {
         addEntityType(ModEntityTypes.WORLD_WOOD_BOAT, "World Wood Boat");
         addEntityType(ModEntityTypes.WORLD_WOOD_CHEST_BOAT, "World Wood Chest Boat");
 
+        addEntityType(ModEntityTypes.JADIS, "Jadis");
+
         addEffect(ModMobEffects.DROWSY, "Drowsy");
 
         add("sound.narnia.ui.page_turn", "Page Turn");

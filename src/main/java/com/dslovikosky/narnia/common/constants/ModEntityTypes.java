@@ -1,5 +1,6 @@
 package com.dslovikosky.narnia.common.constants;
 
+import com.dslovikosky.narnia.common.entity.JadisEntity;
 import com.dslovikosky.narnia.common.entity.spell.SpellAOEEntity;
 import com.dslovikosky.narnia.common.entity.spell.SpellChainEntity;
 import com.dslovikosky.narnia.common.entity.spell.SpellConeEntity;
@@ -36,6 +37,18 @@ public class ModEntityTypes {
                     .eyeHeight(0.5625F)
                     .clientTrackingRange(10)
                     .build(ResourceKey.create(Registries.ENTITY_TYPE, Constants.modLocation("world_wood_chest_boat")))
+    );
+
+    public static final DeferredHolder<EntityType<?>, EntityType<JadisEntity>> JADIS = ENTITY_TYPES.register(
+            "jadis",
+            () -> EntityType.Builder.<JadisEntity>of(JadisEntity::new, MobCategory.CREATURE)
+                    .setTrackingRange(50)
+                    .setUpdateInterval(100)
+                    .setShouldReceiveVelocityUpdates(true)
+                    .noLootTable()
+                    .sized(0.6F, 2.34F)
+                    .eyeHeight(2.2F)
+                    .build(ResourceKey.create(Registries.ENTITY_TYPE, Constants.modLocation("jadis")))
     );
 
     // Spell entities
