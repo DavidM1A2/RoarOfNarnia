@@ -2,6 +2,7 @@ package com.dslovikosky.narnia.common.block;
 
 import com.dslovikosky.narnia.common.block_entity.CharnBellBlockEntity;
 import com.dslovikosky.narnia.common.constants.Constants;
+import com.dslovikosky.narnia.common.constants.ModBlockEntities;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
@@ -17,6 +18,8 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
@@ -60,6 +63,10 @@ public class CharnBellBlock extends HorizontalDirectionalBlock implements Entity
     protected InteractionResult useWithoutItem(final BlockState state, final Level level, final BlockPos pos, final Player player, final BlockHitResult hitResult) {
         final BlockEntity blockEntity = level.getBlockEntity(pos);
         if (blockEntity instanceof CharnBellBlockEntity charnBellBlockEntity) {
+            if (charnBellBlockEntity.isRinging(level)) {
+                return InteractionResult.CONSUME;
+            }
+
             final Direction direction = state.getValue(FACING);
             final double dx = player.getX() - pos.getX() - 0.5;
             final double dz = player.getZ() - pos.getZ() - 0.5;
@@ -72,7 +79,7 @@ public class CharnBellBlock extends HorizontalDirectionalBlock implements Entity
             };
 
             charnBellBlockEntity.setHitNorth(hitNorth);
-            charnBellBlockEntity.setLastHitTime(System.currentTimeMillis());
+            charnBellBlockEntity.setLastHitTime(level.getGameTime());
             if (!level.isClientSide()) {
                 // Trigger an update to sync other clients
                 level.sendBlockUpdated(pos, state, state, Block.UPDATE_ALL);
@@ -95,6 +102,15 @@ public class CharnBellBlock extends HorizontalDirectionalBlock implements Entity
     @Override
     protected void createBlockStateDefinition(final StateDefinition.Builder<Block, BlockState> builder) {
         builder.add(FACING);
+    }
+
+    @Override
+    public @Nullable <T extends BlockEntity> BlockEntityTicker<T> getTicker(final Level level, final BlockState state, final BlockEntityType<T> blockEntityType) {
+        if (blockEntityType == ModBlockEntities.CHARN_BELL.get()) {
+            return CharnBellBlockEntity::tick;
+        }
+
+        return null;
     }
 
     @Override

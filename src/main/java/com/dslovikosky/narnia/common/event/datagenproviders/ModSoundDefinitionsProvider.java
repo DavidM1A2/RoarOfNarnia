@@ -27,5 +27,10 @@ public class ModSoundDefinitionsProvider extends SoundDefinitionsProvider {
                 .subtitle("sound.narnia.entity.spell_cast")
                 .replace(false)
                 .with(SoundDefinition.Sound.sound(Constants.modLocation("entity/spell_cast"), SoundDefinition.SoundType.SOUND).stream(false)));
+
+        add(ModSoundEvents.CHARN_BELL_RING.get(), SoundDefinition.definition()
+                .subtitle("sound.narnia.block.charn_bell_ring")
+                .replace(false)
+                .with(SoundDefinition.Sound.sound(Constants.modLocation("block/charn_bell_ring"), SoundDefinition.SoundType.SOUND).stream(false)));
     }
 }

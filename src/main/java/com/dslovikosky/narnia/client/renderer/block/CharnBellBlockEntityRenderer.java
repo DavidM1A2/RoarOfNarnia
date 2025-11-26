@@ -36,6 +36,8 @@ public class CharnBellBlockEntityRenderer implements BlockEntityRenderer<CharnBe
         BlockEntityRenderer.super.extractRenderState(blockEntity, renderState, partialTick, cameraPosition, breakProgress);
         renderState.hitNorth = blockEntity.isHitNorth();
         renderState.lastHitTime = blockEntity.getLastHitTime();
+        renderState.gameTime = blockEntity.getLevel().getGameTime();
+        renderState.partialTick = partialTick;
     }
 
     @Override

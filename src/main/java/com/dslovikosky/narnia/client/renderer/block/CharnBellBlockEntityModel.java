@@ -64,6 +64,8 @@ public class CharnBellBlockEntityModel extends BlockBenchModel<CharnBellBlockEnt
     @Override
     public void setupAnim(final CharnBellBlockEntityRenderState renderState) {
         super.setupAnim(renderState);
-        (renderState.hitNorth ? ringNorth : ringSouth).apply(System.currentTimeMillis() - renderState.lastHitTime, 1f);
+        final float ticksIntoAnimation = renderState.gameTime - renderState.lastHitTime + renderState.partialTick;
+        final long msIntoAnimation = Math.round(ticksIntoAnimation / 20 * 1000);
+        (renderState.hitNorth ? ringNorth : ringSouth).apply(msIntoAnimation, 1f);
     }
 }
