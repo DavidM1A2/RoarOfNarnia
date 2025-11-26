@@ -10,7 +10,6 @@ public class CharnScreenShakeHandler {
     private static final Random RAND = new Random();
     private double seedX;
     private double seedY;
-    private double seedZ;
     private double seedFov;
 
     private double startTimeSec = 0.0;
@@ -48,23 +47,19 @@ public class CharnScreenShakeHandler {
 
         final double yawNoise = smoothNoise(elapsedSeconds * 1.2, seedX);
         final double pitchNoise = smoothNoise(elapsedSeconds * 1.35, seedY);
-        final double rollNoise = smoothNoise(elapsedSeconds * 0.9, seedZ);
 
         final float intensity = currentIntensity();
         final float yawOffsetDeg = (float) (yawNoise * intensity * 3.5f * fade);
         final float pitchOffsetDeg = (float) (pitchNoise * intensity * 2.2f * fade);
-        final float rollOffsetDeg = (float) (rollNoise * intensity * 2.8f * fade);
 
         // apply: the event exposes get/set pitch/yaw/roll (angles in degrees)
         event.setYaw(event.getYaw() + yawOffsetDeg);
         event.setPitch(event.getPitch() + pitchOffsetDeg);
-        event.setRoll(event.getRoll() + rollOffsetDeg);
     }
 
     public void start(final float intensityStart, final float intensityEnd, final float seconds) {
         this.seedX = RAND.nextDouble() * 1000.0;
         this.seedY = RAND.nextDouble() * 1000.0;
-        this.seedZ = RAND.nextDouble() * 1000.0;
         this.seedFov = RAND.nextDouble() * 1000.0;
         this.intensityStart = intensityStart;
         this.intensityEnd = intensityEnd;
