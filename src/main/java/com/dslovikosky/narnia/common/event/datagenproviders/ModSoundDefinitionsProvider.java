@@ -32,5 +32,9 @@ public class ModSoundDefinitionsProvider extends SoundDefinitionsProvider {
                 .subtitle("sound.narnia.block.charn_bell_ring")
                 .replace(false)
                 .with(SoundDefinition.Sound.sound(Constants.modLocation("block/charn_bell_ring"), SoundDefinition.SoundType.SOUND).stream(false)));
+        add(ModSoundEvents.CHARN_EARTH_SHAKE.get(), SoundDefinition.definition()
+                .subtitle("sound.narnia.block.charn_earth_shake")
+                .replace(false)
+                .with(SoundDefinition.Sound.sound(Constants.modLocation("block/charn_earth_shake"), SoundDefinition.SoundType.SOUND).stream(false)));
     }
 }

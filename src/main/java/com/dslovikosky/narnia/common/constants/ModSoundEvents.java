@@ -15,4 +15,5 @@ public class ModSoundEvents {
     public static final DeferredHolder<SoundEvent, ? extends SoundEvent> SPELL_CAST = SOUND_EVENTS.register("spell_cast", SoundEvent::createVariableRangeEvent);
 
     public static final DeferredHolder<SoundEvent, ? extends SoundEvent> CHARN_BELL_RING = SOUND_EVENTS.register("charn_bell_ring", SoundEvent::createVariableRangeEvent);
+    public static final DeferredHolder<SoundEvent, ? extends SoundEvent> CHARN_EARTH_SHAKE = SOUND_EVENTS.register("charn_earth_shake", SoundEvent::createVariableRangeEvent);
 }

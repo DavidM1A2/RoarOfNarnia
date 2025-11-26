@@ -11,6 +11,8 @@ import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LightningBolt;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -23,7 +25,7 @@ import java.time.Duration;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class CharnBellBlockEntity extends BlockEntity {
-    private static final Duration RING_DURATION = Duration.ofSeconds(30);
+    private static final Duration RING_DURATION = Duration.ofSeconds(14);
 
     private boolean hitNorth = true;
     private long lastHitTime = 0;
@@ -43,12 +45,22 @@ public class CharnBellBlockEntity extends BlockEntity {
 
         final long ticksRinging = charnBellBlockEntity.getTicksRinging(level);
         if (ticksRinging == 0) {
-            level.playPlayerSound(ModSoundEvents.CHARN_BELL_RING.get(), SoundSource.BLOCKS, 1f, 0.5f);
+            level.playPlayerSound(ModSoundEvents.CHARN_BELL_RING.get(), SoundSource.BLOCKS, 1f, 1f);
+        }
+        if (ticksRinging == 110) {
+            level.playPlayerSound(ModSoundEvents.CHARN_EARTH_SHAKE.get(), SoundSource.BLOCKS, 1f, 1f);
+        }
+        if (ticksRinging == RING_DURATION.toSeconds() * 20 - 10) {
+            if (!level.isClientSide()) {
+                final LightningBolt lightningBolt = new LightningBolt(EntityType.LIGHTNING_BOLT, level);
+                lightningBolt.setPos(pos.getX() + 0.5, pos.getY() + 1.5, pos.getZ() + 0.5);
+                level.addFreshEntity(lightningBolt);
+            }
         }
     }
 
     public boolean isRinging(final Level level) {
-        return getTicksRinging(level) < RING_DURATION.toSeconds() * 20;
+        return getTicksRinging(level) <= RING_DURATION.toSeconds() * 20;
     }
 
     public long getTicksRinging(final Level level) {

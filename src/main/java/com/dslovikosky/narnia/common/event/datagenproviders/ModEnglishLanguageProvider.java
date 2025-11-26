@@ -71,6 +71,7 @@ public class ModEnglishLanguageProvider extends LanguageProvider {
         add("sound.narnia.music.wood_between_the_worlds", "Wood Between the Worlds Music");
         add("sound.narnia.entity.spell_cast", "Spell Cast");
         add("sound.narnia.block.charn_bell_ring", "Charn Bell Ring");
+        add("sound.narnia.block.charn_earth_shake", "Charn Earth Shake");
 
         add("power_source.narnia.creative.name", "Creative");
         add("power_source.narnia.creative.description", "Cast spells of any cost while in creative mode.");
