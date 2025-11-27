@@ -1,6 +1,7 @@
 package com.dslovikosky.narnia.common.constants;
 
 import com.dslovikosky.narnia.common.block.CharnBellBlock;
+import com.dslovikosky.narnia.common.block.CharnImageHallStatueBlock;
 import com.dslovikosky.narnia.common.block.dark_city.ChiseledDarkCityStoneBricksBlock;
 import com.dslovikosky.narnia.common.block.dark_city.DarkCityCobblestoneBlock;
 import com.dslovikosky.narnia.common.block.dark_city.DarkCityDoorBlock;
@@ -84,4 +85,5 @@ public class ModBlocks {
     public static final DeferredBlock<DarkCitySlateSlabBlock> DARK_CITY_SLATE_SLAB = BLOCKS.register("dark_city_slate_slab", DarkCitySlateSlabBlock::new);
 
     public static final DeferredBlock<CharnBellBlock> CHARN_BELL = BLOCKS.register("charn_bell", CharnBellBlock::new);
+    public static final DeferredBlock<CharnImageHallStatueBlock> CHARN_IMAGE_HALL_STATUE = BLOCKS.register("charn_image_hall_statue", CharnImageHallStatueBlock::new);
 }
