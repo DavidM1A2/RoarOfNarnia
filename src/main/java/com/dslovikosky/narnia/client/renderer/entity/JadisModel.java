@@ -17,7 +17,7 @@ import net.neoforged.neoforge.client.entity.animation.json.AnimationHolder;
 import java.util.function.Function;
 
 public class JadisModel extends EntityModel<JadisRenderState> {
-    private static final AnimationHolder SIT = getAnimation(Constants.modLocation("jadis/sit"));
+    public static final AnimationHolder SIT = getAnimation(Constants.modLocation("jadis/sit"));
     private static final AnimationHolder WALK = getAnimation(Constants.modLocation("jadis/walk"));
     private final KeyframeAnimation sit;
     private final KeyframeAnimation walk;
