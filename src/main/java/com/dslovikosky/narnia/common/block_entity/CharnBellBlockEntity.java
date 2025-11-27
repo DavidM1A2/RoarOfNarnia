@@ -1,8 +1,12 @@
 package com.dslovikosky.narnia.common.block_entity;
 
 import com.dslovikosky.narnia.client.proxy.ClientProxy;
+import com.dslovikosky.narnia.common.block.CharnImageHallStatueBlock;
 import com.dslovikosky.narnia.common.constants.ModBlockEntities;
+import com.dslovikosky.narnia.common.constants.ModBlocks;
 import com.dslovikosky.narnia.common.constants.ModSoundEvents;
+import com.dslovikosky.narnia.common.entity.JadisEntity;
+import com.dslovikosky.narnia.common.model.CharnStatueType;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
@@ -20,6 +24,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LightningBolt;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
@@ -31,6 +36,7 @@ import java.time.Duration;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class CharnBellBlockEntity extends BlockEntity {
+    private static final int JADIS_BLOCK_SEARCH_RADIUS = 32;
     private static final Duration RING_DURATION = Duration.ofSeconds(14);
 
     private boolean hitNorth = true;
@@ -80,6 +86,31 @@ public class CharnBellBlockEntity extends BlockEntity {
                 final LightningBolt lightningBolt = new LightningBolt(EntityType.LIGHTNING_BOLT, level);
                 lightningBolt.setPos(pos.getX() + 0.5, pos.getY() + 1.5, pos.getZ() + 0.5);
                 level.addFreshEntity(lightningBolt);
+
+                // Find the jadis statue
+                final BlockPos.MutableBlockPos mutableBlockPos = new BlockPos.MutableBlockPos();
+                final int centerX = pos.getX();
+                final int centerY = pos.getY();
+                final int centerZ = pos.getZ();
+                for (int x = -JADIS_BLOCK_SEARCH_RADIUS + centerX; x <= JADIS_BLOCK_SEARCH_RADIUS + centerX; x++) {
+                    for (int y = -5 + centerY; y <= 5 + centerY; y++) {
+                        for (int z = -JADIS_BLOCK_SEARCH_RADIUS + centerZ; z <= JADIS_BLOCK_SEARCH_RADIUS + centerZ; z++) {
+                            final BlockState blockState = level.getBlockState(mutableBlockPos.set(x, y, z));
+                            if (blockState.is(ModBlocks.CHARN_IMAGE_HALL_STATUE.get()) && blockState.getValue(CharnImageHallStatueBlock.TYPE) == CharnStatueType.JADIS) {
+                                level.setBlock(mutableBlockPos, Blocks.AIR.defaultBlockState(), 3);
+                                final JadisEntity jadisEntity = new JadisEntity(level);
+                                jadisEntity.setPos(mutableBlockPos.getX() + 0.5, mutableBlockPos.getY() + 0.5, mutableBlockPos.getZ() + 0.5);
+                                jadisEntity.setYRot(blockState.getValue(CharnImageHallStatueBlock.FACING).toYRot());
+                                level.addFreshEntity(jadisEntity);
+                                return;
+                            }
+                        }
+                    }
+                }
+
+                final JadisEntity jadisEntity = new JadisEntity(level);
+                jadisEntity.setPos(centerX + 0.5, centerY + 0.5, centerZ + 0.5);
+                level.addFreshEntity(jadisEntity);
             }
         }
     }

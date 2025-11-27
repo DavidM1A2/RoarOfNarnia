@@ -4,6 +4,7 @@ import com.dslovikosky.narnia.client.event.BlockEntityRendererRegister;
 import com.dslovikosky.narnia.client.event.ClientLateRenderHandler;
 import com.dslovikosky.narnia.client.event.ClientReloadHandler;
 import com.dslovikosky.narnia.client.event.ClientSpellFreezeHandler;
+import com.dslovikosky.narnia.client.event.EntityRendererRegister;
 import com.dslovikosky.narnia.client.event.ParticleRegister;
 import com.dslovikosky.narnia.client.event.RenderPipelineRegister;
 import com.dslovikosky.narnia.client.event.WoodBetweenTheWorldsClientHandler;
@@ -67,9 +68,10 @@ public class RoarOfNarnia {
         modBus.register(new PacketRegistrationHandler());
         modBus.register(new RegistryRegister());
         modBus.register(new KeyMappingRegister());
+        modBus.register(new EntityRegistrationHandler());
         if (fmlLoader.getDist() == Dist.CLIENT) {
             modBus.register(new BlockEntityRendererRegister());
-            modBus.register(new EntityRegistrationHandler());
+            modBus.register(new EntityRendererRegister());
             modBus.register(new DimensionSpecialEffectsRegister());
             modBus.register(new ModColorRegister());
             modBus.register(new ClientReloadHandler());
