@@ -1,4 +1,4 @@
-package com.dslovikosky.narnia.common.event;
+package com.dslovikosky.narnia.client.event;
 
 import com.dslovikosky.narnia.client.renderer.block.CharnBellBlockEntityRenderer;
 import com.dslovikosky.narnia.common.constants.ModBlockEntities;

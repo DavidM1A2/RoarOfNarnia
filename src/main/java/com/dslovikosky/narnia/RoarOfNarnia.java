@@ -1,5 +1,6 @@
 package com.dslovikosky.narnia;
 
+import com.dslovikosky.narnia.client.event.BlockEntityRendererRegister;
 import com.dslovikosky.narnia.client.event.ClientLateRenderHandler;
 import com.dslovikosky.narnia.client.event.ClientReloadHandler;
 import com.dslovikosky.narnia.client.event.ClientSpellFreezeHandler;
@@ -29,7 +30,6 @@ import com.dslovikosky.narnia.common.constants.ModStructurePieces;
 import com.dslovikosky.narnia.common.constants.ModStructurePlacementTypes;
 import com.dslovikosky.narnia.common.constants.ModStructureTypes;
 import com.dslovikosky.narnia.common.event.AttachmentHandler;
-import com.dslovikosky.narnia.common.event.BlockEntityRendererRegister;
 import com.dslovikosky.narnia.common.event.DataGenerationHandler;
 import com.dslovikosky.narnia.common.event.DelayedDeliveryEntryHandler;
 import com.dslovikosky.narnia.common.event.DimensionSpecialEffectsRegister;
@@ -63,13 +63,13 @@ public class RoarOfNarnia {
 
         modBus.register(new DataGenerationHandler());
         modBus.register(new ModDatapackObjectProvider());
-        modBus.register(new EntityRegistrationHandler());
-        modBus.register(new BlockEntityRendererRegister());
         modBus.register(new SignBlockRegister());
         modBus.register(new PacketRegistrationHandler());
         modBus.register(new RegistryRegister());
         modBus.register(new KeyMappingRegister());
         if (fmlLoader.getDist() == Dist.CLIENT) {
+            modBus.register(new BlockEntityRendererRegister());
+            modBus.register(new EntityRegistrationHandler());
             modBus.register(new DimensionSpecialEffectsRegister());
             modBus.register(new ModColorRegister());
             modBus.register(new ClientReloadHandler());
