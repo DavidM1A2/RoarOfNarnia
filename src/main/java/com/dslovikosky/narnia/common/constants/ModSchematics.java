@@ -11,4 +11,5 @@ public class ModSchematics {
     public static final DeferredHolder<Schematic, Schematic> DARK_CITY_GARDEN_1 = SCHEMATICS.register("dark_city_garden_1", Schematic::new);
     public static final DeferredHolder<Schematic, Schematic> DARK_CITY_LARGE_1 = SCHEMATICS.register("dark_city_large_1", Schematic::new);
     public static final DeferredHolder<Schematic, Schematic> DARK_CITY_TOWER_1 = SCHEMATICS.register("dark_city_tower_1", Schematic::new);
+    public static final DeferredHolder<Schematic, Schematic> DARK_CITY_PYRAMID_1 = SCHEMATICS.register("dark_city_pyramid_1", Schematic::new);
 }

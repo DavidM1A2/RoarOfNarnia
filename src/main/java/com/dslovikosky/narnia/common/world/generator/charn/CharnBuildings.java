@@ -27,6 +27,7 @@ public class CharnBuildings {
             .add(Pair.of(ModSchematics.DARK_CITY_GARDEN_1, -5))
             .add(Pair.of(ModSchematics.DARK_CITY_LARGE_1, 0))
             .add(Pair.of(ModSchematics.DARK_CITY_TOWER_1, 0))
+            .add(Pair.of(ModSchematics.DARK_CITY_PYRAMID_1, 0))
             .build();
 
     private final CharnTerrain charnTerrain;
