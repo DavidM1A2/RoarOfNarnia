@@ -51,8 +51,7 @@ public class ModModelProvider extends ModelProvider {
         blockModels.createTrivialCube(ModBlocks.DARK_CITY_COBBLESTONE.get());
         blockModels.createAxisAlignedPillarBlock(ModBlocks.DARK_CITY_SMOOTH_STONE.get(), TexturedModel.COLUMN);
         createStandaloneSlab(blockModels, ModBlocks.DARK_CITY_SMOOTH_STONE.get(), ModBlocks.DARK_CITY_SMOOTH_STONE_SLAB.get());
-        blockModels.createTrivialBlock(ModBlocks.DARK_CITY_WINDOW.get(), TexturedModel.CUBE.updateTemplate(template ->
-                template.extend().renderType(RenderType.CUTOUT.getName()).build()));
+        createCutoutBlock(blockModels, ModBlocks.DARK_CITY_WINDOW.get());
         createDoor(blockModels, ModBlocks.DARK_CITY_DOOR.get());
 
         blockModels.family(ModBlocks.DARK_CITY_STONE_BRICKS.get())
@@ -67,6 +66,10 @@ public class ModModelProvider extends ModelProvider {
 
         blockModels.createAirLikeBlock(ModBlocks.CHARN_BELL.get(), ModBlocks.CHARN_BELL.asItem());
         blockModels.createAirLikeBlock(ModBlocks.CHARN_IMAGE_HALL_STATUE.get(), ModBlocks.CHARN_IMAGE_HALL_STATUE.asItem());
+        createCutoutBlock(blockModels, ModBlocks.BLUE_RUNE.get());
+        createCutoutBlock(blockModels, ModBlocks.GREEN_RUNE.get());
+        createCutoutBlock(blockModels, ModBlocks.RED_RUNE.get());
+        createCutoutBlock(blockModels, ModBlocks.YELLOW_RUNE.get());
 
         blockModels.family(ModBlocks.DARK_CITY_SLATE.get())
                 .generateFor(new BlockFamily.Builder(ModBlocks.DARK_CITY_SLATE.get())
@@ -134,5 +137,9 @@ public class ModModelProvider extends ModelProvider {
         final MultiVariant slabTopVariant = BlockModelGenerators.plainVariant(ModelTemplates.SLAB_TOP.create(slabBlock, baseTextureMapping, blockModels.modelOutput));
         final MultiVariant slabDoubleVariant = BlockModelGenerators.plainVariant(ModelTemplates.CUBE_COLUMN.createWithOverride(slabBlock, "_double", baseTextureMapping, blockModels.modelOutput));
         blockModels.blockStateOutput.accept(BlockModelGenerators.createSlab(slabBlock, slabBottomVariant, slabTopVariant, slabDoubleVariant));
+    }
+
+    private void createCutoutBlock(final BlockModelGenerators blockModels, final Block block) {
+        blockModels.createTrivialBlock(block, TexturedModel.CUBE.updateTemplate(template -> template.extend().renderType(RenderType.CUTOUT.getName()).build()));
     }
 }

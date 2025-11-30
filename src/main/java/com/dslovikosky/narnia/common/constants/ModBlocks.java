@@ -2,6 +2,7 @@ package com.dslovikosky.narnia.common.constants;
 
 import com.dslovikosky.narnia.common.block.CharnBellBlock;
 import com.dslovikosky.narnia.common.block.CharnImageHallStatueBlock;
+import com.dslovikosky.narnia.common.block.RuneBlock;
 import com.dslovikosky.narnia.common.block.dark_city.ChiseledDarkCityStoneBricksBlock;
 import com.dslovikosky.narnia.common.block.dark_city.DarkCityCobblestoneBlock;
 import com.dslovikosky.narnia.common.block.dark_city.DarkCityDoorBlock;
@@ -86,4 +87,8 @@ public class ModBlocks {
 
     public static final DeferredBlock<CharnBellBlock> CHARN_BELL = BLOCKS.register("charn_bell", CharnBellBlock::new);
     public static final DeferredBlock<CharnImageHallStatueBlock> CHARN_IMAGE_HALL_STATUE = BLOCKS.register("charn_image_hall_statue", CharnImageHallStatueBlock::new);
+    public static final DeferredBlock<RuneBlock> BLUE_RUNE = BLOCKS.register("blue_rune", it -> new RuneBlock(RuneBlock.Color.BLUE));
+    public static final DeferredBlock<RuneBlock> GREEN_RUNE = BLOCKS.register("green_rune", it -> new RuneBlock(RuneBlock.Color.GREEN));
+    public static final DeferredBlock<RuneBlock> RED_RUNE = BLOCKS.register("red_rune", it -> new RuneBlock(RuneBlock.Color.RED));
+    public static final DeferredBlock<RuneBlock> YELLOW_RUNE = BLOCKS.register("yellow_rune", it -> new RuneBlock(RuneBlock.Color.YELLOW));
 }

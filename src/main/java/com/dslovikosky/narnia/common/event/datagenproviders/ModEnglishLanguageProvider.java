@@ -69,6 +69,10 @@ public class ModEnglishLanguageProvider extends LanguageProvider {
 
         addBlock(ModBlocks.CHARN_BELL, "Charn Bell");
         addBlock(ModBlocks.CHARN_IMAGE_HALL_STATUE, "Charn Image Hall Statue");
+        addBlock(ModBlocks.BLUE_RUNE, "Blue Rune");
+        addBlock(ModBlocks.GREEN_RUNE, "Green Rune");
+        addBlock(ModBlocks.RED_RUNE, "Red Rune");
+        addBlock(ModBlocks.YELLOW_RUNE, "Yellow Rune");
 
         addEntityType(ModEntityTypes.WORLD_WOOD_BOAT, "World Wood Boat");
         addEntityType(ModEntityTypes.WORLD_WOOD_CHEST_BOAT, "World Wood Chest Boat");

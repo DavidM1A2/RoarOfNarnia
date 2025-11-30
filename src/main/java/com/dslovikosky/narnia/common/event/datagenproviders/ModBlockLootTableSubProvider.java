@@ -79,6 +79,10 @@ public class ModBlockLootTableSubProvider extends BlockLootSubProvider {
 
         add(ModBlocks.CHARN_BELL.get(), noDrop());
         add(ModBlocks.CHARN_IMAGE_HALL_STATUE.get(), noDrop());
+        add(ModBlocks.BLUE_RUNE.get(), noDrop());
+        add(ModBlocks.GREEN_RUNE.get(), noDrop());
+        add(ModBlocks.RED_RUNE.get(), noDrop());
+        add(ModBlocks.YELLOW_RUNE.get(), noDrop());
     }
 
     private LootItemCondition.Builder hasShearsOrSilkTouch() {
