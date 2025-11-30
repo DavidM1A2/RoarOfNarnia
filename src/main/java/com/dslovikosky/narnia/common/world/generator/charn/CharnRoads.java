@@ -10,13 +10,21 @@ public class CharnRoads {
     private static final double ALLEY_WIDTH = 5.0;
     private static final int MIN_BLOCKS_BETWEEN_ALLEYS = 24;
 
+    private final int centerX;
+    private final int centerZ;
+
+    public CharnRoads(final int centerX, final int centerZ) {
+        this.centerX = centerX;
+        this.centerZ = centerZ;
+    }
+
     /**
      * Roads for the giant grid in the city
      */
     public double computeRoadMask(final int x, final int z) {
         // Find distance to the nearest vertical and horizontal road centerlines
-        final double distToXCenter = Math.abs(Mth.positiveModulo(x + CITY_CELL_SIZE / 2.0, CITY_CELL_SIZE) - CITY_CELL_SIZE / 2.0);
-        final double distToZCenter = Math.abs(Mth.positiveModulo(z + CITY_CELL_SIZE / 2.0, CITY_CELL_SIZE) - CITY_CELL_SIZE / 2.0);
+        final double distToXCenter = Math.abs(Mth.positiveModulo((x + centerX) + CITY_CELL_SIZE / 2.0, CITY_CELL_SIZE) - CITY_CELL_SIZE / 2.0);
+        final double distToZCenter = Math.abs(Mth.positiveModulo((z + centerZ) + CITY_CELL_SIZE / 2.0, CITY_CELL_SIZE) - CITY_CELL_SIZE / 2.0);
 
         // Distance to the closest road (either along X or Z)
         final double dist = Math.min(distToXCenter, distToZCenter);
@@ -35,15 +43,19 @@ public class CharnRoads {
      */
     public double computeAlleyMask(final int x, final int z, final PositionalRandomFactory randomFactory) {
         // Which city cell are we in
-        final int cellX = Math.floorDiv(x, CITY_CELL_SIZE);
-        final int cellZ = Math.floorDiv(z, CITY_CELL_SIZE);
+        final int cellX = getCellX(x);
+        final int cellZ = getCellZ(z);
 
         final double[] verticals = computeAlleyVerticals(x, z, randomFactory);
         final double[] horizontals = computeAlleyHorizontals(x, z, randomFactory);
 
+        if (verticals.length == 0 || horizontals.length == 0) {
+            return 0.0;
+        }
+
         // Convert to local coordinates
-        final double localX = x - cellX * CITY_CELL_SIZE;
-        final double localZ = z - cellZ * CITY_CELL_SIZE;
+        final double localX = (x + centerX) - cellX * CITY_CELL_SIZE;
+        final double localZ = (z + centerZ) - cellZ * CITY_CELL_SIZE;
 
         // Distance to nearest vertical/horizontal alleys
         double nearestVertical = Double.POSITIVE_INFINITY;
@@ -71,15 +83,15 @@ public class CharnRoads {
     }
 
     public Plot getPlotAt(final int x, final int z, final PositionalRandomFactory randomFactory) {
-        final int cellX = Math.floorDiv(x, CITY_CELL_SIZE);
-        final int cellZ = Math.floorDiv(z, CITY_CELL_SIZE);
+        final int cellX = getCellX(x);
+        final int cellZ = getCellZ(z);
 
         final double[] alleyVerticals = computeAlleyVerticals(x, z, randomFactory);
         final double[] alleyHorizontals = computeAlleyHorizontals(x, z, randomFactory);
 
         // Convert to local coordinates
-        final int localX = x - cellX * CITY_CELL_SIZE;
-        final int localZ = z - cellZ * CITY_CELL_SIZE;
+        final int localX = (x + centerX) - cellX * CITY_CELL_SIZE;
+        final int localZ = (z + centerZ) - cellZ * CITY_CELL_SIZE;
 
         // Compute consistent “effective” half-widths (to be on block center)
         final double effectiveRoadHalfWidth = ROAD_WIDTH / 2.0;
@@ -109,13 +121,32 @@ public class CharnRoads {
             }
         }
 
-        return new Plot((int) minX + cellX * CITY_CELL_SIZE, (int) minZ + cellZ * CITY_CELL_SIZE, (int) Math.round(maxX - minX), (int) Math.round(maxZ - minZ));
+        return new Plot(
+                (int) (minX + cellX * CITY_CELL_SIZE - centerX),
+                (int) (minZ + cellZ * CITY_CELL_SIZE - centerZ),
+                (int) Math.round(maxX - minX),
+                (int) Math.round(maxZ - minZ)
+        );
+    }
+
+    public int getCellX(final int x) {
+        return Math.floorDiv((x + centerX), CITY_CELL_SIZE);
+    }
+
+    public int getCellZ(final int z) {
+        return Math.floorDiv((z + centerZ), CITY_CELL_SIZE);
     }
 
     private double[] computeAlleyVerticals(final int x, final int z, final PositionalRandomFactory randomFactory) {
         // Which city cell are we in
-        final int cellX = Math.floorDiv(x, CITY_CELL_SIZE);
-        final int cellZ = Math.floorDiv(z, CITY_CELL_SIZE);
+        final int cellX = getCellX(x);
+        final int cellZ = getCellZ(z);
+
+        // Special case, spawn Jadis' hall of images
+        if (cellX == 0 && cellZ == 0) {
+            return new double[0];
+        }
+
         final RandomSource rand = randomFactory.at(cellX, 0, cellZ);
 
         // Evenly space them but add random jitter.
@@ -134,8 +165,14 @@ public class CharnRoads {
 
     private double[] computeAlleyHorizontals(final int x, final int z, final PositionalRandomFactory randomFactory) {
         // Which city cell are we in
-        final int cellX = Math.floorDiv(x, CITY_CELL_SIZE);
-        final int cellZ = Math.floorDiv(z, CITY_CELL_SIZE);
+        final int cellX = getCellX(x);
+        final int cellZ = getCellZ(z);
+
+        // Special case, spawn Jadis' hall of images
+        if (cellX == 0 && cellZ == 0) {
+            return new double[0];
+        }
+
         final RandomSource rand = randomFactory.at(cellX, 0, cellZ);
 
         // Evenly space them but add random jitter.

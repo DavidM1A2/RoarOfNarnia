@@ -18,6 +18,7 @@ import net.minecraft.world.level.levelgen.synth.SimplexNoise;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -30,11 +31,18 @@ public class CharnBuildings {
             .add(Pair.of(ModSchematics.DARK_CITY_PYRAMID_1, 0))
             .build();
 
+    private final int centerX;
+    private final int centerZ;
     private final CharnTerrain charnTerrain;
     private final CharnRivers charnRivers;
     private final CharnRoads charnRoads;
 
-    public CharnBuildings(final CharnTerrain charnTerrain, final CharnRivers charnRivers, final CharnRoads charnRoads) {
+    public CharnBuildings(final int centerX, final int centerZ,
+                          final CharnTerrain charnTerrain,
+                          final CharnRivers charnRivers,
+                          final CharnRoads charnRoads) {
+        this.centerX = centerX;
+        this.centerZ = centerZ;
         this.charnTerrain = charnTerrain;
         this.charnRivers = charnRivers;
         this.charnRoads = charnRoads;
@@ -47,6 +55,12 @@ public class CharnBuildings {
         final int plotZ = plot.z();
         final int plotWidth = plot.width();
         final int plotHeight = plot.height();
+
+        final int cellX = charnRoads.getCellX(plotX);
+        final int cellZ = charnRoads.getCellZ(plotZ);
+        if (cellX == 0 && cellZ == 0) {
+            return Collections.emptyList();
+        }
 
         final RandomSource randomSource = randomFactory.at(plotX, 0, plotZ);
 

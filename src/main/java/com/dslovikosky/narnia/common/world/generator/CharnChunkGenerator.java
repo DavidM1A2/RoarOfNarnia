@@ -47,10 +47,13 @@ public class CharnChunkGenerator extends ChunkGenerator {
             it -> it.group(RegistryOps.retrieveElement(ModBiomes.DARK_CITY_RUINS)).apply(it, it.stable(CharnChunkGenerator::new)));
     private static final ResourceLocation RANDOM = Constants.modLocation("charn_noise");
 
+    private static final int CENTER_X = 64;
+    private static final int CENTER_Z = 64;
+
     private final CharnTerrain charnTerrain = new CharnTerrain();
     private final CharnRivers charnRivers = new CharnRivers();
-    private final CharnRoads charnRoads = new CharnRoads();
-    private final CharnBuildings charnBuildings = new CharnBuildings(charnTerrain, charnRivers, charnRoads);
+    private final CharnRoads charnRoads = new CharnRoads(CENTER_X, CENTER_Z);
+    private final CharnBuildings charnBuildings = new CharnBuildings(CENTER_X, CENTER_Z, charnTerrain, charnRivers, charnRoads);
 
     public CharnChunkGenerator(final Holder<Biome> biome) {
         super(new FixedBiomeSource(biome));
