@@ -44,5 +44,6 @@ public class ModItemTagsProvider extends ItemTagsProvider {
         tag(ItemTags.WOODEN_PRESSURE_PLATES).add(ModBlocks.WORLD_WOOD_PRESSURE_PLATE.get().asItem());
 
         tag(ModItemTags.REPAIRS_ANCIENT_ARMOR).add(ModItems.ANCIENT_METAL.get());
+        tag(ModItemTags.ANCIENT_TOOL_MATERIALS).add(ModItems.ANCIENT_METAL.get());
     }
 }

@@ -6,6 +6,7 @@ import com.dslovikosky.narnia.common.item.RingItem;
 import com.dslovikosky.narnia.common.item.SparklingDustItem;
 import com.dslovikosky.narnia.common.item.ancient.AncientArmorItem;
 import com.dslovikosky.narnia.common.item.ancient.AncientMetalItem;
+import com.dslovikosky.narnia.common.item.ancient.AncientSword;
 import com.dslovikosky.narnia.common.item.worldwood.WorldWoodBoatItem;
 import com.dslovikosky.narnia.common.item.worldwood.WorldWoodChestBoatItem;
 import com.dslovikosky.narnia.common.item.worldwood.WorldWoodHangingSignItem;
@@ -33,6 +34,7 @@ public class ModItems {
     public static final DeferredItem<AncientArmorItem> ANCIENT_CHESTPLATE = ITEMS.register("ancient_chestplate", it -> new AncientArmorItem(ArmorType.CHESTPLATE));
     public static final DeferredItem<AncientArmorItem> ANCIENT_LEGGINGS = ITEMS.register("ancient_leggings", it -> new AncientArmorItem(ArmorType.LEGGINGS));
     public static final DeferredItem<AncientArmorItem> ANCIENT_BOOTS = ITEMS.register("ancient_boots", it -> new AncientArmorItem(ArmorType.BOOTS));
+    public static final DeferredItem<AncientSword> ANCIENT_SWORD = ITEMS.register("ancient_sword", AncientSword::new);
 
     static {
         ModBlocks.BLOCKS.getEntries()

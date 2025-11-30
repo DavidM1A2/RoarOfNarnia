@@ -139,6 +139,14 @@ public class ModRecipeProvider extends RecipeProvider {
                 .pattern("A A")
                 .pattern("A A")
                 .save(output);
+        shaped(RecipeCategory.COMBAT, ModItems.ANCIENT_SWORD)
+                .unlockedBy(getHasName(ModItems.ANCIENT_METAL), has(ModItems.ANCIENT_METAL))
+                .define('S', Items.STICK)
+                .define('A', ModItems.ANCIENT_METAL)
+                .pattern("  A")
+                .pattern(" A ")
+                .pattern("S  ")
+                .save(output);
     }
 
     private void buttonFromPlanks(final RecipeOutput recipeOutput, final ButtonBlock buttonBlock, final Block planks) {

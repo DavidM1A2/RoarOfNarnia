@@ -31,6 +31,7 @@ public class ModEnglishLanguageProvider extends LanguageProvider {
         addItem(ModItems.ANCIENT_CHESTPLATE, "Ancient Chestplate");
         addItem(ModItems.ANCIENT_LEGGINGS, "Ancient Leggings");
         addItem(ModItems.ANCIENT_BOOTS, "Ancient Boots");
+        addItem(ModItems.ANCIENT_SWORD, "Ancient Sword");
 
         addBlock(ModBlocks.WORLD_WOOD, "World Wood");
         addBlock(ModBlocks.WORLD_WOOD_LOG, "World Wood Log");

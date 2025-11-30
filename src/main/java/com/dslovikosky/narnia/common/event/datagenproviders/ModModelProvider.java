@@ -88,6 +88,7 @@ public class ModModelProvider extends ModelProvider {
         itemModels.generateTrimmableItem(ModItems.ANCIENT_CHESTPLATE.get(), EquipmentAssets.DIAMOND, ItemModelGenerators.TRIM_PREFIX_CHESTPLATE, false);
         itemModels.generateTrimmableItem(ModItems.ANCIENT_LEGGINGS.get(), EquipmentAssets.DIAMOND, ItemModelGenerators.TRIM_PREFIX_LEGGINGS, false);
         itemModels.generateTrimmableItem(ModItems.ANCIENT_BOOTS.get(), EquipmentAssets.DIAMOND, ItemModelGenerators.TRIM_PREFIX_BOOTS, false);
+        itemModels.generateFlatItem(ModItems.ANCIENT_SWORD.get(), ModelTemplates.FLAT_HANDHELD_ITEM);
 
         itemModels.generateFlatItem(ModBlocks.CHARN_BELL.asItem(), ModelTemplates.FLAT_ITEM);
         itemModels.generateFlatItem(ModBlocks.CHARN_IMAGE_HALL_STATUE.asItem(), ModelTemplates.FLAT_ITEM);
