@@ -347,6 +347,12 @@ public class ModEnglishLanguageProvider extends LanguageProvider {
         add("property_error.narnia.registry_entry.missing_entry", "%1$s does not exist");
         add("property_error.narnia.registry_entry.disallowed_entry", "%1$s is not allowed");
 
+        add("dialog.narnia.jadis.name", "[Jadis]");
+        add("dialog.narnia.jadis.introduction.1", "Who has awakened me? Who has broken the spell?");
+        add("dialog.narnia.jadis.introduction.2", "You?! Anyone can see at a glance that you have no drop of royal or noble blood in your veins. How did such as you dare to enter this house?");
+        add("dialog.narnia.jadis.introduction.3", "There is great peril here. The whole palace is breaking up. If we are not out of it in a few minutes, we shall be buried under the ruin.");
+        add("dialog.narnia.jadis.introduction.4", "Come.");
+
         add("screen.narnia.power_source_selection", "Power Source Selection");
 
         add("key.category.narnia.narnia", "Narnia");
