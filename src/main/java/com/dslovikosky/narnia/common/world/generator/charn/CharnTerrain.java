@@ -1,12 +1,16 @@
 package com.dslovikosky.narnia.common.world.generator.charn;
 
+import net.minecraft.util.Mth;
 import net.minecraft.world.level.levelgen.synth.SimplexNoise;
 
 public class CharnTerrain {
     public double computeBaseHeight(final int x, final int z, final SimplexNoise noise) {
+        // Normal terrain components
         final double mountainHeight = computeMountainHeight(x, z, noise);
         final double detail = computeTerrainDetail(x, z, noise);
-        return 64.0 + mountainHeight + detail;
+
+        // Apply flattening
+        return 64.0 + (mountainHeight + detail) * getFlattenFactor(x, z);
     }
 
     private double computeTerrainDetail(final int x, final int z, final SimplexNoise noise) {
@@ -34,5 +38,26 @@ public class CharnTerrain {
         // Add slow global slope variation (adds more natural continental feel)
         final double slope = noise.getValue(x * 0.0002, z * 0.0002) * 10.0;
         return height + slope;
+    }
+
+    private double getFlattenFactor(int x, int z) {
+        final double ax = Math.abs(x);
+        final double az = Math.abs(z);
+
+        // Start fading terrain back in between 64 and 128 blocks away
+        final double flatRadius = CharnRoads.CITY_CELL_SIZE / 2.0;
+        final double normalRadius = flatRadius * 2;
+
+        // Compute fade factor (0 = flat, 1 = full terrain)
+        double fx = smoothstep(flatRadius, normalRadius, ax);
+        double fz = smoothstep(flatRadius, normalRadius, az);
+
+        // Combine square falloff
+        return Math.max(fx, fz);
+    }
+
+    private double smoothstep(double edge0, double edge1, double value) {
+        value = Mth.clamp((value - edge0) / (edge1 - edge0), 0.0, 1.0);
+        return value * value * (3 - 2 * value);
     }
 }

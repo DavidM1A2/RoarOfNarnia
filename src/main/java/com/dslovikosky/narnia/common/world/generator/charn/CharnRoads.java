@@ -5,7 +5,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.levelgen.PositionalRandomFactory;
 
 public class CharnRoads {
-    private static final int CITY_CELL_SIZE = 128;
+    static final int CITY_CELL_SIZE = 128;
     private static final double ROAD_WIDTH = 8.0;
     private static final double ALLEY_WIDTH = 5.0;
     private static final int MIN_BLOCKS_BETWEEN_ALLEYS = 24;
