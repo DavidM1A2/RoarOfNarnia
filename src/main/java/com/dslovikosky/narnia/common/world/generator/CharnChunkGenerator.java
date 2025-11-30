@@ -53,7 +53,7 @@ public class CharnChunkGenerator extends ChunkGenerator {
     private final CharnTerrain charnTerrain = new CharnTerrain();
     private final CharnRivers charnRivers = new CharnRivers();
     private final CharnRoads charnRoads = new CharnRoads(CENTER_X, CENTER_Z);
-    private final CharnBuildings charnBuildings = new CharnBuildings(CENTER_X, CENTER_Z, charnTerrain, charnRivers, charnRoads);
+    private final CharnBuildings charnBuildings = new CharnBuildings(charnTerrain, charnRivers, charnRoads);
 
     public CharnChunkGenerator(final Holder<Biome> biome) {
         super(new FixedBiomeSource(biome));
