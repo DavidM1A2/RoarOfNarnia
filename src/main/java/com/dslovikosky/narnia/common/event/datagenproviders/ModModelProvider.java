@@ -15,6 +15,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.data.BlockFamily;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.equipment.EquipmentAssets;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.client.model.generators.template.ExtendedModelTemplate;
 
@@ -81,6 +82,12 @@ public class ModModelProvider extends ModelProvider {
 
         itemModels.generateFlatItem(ModItems.WORLD_WOOD_BOAT.get(), ModelTemplates.FLAT_ITEM);
         itemModels.generateFlatItem(ModItems.WORLD_WOOD_CHEST_BOAT.get(), ModelTemplates.FLAT_ITEM);
+
+        itemModels.generateFlatItem(ModItems.ANCIENT_METAL.get(), ModelTemplates.FLAT_ITEM);
+        itemModels.generateTrimmableItem(ModItems.ANCIENT_HELMET.get(), EquipmentAssets.DIAMOND, ItemModelGenerators.TRIM_PREFIX_HELMET, false);
+        itemModels.generateTrimmableItem(ModItems.ANCIENT_CHESTPLATE.get(), EquipmentAssets.DIAMOND, ItemModelGenerators.TRIM_PREFIX_CHESTPLATE, false);
+        itemModels.generateTrimmableItem(ModItems.ANCIENT_LEGGINGS.get(), EquipmentAssets.DIAMOND, ItemModelGenerators.TRIM_PREFIX_LEGGINGS, false);
+        itemModels.generateTrimmableItem(ModItems.ANCIENT_BOOTS.get(), EquipmentAssets.DIAMOND, ItemModelGenerators.TRIM_PREFIX_BOOTS, false);
 
         itemModels.generateFlatItem(ModBlocks.CHARN_BELL.asItem(), ModelTemplates.FLAT_ITEM);
         itemModels.generateFlatItem(ModBlocks.CHARN_IMAGE_HALL_STATUE.asItem(), ModelTemplates.FLAT_ITEM);

@@ -1,0 +1,14 @@
+{
+  "layers": {
+    "humanoid": [
+      {
+        "texture": "narnia:ancient"
+      }
+    ],
+    "humanoid_leggings": [
+      {
+        "texture": "narnia:ancient"
+      }
+    ]
+  }
+}

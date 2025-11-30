@@ -112,6 +112,33 @@ public class ModRecipeProvider extends RecipeProvider {
         slab(RecipeCategory.BUILDING_BLOCKS, ModBlocks.DARK_CITY_SLATE_SLAB, ModBlocks.DARK_CITY_SLATE);
         stonecutterResultFromBase(RecipeCategory.BUILDING_BLOCKS, ModBlocks.DARK_CITY_SLATE_STAIRS, ModBlocks.DARK_CITY_SLATE);
         stairs(output, ModBlocks.DARK_CITY_SLATE_STAIRS.get(), ModBlocks.DARK_CITY_SLATE.get());
+
+        shaped(RecipeCategory.COMBAT, ModItems.ANCIENT_HELMET)
+                .unlockedBy(getHasName(ModItems.ANCIENT_METAL), has(ModItems.ANCIENT_METAL))
+                .define('A', ModItems.ANCIENT_METAL)
+                .pattern("AAA")
+                .pattern("A A")
+                .save(output);
+        shaped(RecipeCategory.COMBAT, ModItems.ANCIENT_CHESTPLATE)
+                .unlockedBy(getHasName(ModItems.ANCIENT_METAL), has(ModItems.ANCIENT_METAL))
+                .define('A', ModItems.ANCIENT_METAL)
+                .pattern("A A")
+                .pattern("AAA")
+                .pattern("AAA")
+                .save(output);
+        shaped(RecipeCategory.COMBAT, ModItems.ANCIENT_LEGGINGS)
+                .unlockedBy(getHasName(ModItems.ANCIENT_METAL), has(ModItems.ANCIENT_METAL))
+                .define('A', ModItems.ANCIENT_METAL)
+                .pattern("AAA")
+                .pattern("A A")
+                .pattern("A A")
+                .save(output);
+        shaped(RecipeCategory.COMBAT, ModItems.ANCIENT_BOOTS)
+                .unlockedBy(getHasName(ModItems.ANCIENT_METAL), has(ModItems.ANCIENT_METAL))
+                .define('A', ModItems.ANCIENT_METAL)
+                .pattern("A A")
+                .pattern("A A")
+                .save(output);
     }
 
     private void buttonFromPlanks(final RecipeOutput recipeOutput, final ButtonBlock buttonBlock, final Block planks) {
