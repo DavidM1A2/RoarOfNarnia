@@ -26,16 +26,22 @@ public class TextFieldPane extends GuiPane {
     private static final Color BASE_COLOR_TINT = new Color(255, 255, 255);
 
     private final List<ITextChangeListener> textChangeListeners = new ArrayList<>();
-    private final ImagePane background;
+    private final GuiPane background;
     private final StackPane textContainer;
     private final LabelComponent textLabel;
+    private final boolean isMultiline;
 
     private boolean isFocused = false;
     private String ghostText = "";
     private Color textColor = Color.WHITE;
 
     public TextFieldPane(final TrueTypeFont font) {
-        background = new ImagePane(Constants.modLocation("textures/gui/text_field_background.png"), ImagePane.DisplayMode.STRETCH);
+        this(font, new ImagePane(Constants.modLocation("textures/gui/text_field_background.png"), ImagePane.DisplayMode.STRETCH), false);
+    }
+
+    public TextFieldPane(final TrueTypeFont font, final GuiPane background, final boolean isMultiline) {
+        this.isMultiline = isMultiline;
+        this.background = background;
 
         textContainer = new StackPane();
         textContainer.setPrefSize(new Dimensions(1.0, 1.0, true));
@@ -90,7 +96,7 @@ public class TextFieldPane extends GuiPane {
 
     private void keyTyped(final KeyEvent event) {
         if (isFocused) {
-            final String character = StringUtil.filterText(Character.toString(event.getCharacter()));
+            final String character = StringUtil.filterText(Character.toString(event.getCharacter()), isMultiline);
             addText(character);
         }
     }
@@ -103,13 +109,18 @@ public class TextFieldPane extends GuiPane {
                 Minecraft.getInstance().keyboardHandler.setClipboard(getText());
             } else if (event.hasModifier(KeyEvent.Modifier.CONTROL) && event.getKey() == GLFW.GLFW_KEY_V) {
                 setText("");
-                addText(StringUtil.filterText(Minecraft.getInstance().keyboardHandler.getClipboard()));
+                addText(StringUtil.filterText(Minecraft.getInstance().keyboardHandler.getClipboard(), isMultiline));
             } else if (event.hasModifier(KeyEvent.Modifier.CONTROL) && event.getKey() == GLFW.GLFW_KEY_X) {
                 Minecraft.getInstance().keyboardHandler.setClipboard(getText());
                 setText("");
             } else {
                 switch (event.getKey()) {
                     case GLFW.GLFW_KEY_BACKSPACE -> removeChars(1);
+                    case GLFW.GLFW_KEY_ENTER -> {
+                        if (isMultiline) {
+                            addText("\n");
+                        }
+                    }
                     case GLFW.GLFW_KEY_LEFT, GLFW.GLFW_KEY_RIGHT -> { /* Not yet implemented */ }
                 }
             }
@@ -133,7 +144,7 @@ public class TextFieldPane extends GuiPane {
     }
 
     private void setTextInternal(final String rawText, final String oldText) {
-        final String newText = StringUtil.filterText(rawText);
+        final String newText = StringUtil.filterText(rawText, isMultiline);
         if (isFocused) {
             textLabel.setText(newText + "_");
             textLabel.setTextColor(textColor);
