@@ -1,15 +1,12 @@
 package com.dslovikosky.narnia.common.item;
 
+import com.dslovikosky.narnia.common.block.RuneBlock;
 import com.dslovikosky.narnia.common.constants.Constants;
-import com.dslovikosky.narnia.common.constants.ModSpellDeliveryMethods;
-import com.dslovikosky.narnia.common.constants.ModSpellEffects;
-import com.dslovikosky.narnia.common.spell.Spell;
-import com.dslovikosky.narnia.common.spell.SpellStage;
-import com.dslovikosky.narnia.common.spell.component.deliveryMethod.SpellDeliveryMethodInstance;
-import com.dslovikosky.narnia.common.spell.component.effect.base.SpellEffectInstance;
+import com.dslovikosky.narnia.common.world.data.CharnRuneSavedData;
 import com.mojang.logging.LogUtils;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -17,6 +14,8 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import org.slf4j.Logger;
+
+import java.util.Arrays;
 
 public class DebugItem extends Item {
     private static final Logger LOG = LogUtils.getLogger();
@@ -33,33 +32,37 @@ public class DebugItem extends Item {
 
     @Override
     public InteractionResult use(Level level, Player player, InteractionHand hand) {
-        final SpellEffectInstance effect = new SpellEffectInstance(ModSpellEffects.TELEPORT.get());
-        effect.setDefaults();
+        if (level instanceof ServerLevel serverLevel) {
+            Arrays.stream(RuneBlock.Color.values()).forEach(color ->
+                    serverLevel.getDataStorage().computeIfAbsent(CharnRuneSavedData.ID).setRune(color, false));
+        }
+//        final SpellEffectInstance effect = new SpellEffectInstance(ModSpellEffects.TELEPORT.get());
+//        effect.setDefaults();
 //        ModSpellEffects.SUMMON_ARROW.get().setSpeed(effect, 25);
 //        ModSpellEffects.SPEED.get().setDuration(effect, 20);
 
-        final SpellDeliveryMethodInstance deliveryMethod1 = new SpellDeliveryMethodInstance(ModSpellDeliveryMethods.PROJECTILE.get());
-        deliveryMethod1.setDefaults();
-        ModSpellDeliveryMethods.PROJECTILE.get().setSpeed(deliveryMethod1, 5);
-        ModSpellDeliveryMethods.PROJECTILE.get().setRange(deliveryMethod1, 25);
-        final SpellStage spellStage1 = new SpellStage();
-        spellStage1.setDeliveryInstance(deliveryMethod1);
-        spellStage1.getEffects()[0] = effect;
-
-        final SpellDeliveryMethodInstance deliveryMethod2 = new SpellDeliveryMethodInstance(ModSpellDeliveryMethods.PROJECTILE.get());
-        deliveryMethod2.setDefaults();
-        ModSpellDeliveryMethods.PROJECTILE.get().setSpeed(deliveryMethod2, 5);
-        ModSpellDeliveryMethods.PROJECTILE.get().setRange(deliveryMethod2, 25);
-        final SpellStage spellStage2 = new SpellStage();
-        spellStage2.setDeliveryInstance(deliveryMethod2);
-        spellStage2.getEffects()[0] = effect;
-
-        final Spell spell = new Spell();
-        spell.setName("Test");
-        spell.getSpellStages().add(spellStage1);
-        spell.getSpellStages().add(spellStage2);
-
-        spell.attemptToCast(player, player.getLookAngle(), false);
+//        final SpellDeliveryMethodInstance deliveryMethod1 = new SpellDeliveryMethodInstance(ModSpellDeliveryMethods.PROJECTILE.get());
+//        deliveryMethod1.setDefaults();
+//        ModSpellDeliveryMethods.PROJECTILE.get().setSpeed(deliveryMethod1, 5);
+//        ModSpellDeliveryMethods.PROJECTILE.get().setRange(deliveryMethod1, 25);
+//        final SpellStage spellStage1 = new SpellStage();
+//        spellStage1.setDeliveryInstance(deliveryMethod1);
+//        spellStage1.getEffects()[0] = effect;
+//
+//        final SpellDeliveryMethodInstance deliveryMethod2 = new SpellDeliveryMethodInstance(ModSpellDeliveryMethods.PROJECTILE.get());
+//        deliveryMethod2.setDefaults();
+//        ModSpellDeliveryMethods.PROJECTILE.get().setSpeed(deliveryMethod2, 5);
+//        ModSpellDeliveryMethods.PROJECTILE.get().setRange(deliveryMethod2, 25);
+//        final SpellStage spellStage2 = new SpellStage();
+//        spellStage2.setDeliveryInstance(deliveryMethod2);
+//        spellStage2.getEffects()[0] = effect;
+//
+//        final Spell spell = new Spell();
+//        spell.setName("Test");
+//        spell.getSpellStages().add(spellStage1);
+//        spell.getSpellStages().add(spellStage2);
+//
+//        spell.attemptToCast(player, player.getLookAngle(), false);
 
         return super.use(level, player, hand);
     }
