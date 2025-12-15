@@ -66,10 +66,10 @@ public class ModModelProvider extends ModelProvider {
 
         blockModels.createAirLikeBlock(ModBlocks.CHARN_BELL.get(), ModBlocks.CHARN_BELL.asItem());
         blockModels.createAirLikeBlock(ModBlocks.CHARN_IMAGE_HALL_STATUE.get(), ModBlocks.CHARN_IMAGE_HALL_STATUE.asItem());
-        createCutoutBlock(blockModels, ModBlocks.BLUE_RUNE.get());
-        createCutoutBlock(blockModels, ModBlocks.GREEN_RUNE.get());
-        createCutoutBlock(blockModels, ModBlocks.RED_RUNE.get());
-        createCutoutBlock(blockModels, ModBlocks.YELLOW_RUNE.get());
+        blockModels.createAirLikeBlock(ModBlocks.BLUE_RUNE.get(), ModBlocks.BLUE_RUNE.asItem());
+        blockModels.createAirLikeBlock(ModBlocks.GREEN_RUNE.get(), ModBlocks.GREEN_RUNE.asItem());
+        blockModels.createAirLikeBlock(ModBlocks.RED_RUNE.get(), ModBlocks.RED_RUNE.asItem());
+        blockModels.createAirLikeBlock(ModBlocks.YELLOW_RUNE.get(), ModBlocks.YELLOW_RUNE.asItem());
 
         blockModels.family(ModBlocks.DARK_CITY_SLATE.get())
                 .generateFor(new BlockFamily.Builder(ModBlocks.DARK_CITY_SLATE.get())
@@ -95,6 +95,10 @@ public class ModModelProvider extends ModelProvider {
 
         itemModels.generateFlatItem(ModBlocks.CHARN_BELL.asItem(), ModelTemplates.FLAT_ITEM);
         itemModels.generateFlatItem(ModBlocks.CHARN_IMAGE_HALL_STATUE.asItem(), ModelTemplates.FLAT_ITEM);
+        itemModels.generateFlatItem(ModBlocks.BLUE_RUNE.asItem(), ModelTemplates.FLAT_ITEM);
+        itemModels.generateFlatItem(ModBlocks.GREEN_RUNE.asItem(), ModelTemplates.FLAT_ITEM);
+        itemModels.generateFlatItem(ModBlocks.RED_RUNE.asItem(), ModelTemplates.FLAT_ITEM);
+        itemModels.generateFlatItem(ModBlocks.YELLOW_RUNE.asItem(), ModelTemplates.FLAT_ITEM);
     }
 
     private void createSapling(final BlockModelGenerators blockModels, final Block block, final BlockModelGenerators.PlantType plantType) {
