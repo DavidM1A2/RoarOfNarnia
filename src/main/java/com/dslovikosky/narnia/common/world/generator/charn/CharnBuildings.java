@@ -25,10 +25,15 @@ import java.util.function.Supplier;
 public class CharnBuildings {
     private static final List<Pair<Supplier<Schematic>, Integer>> DARK_CITY_SCHEMATICS = ImmutableList.<Pair<Supplier<Schematic>, Integer>>builder()
             .add(Pair.of(ModSchematics.DARK_CITY_SMALL_1, 0))
+            .add(Pair.of(ModSchematics.DARK_CITY_SMALL_2, 0))
+            .add(Pair.of(ModSchematics.DARK_CITY_SMALL_3, 0))
+            .add(Pair.of(ModSchematics.DARK_CITY_SMALL_4, 0))
             .add(Pair.of(ModSchematics.DARK_CITY_GARDEN_1, -5))
+            .add(Pair.of(ModSchematics.DARK_CITY_GARDEN_2, -5))
             .add(Pair.of(ModSchematics.DARK_CITY_LARGE_1, 0))
             .add(Pair.of(ModSchematics.DARK_CITY_TOWER_1, 0))
             .add(Pair.of(ModSchematics.DARK_CITY_PYRAMID_1, 0))
+            .add(Pair.of(ModSchematics.DARK_CITY_PYRAMID_2, 0))
             .build();
 
     private final CharnTerrain charnTerrain;
