@@ -310,8 +310,8 @@ public class CharnBuildings {
                 // Only place tile-entities for this column (match worldX/worldZ)
                 if (teWorldX != worldX || teWorldZ != worldZ) continue;
 
-                // Set tile entity NBT
-                final CompoundTag data = blockEntityTag.getCompound("Data").get();
+                // Set tile entity NBT (copy to avoid mutating shared schematic data)
+                final CompoundTag data = blockEntityTag.getCompound("Data").get().copy();
                 data.putInt("x", teWorldX);
                 data.putInt("y", y + sy);
                 data.putInt("z", teWorldZ);
