@@ -12,8 +12,8 @@ import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.client.entity.animation.json.AnimationHolder;
 
 import java.util.function.Function;
@@ -24,7 +24,7 @@ public class CharnBellBlockEntityModel extends BlockBenchModel<CharnBellBlockEnt
     private final KeyframeAnimation ringNorth;
     private final KeyframeAnimation ringSouth;
 
-    public CharnBellBlockEntityModel(final Function<ResourceLocation, RenderType> renderType) {
+    public CharnBellBlockEntityModel(final Function<Identifier, RenderType> renderType) {
         super(getLayerDefinition(), renderType);
         ringNorth = RING_NORTH.get().bake(root);
         ringSouth = RING_SOUTH.get().bake(root);

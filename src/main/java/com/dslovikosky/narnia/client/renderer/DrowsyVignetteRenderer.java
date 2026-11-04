@@ -13,6 +13,7 @@ import com.mojang.blaze3d.systems.CommandEncoder;
 import com.mojang.blaze3d.systems.GpuDevice;
 import com.mojang.blaze3d.systems.RenderPass;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.textures.FilterMode;
 import com.mojang.blaze3d.textures.GpuTextureView;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import net.minecraft.client.DeltaTracker;
@@ -100,7 +101,7 @@ public class DrowsyVignetteRenderer {
                 // Setup the pipeline, uniform, sampler, and vertex buffer
                 pass.setPipeline(ModRenderPipelines.DROWSY_VIGNETTE);
                 pass.setUniform("TimeUniform", uniformBufferObject.currentBuffer().slice(0, UBO_SIZE));
-                pass.bindSampler("In", colorView);
+                pass.bindTexture("In", colorView, RenderSystem.getSamplerCache().getClampToEdge(FilterMode.LINEAR));
                 pass.setVertexBuffer(0, vertexBufferObject);
 
                 // Draw 3 indices (one large triangle that covers the entire screen)

@@ -4,7 +4,7 @@ import com.dslovikosky.narnia.common.constants.Constants;
 import com.dslovikosky.narnia.common.constants.ModParticleTypes;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.data.PackOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.client.data.ParticleDescriptionProvider;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
@@ -80,6 +80,6 @@ public class ModParticleDescriptionProvider extends ParticleDescriptionProvider 
     }
 
     private void spriteSet(final DeferredHolder<ParticleType<?>, ? extends ParticleType<?>> particleType) {
-        spriteSet(particleType.get(), ResourceLocation.parse(particleType.getRegisteredName()));
+        spriteSet(particleType.get(), Identifier.parse(particleType.getRegisteredName()));
     }
 }

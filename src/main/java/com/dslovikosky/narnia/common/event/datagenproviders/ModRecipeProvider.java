@@ -4,7 +4,6 @@ import com.dslovikosky.narnia.common.constants.Constants;
 import com.dslovikosky.narnia.common.constants.ModBlocks;
 import com.dslovikosky.narnia.common.constants.ModItemTags;
 import com.dslovikosky.narnia.common.constants.ModItems;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeCategory;
@@ -178,7 +177,6 @@ public class ModRecipeProvider extends RecipeProvider {
     }
 
     @ParametersAreNonnullByDefault
-    @MethodsReturnNonnullByDefault
     public static class Runner extends RecipeProvider.Runner {
         // Get the parameters from the `GatherDataEvent`s.
         public Runner(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider) {

@@ -2,14 +2,12 @@ package com.dslovikosky.narnia.common.utils;
 
 import com.mojang.datafixers.util.Function7;
 import com.mojang.datafixers.util.Function8;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.codec.StreamCodec;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.function.Function;
 
 @ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 public class LongStreamCodec {
     public static <B, C, T1, T2, T3, T4, T5, T6, T7> StreamCodec<B, C> composite(
             final StreamCodec<? super B, T1> pCodec1,

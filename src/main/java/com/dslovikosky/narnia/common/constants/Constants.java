@@ -1,11 +1,11 @@
 package com.dslovikosky.narnia.common.constants;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class Constants {
     public static final String MOD_ID = "narnia";
 
-    public static ResourceLocation modLocation(final String path) {
-        return ResourceLocation.fromNamespaceAndPath(MOD_ID, path);
+    public static Identifier modLocation(final String path) {
+        return Identifier.fromNamespaceAndPath(MOD_ID, path);
     }
 }

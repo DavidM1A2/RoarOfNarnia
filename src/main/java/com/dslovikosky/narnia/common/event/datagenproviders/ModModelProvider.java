@@ -11,10 +11,10 @@ import net.minecraft.client.data.models.model.ModelTemplate;
 import net.minecraft.client.data.models.model.ModelTemplates;
 import net.minecraft.client.data.models.model.TextureMapping;
 import net.minecraft.client.data.models.model.TexturedModel;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.data.BlockFamily;
 import net.minecraft.data.PackOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.equipment.EquipmentAssets;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.client.model.generators.template.ExtendedModelTemplate;
@@ -106,7 +106,7 @@ public class ModModelProvider extends ModelProvider {
         final TextureMapping textureMapping = plantType.getTextureMapping(block);
         final MultiVariant multiVariant = BlockModelGenerators.plainVariant(plantType.getCross()
                 .extend()
-                .renderType(RenderType.cutout().getName())
+                .renderType(ChunkSectionLayer.CUTOUT.label())
                 .build()
                 .create(block, textureMapping, blockModels.modelOutput));
         blockModels.blockStateOutput.accept(BlockModelGenerators.createSimpleBlock(block, multiVariant));
@@ -114,23 +114,23 @@ public class ModModelProvider extends ModelProvider {
 
     private void createOrientableTrapdoor(final BlockModelGenerators blockModels, final Block trapdoorBlock) {
         final TextureMapping textureMapping = TextureMapping.defaultTexture(trapdoorBlock);
-        final MultiVariant multiVariantTop = BlockModelGenerators.plainVariant(withRenderType(ModelTemplates.ORIENTABLE_TRAPDOOR_TOP, RenderType.cutout().getName()).create(trapdoorBlock, textureMapping, blockModels.modelOutput));
-        final ResourceLocation resourceLocation = withRenderType(ModelTemplates.ORIENTABLE_TRAPDOOR_BOTTOM, RenderType.cutout().getName()).create(trapdoorBlock, textureMapping, blockModels.modelOutput);
-        final MultiVariant multiVariantOpen = BlockModelGenerators.plainVariant(withRenderType(ModelTemplates.ORIENTABLE_TRAPDOOR_OPEN, RenderType.cutout().getName()).create(trapdoorBlock, textureMapping, blockModels.modelOutput));
+        final MultiVariant multiVariantTop = BlockModelGenerators.plainVariant(withRenderType(ModelTemplates.ORIENTABLE_TRAPDOOR_TOP, ChunkSectionLayer.CUTOUT.label()).create(trapdoorBlock, textureMapping, blockModels.modelOutput));
+        final Identifier resourceLocation = withRenderType(ModelTemplates.ORIENTABLE_TRAPDOOR_BOTTOM, ChunkSectionLayer.CUTOUT.label()).create(trapdoorBlock, textureMapping, blockModels.modelOutput);
+        final MultiVariant multiVariantOpen = BlockModelGenerators.plainVariant(withRenderType(ModelTemplates.ORIENTABLE_TRAPDOOR_OPEN, ChunkSectionLayer.CUTOUT.label()).create(trapdoorBlock, textureMapping, blockModels.modelOutput));
         blockModels.blockStateOutput.accept(BlockModelGenerators.createOrientableTrapdoor(trapdoorBlock, multiVariantTop, BlockModelGenerators.plainVariant(resourceLocation), multiVariantOpen));
         blockModels.registerSimpleItemModel(trapdoorBlock, resourceLocation);
     }
 
     private void createDoor(final BlockModelGenerators blockModels, final Block doorBlock) {
         final TextureMapping textureMapping = TextureMapping.door(doorBlock);
-        final MultiVariant multiVariantBottomLeft = BlockModelGenerators.plainVariant(withRenderType(ModelTemplates.DOOR_BOTTOM_LEFT, RenderType.cutout().getName()).create(doorBlock, textureMapping, blockModels.modelOutput));
-        final MultiVariant multiVariantBottomLeftOpen = BlockModelGenerators.plainVariant(withRenderType(ModelTemplates.DOOR_BOTTOM_LEFT_OPEN, RenderType.cutout().getName()).create(doorBlock, textureMapping, blockModels.modelOutput));
-        final MultiVariant multiVariantBottomRight = BlockModelGenerators.plainVariant(withRenderType(ModelTemplates.DOOR_BOTTOM_RIGHT, RenderType.cutout().getName()).create(doorBlock, textureMapping, blockModels.modelOutput));
-        final MultiVariant multiVariantBottomRightOpen = BlockModelGenerators.plainVariant(withRenderType(ModelTemplates.DOOR_BOTTOM_RIGHT_OPEN, RenderType.cutout().getName()).create(doorBlock, textureMapping, blockModels.modelOutput));
-        final MultiVariant multiVariantTopLeft = BlockModelGenerators.plainVariant(withRenderType(ModelTemplates.DOOR_TOP_LEFT, RenderType.cutout().getName()).create(doorBlock, textureMapping, blockModels.modelOutput));
-        final MultiVariant multiVariantTopLeftOpen = BlockModelGenerators.plainVariant(withRenderType(ModelTemplates.DOOR_TOP_LEFT_OPEN, RenderType.cutout().getName()).create(doorBlock, textureMapping, blockModels.modelOutput));
-        final MultiVariant multiVariantTopRight = BlockModelGenerators.plainVariant(withRenderType(ModelTemplates.DOOR_TOP_RIGHT, RenderType.cutout().getName()).create(doorBlock, textureMapping, blockModels.modelOutput));
-        final MultiVariant multiVariantTopRightOpen = BlockModelGenerators.plainVariant(withRenderType(ModelTemplates.DOOR_TOP_RIGHT_OPEN, RenderType.cutout().getName()).create(doorBlock, textureMapping, blockModels.modelOutput));
+        final MultiVariant multiVariantBottomLeft = BlockModelGenerators.plainVariant(withRenderType(ModelTemplates.DOOR_BOTTOM_LEFT, ChunkSectionLayer.CUTOUT.label()).create(doorBlock, textureMapping, blockModels.modelOutput));
+        final MultiVariant multiVariantBottomLeftOpen = BlockModelGenerators.plainVariant(withRenderType(ModelTemplates.DOOR_BOTTOM_LEFT_OPEN, ChunkSectionLayer.CUTOUT.label()).create(doorBlock, textureMapping, blockModels.modelOutput));
+        final MultiVariant multiVariantBottomRight = BlockModelGenerators.plainVariant(withRenderType(ModelTemplates.DOOR_BOTTOM_RIGHT, ChunkSectionLayer.CUTOUT.label()).create(doorBlock, textureMapping, blockModels.modelOutput));
+        final MultiVariant multiVariantBottomRightOpen = BlockModelGenerators.plainVariant(withRenderType(ModelTemplates.DOOR_BOTTOM_RIGHT_OPEN, ChunkSectionLayer.CUTOUT.label()).create(doorBlock, textureMapping, blockModels.modelOutput));
+        final MultiVariant multiVariantTopLeft = BlockModelGenerators.plainVariant(withRenderType(ModelTemplates.DOOR_TOP_LEFT, ChunkSectionLayer.CUTOUT.label()).create(doorBlock, textureMapping, blockModels.modelOutput));
+        final MultiVariant multiVariantTopLeftOpen = BlockModelGenerators.plainVariant(withRenderType(ModelTemplates.DOOR_TOP_LEFT_OPEN, ChunkSectionLayer.CUTOUT.label()).create(doorBlock, textureMapping, blockModels.modelOutput));
+        final MultiVariant multiVariantTopRight = BlockModelGenerators.plainVariant(withRenderType(ModelTemplates.DOOR_TOP_RIGHT, ChunkSectionLayer.CUTOUT.label()).create(doorBlock, textureMapping, blockModels.modelOutput));
+        final MultiVariant multiVariantTopRightOpen = BlockModelGenerators.plainVariant(withRenderType(ModelTemplates.DOOR_TOP_RIGHT_OPEN, ChunkSectionLayer.CUTOUT.label()).create(doorBlock, textureMapping, blockModels.modelOutput));
         blockModels.registerSimpleFlatItemModel(doorBlock.asItem());
         blockModels.blockStateOutput.accept(BlockModelGenerators.createDoor(doorBlock, multiVariantBottomLeft, multiVariantBottomLeftOpen, multiVariantBottomRight, multiVariantBottomRightOpen, multiVariantTopLeft, multiVariantTopLeftOpen, multiVariantTopRight, multiVariantTopRightOpen));
     }
@@ -144,6 +144,6 @@ public class ModModelProvider extends ModelProvider {
     }
 
     private void createCutoutBlock(final BlockModelGenerators blockModels, final Block block) {
-        blockModels.createTrivialBlock(block, TexturedModel.CUBE.updateTemplate(template -> template.extend().renderType(RenderType.CUTOUT.getName()).build()));
+        blockModels.createTrivialBlock(block, TexturedModel.CUBE.updateTemplate(template -> template.extend().renderType(ChunkSectionLayer.CUTOUT.label()).build()));
     }
 }

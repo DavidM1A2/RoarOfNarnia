@@ -10,12 +10,11 @@ import com.dslovikosky.narnia.common.world.generator.charn.CharnTerrain;
 import com.dslovikosky.narnia.common.world.generator.util.FieldTraversal;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.RegistryOps;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.WorldGenRegion;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.LevelHeightAccessor;
@@ -40,12 +39,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
-@MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 public class CharnChunkGenerator extends ChunkGenerator {
     public static final MapCodec<CharnChunkGenerator> CODEC = RecordCodecBuilder.mapCodec(
             it -> it.group(RegistryOps.retrieveElement(ModBiomes.DARK_CITY_RUINS)).apply(it, it.stable(CharnChunkGenerator::new)));
-    private static final ResourceLocation RANDOM = Constants.modLocation("charn_noise");
+    private static final Identifier RANDOM = Constants.modLocation("charn_noise");
 
     private static final int CENTER_X = 64;
     private static final int CENTER_Z = 64;

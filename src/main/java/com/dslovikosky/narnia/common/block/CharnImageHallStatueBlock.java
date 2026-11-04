@@ -4,7 +4,6 @@ import com.dslovikosky.narnia.common.block_entity.CharnImageHallStatueBlockEntit
 import com.dslovikosky.narnia.common.constants.Constants;
 import com.dslovikosky.narnia.common.model.CharnStatueType;
 import com.mojang.serialization.MapCodec;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
@@ -22,7 +21,6 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
-@MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 public class CharnImageHallStatueBlock extends HorizontalDirectionalBlock implements EntityBlock {
     public static final EnumProperty<CharnStatueType> TYPE = EnumProperty.create("charn_statue_type", CharnStatueType.class);

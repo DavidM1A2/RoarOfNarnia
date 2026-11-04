@@ -1,6 +1,7 @@
 package com.dslovikosky.narnia.common.event;
 
 import com.dslovikosky.narnia.common.constants.ModAttachmentTypes;
+import net.minecraft.world.attribute.EnvironmentAttributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -30,7 +31,8 @@ public class SpellLunarHandler {
     private static final double VITAE_DECAY_PER_INTERVAL = 50.0;
 
     public static double getMaxVitae(final Level level) {
-        final int moonPhase = level.dimensionType().moonPhase(level.dayTime());
+        // As of 1.21.11 the moon phase is an environment attribute rather than derived from the day time
+        final int moonPhase = level.environmentAttributes().getDimensionValue(EnvironmentAttributes.MOON_PHASE).index();
         return VITAE_CAP_BY_MOON_PHASE.getOrDefault(moonPhase, 0.0);
     }
 

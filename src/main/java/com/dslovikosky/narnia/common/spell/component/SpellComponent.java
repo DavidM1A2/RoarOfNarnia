@@ -1,7 +1,7 @@
 package com.dslovikosky.narnia.common.spell.component;
 
 import com.dslovikosky.narnia.common.spell.component.property.SpellComponentProperty;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,7 +9,7 @@ import java.util.List;
 public abstract class SpellComponent<T extends SpellComponent<T>> extends SpellComponentBase {
     private final List<SpellComponentProperty<?>> editableProperties = new ArrayList<>();
 
-    public SpellComponent(final ResourceLocation id, final ResourceLocation icon) {
+    public SpellComponent(final Identifier id, final Identifier icon) {
         super(id, icon);
     }
 

@@ -2,12 +2,12 @@ package com.dslovikosky.narnia.common.spell.component.effect.base;
 
 import com.dslovikosky.narnia.common.spell.component.SpellComponentInstance;
 import com.dslovikosky.narnia.common.spell.component.property.SpellComponentPropertyFactory;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public abstract class DurationSpellEffect extends SpellEffect {
     private static final String NBT_DURATION = "duration";
 
-    public DurationSpellEffect(final ResourceLocation id, final Double minDuration, final Double defaultDuration, final Double maxDuration) {
+    public DurationSpellEffect(final Identifier id, final Double minDuration, final Double defaultDuration, final Double maxDuration) {
         super(id);
         addEditableProperty(SpellComponentPropertyFactory.doubleProperty()
                 .withBaseName(getUnlocalizedBaseName())

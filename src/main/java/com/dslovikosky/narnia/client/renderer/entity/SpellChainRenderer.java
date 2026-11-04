@@ -8,14 +8,13 @@ import com.dslovikosky.narnia.common.utils.MathUtils;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderStateShard;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.rendertype.RenderSetup;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.state.CameraRenderState;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -30,7 +29,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-@MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 public class SpellChainRenderer extends EntityRenderer<SpellChainEntity, SpellChainRenderState> implements CustomLateEntityRenderer<SpellChainRenderState> {
     private static final double FORK_WIDTH = 0.03;
@@ -43,19 +41,17 @@ public class SpellChainRenderer extends EntityRenderer<SpellChainEntity, SpellCh
     private static final Vec3 BASE_RENDER_DIRECTION = new Vec3(1.0, 0.0, 0.0);
 
     // The texture used by the model
-    private static final ResourceLocation SPELL_CHAIN_TEXTURE = Constants.modLocation("textures/entity/spell/chain.png");
+    private static final Identifier SPELL_CHAIN_TEXTURE = Constants.modLocation("textures/entity/spell/chain.png");
 
     private static final RenderType RENDER_TYPE = RenderType.create(
             Constants.modLocation("spell_chain").toString(),
-            1536,
-            true,
-            true,
-            ModRenderPipelines.SPELL_ENTITY,
-            RenderType.CompositeState.builder()
-                    .setTextureState(new RenderStateShard.TextureStateShard(SPELL_CHAIN_TEXTURE, false))
-                    .setLightmapState(RenderStateShard.NO_LIGHTMAP)
-                    .setOverlayState(RenderStateShard.OVERLAY)
-                    .createCompositeState(false));
+            RenderSetup.builder(ModRenderPipelines.SPELL_ENTITY)
+                    .bufferSize(1536)
+                    .affectsCrumbling()
+                    .sortOnUpload()
+                    .withTexture("Sampler0", SPELL_CHAIN_TEXTURE)
+                    .useOverlay()
+                    .createRenderSetup());
 
     public SpellChainRenderer(EntityRendererProvider.Context context) {
         super(context);

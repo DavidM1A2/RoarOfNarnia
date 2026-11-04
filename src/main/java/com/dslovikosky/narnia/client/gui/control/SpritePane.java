@@ -4,7 +4,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.texture.AbstractTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 import org.joml.Matrix3x2fStack;
 
@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SpritePane extends GuiPane {
-    private final ResourceLocation spriteSheetTexture;
+    private final Identifier spriteSheetTexture;
     private final ImagePane.DisplayMode displayMode;
     private final int columns;
     private final int rows;
@@ -26,7 +26,7 @@ public class SpritePane extends GuiPane {
     private double curFPS = 24.0;
     private long lastTime = 0;
 
-    public SpritePane(final ResourceLocation spriteSheetTexture, final ImagePane.DisplayMode displayMode, final int columns, final int rows) {
+    public SpritePane(final Identifier spriteSheetTexture, final ImagePane.DisplayMode displayMode, final int columns, final int rows) {
         this.spriteSheetTexture = spriteSheetTexture;
         this.displayMode = displayMode;
         this.columns = columns;

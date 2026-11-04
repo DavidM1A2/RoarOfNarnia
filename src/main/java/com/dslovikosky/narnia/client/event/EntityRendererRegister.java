@@ -10,7 +10,7 @@ import com.dslovikosky.narnia.client.renderer.entity.SpellWallRenderer;
 import com.dslovikosky.narnia.client.renderer.entity.WorldWoodBoatRenderer;
 import com.dslovikosky.narnia.client.renderer.entity.WorldWoodChestBoatRenderer;
 import com.dslovikosky.narnia.common.constants.ModEntityTypes;
-import net.minecraft.client.model.BoatModel;
+import net.minecraft.client.model.object.boat.BoatModel;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 

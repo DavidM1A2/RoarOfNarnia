@@ -4,21 +4,21 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.texture.AbstractTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 import org.joml.Matrix3x2fStack;
 
 public class ImagePane extends GuiPane {
     private double textureWidth = -1.0;
     private double textureHeight = -1.0;
-    private ResourceLocation imageTexture;
+    private Identifier imageTexture;
     private DisplayMode displayMode;
     private double allottedWidth = -1.0;
     private double allottedHeight = -1.0;
     private float u = 0.0f;
     private float v = 0.0f;
 
-    public ImagePane(final ResourceLocation imageTexture, final DisplayMode displayMode) {
+    public ImagePane(final Identifier imageTexture, final DisplayMode displayMode) {
         this.imageTexture = imageTexture;
         this.displayMode = displayMode;
         loadTextureDimensions();
@@ -53,7 +53,7 @@ public class ImagePane extends GuiPane {
         this.setInBounds(true);
     }
 
-    public void updateImageTexture(final ResourceLocation imageTexture) {
+    public void updateImageTexture(final Identifier imageTexture) {
         final boolean textureChanged = imageTexture != this.imageTexture;
         this.imageTexture = imageTexture;
         if (textureChanged) {

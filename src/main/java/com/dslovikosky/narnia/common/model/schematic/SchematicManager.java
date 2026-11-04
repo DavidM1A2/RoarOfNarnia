@@ -2,7 +2,6 @@ package com.dslovikosky.narnia.common.model.schematic;
 
 import com.dslovikosky.narnia.common.constants.ModRegistries;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.commands.arguments.blocks.BlockStateParser;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.Registries;
@@ -26,7 +25,6 @@ import java.util.List;
 import java.util.Map;
 
 @ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 public class SchematicManager extends SimplePreparableReloadListener<Map<Schematic, SchematicData>> {
     private final RegistryAccess registryAccess;
 

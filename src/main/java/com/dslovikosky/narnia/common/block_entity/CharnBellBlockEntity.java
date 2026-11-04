@@ -7,7 +7,6 @@ import com.dslovikosky.narnia.common.constants.ModBlocks;
 import com.dslovikosky.narnia.common.constants.ModSoundEvents;
 import com.dslovikosky.narnia.common.entity.JadisEntity;
 import com.dslovikosky.narnia.common.model.CharnStatueType;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
@@ -34,7 +33,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import java.time.Duration;
 
 @ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 public class CharnBellBlockEntity extends BlockEntity {
     private static final int JADIS_BLOCK_SEARCH_RADIUS = 32;
     private static final Duration RING_DURATION = Duration.ofSeconds(14);

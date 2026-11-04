@@ -7,7 +7,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.texture.DynamicTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 
 import java.awt.Color;
@@ -39,7 +39,7 @@ public class TrueTypeFont {
     private final int charHeight;
 
     private final Map<Character, CharacterGlyph> glyphs = new HashMap<>();
-    private final ResourceLocation atlasLocation;
+    private final Identifier atlasLocation;
 
     public TrueTypeFont(Font font, boolean antiAlias, Set<Character> alphabet) {
         this.font = font;

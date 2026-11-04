@@ -4,12 +4,12 @@ import com.dslovikosky.narnia.client.constants.ModRenderers;
 import com.dslovikosky.narnia.common.constants.Constants;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.client.event.AddClientReloadListenersEvent;
-import net.neoforged.neoforge.client.event.RegisterDimensionSpecialEffectsEvent;
+import net.neoforged.neoforge.client.event.RegisterCustomEnvironmentEffectRendererEvent;
 
-public class DimensionSpecialEffectsRegister {
+public class EnvironmentEffectRendererRegister {
     @SubscribeEvent
-    public void onRegisterDimensionSpecialEffectsEvent(final RegisterDimensionSpecialEffectsEvent event) {
-        event.register(ModRenderers.CHARN_SKY_RENDERER_ID, ModRenderers.Client.CHARN_SKY_RENDERER);
+    public void onRegisterCustomEnvironmentEffectRendererEvent(final RegisterCustomEnvironmentEffectRendererEvent event) {
+        event.registerSkyboxRenderer(ModRenderers.CHARN_SKY_RENDERER_ID, ModRenderers.Client.CHARN_SKY_RENDERER);
     }
 
     @SubscribeEvent

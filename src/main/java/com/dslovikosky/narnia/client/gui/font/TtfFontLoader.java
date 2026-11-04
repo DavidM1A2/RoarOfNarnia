@@ -2,7 +2,7 @@ package com.dslovikosky.narnia.client.gui.font;
 
 import com.dslovikosky.narnia.common.constants.Constants;
 import net.minecraft.client.Minecraft;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.awt.Font;
 import java.awt.FontFormatException;
@@ -16,8 +16,8 @@ import java.util.stream.IntStream;
 
 public class TtfFontLoader {
     private static final Map<TtfFontId, TrueTypeFont> FONT_CACHE = new HashMap<>();
-    private static final ResourceLocation CALIBRI_FONT = Constants.modLocation("font/calibri.ttf");
-    private static final ResourceLocation NARNIA_FONT = Constants.modLocation("font/narnia_bll.ttf");
+    private static final Identifier CALIBRI_FONT = Constants.modLocation("font/calibri.ttf");
+    private static final Identifier NARNIA_FONT = Constants.modLocation("font/narnia_bll.ttf");
 
     private static final Set<Character> NARNIA_CHARACTER_SET = " abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ".chars().boxed().map(it -> (char) it.byteValue()).collect(Collectors.toSet());
 
@@ -36,7 +36,7 @@ public class TtfFontLoader {
         return createFont(CALIBRI_FONT, size, antiAlias, alphabet);
     }
 
-    private static TrueTypeFont createFont(final ResourceLocation fontLocation, final float size, final boolean antiAlias, final Set<Character> alphabet) {
+    private static TrueTypeFont createFont(final Identifier fontLocation, final float size, final boolean antiAlias, final Set<Character> alphabet) {
         return FONT_CACHE.computeIfAbsent(new TtfFontId(fontLocation, size, antiAlias, alphabet), id -> {
             final Font font;
             try (final InputStream fontInputStream = Minecraft.getInstance().getResourceManager().getResourceOrThrow(fontLocation).open()) {
@@ -50,6 +50,6 @@ public class TtfFontLoader {
         });
     }
 
-    private record TtfFontId(ResourceLocation fontLocation, float size, boolean antiAlias, Set<Character> alphabet) {
+    private record TtfFontId(Identifier fontLocation, float size, boolean antiAlias, Set<Character> alphabet) {
     }
 }

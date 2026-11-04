@@ -6,17 +6,16 @@ import com.dslovikosky.narnia.common.constants.Constants;
 import com.dslovikosky.narnia.common.entity.spell.SpellWallEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.client.renderer.RenderStateShard;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.rendertype.RenderSetup;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.state.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -25,32 +24,29 @@ import org.joml.Matrix4f;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.awt.Color;
 
-@MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 public class SpellWallRenderer extends EntityRenderer<SpellWallEntity, SpellWallRenderState> implements CustomLateEntityRenderer<SpellWallRenderState> {
     // The texture used by the model
-    private static final ResourceLocation SPELL_CONE_TEXTURE = Constants.modLocation("textures/entity/spell/wall.png");
+    private static final Identifier SPELL_CONE_TEXTURE = Constants.modLocation("textures/entity/spell/wall.png");
+    // 1.21.11 moved line width into the vertex format; 1.0 matches the previous global default
+    private static final float BORDER_LINE_WIDTH = 1.0F;
     private static final RenderType WALL_RENDER_TYPE = RenderType.create(
             Constants.modLocation("spell_wall").toString(),
-            1536,
-            true,
-            true,
-            ModRenderPipelines.SPELL_ENTITY,
-            RenderType.CompositeState.builder()
-                    .setTextureState(new RenderStateShard.TextureStateShard(SPELL_CONE_TEXTURE, false))
-                    .setLightmapState(RenderStateShard.NO_LIGHTMAP)
-                    .setOverlayState(RenderStateShard.OVERLAY)
-                    .createCompositeState(false));
+            RenderSetup.builder(ModRenderPipelines.SPELL_ENTITY)
+                    .bufferSize(1536)
+                    .affectsCrumbling()
+                    .sortOnUpload()
+                    .withTexture("Sampler0", SPELL_CONE_TEXTURE)
+                    .useOverlay()
+                    .createRenderSetup());
     private static final RenderType WALL_BORDER_RENDER_TYPE = RenderType.create(
             Constants.modLocation("spell_wall_corner_border").toString(),
-            1536,
-            true,
-            true,
-            RenderPipelines.LINE_STRIP,
-            RenderType.CompositeState.builder()
-                    .setLightmapState(RenderStateShard.NO_LIGHTMAP)
-                    .setOverlayState(RenderStateShard.OVERLAY)
-                    .createCompositeState(false));
+            RenderSetup.builder(RenderPipelines.LINES)
+                    .bufferSize(1536)
+                    .affectsCrumbling()
+                    .sortOnUpload()
+                    .useOverlay()
+                    .createRenderSetup());
 
     public SpellWallRenderer(EntityRendererProvider.Context context) {
         super(context);
@@ -118,11 +114,30 @@ public class SpellWallRenderer extends EntityRenderer<SpellWallEntity, SpellWall
         drawQuadVertex(rotationMatrix, pose, wallBuffer, halfWidthX - halfHeightX, halfWidthY - halfHeightY, halfWidthZ - halfHeightZ, uTileCount, vTileCount, red, green, blue, innerAlpha);
         drawQuadVertex(rotationMatrix, pose, wallBuffer, -halfWidthX - halfHeightX, -halfWidthY - halfHeightY, -halfWidthZ - halfHeightZ, 0f, vTileCount, red, green, blue, innerAlpha);
 
+        // RenderPipelines.LINES draws independent segments, so each edge is emitted as its own vertex pair
         final VertexConsumer borderBuffer = multiBufferSource.getBuffer(WALL_BORDER_RENDER_TYPE);
-        drawBorderVertex(rotationMatrix, pose, borderBuffer, -halfWidthX + halfHeightX, -halfWidthY + halfHeightY, -halfWidthZ + halfHeightZ, red, green, blue, outerAlpha);
-        drawBorderVertex(rotationMatrix, pose, borderBuffer, halfWidthX + halfHeightX, halfWidthY + halfHeightY, halfWidthZ + halfHeightZ, red, green, blue, outerAlpha);
-        drawBorderVertex(rotationMatrix, pose, borderBuffer, halfWidthX - halfHeightX, halfWidthY - halfHeightY, halfWidthZ - halfHeightZ, red, green, blue, outerAlpha);
-        drawBorderVertex(rotationMatrix, pose, borderBuffer, -halfWidthX - halfHeightX, -halfWidthY - halfHeightY, -halfWidthZ - halfHeightZ, red, green, blue, outerAlpha);
+        final Vec3 topLeft = new Vec3(-halfWidthX + halfHeightX, -halfWidthY + halfHeightY, -halfWidthZ + halfHeightZ);
+        final Vec3 topRight = new Vec3(halfWidthX + halfHeightX, halfWidthY + halfHeightY, halfWidthZ + halfHeightZ);
+        final Vec3 bottomRight = new Vec3(halfWidthX - halfHeightX, halfWidthY - halfHeightY, halfWidthZ - halfHeightZ);
+        final Vec3 bottomLeft = new Vec3(-halfWidthX - halfHeightX, -halfWidthY - halfHeightY, -halfWidthZ - halfHeightZ);
+        drawBorderEdge(rotationMatrix, pose, borderBuffer, topLeft, topRight, red, green, blue, outerAlpha);
+        drawBorderEdge(rotationMatrix, pose, borderBuffer, topRight, bottomRight, red, green, blue, outerAlpha);
+        drawBorderEdge(rotationMatrix, pose, borderBuffer, bottomRight, bottomLeft, red, green, blue, outerAlpha);
+    }
+
+    private void drawBorderEdge(
+            final Matrix4f rotationMatrix,
+            final PoseStack.Pose pose,
+            final VertexConsumer buffer,
+            final Vec3 from,
+            final Vec3 to,
+            final int r,
+            final int g,
+            final int b,
+            final int a
+    ) {
+        drawBorderVertex(rotationMatrix, pose, buffer, from.x(), from.y(), from.z(), r, g, b, a);
+        drawBorderVertex(rotationMatrix, pose, buffer, to.x(), to.y(), to.z(), r, g, b, a);
     }
 
     private void drawQuadVertex(
@@ -163,6 +178,7 @@ public class SpellWallRenderer extends EntityRenderer<SpellWallEntity, SpellWall
         buffer
                 .addVertex(rotationMatrix, (float) x, (float) y, (float) z)
                 .setColor(r, g, b, a)
-                .setNormal(pose, 0f, 0f, 1f);
+                .setNormal(pose, 0f, 0f, 1f)
+                .setLineWidth(BORDER_LINE_WIDTH);
     }
 }

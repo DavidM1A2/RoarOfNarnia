@@ -6,8 +6,8 @@ import com.dslovikosky.narnia.common.utils.UuidUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
@@ -83,7 +83,7 @@ public class DeliveryTransitionState {
     public DeliveryTransitionState(final CompoundTag nbt) {
         this.spell = new Spell(nbt.getCompound(NBT_SPELL).get());
         this.stageIndex = nbt.getInt(NBT_STAGE_INDEX).get();
-        this.level = ResourceKey.create(Registries.DIMENSION, ResourceLocation.parse(nbt.getString(NBT_WORLD).get()));
+        this.level = ResourceKey.create(Registries.DIMENSION, Identifier.parse(nbt.getString(NBT_WORLD).get()));
         this.position = new Vec3(
                 nbt.getDouble(NBT_POSITION + "_x").get(),
                 nbt.getDouble(NBT_POSITION + "_y").get(),
@@ -113,7 +113,7 @@ public class DeliveryTransitionState {
         final CompoundTag nbt = new CompoundTag();
         nbt.put(NBT_SPELL, spell.serializeNbt());
         nbt.putInt(NBT_STAGE_INDEX, stageIndex);
-        nbt.putString(NBT_WORLD, level.location().toString());
+        nbt.putString(NBT_WORLD, level.identifier().toString());
         nbt.putDouble(NBT_POSITION + "_x", position.x);
         nbt.putDouble(NBT_POSITION + "_y", position.y);
         nbt.putDouble(NBT_POSITION + "_z", position.z);

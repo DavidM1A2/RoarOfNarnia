@@ -3,7 +3,6 @@ package com.dslovikosky.narnia.common.block_entity;
 import com.dslovikosky.narnia.common.block.RuneBlock;
 import com.dslovikosky.narnia.common.constants.ModBlockEntities;
 import com.dslovikosky.narnia.common.world.data.CharnRuneSavedData;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
@@ -14,7 +13,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 public class RuneBlockEntity extends BlockEntity {
     public RuneBlockEntity(final BlockPos pos, final BlockState blockState) {
         super(ModBlockEntities.RUNE.get(), pos, blockState);

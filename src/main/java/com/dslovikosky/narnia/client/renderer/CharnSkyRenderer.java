@@ -13,20 +13,18 @@ import com.mojang.blaze3d.vertex.MeshData;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.math.Axis;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.DimensionSpecialEffects;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.state.LevelRenderState;
 import net.minecraft.client.renderer.state.SkyRenderState;
 import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.client.renderer.texture.TextureManager;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
-import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.client.CustomSkyboxRenderer;
 import org.joml.Matrix4f;
 import org.joml.Matrix4fStack;
 import org.joml.Vector3f;
@@ -37,9 +35,8 @@ import java.util.OptionalDouble;
 import java.util.OptionalInt;
 
 @ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
-public class CharnSkyRenderer extends DimensionSpecialEffects implements ResourceManagerReloadListener {
-    private static final ResourceLocation CHARN_SUN_TEXTURE = Constants.modLocation("textures/environment/charn_sun.png");
+public class CharnSkyRenderer implements CustomSkyboxRenderer, ResourceManagerReloadListener {
+    private static final Identifier CHARN_SUN_TEXTURE = Constants.modLocation("textures/environment/charn_sun.png");
 
     private final RenderSystem.AutoStorageIndexBuffer quadIndices = RenderSystem.getSequentialBuffer(VertexFormat.Mode.QUADS);
     private final GpuBuffer charnSunBuffer;
@@ -50,7 +47,6 @@ public class CharnSkyRenderer extends DimensionSpecialEffects implements Resourc
     private AbstractTexture charnSunTexture;
 
     public CharnSkyRenderer() {
-        super(SkyType.OVERWORLD, false, false);
         this.charnSunBuffer = buildCharnSunQuad();
         this.sunriseCircleBuffer = buildSunriseFan();
 
@@ -75,11 +71,10 @@ public class CharnSkyRenderer extends DimensionSpecialEffects implements Resourc
         this.charnSunTexture = getTexture(CHARN_SUN_TEXTURE);
     }
 
-    private AbstractTexture getTexture(ResourceLocation location) {
+    private AbstractTexture getTexture(Identifier location) {
         final TextureManager texturemanager = Minecraft.getInstance().getTextureManager();
-        final AbstractTexture abstractTexture = texturemanager.getTexture(location);
-        abstractTexture.setUseMipmaps(false);
-        return abstractTexture;
+        // As of 1.21.11 mipmapping is a property of the texture's sampler, which already defaults to no mipmaps
+        return texturemanager.getTexture(location);
     }
 
     @Override
@@ -104,7 +99,7 @@ public class CharnSkyRenderer extends DimensionSpecialEffects implements Resourc
         float green = ARGB.greenFloat(skyRenderState.skyColor);
         float blue = ARGB.blueFloat(skyRenderState.skyColor);
         final GpuBufferSlice gpubufferslice = RenderSystem.getDynamicUniforms()
-                .writeTransform(matrix4fStack, new Vector4f(red, green, blue, 1.0F), new Vector3f(), new Matrix4f(), 0.0F);
+                .writeTransform(matrix4fStack, new Vector4f(red, green, blue, 1.0F), new Vector3f(), new Matrix4f());
 
         try (final RenderPass renderpass = RenderSystem.getDevice()
                 .createCommandEncoder()
@@ -125,7 +120,7 @@ public class CharnSkyRenderer extends DimensionSpecialEffects implements Resourc
         matrix4fStack.scale(50.0F, 1.0F, 50.0F);
 
         final GpuBufferSlice gpubufferslice = RenderSystem.getDynamicUniforms()
-                .writeTransform(matrix4fStack, new Vector4f(0.2f, 0.2f, 0.2f, 1.0f), new Vector3f(), new Matrix4f(), 0.0F);
+                .writeTransform(matrix4fStack, new Vector4f(0.2f, 0.2f, 0.2f, 1.0f), new Vector3f(), new Matrix4f());
         final GpuBuffer gpubuffer = this.quadIndices.getBuffer(6);
 
         try (final RenderPass renderpass = RenderSystem.getDevice()
@@ -134,7 +129,7 @@ public class CharnSkyRenderer extends DimensionSpecialEffects implements Resourc
             renderpass.setPipeline(RenderPipelines.CELESTIAL);
             RenderSystem.bindDefaultUniforms(renderpass);
             renderpass.setUniform("DynamicTransforms", gpubufferslice);
-            renderpass.bindSampler("Sampler0", this.charnSunTexture.getTextureView());
+            renderpass.bindTexture("Sampler0", this.charnSunTexture.getTextureView(), this.charnSunTexture.getSampler());
             renderpass.setVertexBuffer(0, this.charnSunBuffer);
             renderpass.setIndexBuffer(gpubuffer, this.quadIndices.type());
             renderpass.drawIndexed(0, 0, 6, 1);
@@ -154,7 +149,7 @@ public class CharnSkyRenderer extends DimensionSpecialEffects implements Resourc
             matrix4fStack.rotate(Axis.ZP.rotationDegrees(90.0F));
             matrix4fStack.scale(1.0F, 1.0F, alpha);
             GpuBufferSlice gpuBufferSlice = RenderSystem.getDynamicUniforms()
-                    .writeTransform(matrix4fStack, new Vector4f(red, green, blue, alpha), new Vector3f(), new Matrix4f(), 0.0F);
+                    .writeTransform(matrix4fStack, new Vector4f(red, green, blue, alpha), new Vector3f(), new Matrix4f());
 
             try (RenderPass renderpass = RenderSystem.getDevice()
                     .createCommandEncoder()
@@ -173,7 +168,7 @@ public class CharnSkyRenderer extends DimensionSpecialEffects implements Resourc
         matrix4fStack.pushMatrix();
         matrix4fStack.translate(0.0F, 12F, 0.0F);
         GpuBufferSlice gpubufferslice = RenderSystem.getDynamicUniforms()
-                .writeTransform(matrix4fStack, new Vector4f(0.0F, 0.0F, 0.0F, 1.0F), new Vector3f(), new Matrix4f(), 0.0F);
+                .writeTransform(matrix4fStack, new Vector4f(0.0F, 0.0F, 0.0F, 1.0F), new Vector3f(), new Matrix4f());
 
         try (RenderPass renderpass = RenderSystem.getDevice()
                 .createCommandEncoder()
@@ -187,25 +182,10 @@ public class CharnSkyRenderer extends DimensionSpecialEffects implements Resourc
         matrix4fStack.popMatrix();
     }
 
-    @Override
-    public boolean isSunriseOrSunset(float timeOfDay) {
-        return true;
-    }
-
-    @Override
-    public int getSunriseOrSunsetColor(float timeOfDay) {
-        return ARGB.color(50, 230, 16, 16);
-    }
-
-    @Override
-    public Vec3 getBrightnessDependentFogColor(Vec3 fogColor, float brightness) {
-        return fogColor.multiply(brightness * 0.94F + 0.06F, brightness * 0.94F + 0.06F, brightness * 0.91F + 0.09F);
-    }
-
-    @Override
-    public boolean isFoggyAt(int x, int y) {
-        return false;
-    }
+    // 1.21.11 replaced DimensionSpecialEffects with the environment attribute system. The always-on red
+    // sunrise/sunset is now a static SUNRISE_SUNSET_COLOR attribute on the dimension type (see
+    // ModDatapackObjectProvider); the old fog overrides were verbatim copies of vanilla's overworld
+    // behaviour, which the attribute system now applies on its own.
 
     private GpuBuffer buildCharnSunQuad() {
         // 4 vertices to make the sun

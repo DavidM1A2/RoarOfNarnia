@@ -9,8 +9,8 @@ import com.dslovikosky.narnia.common.model.attachment_type.PreRingTeleportEntry;
 import com.mojang.logging.LogUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -39,7 +39,7 @@ public class RingItem extends Item {
         super(new Properties()
                 .stacksTo(1)
                 .fireResistant()
-                .setId(ResourceKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, String.format("%s_ring", type.name().toLowerCase(Locale.ROOT))))));
+                .setId(ResourceKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(Constants.MOD_ID, String.format("%s_ring", type.name().toLowerCase(Locale.ROOT))))));
         this.type = type;
     }
 

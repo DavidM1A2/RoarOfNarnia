@@ -33,8 +33,8 @@ import com.dslovikosky.narnia.common.constants.ModStructureTypes;
 import com.dslovikosky.narnia.common.event.AttachmentHandler;
 import com.dslovikosky.narnia.common.event.DataGenerationHandler;
 import com.dslovikosky.narnia.common.event.DelayedDeliveryEntryHandler;
-import com.dslovikosky.narnia.common.event.DimensionSpecialEffectsRegister;
 import com.dslovikosky.narnia.common.event.EntityRegistrationHandler;
+import com.dslovikosky.narnia.common.event.EnvironmentEffectRendererRegister;
 import com.dslovikosky.narnia.common.event.KeyInputEventHandler;
 import com.dslovikosky.narnia.common.event.KeyMappingRegister;
 import com.dslovikosky.narnia.common.event.ModColorRegister;
@@ -72,7 +72,7 @@ public class RoarOfNarnia {
         if (fmlLoader.getDist() == Dist.CLIENT) {
             modBus.register(new BlockEntityRendererRegister());
             modBus.register(new EntityRendererRegister());
-            modBus.register(new DimensionSpecialEffectsRegister());
+            modBus.register(new EnvironmentEffectRendererRegister());
             modBus.register(new ModColorRegister());
             modBus.register(new ClientReloadHandler());
             modBus.register(new RenderPipelineRegister());

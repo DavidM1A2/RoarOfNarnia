@@ -5,26 +5,24 @@ import com.dslovikosky.narnia.common.block_entity.CharnBellBlockEntity;
 import com.dslovikosky.narnia.common.constants.Constants;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
-import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.state.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
-@MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 public class CharnBellBlockEntityRenderer implements BlockEntityRenderer<CharnBellBlockEntity, CharnBellBlockEntityRenderState> {
-    private static final ResourceLocation TEXTURE = Constants.modLocation("textures/block_entity/charn_bell.png");
-    private static final CharnBellBlockEntityModel MODEL = new CharnBellBlockEntityModel(RenderType::entityCutout);
+    private static final Identifier TEXTURE = Constants.modLocation("textures/block_entity/charn_bell.png");
+    private static final CharnBellBlockEntityModel MODEL = new CharnBellBlockEntityModel(RenderTypes::entityCutout);
 
     @Override
     public CharnBellBlockEntityRenderState createRenderState() {

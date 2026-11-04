@@ -4,7 +4,6 @@ import com.dslovikosky.narnia.common.constants.ModStructurePlacementTypes;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Vec3i;
 import net.minecraft.world.level.chunk.ChunkGeneratorStructureState;
 import net.minecraft.world.level.levelgen.structure.placement.StructurePlacement;
@@ -13,7 +12,6 @@ import net.minecraft.world.level.levelgen.structure.placement.StructurePlacement
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Optional;
 
-@MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 public class GridStructurePlacement extends StructurePlacement {
     public static final MapCodec<GridStructurePlacement> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(

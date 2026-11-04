@@ -6,11 +6,11 @@ import com.dslovikosky.narnia.common.spell.component.SpellComponent;
 import com.dslovikosky.narnia.common.spell.component.SpellComponentInstance;
 import com.dslovikosky.narnia.common.spell.component.effect.base.ProcResult;
 import com.dslovikosky.narnia.common.spell.component.effect.base.SpellEffect;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public abstract class SpellDeliveryMethod extends SpellComponent<SpellDeliveryMethod> {
-    public SpellDeliveryMethod(final ResourceLocation id) {
-        super(id, ResourceLocation.fromNamespaceAndPath(id.getNamespace(), "textures/gui/spell_component/delivery_methods/" + id.getPath() + ".png"));
+    public SpellDeliveryMethod(final Identifier id) {
+        super(id, Identifier.fromNamespaceAndPath(id.getNamespace(), "textures/gui/spell_component/delivery_methods/" + id.getPath() + ".png"));
     }
 
     public abstract void execute(final DeliveryTransitionState state);

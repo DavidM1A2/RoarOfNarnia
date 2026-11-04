@@ -10,8 +10,8 @@ import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.client.entity.animation.json.AnimationHolder;
 
 import java.util.function.Function;
@@ -29,7 +29,7 @@ public class JadisModel extends EntityModel<JadisRenderState> {
     private final ModelPart left_leg;
     private final ModelPart right_leg;
 
-    public JadisModel(final ModelPart root, final Function<ResourceLocation, RenderType> renderType) {
+    public JadisModel(final ModelPart root, final Function<Identifier, RenderType> renderType) {
         super(root, renderType);
         this.body = root.getChild("body");
         this.head = this.body.getChild("head");

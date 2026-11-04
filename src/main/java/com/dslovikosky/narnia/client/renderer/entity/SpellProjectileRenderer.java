@@ -8,12 +8,12 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderStateShard;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.rendertype.RenderSetup;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.state.CameraRenderState;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix4f;
 
@@ -22,19 +22,17 @@ import java.util.Random;
 
 public class SpellProjectileRenderer extends EntityRenderer<SpellProjectileEntity, SpellProjectileRenderState> implements CustomLateEntityRenderer<SpellProjectileRenderState> {
     // The texture used by the model
-    private static final ResourceLocation SPELL_PROJECTILE_TEXTURE = Constants.modLocation("textures/entity/spell/projectile.png");
+    private static final Identifier SPELL_PROJECTILE_TEXTURE = Constants.modLocation("textures/entity/spell/projectile.png");
 
     private static final RenderType RENDER_TYPE = RenderType.create(
             Constants.modLocation("spell_projectile").toString(),
-            1536,
-            true,
-            true,
-            ModRenderPipelines.SPELL_ENTITY,
-            RenderType.CompositeState.builder()
-                    .setTextureState(new RenderStateShard.TextureStateShard(SPELL_PROJECTILE_TEXTURE, false))
-                    .setLightmapState(RenderStateShard.NO_LIGHTMAP)
-                    .setOverlayState(RenderStateShard.OVERLAY)
-                    .createCompositeState(false));
+            RenderSetup.builder(ModRenderPipelines.SPELL_ENTITY)
+                    .bufferSize(1536)
+                    .affectsCrumbling()
+                    .sortOnUpload()
+                    .withTexture("Sampler0", SPELL_PROJECTILE_TEXTURE)
+                    .useOverlay()
+                    .createRenderSetup());
 
     private static final int IN_PLANE_ROTATION_SPEED = 3;
     private static final int PLANE_ROTATION_SPEED = 2;

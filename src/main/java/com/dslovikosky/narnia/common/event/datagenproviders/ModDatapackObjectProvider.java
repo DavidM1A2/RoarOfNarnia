@@ -20,9 +20,13 @@ import net.minecraft.core.Vec3i;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.placement.VegetationPlacements;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.util.ARGB;
 import net.minecraft.util.valueproviders.ClampedNormalInt;
 import net.minecraft.util.valueproviders.ConstantInt;
 import net.minecraft.util.valueproviders.UniformInt;
+import net.minecraft.world.attribute.BedRule;
+import net.minecraft.world.attribute.EnvironmentAttributeMap;
+import net.minecraft.world.attribute.EnvironmentAttributes;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.BiomeGenerationSettings;
@@ -31,7 +35,6 @@ import net.minecraft.world.level.biome.MobSpawnSettings;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LeavesBlock;
 import net.minecraft.world.level.block.RotatedPillarBlock;
-import net.minecraft.world.level.dimension.BuiltinDimensionTypes;
 import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.dimension.LevelStem;
 import net.minecraft.world.level.levelgen.FlatLevelSource;
@@ -58,6 +61,7 @@ import net.minecraft.world.level.levelgen.placement.SurfaceWaterDepthFilter;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.world.BiomeModifiers;
+import net.neoforged.neoforge.common.world.NeoForgeEnvironmentAttributes;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import net.neoforged.neoforge.registries.holdersets.OrHolderSet;
@@ -66,7 +70,6 @@ import java.awt.Color;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.OptionalLong;
 
 import static com.dslovikosky.narnia.client.constants.ModRenderers.CHARN_SKY_RENDERER_ID;
 
@@ -86,41 +89,53 @@ public class ModDatapackObjectProvider {
                     );
                 })
                 .add(Registries.DIMENSION_TYPE, bootstrap -> {
+                    // 1.21.11 replaced the fixed-time/bed/anchor flags and the effects location with the
+                    // environment attribute system. An empty timeline set means the dimension does not run a
+                    // day/night cycle, which is how a fixed time of day is now expressed.
                     bootstrap.register(ModDimensionTypes.WOOD_BETWEEN_THE_WORLDS, new DimensionType(
-                            OptionalLong.of(6000),
                             true,
-                            false,
-                            false,
+                            true,
                             false,
                             1.0,
-                            true,
-                            true,
                             0,
                             128,
                             64,
                             BlockTags.INFINIBURN_OVERWORLD,
-                            BuiltinDimensionTypes.OVERWORLD_EFFECTS,
                             1.0f,
-                            Optional.empty(),
-                            new DimensionType.MonsterSettings(false, false, ConstantInt.of(0), 0)
+                            new DimensionType.MonsterSettings(ConstantInt.of(0), 0),
+                            DimensionType.Skybox.OVERWORLD,
+                            DimensionType.CardinalLightType.DEFAULT,
+                            EnvironmentAttributeMap.builder()
+                                    // The old fixed time of 6000 ticks is noon, which the day timeline maps to a 0 degree sun angle
+                                    .set(EnvironmentAttributes.SUN_ANGLE, 0.0F)
+                                    .set(EnvironmentAttributes.RESPAWN_ANCHOR_WORKS, true)
+                                    .set(EnvironmentAttributes.CAN_START_RAID, false)
+                                    .build(),
+                            HolderSet.direct()
                     ));
                     bootstrap.register(ModDimensionTypes.DARK_CITY_RUINS, new DimensionType(
-                            OptionalLong.empty(),
-                            false,
                             false,
                             false,
                             false,
                             1.0,
-                            false,
-                            true,
                             0,
                             256,
                             64,
                             BlockTags.INFINIBURN_OVERWORLD,
-                            CHARN_SKY_RENDERER_ID,
                             0.0f,
-                            Optional.empty(),
-                            new DimensionType.MonsterSettings(false, false, ConstantInt.of(0), 0)
+                            new DimensionType.MonsterSettings(ConstantInt.of(0), 0),
+                            // The custom skybox renderer draws Charn's sky in full, so vanilla contributes none of it
+                            DimensionType.Skybox.NONE,
+                            DimensionType.CardinalLightType.DEFAULT,
+                            EnvironmentAttributeMap.builder()
+                                    .set(NeoForgeEnvironmentAttributes.CUSTOM_SKYBOX, CHARN_SKY_RENDERER_ID)
+                                    // Charn's sunset fan was previously always drawn in this colour regardless of time
+                                    .set(EnvironmentAttributes.SUNRISE_SUNSET_COLOR, ARGB.color(50, 230, 16, 16))
+                                    .set(EnvironmentAttributes.BED_RULE, BedRule.EXPLODES)
+                                    .set(EnvironmentAttributes.RESPAWN_ANCHOR_WORKS, true)
+                                    .set(EnvironmentAttributes.CAN_START_RAID, false)
+                                    .build(),
+                            HolderSet.direct()
                     ));
                 })
                 .add(Registries.BIOME, bootstrap -> {
@@ -131,11 +146,14 @@ public class ModDatapackObjectProvider {
                             .temperature(0.7f)
                             .temperatureAdjustment(Biome.TemperatureModifier.NONE)
                             .downfall(0.5f)
+                            // 1.21.11 moved the fog, sky and water fog colours out of BiomeSpecialEffects
+                            // and into environment attributes
+                            .putAttributes(EnvironmentAttributeMap.builder()
+                                    .set(EnvironmentAttributes.FOG_COLOR, new Color(72, 199, 255, 0).getRGB())
+                                    .set(EnvironmentAttributes.SKY_COLOR, new Color(80, 188, 255, 0).getRGB())
+                                    .set(EnvironmentAttributes.WATER_FOG_COLOR, new Color(13, 94, 115, 0).getRGB()))
                             .specialEffects(new BiomeSpecialEffects.Builder()
-                                    .fogColor(new Color(72, 199, 255, 0).getRGB())
-                                    .skyColor(new Color(80, 188, 255, 0).getRGB())
                                     .waterColor(new Color(23, 209, 255, 0).getRGB())
-                                    .waterFogColor(new Color(13, 94, 115, 0).getRGB())
                                     .foliageColorOverride(new Color(43, 199, 23, 0).getRGB())
                                     .grassColorOverride(new Color(43, 199, 23, 0).getRGB())
                                     .grassColorModifier(BiomeSpecialEffects.GrassColorModifier.NONE)
@@ -158,11 +176,12 @@ public class ModDatapackObjectProvider {
                             .temperature(0.0f)
                             .temperatureAdjustment(Biome.TemperatureModifier.NONE)
                             .downfall(0.0f)
+                            .putAttributes(EnvironmentAttributeMap.builder()
+                                    .set(EnvironmentAttributes.FOG_COLOR, new Color(50, 0, 0, 0).getRGB())
+                                    .set(EnvironmentAttributes.SKY_COLOR, new Color(0, 0, 0, 0).getRGB())
+                                    .set(EnvironmentAttributes.WATER_FOG_COLOR, new Color(50, 0, 0, 0).getRGB()))
                             .specialEffects(new BiomeSpecialEffects.Builder()
-                                    .fogColor(new Color(50, 0, 0, 0).getRGB())
-                                    .skyColor(new Color(0, 0, 0, 0).getRGB())
                                     .waterColor(new Color(50, 0, 0, 0).getRGB())
-                                    .waterFogColor(new Color(50, 0, 0, 0).getRGB())
                                     .foliageColorOverride(new Color(44, 0, 23, 0).getRGB())
                                     .grassColorOverride(new Color(44, 0, 23, 0).getRGB())
                                     .grassColorModifier(BiomeSpecialEffects.GrassColorModifier.NONE)

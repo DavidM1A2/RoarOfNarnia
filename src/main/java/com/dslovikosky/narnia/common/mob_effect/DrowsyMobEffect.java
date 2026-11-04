@@ -3,7 +3,7 @@ package com.dslovikosky.narnia.common.mob_effect;
 import com.dslovikosky.narnia.common.constants.ModDimensions;
 import net.minecraft.core.particles.ColorParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.ARGB;
 import net.minecraft.world.effect.MobEffect;
@@ -21,11 +21,11 @@ public class DrowsyMobEffect extends MobEffect {
     public DrowsyMobEffect() {
         super(MobEffectCategory.NEUTRAL, COLOR, ColorParticleOption.create(ParticleTypes.ENTITY_EFFECT, COLOR));
         addAttributeModifier(Attributes.MOVEMENT_SPEED,
-                ResourceLocation.withDefaultNamespace("effect.slowness"),
+                Identifier.withDefaultNamespace("effect.slowness"),
                 AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL,
                 amplifier -> Math.clamp(amplifier / 2f * -0.1F, -0.5f, 0f));
         addAttributeModifier(Attributes.JUMP_STRENGTH,
-                ResourceLocation.withDefaultNamespace("effect.jump_reduced"),
+                Identifier.withDefaultNamespace("effect.jump_reduced"),
                 AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL,
                 amplifier -> Math.clamp(amplifier / 2f * -0.05F, -0.35f, 0f));
     }

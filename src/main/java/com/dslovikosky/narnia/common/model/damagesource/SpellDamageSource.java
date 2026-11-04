@@ -2,7 +2,6 @@ package com.dslovikosky.narnia.common.model.damagesource;
 
 import com.dslovikosky.narnia.common.constants.ModDamageTypes;
 import com.dslovikosky.narnia.common.spell.component.DeliveryTransitionState;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
@@ -11,7 +10,6 @@ import net.minecraft.world.entity.LivingEntity;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 public class SpellDamageSource extends DamageSource {
     private final DeliveryTransitionState deliveryTransitionState;
 

@@ -1,25 +1,25 @@
 package com.dslovikosky.narnia.common.model.schematic;
 
 import net.minecraft.nbt.ListTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class Schematic {
-    private final ResourceLocation id;
+    private final Identifier id;
 
     // Mutable!
     private SchematicData schematicData;
 
-    public Schematic(final ResourceLocation id) {
+    public Schematic(final Identifier id) {
         this.id = id;
     }
 
-    public ResourceLocation getId() {
+    public Identifier getId() {
         return id;
     }
 
-    public ResourceLocation getFilePath() {
-        return ResourceLocation.fromNamespaceAndPath(id.getNamespace(), String.format("schematic/%s.schem", id.getPath()));
+    public Identifier getFilePath() {
+        return Identifier.fromNamespaceAndPath(id.getNamespace(), String.format("schematic/%s.schem", id.getPath()));
     }
 
     public int getWidth() {

@@ -4,7 +4,7 @@ import com.dslovikosky.narnia.common.spell.component.InvalidValueException;
 import com.dslovikosky.narnia.common.spell.component.SpellComponentInstance;
 import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.function.BiConsumer;
 import java.util.function.Function;
@@ -27,7 +27,7 @@ public class RegistryEntrySpellComponentProperty<T> extends SpellComponentProper
 
     @Override
     protected T convertTo(String newValue) {
-        final ResourceLocation key = ResourceLocation.tryParse(newValue);
+        final Identifier key = Identifier.tryParse(newValue);
 
         if (key == null) {
             throw new InvalidValueException(Component.translatable("property_error.narnia.registry_entry.invalid_resource_location", newValue));

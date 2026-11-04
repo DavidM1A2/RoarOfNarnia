@@ -1,17 +1,17 @@
 package com.dslovikosky.narnia.common.spell.component;
 
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.Random;
 
 public abstract class SpellComponentBase {
     protected static final Random RANDOM = new Random();
 
-    private final ResourceLocation id;
-    private final ResourceLocation icon;
+    private final Identifier id;
+    private final Identifier icon;
 
-    public SpellComponentBase(final ResourceLocation id, final ResourceLocation icon) {
+    public SpellComponentBase(final Identifier id, final Identifier icon) {
         this.id = id;
         this.icon = icon;
     }
@@ -26,11 +26,11 @@ public abstract class SpellComponentBase {
         return Component.translatable(getUnlocalizedBaseName() + ".description");
     }
 
-    public ResourceLocation getId() {
+    public Identifier getId() {
         return id;
     }
 
-    public ResourceLocation getIcon() {
+    public Identifier getIcon() {
         return icon;
     }
 }

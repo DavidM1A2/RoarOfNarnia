@@ -4,15 +4,15 @@ import com.dslovikosky.narnia.client.renderer.block.base.BlockBenchModel;
 import com.dslovikosky.narnia.client.renderer.entity.JadisModel;
 import net.minecraft.client.animation.KeyframeAnimation;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.resources.Identifier;
 
 import java.util.function.Function;
 
 public class CharnImageHallStatueBlockEntityModel extends BlockBenchModel<CharnImageHallStatueBlockEntityRenderState> {
     private final KeyframeAnimation sit;
 
-    public CharnImageHallStatueBlockEntityModel(final Function<ResourceLocation, RenderType> renderType) {
+    public CharnImageHallStatueBlockEntityModel(final Function<Identifier, RenderType> renderType) {
         super(getLayerDefinition(), renderType);
         this.sit = JadisModel.SIT.get().bake(root);
     }

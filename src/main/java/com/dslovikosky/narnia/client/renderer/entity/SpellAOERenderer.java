@@ -6,16 +6,15 @@ import com.dslovikosky.narnia.common.constants.Constants;
 import com.dslovikosky.narnia.common.entity.spell.SpellAOEEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderStateShard;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.rendertype.RenderSetup;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.state.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -24,7 +23,6 @@ import org.joml.Matrix4f;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.awt.Color;
 
-@MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 public class SpellAOERenderer extends EntityRenderer<SpellAOEEntity, SpellAOERenderState> implements CustomLateEntityRenderer<SpellAOERenderState> {
     private static final int TEXTURE_HEIGHT = 128;
@@ -32,19 +30,17 @@ public class SpellAOERenderer extends EntityRenderer<SpellAOEEntity, SpellAOERen
     private static final int SPRITE_COUNT = TEXTURE_HEIGHT / SPRITE_HEIGHT;
 
     // The texture used by the model
-    private static final ResourceLocation SPELL_AOE_TEXTURE = Constants.modLocation("textures/entity/spell/aoe.png");
+    private static final Identifier SPELL_AOE_TEXTURE = Constants.modLocation("textures/entity/spell/aoe.png");
 
     private static final RenderType RENDER_TYPE = RenderType.create(
             Constants.modLocation("spell_aoe").toString(),
-            1536,
-            true,
-            true,
-            ModRenderPipelines.SPELL_ENTITY,
-            RenderType.CompositeState.builder()
-                    .setTextureState(new RenderStateShard.TextureStateShard(SPELL_AOE_TEXTURE, false))
-                    .setLightmapState(RenderStateShard.NO_LIGHTMAP)
-                    .setOverlayState(RenderStateShard.OVERLAY)
-                    .createCompositeState(false));
+            RenderSetup.builder(ModRenderPipelines.SPELL_ENTITY)
+                    .bufferSize(1536)
+                    .affectsCrumbling()
+                    .sortOnUpload()
+                    .withTexture("Sampler0", SPELL_AOE_TEXTURE)
+                    .useOverlay()
+                    .createRenderSetup());
 
     public SpellAOERenderer(EntityRendererProvider.Context context) {
         super(context);

@@ -9,7 +9,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.ProblemReporter;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
@@ -52,7 +52,7 @@ public class SchematicStructurePiece extends StructurePiece {
 
     public SchematicStructurePiece(final StructurePieceSerializationContext pContext, final CompoundTag pTag) {
         super(ModStructurePieces.SCHEMATIC.get(), pTag);
-        this.schematic = ModRegistries.SCHEMATIC.get(ResourceLocation.parse(pTag.getString(SCHEMATIC_ID).get())).get();
+        this.schematic = ModRegistries.SCHEMATIC.get(Identifier.parse(pTag.getString(SCHEMATIC_ID).get())).get();
     }
 
     @Override

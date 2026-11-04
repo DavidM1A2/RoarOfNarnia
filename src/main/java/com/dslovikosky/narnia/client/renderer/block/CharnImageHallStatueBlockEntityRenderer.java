@@ -7,15 +7,14 @@ import com.dslovikosky.narnia.common.constants.Constants;
 import com.dslovikosky.narnia.common.model.CharnStatueType;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
-import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.state.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
@@ -23,14 +22,13 @@ import org.jetbrains.annotations.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Map;
 
-@MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 public class CharnImageHallStatueBlockEntityRenderer implements BlockEntityRenderer<CharnImageHallStatueBlockEntity, CharnImageHallStatueBlockEntityRenderState> {
-    private static final Map<CharnStatueType, ResourceLocation> TEXTURES = Map.of(
+    private static final Map<CharnStatueType, Identifier> TEXTURES = Map.of(
             CharnStatueType.JADIS, Constants.modLocation("textures/entity/jadis.png"),
             CharnStatueType.OTHER_1, Constants.modLocation("textures/entity/other_1.png")
     );
-    private static final CharnImageHallStatueBlockEntityModel MODEL = new CharnImageHallStatueBlockEntityModel(RenderType::entityCutout);
+    private static final CharnImageHallStatueBlockEntityModel MODEL = new CharnImageHallStatueBlockEntityModel(RenderTypes::entityCutout);
 
     @Override
     public CharnImageHallStatueBlockEntityRenderState createRenderState() {

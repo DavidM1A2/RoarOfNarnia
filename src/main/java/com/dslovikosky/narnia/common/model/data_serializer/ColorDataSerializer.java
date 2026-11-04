@@ -1,7 +1,6 @@
 package com.dslovikosky.narnia.common.model.data_serializer;
 
 import io.netty.buffer.ByteBuf;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -9,7 +8,6 @@ import net.minecraft.network.syncher.EntityDataSerializer;
 
 import java.awt.Color;
 
-@MethodsReturnNonnullByDefault
 public class ColorDataSerializer implements EntityDataSerializer<Color> {
     private static final StreamCodec<ByteBuf, Color> CODEC = StreamCodec.composite(
             ByteBufCodecs.INT,

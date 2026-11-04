@@ -8,8 +8,8 @@ import com.dslovikosky.narnia.common.spell.component.effect.base.ProcResult;
 import com.dslovikosky.narnia.common.spell.component.effect.base.SpellEffect;
 import com.dslovikosky.narnia.common.spell.component.property.SpellComponentPropertyFactory;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.projectile.AbstractArrow;
-import net.minecraft.world.entity.projectile.Arrow;
+import net.minecraft.world.entity.projectile.arrow.AbstractArrow;
+import net.minecraft.world.entity.projectile.arrow.Arrow;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 
