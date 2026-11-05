@@ -32,7 +32,7 @@ public class DisintegrateSpellEffect extends SpellEffect {
             final float entityWidth = entityHit.getBbWidth();
             final float entityHeight = entityHit.getBbHeight();
             final double sinOffset = Math.PI * 2 * RANDOM.nextDouble();
-            entityHit.hurt(ModDamageSources.spell(state), strength);
+            entityHit.hurtServer(world, ModDamageSources.spell(state), strength);
             for (int i = 0; i < 4; i++) {
                 world.sendParticles(ModParticleTypes.DISINTEGRATE.get(),
                         exactPosition.x() + Math.sin(sinOffset + i * Math.PI / 2) * entityWidth / 2 * 1.5,

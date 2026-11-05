@@ -27,10 +27,10 @@ public class ModItemTagsProvider extends ItemTagsProvider {
     protected void addTags(final HolderLookup.Provider provider) {
         tag(ItemTags.LOGS).addTag(ModItemTags.WORLD_WOOD);
 
-        tag(ItemTags.BOATS).add(ModItems.WORLD_WOOD_BOAT.getKey());
-        tag(ItemTags.CHEST_BOATS).add(ModItems.WORLD_WOOD_CHEST_BOAT.getKey());
-        tag(ItemTags.SIGNS).add(ModItems.WORLD_WOOD_STANDING_SIGN.getKey());
-        tag(ItemTags.HANGING_SIGNS).add(ModItems.WORLD_WOOD_HANGING_SIGN.getKey());
+        tag(ItemTags.BOATS).add(ModItems.WORLD_WOOD_BOAT.key());
+        tag(ItemTags.CHEST_BOATS).add(ModItems.WORLD_WOOD_CHEST_BOAT.key());
+        tag(ItemTags.SIGNS).add(ModItems.WORLD_WOOD_STANDING_SIGN.key());
+        tag(ItemTags.HANGING_SIGNS).add(ModItems.WORLD_WOOD_HANGING_SIGN.key());
 
         tag(ModItemTags.WORLD_WOOD).add(blockItemKey(ModBlocks.WORLD_WOOD));
         tag(ModItemTags.WORLD_WOOD).add(blockItemKey(ModBlocks.WORLD_WOOD_LOG));
@@ -48,8 +48,8 @@ public class ModItemTagsProvider extends ItemTagsProvider {
         tag(ItemTags.WOODEN_TRAPDOORS).add(blockItemKey(ModBlocks.WORLD_WOOD_TRAP_DOOR));
         tag(ItemTags.WOODEN_PRESSURE_PLATES).add(blockItemKey(ModBlocks.WORLD_WOOD_PRESSURE_PLATE));
 
-        tag(ModItemTags.REPAIRS_ANCIENT_ARMOR).add(ModItems.ANCIENT_METAL.getKey());
-        tag(ModItemTags.ANCIENT_TOOL_MATERIALS).add(ModItems.ANCIENT_METAL.getKey());
+        tag(ModItemTags.REPAIRS_ANCIENT_ARMOR).add(ModItems.ANCIENT_METAL.key());
+        tag(ModItemTags.ANCIENT_TOOL_MATERIALS).add(ModItems.ANCIENT_METAL.key());
     }
 
     // Block items are registered in bulk via registerSimpleBlockItem, so they share the block's registry name
