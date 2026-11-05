@@ -28,6 +28,7 @@ import net.minecraft.world.attribute.BedRule;
 import net.minecraft.world.attribute.EnvironmentAttributeMap;
 import net.minecraft.world.attribute.EnvironmentAttributes;
 import net.minecraft.world.damagesource.DamageType;
+import net.minecraft.world.level.CardinalLighting;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.BiomeGenerationSettings;
 import net.minecraft.world.level.biome.BiomeSpecialEffects;
@@ -96,6 +97,7 @@ public class ModDatapackObjectProvider {
                             true,
                             true,
                             false,
+                            false,
                             1.0,
                             0,
                             128,
@@ -104,16 +106,20 @@ public class ModDatapackObjectProvider {
                             1.0f,
                             new DimensionType.MonsterSettings(ConstantInt.of(0), 0),
                             DimensionType.Skybox.OVERWORLD,
-                            DimensionType.CardinalLightType.DEFAULT,
+                            CardinalLighting.Type.DEFAULT,
                             EnvironmentAttributeMap.builder()
                                     // The old fixed time of 6000 ticks is noon, which the day timeline maps to a 0 degree sun angle
                                     .set(EnvironmentAttributes.SUN_ANGLE, 0.0F)
+                                    // See the Charn note below: 26.1 defaults the ambient lightmap floor to black
+                                    .set(EnvironmentAttributes.AMBIENT_LIGHT_COLOR, ARGB.color(10, 10, 10))
                                     .set(EnvironmentAttributes.RESPAWN_ANCHOR_WORKS, true)
                                     .set(EnvironmentAttributes.CAN_START_RAID, false)
                                     .build(),
-                            HolderSet.direct()
+                            HolderSet.direct(),
+                            Optional.empty()
                     ));
                     bootstrap.register(ModDimensionTypes.DARK_CITY_RUINS, new DimensionType(
+                            false,
                             false,
                             false,
                             false,
@@ -126,16 +132,22 @@ public class ModDatapackObjectProvider {
                             new DimensionType.MonsterSettings(ConstantInt.of(0), 0),
                             // The custom skybox renderer draws Charn's sky in full, so vanilla contributes none of it
                             DimensionType.Skybox.NONE,
-                            DimensionType.CardinalLightType.DEFAULT,
+                            CardinalLighting.Type.DEFAULT,
                             EnvironmentAttributeMap.builder()
                                     .set(NeoForgeEnvironmentAttributes.CUSTOM_SKYBOX, CHARN_SKY_RENDERER_ID)
+                                    // 26.1 turned the lightmap's ambient floor into per-dimension data that
+                                    // defaults to pure black. Without this, Charn is literally rgb(0,0,0)
+                                    // wherever block light does not reach, since it has no sky light either.
+                                    // This matches the value vanilla gives the overworld.
+                                    .set(EnvironmentAttributes.AMBIENT_LIGHT_COLOR, ARGB.color(10, 10, 10))
                                     // Charn's sunset fan was previously always drawn in this colour regardless of time
                                     .set(EnvironmentAttributes.SUNRISE_SUNSET_COLOR, ARGB.color(50, 230, 16, 16))
                                     .set(EnvironmentAttributes.BED_RULE, BedRule.EXPLODES)
                                     .set(EnvironmentAttributes.RESPAWN_ANCHOR_WORKS, true)
                                     .set(EnvironmentAttributes.CAN_START_RAID, false)
                                     .build(),
-                            HolderSet.direct()
+                            HolderSet.direct(),
+                            Optional.empty()
                     ));
                 })
                 .add(Registries.BIOME, bootstrap -> {

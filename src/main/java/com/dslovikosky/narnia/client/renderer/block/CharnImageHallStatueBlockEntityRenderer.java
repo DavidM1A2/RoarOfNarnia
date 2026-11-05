@@ -11,7 +11,7 @@ import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
-import net.minecraft.client.renderer.state.CameraRenderState;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.Identifier;
@@ -38,11 +38,13 @@ public class CharnImageHallStatueBlockEntityRenderer implements BlockEntityRende
     @Override
     public void extractRenderState(final CharnImageHallStatueBlockEntity blockEntity, final CharnImageHallStatueBlockEntityRenderState renderState, final float partialTick, final Vec3 cameraPosition, @Nullable final ModelFeatureRenderer.CrumblingOverlay breakProgress) {
         BlockEntityRenderer.super.extractRenderState(blockEntity, renderState, partialTick, cameraPosition, breakProgress);
+        renderState.statueType = blockEntity.getBlockState().getValue(CharnImageHallStatueBlock.TYPE);
+        renderState.facing = blockEntity.getBlockState().getValue(CharnBellBlock.FACING);
     }
 
     @Override
     public void submit(final CharnImageHallStatueBlockEntityRenderState renderState, final PoseStack poseStack, final SubmitNodeCollector nodeCollector, final CameraRenderState cameraRenderState) {
-        nodeCollector.submitCustomGeometry(poseStack, MODEL.renderType(TEXTURES.get(renderState.blockState.getValue(CharnImageHallStatueBlock.TYPE))), (pose, consumer) -> {
+        nodeCollector.submitCustomGeometry(poseStack, MODEL.renderType(TEXTURES.get(renderState.statueType)), (pose, consumer) -> {
             final PoseStack stack = new PoseStack();
             stack.pushPose();
 
@@ -51,7 +53,7 @@ public class CharnImageHallStatueBlockEntityRenderer implements BlockEntityRende
             newPose.normal().mul(pose.normal());
 
             stack.translate(0.5, -0.5, 0.5);
-            final Direction direction = renderState.blockState.getValue(CharnBellBlock.FACING).getOpposite();
+            final Direction direction = renderState.facing.getOpposite();
             final float extraRotation = direction == Direction.EAST || direction == Direction.WEST ? 180 : 0;
             stack.rotateAround(Axis.YP.rotationDegrees(direction.toYRot() + extraRotation), 0, 1, 0);
             stack.rotateAround(Axis.ZP.rotationDegrees(180), 0, 1, 0);

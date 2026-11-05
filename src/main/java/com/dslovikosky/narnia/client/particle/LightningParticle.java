@@ -5,13 +5,13 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.SpriteSet;
-import net.minecraft.client.renderer.LightTexture;
+import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.util.RandomSource;
 import org.jetbrains.annotations.Nullable;
 
 public class LightningParticle extends NarniaParticle {
-    private static final int FULLBRIGHT = LightTexture.pack(15, 15);
+    private static final int FULLBRIGHT = LightCoordsUtil.pack(15, 15);
 
     private int bounceCount = 0;
 
@@ -45,7 +45,7 @@ public class LightningParticle extends NarniaParticle {
     }
 
     @Override
-    protected int getLightColor(float partialTick) {
+    protected int getLightCoords(float partialTick) {
         return FULLBRIGHT;
     }
 

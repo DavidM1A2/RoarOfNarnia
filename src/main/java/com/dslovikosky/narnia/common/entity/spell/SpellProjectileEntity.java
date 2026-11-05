@@ -333,7 +333,7 @@ public class SpellProjectileEntity extends Entity implements IEntityWithComplexS
     }
 
     @Override
-    protected boolean updateInWaterStateAndDoFluidPushing() {
+    protected boolean updateFluidInteraction() {
         return false;
     }
 

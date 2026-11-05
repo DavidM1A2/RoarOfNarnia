@@ -9,7 +9,7 @@ import com.dslovikosky.narnia.client.gui.layout.Spacing;
 import com.dslovikosky.narnia.client.gui.layout.TextAlignment;
 import com.dslovikosky.narnia.common.constants.Constants;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.util.StringUtil;
 import org.lwjgl.glfw.GLFW;
 
@@ -73,7 +73,7 @@ public class TextFieldPane extends GuiPane {
     }
 
     @Override
-    public void draw(GuiGraphics guiGraphics) {
+    public void draw(GuiGraphicsExtractor guiGraphics) {
         if (isVisible()) {
             super.draw(guiGraphics);
         }

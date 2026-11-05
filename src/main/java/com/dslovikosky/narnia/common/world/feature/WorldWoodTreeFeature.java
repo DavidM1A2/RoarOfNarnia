@@ -116,7 +116,7 @@ public class WorldWoodTreeFeature extends Feature<WorldWoodTreeConfiguration> {
             final int finalLayer = layer;
             loopOverTreeTrunkLayerBlocks(layer, treeHeight, baseTrunkWidth, xCenterShift, zCenterShift, originPos, blockPos -> {
                 if (TreeFeature.validTreePos(level, blockPos)) {
-                    trunkSetter.accept(blockPos, configuration.trunkProvider().getState(random, blockPos));
+                    trunkSetter.accept(blockPos, configuration.trunkProvider().getState(level, random, blockPos));
                 }
                 if (finalLayer == treeHeight - 1) {
                     branchTipPositions.add(blockPos);
@@ -152,7 +152,7 @@ public class WorldWoodTreeFeature extends Feature<WorldWoodTreeConfiguration> {
 
                     final BlockPos blockPos = new BlockPos((int) Math.round(x), (int) Math.round(y), (int) Math.round(z));
                     if (TreeFeature.validTreePos(level, blockPos)) {
-                        trunkSetter.accept(blockPos, configuration.trunkProvider().getState(random, blockPos));
+                        trunkSetter.accept(blockPos, configuration.trunkProvider().getState(level, random, blockPos));
                     }
                     if (step == numSteps) {
                         branchTipPositions.add(blockPos);
@@ -180,7 +180,7 @@ public class WorldWoodTreeFeature extends Feature<WorldWoodTreeConfiguration> {
                         if (EllipsoidUtils.isInsideEllipsoid(0, 0, 0, leafClusterWidth / 2.0, leafClusterHeight / 2.0, leafClusterWidth / 2.0, xOffset, yOffset, zOffset)) {
                             final BlockPos leafPos = branchTipPos.offset(xOffset, yOffset, zOffset);
                             if (TreeFeature.validTreePos(level, leafPos)) {
-                                foliageSetter.set(leafPos, configuration.foliageProvider().getState(random, leafPos));
+                                foliageSetter.set(leafPos, configuration.foliageProvider().getState(level, random, leafPos));
                             }
                         }
                     }

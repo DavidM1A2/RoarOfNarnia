@@ -4,6 +4,7 @@ import com.dslovikosky.narnia.common.constants.ModAttachmentTypes;
 import net.minecraft.world.attribute.EnvironmentAttributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 
@@ -30,9 +31,12 @@ public class SpellLunarHandler {
     // Decay 20 vitae per interval. After a full moon it will take a max of 2000 / 50 = 40 intervals = 40 seconds
     private static final double VITAE_DECAY_PER_INTERVAL = 50.0;
 
-    public static double getMaxVitae(final Level level) {
-        // As of 1.21.11 the moon phase is an environment attribute rather than derived from the day time
-        final int moonPhase = level.environmentAttributes().getDimensionValue(EnvironmentAttributes.MOON_PHASE).index();
+    public static double getMaxVitae(final Level level, final Vec3 position) {
+        // As of 1.21.11 the moon phase is an environment attribute rather than derived from the day time.
+        // Environment attributes are positional unless they opt out, so the value has to be sampled at a
+        // position rather than read off the dimension. Moon phase is not spatially interpolated, so no
+        // interpolator is needed.
+        final int moonPhase = level.environmentAttributes().getValue(EnvironmentAttributes.MOON_PHASE, position, null).index();
         return VITAE_CAP_BY_MOON_PHASE.getOrDefault(moonPhase, 0.0);
     }
 
@@ -55,7 +59,7 @@ public class SpellLunarHandler {
             // Decay vitae during the day
             newLunarVitae = Math.max(oldLunarVitae - VITAE_DECAY_PER_INTERVAL, 0.0);
         } else {
-            final double currentVitaeCap = getMaxVitae(level);
+            final double currentVitaeCap = getMaxVitae(level, player.position());
             // Work towards our vitae cap at night
             if (oldLunarVitae > currentVitaeCap) {
                 // Decay to the cap. This avoid players "cheesing" the power source by logging off after a full moon to preserve vitae

@@ -2,7 +2,7 @@ package com.dslovikosky.narnia.client.gui.control;
 
 import com.dslovikosky.narnia.client.gui.font.TrueTypeFont;
 import com.dslovikosky.narnia.client.gui.layout.TextAlignment;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 
 import java.awt.Color;
 
@@ -21,7 +21,7 @@ public class LabelComponent extends GuiComponentWithEvents {
     }
 
     @Override
-    public void draw(final GuiGraphics guiGraphics) {
+    public void draw(final GuiGraphicsExtractor guiGraphics) {
         // If the label is visible, draw it
         if (this.isVisible() && this.isInBounds()) {
             // Compute the x and y positions of the text

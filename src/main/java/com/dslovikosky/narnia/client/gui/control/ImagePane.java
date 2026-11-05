@@ -1,7 +1,7 @@
 package com.dslovikosky.narnia.client.gui.control;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.resources.Identifier;
@@ -25,7 +25,7 @@ public class ImagePane extends GuiPane {
     }
 
     @Override
-    public void draw(final GuiGraphics guiGraphics) {
+    public void draw(final GuiGraphicsExtractor guiGraphics) {
         if (this.isVisible() && this.imageTexture != null) {
             final Matrix3x2fStack poseStack = guiGraphics.pose();
             poseStack.pushMatrix();

@@ -3,7 +3,7 @@ package com.dslovikosky.narnia.common.model.schematic;
 import com.dslovikosky.narnia.common.constants.ModRegistries;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.commands.arguments.blocks.BlockStateParser;
-import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -26,9 +26,9 @@ import java.util.Map;
 
 @ParametersAreNonnullByDefault
 public class SchematicManager extends SimplePreparableReloadListener<Map<Schematic, SchematicData>> {
-    private final RegistryAccess registryAccess;
+    private final HolderLookup.Provider registryAccess;
 
-    public SchematicManager(final RegistryAccess registryAccess) {
+    public SchematicManager(final HolderLookup.Provider registryAccess) {
         this.registryAccess = registryAccess;
     }
 
@@ -84,7 +84,7 @@ public class SchematicManager extends SimplePreparableReloadListener<Map<Schemat
         return new SchematicData(width, height, length, blocks, blockEntities, entities);
     }
 
-    private BlockState parseBlockState(final RegistryAccess registryAccess, final String blockStateString) {
+    private BlockState parseBlockState(final HolderLookup.Provider registryAccess, final String blockStateString) {
         try {
             return BlockStateParser.parseForBlock(registryAccess.lookup(Registries.BLOCK).get(), blockStateString, true).blockState();
         } catch (final CommandSyntaxException e) {

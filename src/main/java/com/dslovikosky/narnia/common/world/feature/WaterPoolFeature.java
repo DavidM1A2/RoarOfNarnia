@@ -7,6 +7,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.valueproviders.IntProvider;
+import net.minecraft.util.valueproviders.IntProviders;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
@@ -51,7 +52,7 @@ public class WaterPoolFeature extends Feature<WaterPoolFeature.Configuration> {
                         continue;
                     }
 
-                    final BlockState newBlockState = fluid.getState(random, currentBlockPos);
+                    final BlockState newBlockState = fluid.getState(level, random, currentBlockPos);
                     final BlockState oldBlockState = level.getBlockState(currentBlockPos);
                     if (!oldBlockState.is(BlockTags.FEATURES_CANNOT_REPLACE) && !oldBlockState.isAir()) {
                         level.setBlock(currentBlockPos, newBlockState, 2);
@@ -80,9 +81,9 @@ public class WaterPoolFeature extends Feature<WaterPoolFeature.Configuration> {
         public static final Codec<WaterPoolFeature.Configuration> CODEC = RecordCodecBuilder.create(
                 instance -> instance.group(
                                 BlockStateProvider.CODEC.fieldOf("fluid").forGetter(WaterPoolFeature.Configuration::fluid),
-                                IntProvider.CODEC.fieldOf("width").forGetter(WaterPoolFeature.Configuration::width),
-                                IntProvider.CODEC.fieldOf("length").forGetter(WaterPoolFeature.Configuration::length),
-                                IntProvider.CODEC.fieldOf("depth").forGetter(WaterPoolFeature.Configuration::depth)
+                                IntProviders.CODEC.fieldOf("width").forGetter(WaterPoolFeature.Configuration::width),
+                                IntProviders.CODEC.fieldOf("length").forGetter(WaterPoolFeature.Configuration::length),
+                                IntProviders.CODEC.fieldOf("depth").forGetter(WaterPoolFeature.Configuration::depth)
                         )
                         .apply(instance, WaterPoolFeature.Configuration::new)
         );

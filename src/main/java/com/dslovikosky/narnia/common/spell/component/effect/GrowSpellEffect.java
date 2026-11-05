@@ -62,11 +62,11 @@ public class GrowSpellEffect extends SpellEffect {
             }
 
             blockValid = true;
-            if (!iGrowable.isBonemealSuccess(level, level.random, position, blockState)) {
+            if (!iGrowable.isBonemealSuccess(level, level.getRandom(), position, blockState)) {
                 continue;
             }
 
-            iGrowable.performBonemeal(level, level.random, position, blockState);
+            iGrowable.performBonemeal(level, level.getRandom(), position, blockState);
             blockUpdated = true;
             blockState = level.getBlockState(position);
         }

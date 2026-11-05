@@ -41,10 +41,10 @@ public class LunarSpellPowerSource extends SpellPowerSource<Void> {
         final double lunarVitae = player.getData(ModAttachmentTypes.LUNAR_VITAE);
         final boolean canSeeSky = entity.level().canSeeSky(entity.blockPosition());
         if (!canSeeSky) {
-            return CastEnvironment.withVitae(0.0, SpellLunarHandler.getMaxVitae(entity.level()), null);
+            return CastEnvironment.withVitae(0.0, SpellLunarHandler.getMaxVitae(entity.level(), entity.position()), null);
         }
 
-        return CastEnvironment.withVitae(lunarVitae, SpellLunarHandler.getMaxVitae(entity.level()), null);
+        return CastEnvironment.withVitae(lunarVitae, SpellLunarHandler.getMaxVitae(entity.level(), entity.position()), null);
     }
 
     @Override

@@ -5,7 +5,7 @@ import com.dslovikosky.narnia.client.gui.font.TrueTypeFont;
 import com.dslovikosky.narnia.client.gui.layout.Gravity;
 import com.dslovikosky.narnia.client.gui.layout.TextAlignment;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.sounds.SoundEvents;
 
 import java.awt.Color;
@@ -48,7 +48,7 @@ public class ButtonPane extends GuiPane {
     }
 
     @Override
-    public void draw(final GuiGraphics guiGraphics) {
+    public void draw(final GuiGraphicsExtractor guiGraphics) {
         if (this.isVisible()) {
             if (iconHovered != null) {
                 iconHovered.setVisible(isHovered());

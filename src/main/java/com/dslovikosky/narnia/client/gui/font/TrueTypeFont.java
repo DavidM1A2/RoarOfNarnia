@@ -4,7 +4,7 @@ import com.dslovikosky.narnia.client.gui.layout.TextAlignment;
 import com.dslovikosky.narnia.common.constants.Constants;
 import com.mojang.blaze3d.platform.NativeImage;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.resources.Identifier;
@@ -131,7 +131,7 @@ public class TrueTypeFont {
         return nativeImage;
     }
 
-    public void drawString(GuiGraphics guiGraphics, float x, float y, String text, TextAlignment alignment, Color color) {
+    public void drawString(GuiGraphicsExtractor guiGraphics, float x, float y, String text, TextAlignment alignment, Color color) {
         int drawY = Math.round(y);
 
         for (String line : text.split("\n")) {

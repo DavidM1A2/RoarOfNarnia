@@ -4,7 +4,7 @@ import com.dslovikosky.narnia.client.gui.control.StackPane;
 import com.dslovikosky.narnia.client.gui.layout.Dimensions;
 import com.dslovikosky.narnia.client.gui.layout.GuiUtility;
 import net.minecraft.client.DeltaTracker;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.neoforged.neoforge.client.gui.GuiLayer;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -34,7 +34,7 @@ public abstract class BaseGuiLayer implements GuiLayer {
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, DeltaTracker deltaTracker) {
+    public void render(GuiGraphicsExtractor guiGraphics, DeltaTracker deltaTracker) {
         // Do this because the layer gets initialized too early
         if (!isInitialized) {
             isLayerValid = false;

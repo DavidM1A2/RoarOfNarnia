@@ -10,7 +10,7 @@ import com.dslovikosky.narnia.client.gui.layout.Dimensions;
 import com.dslovikosky.narnia.client.gui.layout.GuiUtility;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.CharacterEvent;
 import net.minecraft.client.input.MouseButtonEvent;
@@ -44,7 +44,7 @@ public abstract class BaseScreen extends Screen {
     }
 
     @Override
-    public void render(final GuiGraphics pGuiGraphics, final int pMouseX, final int pMouseY, final float pPartialTick) {
+    public void extractRenderState(final GuiGraphicsExtractor pGuiGraphics, final int pMouseX, final int pMouseY, final float pPartialTick) {
         // Trigger an update if the screen has changed size
         if (!contentPane.getPrefSize().equals(GuiUtility.getWindowSizeInMCCoords())) {
             isScreenValid = false;
@@ -64,10 +64,10 @@ public abstract class BaseScreen extends Screen {
     }
 
     @Override
-    public void renderBackground(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+    public void extractBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick) {
         // If we want a gradient background draw that background
         if (drawGradientBackground()) {
-            super.renderBackground(guiGraphics, mouseX, mouseY, partialTick);
+            super.extractBackground(guiGraphics, mouseX, mouseY, partialTick);
         }
     }
 
@@ -79,7 +79,7 @@ public abstract class BaseScreen extends Screen {
     @Override
     public boolean charTyped(final CharacterEvent characterEvent) {
         // MIN_VALUE default since we don't know what int the char corresponds to
-        this.contentPane.processKeyInput(new KeyEvent(this.contentPane, Integer.MIN_VALUE, Integer.MIN_VALUE, characterEvent.codepoint(), characterEvent.modifiers(), KeyEvent.KeyEventType.Type));
+        this.contentPane.processKeyInput(new KeyEvent(this.contentPane, Integer.MIN_VALUE, Integer.MIN_VALUE, characterEvent.codepoint(), 0, KeyEvent.KeyEventType.Type));
         return super.charTyped(characterEvent);
     }
 

@@ -1,6 +1,7 @@
 package com.dslovikosky.narnia.common.world.data;
 
 import com.dslovikosky.narnia.common.block.RuneBlock;
+import com.dslovikosky.narnia.common.constants.Constants;
 import com.dslovikosky.narnia.common.utils.CustomCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.util.StringRepresentable;
@@ -12,7 +13,7 @@ import java.util.Set;
 
 public class CharnRuneSavedData extends SavedData {
     public static final SavedDataType<CharnRuneSavedData> ID = new SavedDataType<>(
-            "charn_rune",
+            Constants.modLocation("charn_rune"),
             CharnRuneSavedData::new,
             RecordCodecBuilder.create(instance -> instance.group(
                     CustomCodec.set(StringRepresentable.fromEnum(RuneBlock.Color::values)).fieldOf("broken_runes").forGetter(CharnRuneSavedData::getBrokenRunes)

@@ -3,7 +3,7 @@ plugins {
     id("eclipse")
     id("idea")
     id("maven-publish")
-    id("net.neoforged.gradle.userdev").version("7.0.192")
+    id("net.neoforged.gradle.userdev").version("7.1.39")
 }
 
 tasks.named<Wrapper>("wrapper").configure {
@@ -25,8 +25,8 @@ base {
     archivesName = project.extra["mod_id"] as String
 }
 
-// Mojang ships Java 21 to end users starting in 1.20.5, so mods should target Java 21.
-java.toolchain.languageVersion = JavaLanguageVersion.of(21)
+// Mojang ships Java 25 to end users in 26.1.2, so mods should target Java 25.
+java.toolchain.languageVersion = JavaLanguageVersion.of(25)
 
 //minecraft.accessTransformers.file rootProject.file("src/main/resources/META-INF/accesstransformer.cfg")
 //minecraft.accessTransformers.entry public net.minecraft.client.Minecraft textureManager # textureManager
@@ -53,11 +53,11 @@ runs {
 
     create("client") {
         // Comma-separated list of namespaces to load gametests from. Empty = all namespaces.
-        systemProperty("forge.enabledGameTestNamespaces", project.extra["mod_id"] as String)
+        systemProperty("neoforge.enabledGameTestNamespaces", project.extra["mod_id"] as String)
     }
 
     create("server") {
-        systemProperty("forge.enabledGameTestNamespaces", project.extra["mod_id"] as String)
+        systemProperty("neoforge.enabledGameTestNamespaces", project.extra["mod_id"] as String)
         argument("--nogui")
     }
 
@@ -65,7 +65,7 @@ runs {
     // By default, the server will crash when no gametests are provided.
     // The gametest system is also enabled by default for other run configs under the /test command.
     create("gameTestServer") {
-        systemProperty("forge.enabledGameTestNamespaces", project.extra["mod_id"] as String)
+        systemProperty("neoforge.enabledGameTestNamespaces", project.extra["mod_id"] as String)
     }
 
     create("clientData") {
@@ -146,8 +146,6 @@ tasks.withType<ProcessResources>().configureEach {
         "minecraft_version" to project.extra["minecraft_version"],
         "minecraft_version_range" to project.extra["minecraft_version_range"],
         "neo_version" to project.extra["neo_version"],
-        "neo_version_range" to project.extra["neo_version_range"],
-        "loader_version_range" to project.extra["loader_version_range"],
         "mod_id" to project.extra["mod_id"],
         "mod_name" to project.extra["mod_name"],
         "mod_license" to project.extra["mod_license"],
@@ -171,7 +169,7 @@ publishing {
     }
     repositories {
         maven {
-            url = uri("file://${project.projectDir}/repo")
+            url = uri(layout.projectDirectory.dir("repo"))
         }
     }
 }

@@ -208,7 +208,7 @@ public class PowerSourceSelectionScreen extends BaseScreen {
             final Minecraft minecraft = Minecraft.getInstance();
             minecraft.player.setData(ModAttachmentTypes.SELECTED_SPELL_POWER_SOURCE, selectedSpellPowerSource);
             ClientPacketDistributor.sendToServer(new SyncSelectedSpellPowerSourcePacket(selectedSpellPowerSource));
-            minecraft.player.displayClientMessage(Component.translatable("message.narnia.spell.power_source_changed", selectedSpellPowerSource.getName()), false);
+            minecraft.player.sendSystemMessage(Component.translatable("message.narnia.spell.power_source_changed", selectedSpellPowerSource.getName()));
         }
         InputConstants.grabOrReleaseMouse(minecraft.getWindow(), GLFW.GLFW_CURSOR_NORMAL, GuiUtility.getWindowWidthInMCCoords() / 2.0, GuiUtility.getWindowHeightInMCCoords() / 2.0);
         super.onClose();

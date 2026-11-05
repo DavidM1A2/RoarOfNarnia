@@ -2,7 +2,7 @@ package com.dslovikosky.narnia.client.gui.control;
 
 import com.dslovikosky.narnia.client.gui.font.TrueTypeFont;
 import com.dslovikosky.narnia.client.gui.layout.TextAlignment;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 
 import java.awt.Color;
 import java.util.ArrayList;
@@ -22,7 +22,7 @@ public class TextBoxComponent extends GuiComponentWithEvents {
     }
 
     @Override
-    public void draw(final GuiGraphics guiGraphics) {
+    public void draw(final GuiGraphicsExtractor guiGraphics) {
         if (this.isVisible() && this.isInBounds()) {
             float yCoord = getY();
 

@@ -94,7 +94,7 @@ public class RingItem extends Item {
             final ServerLevel woodBetweenTheWorlds = level.getServer().getLevel(ModDimensions.WOOD_BETWEEN_THE_WORLDS);
             final ChunkPos entryChunkPos = WoodBetweenTheWorldsHandler.POOL_LEVEL_MAP.inverse().getOrDefault(dimension, ChunkPos.ZERO);
 
-            final LevelChunk centerChunk = woodBetweenTheWorlds.getChunk(entryChunkPos.x, entryChunkPos.z);
+            final LevelChunk centerChunk = woodBetweenTheWorlds.getChunk(entryChunkPos.x(), entryChunkPos.z());
 
             double waterXSum = 0;
             double waterZSum = 0;

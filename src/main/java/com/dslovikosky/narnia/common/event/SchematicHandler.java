@@ -8,6 +8,6 @@ import net.neoforged.neoforge.event.AddServerReloadListenersEvent;
 public class SchematicHandler {
     @SubscribeEvent
     public void onAddReloadListenerEvent(final AddServerReloadListenersEvent event) {
-        event.addListener(Constants.modLocation("schematic_manager"), new SchematicManager(event.getRegistryAccess()));
+        event.addListener(Constants.modLocation("schematic_manager"), new SchematicManager(event.getServerResources().getRegistryLookup()));
     }
 }

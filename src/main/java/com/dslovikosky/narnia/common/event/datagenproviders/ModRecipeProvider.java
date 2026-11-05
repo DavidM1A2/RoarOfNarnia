@@ -9,7 +9,6 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.RecipeProvider;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.SignItem;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -77,7 +76,7 @@ public class ModRecipeProvider extends RecipeProvider {
         smeltingResultFromBase(ModBlocks.DARK_CITY_SMOOTH_STONE.get(), ModBlocks.DARK_CITY_COBBLESTONE.get());
         stonecutterResultFromBase(RecipeCategory.BUILDING_BLOCKS, ModBlocks.DARK_CITY_SMOOTH_STONE_SLAB, ModBlocks.DARK_CITY_SMOOTH_STONE, 2);
         slab(RecipeCategory.BUILDING_BLOCKS, ModBlocks.DARK_CITY_SMOOTH_STONE_SLAB, ModBlocks.DARK_CITY_SMOOTH_STONE);
-        shaped(RecipeCategory.BUILDING_BLOCKS, new ItemStack(ModBlocks.DARK_CITY_WINDOW, 4))
+        shaped(RecipeCategory.BUILDING_BLOCKS, ModBlocks.DARK_CITY_WINDOW, 4)
                 .unlockedBy(getHasName(ModBlocks.DARK_CITY_COBBLESTONE), has(ModBlocks.DARK_CITY_COBBLESTONE))
                 .define('S', ModBlocks.DARK_CITY_COBBLESTONE)
                 .define('I', Blocks.IRON_BARS)
@@ -86,7 +85,7 @@ public class ModRecipeProvider extends RecipeProvider {
                 .pattern(" I ")
                 .save(output);
 
-        shaped(RecipeCategory.BUILDING_BLOCKS, new ItemStack(ModBlocks.DARK_CITY_STONE_BRICKS, 4))
+        shaped(RecipeCategory.BUILDING_BLOCKS, ModBlocks.DARK_CITY_STONE_BRICKS, 4)
                 .unlockedBy(getHasName(ModBlocks.DARK_CITY_COBBLESTONE), has(ModBlocks.DARK_CITY_COBBLESTONE))
                 .define('S', ModBlocks.DARK_CITY_COBBLESTONE)
                 .pattern("SS")

@@ -8,8 +8,8 @@ import com.dslovikosky.narnia.client.gui.layout.Spacing;
 import com.dslovikosky.narnia.client.gui.screen.BaseScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.client.gui.screens.inventory.tooltip.DefaultTooltipPositioner;
 
 import java.awt.Color;
@@ -17,6 +17,7 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public abstract class GuiComponent {
     private static final Font FONT = Minecraft.getInstance().font;
@@ -24,7 +25,7 @@ public abstract class GuiComponent {
     private Dimensions prefSize = new Dimensions(1, 1, true);
     private Spacing margins = new Spacing(0.0, true);
     private Gravity gravity = Gravity.TOP_LEFT;
-    private List<ClientTooltipComponent> hoverTexts = new ArrayList<>();
+    private List<FormattedCharSequence> hoverTexts = new ArrayList<>();
     private Color color = Color.WHITE;
     private int x = 0;
     private int y = 0;
@@ -34,17 +35,17 @@ public abstract class GuiComponent {
     private boolean isVisible = true;
     private boolean inBounds = true;
 
-    public abstract void draw(final GuiGraphics guiGraphics);
+    public abstract void draw(final GuiGraphicsExtractor guiGraphics);
 
     public abstract void update();
 
-    public void drawOverlay(final GuiGraphics guiGraphics) {
+    public void drawOverlay(final GuiGraphicsExtractor guiGraphics) {
         // Make sure the control is visible and hovered
         if (this.isVisible && this.inBounds && this.isHovered && !hoverTexts.isEmpty()) {
             // Grab the mouse X and Y coordinates to draw at
             final int mouseX = GuiUtility.getMouseXInMCCoord();
             final int mouseY = GuiUtility.getMouseYInMCCoord();
-            guiGraphics.renderTooltip(FONT, hoverTexts, mouseX, mouseY, DefaultTooltipPositioner.INSTANCE, null);
+            guiGraphics.setTooltipForNextFrame(FONT, hoverTexts, Optional.empty(), DefaultTooltipPositioner.INSTANCE, mouseX, mouseY, false, null);
         }
     }
 
@@ -118,11 +119,11 @@ public abstract class GuiComponent {
         this.gravity = gravity;
     }
 
-    public List<ClientTooltipComponent> getHoverTexts() {
+    public List<FormattedCharSequence> getHoverTexts() {
         return hoverTexts;
     }
 
-    public void setHoverTexts(final List<ClientTooltipComponent> hoverTexts) {
+    public void setHoverTexts(final List<FormattedCharSequence> hoverTexts) {
         this.hoverTexts = hoverTexts;
     }
 

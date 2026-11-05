@@ -2,7 +2,7 @@ package com.dslovikosky.narnia.client.particle.base;
 
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.SpriteSet;
-import net.minecraft.client.renderer.state.QuadParticleRenderState;
+import net.minecraft.client.renderer.state.level.QuadParticleRenderState;
 import org.joml.Quaternionf;
 
 public abstract class RotatedNarniaParticle extends NarniaParticle {

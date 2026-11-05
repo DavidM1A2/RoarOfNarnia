@@ -77,7 +77,7 @@ public class Spell {
                     final SpellCastResult castResult = selectedPowerSource.cast(entity, this);
                     if (!castResult.wasSuccessful()) {
                         if (entity instanceof Player player) {
-                            player.displayClientMessage(castResult.getFailureMessage(), false);
+                            player.sendSystemMessage(castResult.getFailureMessage());
                         }
                         return;
                     }
@@ -100,12 +100,12 @@ public class Spell {
                                     new BlockPos((int) position.x, (int) position.y, (int) position.z), direction, entity.getUpVector(1f), entity, entity, null));
                 } else {
                     if (entity instanceof Player player) {
-                        player.displayClientMessage(Component.translatable("message.narnia.spell.invalid"), false);
+                        player.sendSystemMessage(Component.translatable("message.narnia.spell.invalid"));
                     }
                 }
             } else {
                 if (entity instanceof Player player) {
-                    player.displayClientMessage(Component.translatable("message.narnia.spell.wrong_dimension"), false);
+                    player.sendSystemMessage(Component.translatable("message.narnia.spell.wrong_dimension"));
                 }
             }
         }

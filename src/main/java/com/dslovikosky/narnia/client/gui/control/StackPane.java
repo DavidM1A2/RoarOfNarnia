@@ -1,12 +1,12 @@
 package com.dslovikosky.narnia.client.gui.control;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 
 public class StackPane extends GuiPane {
     private boolean scissorsEnabled = false;
 
     @Override
-    public void draw(final GuiGraphics guiGraphics) {
+    public void draw(final GuiGraphicsExtractor guiGraphics) {
         if (scissorsEnabled) {
             guiGraphics.enableScissor(getX(), getY(), getX() + getWidth(), getY() + getHeight());
         }

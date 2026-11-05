@@ -1,7 +1,7 @@
 package com.dslovikosky.narnia.client.gui.control;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.resources.Identifier;
@@ -35,7 +35,7 @@ public class SpritePane extends GuiPane {
     }
 
     @Override
-    public void draw(GuiGraphics guiGraphics) {
+    public void draw(GuiGraphicsExtractor guiGraphics) {
         if (this.isVisible()) {
             handleAnimation();
 

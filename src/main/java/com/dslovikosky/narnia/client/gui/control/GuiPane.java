@@ -9,7 +9,7 @@ import com.dslovikosky.narnia.client.gui.layout.Gravity;
 import com.dslovikosky.narnia.client.gui.layout.GuiUtility;
 import com.dslovikosky.narnia.client.gui.layout.Position;
 import com.dslovikosky.narnia.client.gui.layout.Spacing;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -111,13 +111,13 @@ public abstract class GuiPane extends GuiComponentWithEvents {
     }
 
     @Override
-    public void draw(final GuiGraphics guiGraphics) {
+    public void draw(final GuiGraphicsExtractor guiGraphics) {
         // Then draw children
         this.subComponents.forEach(it -> it.draw(guiGraphics));
     }
 
     @Override
-    public void drawOverlay(final GuiGraphics guiGraphics) {
+    public void drawOverlay(final GuiGraphicsExtractor guiGraphics) {
         // Then draw children
         this.subComponents.forEach(it -> it.drawOverlay(guiGraphics));
     }
