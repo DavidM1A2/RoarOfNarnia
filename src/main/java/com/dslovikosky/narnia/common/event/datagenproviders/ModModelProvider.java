@@ -36,10 +36,11 @@ public class ModModelProvider extends ModelProvider {
                         .stairs(ModBlocks.WORLD_WOOD_STAIR.get())
                         .pressurePlate(ModBlocks.WORLD_WOOD_PRESSURE_PLATE.get())
                         .sign(ModBlocks.WORLD_WOOD_STANDING_SIGN.get(), ModBlocks.WORLD_WOOD_WALL_SIGN.get())
+                        // customHangingSign uses the family's base block (planks) as the particle donor
+                        .customHangingSign(ModBlocks.WORLD_WOOD_CEILING_HANGING_SIGN.get(), ModBlocks.WORLD_WOOD_WALL_HANGING_SIGN.get())
                         .getFamily());
         createOrientableTrapdoor(blockModels, ModBlocks.WORLD_WOOD_TRAP_DOOR.get());
         createDoor(blockModels, ModBlocks.WORLD_WOOD_DOOR.get());
-        createHangingSign(blockModels, ModBlocks.WORLD_WOOD_PLANKS.get(), ModBlocks.WORLD_WOOD_CEILING_HANGING_SIGN.get(), ModBlocks.WORLD_WOOD_WALL_HANGING_SIGN.get());
 
         blockModels.createTrivialCube(ModBlocks.DARK_CITY_COBBLESTONE.get());
         blockModels.createAxisAlignedPillarBlock(ModBlocks.DARK_CITY_SMOOTH_STONE.get(), TexturedModel.COLUMN);
@@ -137,13 +138,4 @@ public class ModModelProvider extends ModelProvider {
         blockModels.createTrivialBlock(block, TexturedModel.CUBE);
     }
 
-    // 26.2 dropped BlockModelGenerators#createHangingSign in favor of a low-level overload that wants all
-    // eight rotation variants. Hanging signs are drawn by a block entity renderer, so the block model only
-    // supplies particles - this reproduces what the old helper generated.
-    private void createHangingSign(final BlockModelGenerators blockModels, final Block particleBlock, final Block hangingSign, final Block wallHangingSign) {
-        final MultiVariant particleOnlyVariant = blockModels.createParticleOnlyBlockModel(hangingSign, particleBlock);
-        blockModels.blockStateOutput.accept(BlockModelGenerators.createSimpleBlock(hangingSign, particleOnlyVariant));
-        blockModels.blockStateOutput.accept(BlockModelGenerators.createSimpleBlock(wallHangingSign, particleOnlyVariant));
-        blockModels.registerSimpleFlatItemModel(hangingSign.asItem());
-    }
 }
