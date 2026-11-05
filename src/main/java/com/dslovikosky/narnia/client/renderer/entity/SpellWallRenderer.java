@@ -1,6 +1,7 @@
 package com.dslovikosky.narnia.client.renderer.entity;
 
 import com.dslovikosky.narnia.client.constants.ModRenderPipelines;
+import com.dslovikosky.narnia.client.renderer.SpellGeometrySubmitter;
 import com.dslovikosky.narnia.common.constants.Constants;
 import com.dslovikosky.narnia.common.entity.spell.SpellWallEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -104,7 +105,7 @@ public class SpellWallRenderer extends EntityRenderer<SpellWallEntity, SpellWall
         final float uTileCount = (float) Math.floor(width.length());
         final float vTileCount = (float) Math.floor(height.length());
 
-        submitNodeCollector.submitCustomGeometry(poseStack, WALL_RENDER_TYPE, (pose, wallBuffer) -> {
+        SpellGeometrySubmitter.submitAfterTerrain(submitNodeCollector, poseStack, WALL_RENDER_TYPE, (pose, wallBuffer) -> {
             final Matrix4f rotationMatrix = pose.pose();
             drawQuadVertex(rotationMatrix, pose, wallBuffer, -halfWidthX + halfHeightX, -halfWidthY + halfHeightY, -halfWidthZ + halfHeightZ, 0f, 0f, red, green, blue, innerAlpha);
             drawQuadVertex(rotationMatrix, pose, wallBuffer, halfWidthX + halfHeightX, halfWidthY + halfHeightY, halfWidthZ + halfHeightZ, uTileCount, 0f, red, green, blue, innerAlpha);
@@ -117,7 +118,7 @@ public class SpellWallRenderer extends EntityRenderer<SpellWallEntity, SpellWall
         final Vec3 topRight = new Vec3(halfWidthX + halfHeightX, halfWidthY + halfHeightY, halfWidthZ + halfHeightZ);
         final Vec3 bottomRight = new Vec3(halfWidthX - halfHeightX, halfWidthY - halfHeightY, halfWidthZ - halfHeightZ);
         final Vec3 bottomLeft = new Vec3(-halfWidthX - halfHeightX, -halfWidthY - halfHeightY, -halfWidthZ - halfHeightZ);
-        submitNodeCollector.submitCustomGeometry(poseStack, WALL_BORDER_RENDER_TYPE, (pose, borderBuffer) -> {
+        SpellGeometrySubmitter.submitAfterTerrain(submitNodeCollector, poseStack, WALL_BORDER_RENDER_TYPE, (pose, borderBuffer) -> {
             final Matrix4f rotationMatrix = pose.pose();
             drawBorderEdge(rotationMatrix, pose, borderBuffer, topLeft, topRight, red, green, blue, outerAlpha);
             drawBorderEdge(rotationMatrix, pose, borderBuffer, topRight, bottomRight, red, green, blue, outerAlpha);

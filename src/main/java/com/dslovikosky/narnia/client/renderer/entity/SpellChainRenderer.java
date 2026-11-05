@@ -1,11 +1,13 @@
 package com.dslovikosky.narnia.client.renderer.entity;
 
 import com.dslovikosky.narnia.client.constants.ModRenderPipelines;
+import com.dslovikosky.narnia.client.renderer.SpellGeometrySubmitter;
 import com.dslovikosky.narnia.common.constants.Constants;
 import com.dslovikosky.narnia.common.entity.spell.SpellChainEntity;
 import com.dslovikosky.narnia.common.utils.MathUtils;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.datafixers.util.Pair;
 import com.mojang.math.Axis;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.EntityRenderer;
@@ -14,7 +16,6 @@ import net.minecraft.client.renderer.rendertype.RenderSetup;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.resources.Identifier;
-import com.mojang.datafixers.util.Pair;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix4f;
@@ -101,7 +102,7 @@ public class SpellChainRenderer extends EntityRenderer<SpellChainEntity, SpellCh
         jitterVertices.add(endPos);
         final Map<Vec3, List<Vec3>> forks = computeForks(random, jitterVertices);
 
-        submitNodeCollector.submitCustomGeometry(poseStack, RENDER_TYPE, (pose, buffer) -> {
+        SpellGeometrySubmitter.submitAfterTerrain(submitNodeCollector, poseStack, RENDER_TYPE, (pose, buffer) -> {
             // drawSegment walks the stack forward as it goes, so it needs a mutable stack rather than
             // the single pose the submit system hands back
             final PoseStack segmentStack = new PoseStack();

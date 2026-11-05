@@ -1,6 +1,7 @@
 package com.dslovikosky.narnia.client.renderer.entity;
 
 import com.dslovikosky.narnia.client.constants.ModRenderPipelines;
+import com.dslovikosky.narnia.client.renderer.SpellGeometrySubmitter;
 import com.dslovikosky.narnia.common.constants.Constants;
 import com.dslovikosky.narnia.common.entity.spell.SpellAOEEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -92,7 +93,7 @@ public class SpellAOERenderer extends EntityRenderer<SpellAOEEntity, SpellAOERen
         final int latitudes = (int) Math.ceil(7 + radius / 3);
         final int longitudes = (int) Math.ceil(7 + radius / 3);
 
-        submitNodeCollector.submitCustomGeometry(poseStack, RENDER_TYPE, (pose, buffer) -> {
+        SpellGeometrySubmitter.submitAfterTerrain(submitNodeCollector, poseStack, RENDER_TYPE, (pose, buffer) -> {
             final Matrix4f rotationMatrix = pose.pose();
 
             // Algorithm from https://stackoverflow.com/questions/43412525/algorithm-to-draw-a-sphere-using-quadrilaterals

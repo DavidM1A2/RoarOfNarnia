@@ -1,6 +1,7 @@
 package com.dslovikosky.narnia.client.renderer.entity;
 
 import com.dslovikosky.narnia.client.constants.ModRenderPipelines;
+import com.dslovikosky.narnia.client.renderer.SpellGeometrySubmitter;
 import com.dslovikosky.narnia.common.constants.Constants;
 import com.dslovikosky.narnia.common.entity.spell.SpellConeEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -120,7 +121,7 @@ public class SpellConeRenderer extends EntityRenderer<SpellConeEntity, SpellCone
         baseVertices.add(baseVertices.get(0));
 
         // Draw quads from the point of the cone to three vertices on the base. This will create a sort of diamond shape
-        submitNodeCollector.submitCustomGeometry(poseStack, CONE_RENDER_TYPE, (pose, coneBuffer) -> {
+        SpellGeometrySubmitter.submitAfterTerrain(submitNodeCollector, poseStack, CONE_RENDER_TYPE, (pose, coneBuffer) -> {
             final Matrix4f rotationMatrix = pose.pose();
             for (int i = 2; i <= numTriangles; i = i + 2) {
                 final Vec3 baseVertexOne = baseVertices.get(i);
@@ -135,7 +136,7 @@ public class SpellConeRenderer extends EntityRenderer<SpellConeEntity, SpellCone
             }
         });
 
-        submitNodeCollector.submitCustomGeometry(poseStack, CONE_BORDER_RENDER_TYPE, (pose, coneBorderBuffer) -> {
+        SpellGeometrySubmitter.submitAfterTerrain(submitNodeCollector, poseStack, CONE_BORDER_RENDER_TYPE, (pose, coneBorderBuffer) -> {
             final Matrix4f rotationMatrix = pose.pose();
             for (int i = 0; i < numTriangles; i++) {
                 final Vec3 baseVertex = baseVertices.get(i);

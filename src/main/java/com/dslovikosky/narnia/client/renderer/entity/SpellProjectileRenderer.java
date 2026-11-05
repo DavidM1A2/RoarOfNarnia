@@ -1,6 +1,7 @@
 package com.dslovikosky.narnia.client.renderer.entity;
 
 import com.dslovikosky.narnia.client.constants.ModRenderPipelines;
+import com.dslovikosky.narnia.client.renderer.SpellGeometrySubmitter;
 import com.dslovikosky.narnia.common.constants.Constants;
 import com.dslovikosky.narnia.common.entity.spell.SpellProjectileEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -77,7 +78,7 @@ public class SpellProjectileRenderer extends EntityRenderer<SpellProjectileEntit
         poseStack.mulPose(Axis.YP.rotationDegrees(tickCount * IN_PLANE_ROTATION_SPEED));
         // Rotate the plane
         poseStack.mulPose(Axis.XP.rotationDegrees(90f));
-        submitNodeCollector.submitCustomGeometry(poseStack, RENDER_TYPE, (pose, buffer) -> drawOneSprite(pose, buffer, red, green, blue));
+        SpellGeometrySubmitter.submitAfterTerrain(submitNodeCollector, poseStack, RENDER_TYPE, (pose, buffer) -> drawOneSprite(pose, buffer, red, green, blue));
         poseStack.popPose();
 
         // Setup in-plane rotation
@@ -85,7 +86,7 @@ public class SpellProjectileRenderer extends EntityRenderer<SpellProjectileEntit
         poseStack.mulPose(Axis.XP.rotationDegrees(tickCount * IN_PLANE_ROTATION_SPEED));
         // Rotate the plane
         poseStack.mulPose(Axis.YP.rotationDegrees(90f));
-        submitNodeCollector.submitCustomGeometry(poseStack, RENDER_TYPE, (pose, buffer) -> drawOneSprite(pose, buffer, red, green, blue));
+        SpellGeometrySubmitter.submitAfterTerrain(submitNodeCollector, poseStack, RENDER_TYPE, (pose, buffer) -> drawOneSprite(pose, buffer, red, green, blue));
         poseStack.popPose();
 
         // Setup in-plane rotation
@@ -93,7 +94,7 @@ public class SpellProjectileRenderer extends EntityRenderer<SpellProjectileEntit
         poseStack.mulPose(Axis.ZP.rotationDegrees(tickCount * IN_PLANE_ROTATION_SPEED));
         // Rotate the plane
         poseStack.mulPose(Axis.ZP.rotationDegrees(90f));
-        submitNodeCollector.submitCustomGeometry(poseStack, RENDER_TYPE, (pose, buffer) -> drawOneSprite(pose, buffer, red, green, blue));
+        SpellGeometrySubmitter.submitAfterTerrain(submitNodeCollector, poseStack, RENDER_TYPE, (pose, buffer) -> drawOneSprite(pose, buffer, red, green, blue));
         poseStack.popPose();
 
         poseStack.popPose();
