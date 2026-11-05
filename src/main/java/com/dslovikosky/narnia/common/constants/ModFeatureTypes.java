@@ -8,11 +8,6 @@ import net.minecraft.world.level.levelgen.feature.Feature;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
-/**
- * 26.3 split the old feature registry in two. A feature type is just the codec that deserializes a feature,
- * and lives here in the static worldgen/feature_type registry. The features themselves are datapack objects
- * now, keyed from {@link ModFeatures}, and carry the settings that used to sit in a separate configuration.
- */
 public class ModFeatureTypes {
     public static final DeferredRegister<MapCodec<? extends Feature>> FEATURE_TYPES = DeferredRegister.create(Registries.FEATURE_TYPE, Constants.MOD_ID);
 

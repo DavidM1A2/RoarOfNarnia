@@ -14,11 +14,8 @@ import net.neoforged.neoforge.client.submit.RenderPhaseKeys;
  * over anything further away than the surface, including an effect on the far side of a pond. Submitting only
  * after translucent terrain discards every fragment further away than the water, clipping the effect flat along
  * the plane. Running both covers the whole effect - the far side comes from the earlier pass and the near side
- * from the later one.
- * <p>
- * This is what the pre-26.2 renderer did by drawing each spell entity once on the normal entity path and again
- * from the after-weather event. Geometry that no water sits in front of is drawn twice and so blends twice,
- * which reads as a slightly more solid effect; that was true of the old renderer too.
+ * from the later one. Geometry that no water sits in front of is drawn twice and so blends twice, which reads
+ * as a slightly more solid effect.
  */
 public final class SpellGeometrySubmitter {
     private SpellGeometrySubmitter() {

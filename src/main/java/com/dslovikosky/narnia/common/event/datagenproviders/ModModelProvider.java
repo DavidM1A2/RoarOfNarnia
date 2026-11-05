@@ -19,11 +19,7 @@ import net.minecraft.world.level.block.Block;
 import java.util.Map;
 
 public class ModModelProvider extends ModelProvider {
-    /**
-     * 26.3 replaced the equipment asset argument of generateTrimmableItem with a palette replacement map.
-     * Passing EquipmentAssets.DIAMOND used to pick the darker diamond trim overlay on diamond-tier armour,
-     * which this map expresses directly - it is exactly what vanilla diamond armour does in 26.3.
-     */
+    // Ancient armour takes the darker diamond trim overlay, the same substitution vanilla diamond armour uses
     private static final Map<TrimMaterials.Palette, TrimMaterials.Palette> ANCIENT_TRIM_PALETTES =
             Map.of(TrimMaterials.Palette.DIAMOND, TrimMaterials.Palette.DIAMOND_DARKER);
 

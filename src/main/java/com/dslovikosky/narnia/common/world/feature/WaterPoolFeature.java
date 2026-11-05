@@ -18,11 +18,6 @@ import net.minecraft.world.level.levelgen.feature.stateproviders.BlockStateProvi
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
-/**
- * 26.3 merged a feature and its configuration into one object. Feature is an interface whose instances carry
- * their own settings and dispatch on a codec registered in the feature type registry, so the old
- * Configuration record is now the feature itself and place takes the level directly instead of a context.
- */
 @ParametersAreNonnullByDefault
 public record WaterPoolFeature(
         Holder<BlockStateProvider> fluid,

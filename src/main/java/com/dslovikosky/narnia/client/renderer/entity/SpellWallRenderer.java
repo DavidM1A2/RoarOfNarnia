@@ -28,7 +28,6 @@ import java.awt.Color;
 public class SpellWallRenderer extends EntityRenderer<SpellWallEntity, SpellWallRenderState> {
     // The texture used by the model
     private static final Identifier SPELL_CONE_TEXTURE = Constants.modLocation("textures/entity/spell/wall.png");
-    // 1.21.11 moved line width into the vertex format; 1.0 matches the previous global default
     private static final float BORDER_LINE_WIDTH = 1.0F;
     private static final RenderType WALL_RENDER_TYPE = RenderType.create(
             Constants.modLocation("spell_wall").toString(),

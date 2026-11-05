@@ -4,13 +4,6 @@ import com.dslovikosky.narnia.client.gui.control.GuiComponentWithEvents;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.input.InputQuirks;
 
-/**
- * 26.3 replaced GLFW with SDL, which splits a key press into two different numbers. The key is a physical
- * SDL scancode, matching InputConstants.KEY_*, and is what a key binding is compared against. The key code is
- * the layout dependent SDL key code, matching InputConstants.KEYCODE_*, and is what text editing shortcuts
- * compare against so that they follow the user's keyboard layout. The old GLFW scan code had no such role,
- * which is why this carries a key code now instead.
- */
 public class KeyEvent extends GuiEvent {
     private final int key;
     private final int keyCode;

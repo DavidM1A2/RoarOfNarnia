@@ -10,12 +10,6 @@ import net.neoforged.neoforge.registries.datamaps.builtin.Transformable;
 
 import java.util.concurrent.CompletableFuture;
 
-/**
- * 26.3 made axe stripping data driven. The block's getToolModifiedState override is gone, and the log to
- * stripped-log mapping now lives in the neoforge transformables data map, which appends to the vanilla
- * minecraft:axe block transformer. Transformable#stripping copies block properties across, which keeps the
- * log's axis the way the old override did.
- */
 public class ModDataMapProvider extends DataMapProvider {
     public ModDataMapProvider(final PackOutput packOutput, final CompletableFuture<HolderLookup.Provider> lookupProvider) {
         super(packOutput, lookupProvider);

@@ -91,8 +91,8 @@ public class DrowsyVignetteRenderer {
 
         final CommandEncoder encoder = RenderSystem.getDevice().createCommandEncoder();
 
-        // Write vec4(timeStrength, 0,0,0) in std140 layout. 26.3 refuses to use a buffer that is still mapped,
-        // so the mapping has to be closed before the render pass below reads the uniform out of it.
+        // Write vec4(timeStrength, 0,0,0) in std140 layout. The mapping has to close before the render pass
+        // below can read the uniform out of the buffer.
         try (GpuBufferSlice.MappedView view = uniformBufferObject.currentBuffer().map(false, true)) {
             Std140Builder.intoBuffer(view.data()).putVec4(strength, 0f, 0f, 0f);
         }
@@ -102,8 +102,7 @@ public class DrowsyVignetteRenderer {
 
         // Create a render pass and bind the uniform and the color sampler
         try (RenderPass pass = encoder.createRenderPass(() -> "drowsy_vignette_pass", colorView, Optional.empty())) {
-            // Setup the pipeline, uniform, sampler, and vertex buffer. 26.3 takes a compiled pipeline
-            // rather than the pipeline itself, and folded bindTexture into setUniform.
+            // Setup the pipeline, uniform, sampler, and vertex buffer
             pass.setPipeline(RenderSystem.getCompiledPipeline(ModRenderPipelines.DROWSY_VIGNETTE));
             pass.setUniform("TimeUniform", uniformBufferObject.currentBuffer().slice(0, UBO_SIZE));
             pass.setUniform("In", colorView, RenderSystem.getSamplerCache().getClampToEdge(FilterMode.LINEAR));

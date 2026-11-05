@@ -13,13 +13,8 @@ import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 
 public class WoodBetweenTheWorldsClientHandler {
-    /**
-     * The vignette is a full screen post effect, so it opens its own render pass over the main target. In 26.3
-     * AfterWeather fires from inside LevelRenderer's transparency pass with a render pass already open, and
-     * opening a second one there throws. AfterLevel is the last stage to fire and the only one handed a null
-     * render pass, which makes it the one place a post effect can still do this - and it is where a pass over
-     * the finished level belongs anyway. It is still inside renderLevel, so the HUD draws on top as before.
-     */
+    // The vignette opens its own render pass over the main target, so it needs a stage with no pass already
+    // open. AfterLevel is the only one, and it still runs inside renderLevel so the HUD draws on top.
     @SubscribeEvent
     public void onRenderLevelStageEvent(final RenderLevelStageEvent.AfterLevel event) {
         ModRenderers.Client.DROWSY_VIGNETTE.render(Minecraft.getInstance().gameRenderer.mainRenderTarget(), event.getLevelRenderState());

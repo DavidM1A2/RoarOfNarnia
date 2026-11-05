@@ -82,7 +82,6 @@ public class ModBlockLootTableSubProvider extends BlockLootSubProvider {
         add(ModBlocks.YELLOW_RUNE.get(), noDrop());
     }
 
-    // 26.3 made hasShears and hasSilkTouch return registry holders, so these compose through AnyOfCondition now
     private LootItemCondition.Builder hasShearsOrSilkTouch() {
         return new AnyOfCondition.Builder().or(this.hasShears()).or(this.hasSilkTouch());
     }

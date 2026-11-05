@@ -21,11 +21,6 @@ import net.minecraft.world.level.block.FenceGateBlock;
 import net.minecraft.world.level.block.StairBlock;
 import net.minecraft.world.level.block.TrapDoorBlock;
 
-/**
- * 26.3 turned recipes and advancements into reloadable datapack registries, so a recipe provider writes into
- * two bootstrap contexts instead of being its own data provider. The Runner that used to wire it into the
- * generator is gone; GatherDataRegistryEntriesEvent#recipe takes this constructor directly.
- */
 public class ModRecipeProvider extends RecipeProvider {
     public ModRecipeProvider(final BootstrapContext<Recipe<?>> recipeOutput, final BootstrapContext<Advancement> advancementOutput) {
         super(recipeOutput, advancementOutput);
@@ -175,7 +170,6 @@ public class ModRecipeProvider extends RecipeProvider {
         trapdoorBuilder(trapDoorBlock, Ingredient.of(planks)).unlockedBy(getHasName(planks), has(planks)).save(recipeOutput);
     }
 
-    // 26.3 dropped SignItem, so a sign is just an item as far as its recipe is concerned
     private void sign(final RecipeOutput recipeOutput, final Item signItem, final Block planks) {
         signBuilder(signItem, Ingredient.of(planks)).unlockedBy(getHasName(planks), has(planks)).save(recipeOutput);
     }

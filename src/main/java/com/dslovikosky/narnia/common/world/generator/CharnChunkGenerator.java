@@ -60,10 +60,6 @@ public class CharnChunkGenerator extends ChunkGenerator {
         super(new FixedBiomeSource(biome));
     }
 
-    /**
-     * 26.3 collapsed fillFromNoise, applyCarvers and buildSurface into one buildTerrain call. Charn only ever
-     * filled from noise - its carver and surface passes were empty - so the whole generator is this method now.
-     */
     @Override
     public CompletableFuture<ChunkAccess> buildTerrain(
             ChunkAccess chunk,

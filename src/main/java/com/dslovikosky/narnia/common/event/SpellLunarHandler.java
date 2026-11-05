@@ -32,10 +32,9 @@ public class SpellLunarHandler {
     private static final double VITAE_DECAY_PER_INTERVAL = 50.0;
 
     public static double getMaxVitae(final Level level, final Vec3 position) {
-        // As of 1.21.11 the moon phase is an environment attribute rather than derived from the day time.
-        // Environment attributes are positional unless they opt out, so the value has to be sampled at a
-        // position rather than read off the dimension. Moon phase is not spatially interpolated, so no
-        // interpolator is needed.
+        // Environment attributes are positional unless they opt out, so the moon phase has to be sampled at a
+        // position rather than read off the dimension. It is not spatially interpolated, so no interpolator
+        // is needed.
         final int moonPhase = level.environmentAttributes().getValue(EnvironmentAttributes.MOON_PHASE, position, null).index();
         return VITAE_CAP_BY_MOON_PHASE.getOrDefault(moonPhase, 0.0);
     }

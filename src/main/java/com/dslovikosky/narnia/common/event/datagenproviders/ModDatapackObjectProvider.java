@@ -1,13 +1,6 @@
 package com.dslovikosky.narnia.common.event.datagenproviders;
 
-import com.dslovikosky.narnia.common.constants.ModBiomeModifiers;
-import com.dslovikosky.narnia.common.constants.ModBiomes;
-import com.dslovikosky.narnia.common.constants.ModBlocks;
-import com.dslovikosky.narnia.common.constants.ModDamageTypes;
-import com.dslovikosky.narnia.common.constants.ModDimensionTypes;
-import com.dslovikosky.narnia.common.constants.ModFeatures;
-import com.dslovikosky.narnia.common.constants.ModLevelStems;
-import com.dslovikosky.narnia.common.constants.ModPlacedFeatures;
+import com.dslovikosky.narnia.common.constants.*;
 import com.dslovikosky.narnia.common.world.feature.WaterPoolFeature;
 import com.dslovikosky.narnia.common.world.feature.WorldWoodTreeFeature;
 import com.dslovikosky.narnia.common.world.generator.CharnChunkGenerator;
@@ -48,16 +41,7 @@ import net.minecraft.world.level.levelgen.feature.stateproviders.BlockStateProvi
 import net.minecraft.world.level.levelgen.flat.FlatLayerInfo;
 import net.minecraft.world.level.levelgen.flat.FlatLevelGeneratorSettings;
 import net.minecraft.world.level.levelgen.heightproviders.ConstantHeight;
-import net.minecraft.world.level.levelgen.placement.BiomeFilter;
-import net.minecraft.world.level.levelgen.placement.BlockPredicateFilter;
-import net.minecraft.world.level.levelgen.placement.CountPlacement;
-import net.minecraft.world.level.levelgen.placement.HeightRangePlacement;
-import net.minecraft.world.level.levelgen.placement.HeightmapPlacement;
-import net.minecraft.world.level.levelgen.placement.InSquarePlacement;
-import net.minecraft.world.level.levelgen.placement.OffsetPlacement;
-import net.minecraft.world.level.levelgen.placement.PlacedFeature;
-import net.minecraft.world.level.levelgen.placement.RarityFilter;
-import net.minecraft.world.level.levelgen.placement.SurfaceWaterDepthFilter;
+import net.minecraft.world.level.levelgen.placement.*;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.common.Tags;
@@ -67,18 +51,13 @@ import net.neoforged.neoforge.data.event.GatherDataRegistryEntriesEvent;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import net.neoforged.neoforge.registries.holdersets.OrHolderSet;
 
-import java.awt.Color;
+import java.awt.*;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 import static com.dslovikosky.narnia.client.constants.ModRenderers.CHARN_SKY_RENDERER_ID;
 
-/**
- * 26.3 bootstraps datapack registry entries through GatherDataRegistryEntriesEvent rather than handing a
- * RegistrySetBuilder to the data generator. The gatherer sorts entries into the world and reloadable registry
- * layers itself, so recipes and loot tables can be gathered alongside biomes and features.
- */
 public class ModDatapackObjectProvider {
     @SubscribeEvent
     public void onGatherDataRegistryEntriesEvent(final GatherDataRegistryEntriesEvent event) {
@@ -95,10 +74,8 @@ public class ModDatapackObjectProvider {
                     );
                 })
                 .add(Registries.DIMENSION_TYPE, bootstrap -> {
-                    // 1.21.11 replaced the fixed-time/bed/anchor flags and the effects location with the
-                    // environment attribute system. An empty timeline set means the dimension does not run a
-                    // day/night cycle, which is how a fixed time of day is now expressed.
-                    // 26.2 takes infiniburn as a resolved HolderSet rather than a TagKey
+                    // An empty timeline set means the dimension runs no day/night cycle, which is how a fixed
+                    // time of day is expressed
                     final HolderGetter<Block> blocks = bootstrap.lookup(Registries.BLOCK);
                     bootstrap.register(ModDimensionTypes.WOOD_BETWEEN_THE_WORLDS, new DimensionType(
                             true,
@@ -115,9 +92,9 @@ public class ModDatapackObjectProvider {
                             DimensionType.Skybox.OVERWORLD,
                             CardinalLighting.Type.DEFAULT,
                             EnvironmentAttributeMap.builder()
-                                    // The old fixed time of 6000 ticks is noon, which the day timeline maps to a 0 degree sun angle
+                                    // A 0 degree sun angle is noon
                                     .set(EnvironmentAttributes.SUN_ANGLE, 0.0F)
-                                    // See the Charn note below: 26.1 defaults the ambient lightmap floor to black
+                                    // See the Charn note below: the ambient lightmap floor defaults to black
                                     .set(EnvironmentAttributes.AMBIENT_LIGHT_COLOR, ARGB.vector3fFromRGB24(ARGB.color(10, 10, 10)))
                                     .set(EnvironmentAttributes.RESPAWN_ANCHOR_WORKS, true)
                                     .set(EnvironmentAttributes.CAN_START_RAID, false)
@@ -142,12 +119,12 @@ public class ModDatapackObjectProvider {
                             CardinalLighting.Type.DEFAULT,
                             EnvironmentAttributeMap.builder()
                                     .set(NeoForgeEnvironmentAttributes.CUSTOM_SKYBOX, CHARN_SKY_RENDERER_ID)
-                                    // 26.1 turned the lightmap's ambient floor into per-dimension data that
-                                    // defaults to pure black. Without this, Charn is literally rgb(0,0,0)
-                                    // wherever block light does not reach, since it has no sky light either.
-                                    // This matches the value vanilla gives the overworld.
+                                    // The lightmap's ambient floor is per-dimension data defaulting to pure
+                                    // black. Without this, Charn is literally rgb(0,0,0) wherever block light
+                                    // does not reach, since it has no sky light either. This matches the value
+                                    // vanilla gives the overworld.
                                     .set(EnvironmentAttributes.AMBIENT_LIGHT_COLOR, ARGB.vector3fFromRGB24(ARGB.color(10, 10, 10)))
-                                    // Charn's sunset fan was previously always drawn in this colour regardless of time
+                                    // Charn's sunset fan is always this colour, regardless of time of day
                                     .set(EnvironmentAttributes.SUNRISE_SUNSET_COLOR, ARGB.vector4fFromARGB32(ARGB.color(50, 230, 16, 16)))
                                     .set(EnvironmentAttributes.BED_RULE, BedRule.DESTROY_ON_USE)
                                     .set(EnvironmentAttributes.RESPAWN_ANCHOR_WORKS, true)
@@ -165,13 +142,10 @@ public class ModDatapackObjectProvider {
                             .temperature(0.7f)
                             .temperatureAdjustment(Biome.TemperatureModifier.NONE)
                             .downfall(0.5f)
-                            // 1.21.11 moved the fog, sky and water fog colours out of BiomeSpecialEffects
-                            // and into environment attributes
                             .putAttributes(EnvironmentAttributeMap.builder()
                                     .set(EnvironmentAttributes.FOG_COLOR, ARGB.vector3fFromRGB24(new Color(72, 199, 255, 0).getRGB()))
                                     .set(EnvironmentAttributes.SKY_COLOR, ARGB.vector3fFromRGB24(new Color(80, 188, 255, 0).getRGB()))
                                     .set(EnvironmentAttributes.WATER_FOG_COLOR, ARGB.vector3fFromRGB24(new Color(13, 94, 115, 0).getRGB()))
-                                    // 26.3 moved the world gen creature spawn chance out of MobSpawnSettings into an attribute
                                     .set(EnvironmentAttributes.CREATURE_WORLD_GEN_SPAWN_PROBABILITY, 0.0F))
                             .specialEffects(new BiomeSpecialEffects.Builder()
                                     .waterColor(new Color(23, 209, 255, 0).getRGB())
@@ -200,7 +174,6 @@ public class ModDatapackObjectProvider {
                                     .set(EnvironmentAttributes.FOG_COLOR, ARGB.vector3fFromRGB24(new Color(50, 0, 0, 0).getRGB()))
                                     .set(EnvironmentAttributes.SKY_COLOR, ARGB.vector3fFromRGB24(new Color(0, 0, 0, 0).getRGB()))
                                     .set(EnvironmentAttributes.WATER_FOG_COLOR, ARGB.vector3fFromRGB24(new Color(50, 0, 0, 0).getRGB()))
-                                    // 26.3 moved the world gen creature spawn chance out of MobSpawnSettings into an attribute
                                     .set(EnvironmentAttributes.CREATURE_WORLD_GEN_SPAWN_PROBABILITY, 0.0F))
                             .specialEffects(new BiomeSpecialEffects.Builder()
                                     .waterColor(new Color(50, 0, 0, 0).getRGB())
@@ -235,8 +208,6 @@ public class ModDatapackObjectProvider {
                     bootstrap.register(ModLevelStems.DARK_CITY_RUINS,
                             new LevelStem(dimensionTypes.getOrThrow(ModDimensionTypes.DARK_CITY_RUINS), charnChunkGenerator));
                 })
-                // 26.3 dropped ConfiguredFeature. A feature holds its own settings and is registered straight
-                // into the feature registry, which is where the configured features used to live.
                 .add(Registries.FEATURE, bootstrap -> {
                     bootstrap.register(ModFeatures.SMALL_WATER_POOL, new WaterPoolFeature(
                             BlockStateProvider.holderOf(Blocks.WATER),
@@ -287,8 +258,6 @@ public class ModDatapackObjectProvider {
                 .add(Registries.DAMAGE_TYPE, bootstrap -> {
                     bootstrap.register(ModDamageTypes.SPELL, new DamageType("narnia.spell", 0f));
                 })
-                // Loot tables and recipes became reloadable datapack registries in 26.3, so they are gathered
-                // here rather than being registered as standalone data providers
                 .lootTable(new LootTableProvider.SubProviderEntry(ModBlockLootTableSubProvider::new, LootContextParamSets.BLOCK))
                 .recipe(ModRecipeProvider::new);
     }

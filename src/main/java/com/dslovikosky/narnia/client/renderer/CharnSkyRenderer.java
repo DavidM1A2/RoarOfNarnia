@@ -74,11 +74,9 @@ public class CharnSkyRenderer implements CustomSkyboxRenderer, ResourceManagerRe
 
     private AbstractTexture getTexture(Identifier location) {
         final TextureManager texturemanager = Minecraft.getInstance().getTextureManager();
-        // As of 1.21.11 mipmapping is a property of the texture's sampler, which already defaults to no mipmaps
         return texturemanager.getTexture(location);
     }
 
-    // 26.3 hands the sky its fog as a prepared uniform slice rather than a callback that sets fog up
     @Override
     public boolean renderSky(LevelRenderState levelRenderState, SkyRenderState skyRenderState, Matrix4fc modelViewMatrix, GpuBufferSlice skyFog) {
         RenderSystem.setShaderFog(skyFog);
@@ -97,7 +95,6 @@ public class CharnSkyRenderer implements CustomSkyboxRenderer, ResourceManagerRe
     }
 
     private void renderSkyDiscUpper(final SkyRenderState skyRenderState, final Matrix4fStack matrix4fStack, final GpuTextureView colorTextureView, final GpuTextureView depthTextureView) {
-        // 26.3 carries the sky colour as a float vector rather than a packed int
         final GpuBufferSlice gpubufferslice = RenderSystem.getDynamicUniforms()
                 .writeTransform(matrix4fStack, new Vector4f(skyRenderState.skyColor, 1.0F), new Vector3f(), new Matrix4f());
 
@@ -140,7 +137,6 @@ public class CharnSkyRenderer implements CustomSkyboxRenderer, ResourceManagerRe
 
     private void renderSunset(final SkyRenderState skyRenderState, final Matrix4fStack matrix4fStack, final GpuTextureView colorTextureView, final GpuTextureView depthTextureView) {
         matrix4fStack.pushMatrix();
-        // 26.3 carries the sunrise colour as a float vector rather than a packed int, alpha in w
         final float alpha = skyRenderState.sunriseAndSunsetColor.w();
         if (alpha > 0.001F) {
             matrix4fStack.rotate(Axis.XP.rotationDegrees(90.0F));
@@ -179,11 +175,6 @@ public class CharnSkyRenderer implements CustomSkyboxRenderer, ResourceManagerRe
         }
         matrix4fStack.popMatrix();
     }
-
-    // 1.21.11 replaced DimensionSpecialEffects with the environment attribute system. The always-on red
-    // sunrise/sunset is now a static SUNRISE_SUNSET_COLOR attribute on the dimension type (see
-    // ModDatapackObjectProvider); the old fog overrides were verbatim copies of vanilla's overworld
-    // behaviour, which the attribute system now applies on its own.
 
     private GpuBuffer buildCharnSunQuad() {
         // 4 vertices to make the sun

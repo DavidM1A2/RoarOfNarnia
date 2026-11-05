@@ -7,7 +7,6 @@ import net.minecraft.world.level.levelgen.structure.placement.StructurePlacement
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
-// 26.3 dropped StructurePlacementType, so the structure placement registry holds the codecs directly
 public class ModStructurePlacementTypes {
     public static final DeferredRegister<MapCodec<? extends StructurePlacement>> STRUCTURE_PLACEMENTS = DeferredRegister.create(Registries.STRUCTURE_PLACEMENT, Constants.MOD_ID);
 

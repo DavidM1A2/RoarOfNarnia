@@ -39,10 +39,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
-/**
- * 26.3 merged a feature and its configuration into one object, so the settings that used to live in
- * WorldWoodTreeConfiguration are fields on the feature now and place takes the level directly.
- */
 @ParametersAreNonnullByDefault
 public record WorldWoodTreeFeature(
         IntProvider height,
