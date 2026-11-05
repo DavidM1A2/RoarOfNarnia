@@ -216,11 +216,23 @@ public class TextFieldPane extends GuiPane {
             final String currentText = getText();
             this.isFocused = true;
             this.setTextInternal(currentText, currentText);
+            onTextInputFocusChange(true);
         } else if (wasFocused && !isFocused) {
             background.setColor(BASE_COLOR_TINT);
             final String currentText = getText();
             this.isFocused = false;
             this.setTextInternal(currentText, currentText);
+            onTextInputFocusChange(false);
         }
+    }
+
+    /**
+     * Text input has to be turned on explicitly while a field is focused, the way vanilla's EditBox does on
+     * its own focus changes. Without this the window never receives character events and the field is deaf to
+     * the keyboard. The manager is told directly rather than going through Minecraft#onTextInputFocusChange,
+     * which wants a vanilla GuiEventListener and only adds IME preedit handling this field does not use.
+     */
+    private void onTextInputFocusChange(final boolean focused) {
+        Minecraft.getInstance().textInputManager().onTextInputFocusChange(this, focused);
     }
 }

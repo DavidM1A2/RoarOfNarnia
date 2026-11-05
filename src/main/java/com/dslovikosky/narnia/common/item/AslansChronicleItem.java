@@ -25,7 +25,12 @@ public class AslansChronicleItem extends Item {
 
     @Override
     public InteractionResult use(Level level, Player player, InteractionHand hand) {
-        Minecraft.getInstance().gui.setScreen(new SpellwrightingScreen());
+        // use runs on both sides, so without this guard the server thread opens a second screen on top of the
+        // client's. Replacing a screen clears the old one's focus and stops text input, which left the GUI
+        // drawn but deaf to the keyboard.
+        if (level.isClientSide()) {
+            Minecraft.getInstance().gui.setScreen(new SpellwrightingScreen());
+        }
 
         return super.use(level, player, hand);
     }
