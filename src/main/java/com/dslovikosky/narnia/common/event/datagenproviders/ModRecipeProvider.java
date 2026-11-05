@@ -13,20 +13,10 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.ButtonBlock;
-import net.minecraft.world.level.block.DoorBlock;
-import net.minecraft.world.level.block.FenceBlock;
-import net.minecraft.world.level.block.FenceGateBlock;
-import net.minecraft.world.level.block.StairBlock;
-import net.minecraft.world.level.block.TrapDoorBlock;
+import net.minecraft.world.level.block.*;
 
 public class ModRecipeProvider extends RecipeProvider {
     public ModRecipeProvider(final BootstrapContext<Recipe<?>> recipeOutput, final BootstrapContext<Advancement> advancementOutput) {
-        // Helpers like stonecutterResultFromBase derive a bare recipe name with no namespace, which without a
-        // default mod id resolves to minecraft. Datagen only emits entries belonging to the mod being
-        // generated, so those recipes were being dropped on the floor.
         super(recipeOutput, advancementOutput, Constants.MOD_ID);
     }
 
