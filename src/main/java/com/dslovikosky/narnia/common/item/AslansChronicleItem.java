@@ -25,7 +25,7 @@ public class AslansChronicleItem extends Item {
 
     @Override
     public InteractionResult use(Level level, Player player, InteractionHand hand) {
-        Minecraft.getInstance().setScreen(new SpellwrightingScreen());
+        Minecraft.getInstance().gui.setScreen(new SpellwrightingScreen());
 
         return super.use(level, player, hand);
     }

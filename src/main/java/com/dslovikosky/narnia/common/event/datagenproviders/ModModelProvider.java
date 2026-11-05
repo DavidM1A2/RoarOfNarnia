@@ -39,7 +39,7 @@ public class ModModelProvider extends ModelProvider {
                         .getFamily());
         createOrientableTrapdoor(blockModels, ModBlocks.WORLD_WOOD_TRAP_DOOR.get());
         createDoor(blockModels, ModBlocks.WORLD_WOOD_DOOR.get());
-        blockModels.createHangingSign(ModBlocks.WORLD_WOOD_PLANKS.get(), ModBlocks.WORLD_WOOD_CEILING_HANGING_SIGN.get(), ModBlocks.WORLD_WOOD_WALL_HANGING_SIGN.get());
+        createHangingSign(blockModels, ModBlocks.WORLD_WOOD_PLANKS.get(), ModBlocks.WORLD_WOOD_CEILING_HANGING_SIGN.get(), ModBlocks.WORLD_WOOD_WALL_HANGING_SIGN.get());
 
         blockModels.createTrivialCube(ModBlocks.DARK_CITY_COBBLESTONE.get());
         blockModels.createAxisAlignedPillarBlock(ModBlocks.DARK_CITY_SMOOTH_STONE.get(), TexturedModel.COLUMN);
@@ -135,5 +135,15 @@ public class ModModelProvider extends ModelProvider {
 
     private void createCutoutBlock(final BlockModelGenerators blockModels, final Block block) {
         blockModels.createTrivialBlock(block, TexturedModel.CUBE);
+    }
+
+    // 26.2 dropped BlockModelGenerators#createHangingSign in favor of a low-level overload that wants all
+    // eight rotation variants. Hanging signs are drawn by a block entity renderer, so the block model only
+    // supplies particles - this reproduces what the old helper generated.
+    private void createHangingSign(final BlockModelGenerators blockModels, final Block particleBlock, final Block hangingSign, final Block wallHangingSign) {
+        final MultiVariant particleOnlyVariant = blockModels.createParticleOnlyBlockModel(hangingSign, particleBlock);
+        blockModels.blockStateOutput.accept(BlockModelGenerators.createSimpleBlock(hangingSign, particleOnlyVariant));
+        blockModels.blockStateOutput.accept(BlockModelGenerators.createSimpleBlock(wallHangingSign, particleOnlyVariant));
+        blockModels.registerSimpleFlatItemModel(hangingSign.asItem());
     }
 }

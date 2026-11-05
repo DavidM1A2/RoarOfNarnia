@@ -7,6 +7,7 @@ import com.mojang.logging.LogUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.resources.Identifier;
@@ -125,7 +126,7 @@ public class SchematicStructurePiece extends StructurePiece {
                 final CompoundTag entityTag = entities.getCompound(i).get();
 
                 String entityId = entityTag.getString("Id").get();
-                Optional<EntityType<?>> entityTypeOpt = EntityType.byString(entityId);
+                Optional<EntityType<?>> entityTypeOpt = BuiltInRegistries.ENTITY_TYPE.getOptional(Identifier.tryParse(entityId));
 
                 if (entityTypeOpt.isPresent()) {
                     final EntityType<?> entityType = entityTypeOpt.get();

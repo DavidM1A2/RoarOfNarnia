@@ -15,7 +15,7 @@ import net.minecraft.client.renderer.rendertype.RenderSetup;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.resources.Identifier;
-import net.minecraft.util.Tuple;
+import com.mojang.datafixers.util.Pair;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix4f;
@@ -138,9 +138,9 @@ public class SpellChainRenderer extends EntityRenderer<SpellChainEntity, SpellCh
 
         // Compute the "up" and "down" vectors relative to the current jitter's direction
         final Vec3 forwardBackwardDirection = endVertex.subtract(startVertex).normalize();
-        final Tuple<Vec3, Vec3> orthogonalVectors = MathUtils.getOrthogonalVectors(forwardBackwardDirection);
-        final Vec3 leftRightDirection = orthogonalVectors.getA();
-        final Vec3 upDownDirection = orthogonalVectors.getB();
+        final Pair<Vec3, Vec3> orthogonalVectors = MathUtils.getOrthogonalVectors(forwardBackwardDirection);
+        final Vec3 leftRightDirection = orthogonalVectors.getFirst();
+        final Vec3 upDownDirection = orthogonalVectors.getSecond();
 
         final double distance = startVertex.distanceTo(endVertex);
         // Compute how "far" the jitter is allowed to be away from the center of the chain
@@ -167,9 +167,9 @@ public class SpellChainRenderer extends EntityRenderer<SpellChainEntity, SpellCh
         final Vec3 firstVertex = jitterVertices.getFirst();
         final Vec3 lastVertex = jitterVertices.getLast();
         final Vec3 forwardBackwardDirection = lastVertex.subtract(firstVertex).normalize();
-        final Tuple<Vec3, Vec3> orthogonalVectors = MathUtils.getOrthogonalVectors(forwardBackwardDirection);
-        final Vec3 leftRightDirection = orthogonalVectors.getA();
-        final Vec3 upDownDirection = orthogonalVectors.getB();
+        final Pair<Vec3, Vec3> orthogonalVectors = MathUtils.getOrthogonalVectors(forwardBackwardDirection);
+        final Vec3 leftRightDirection = orthogonalVectors.getFirst();
+        final Vec3 upDownDirection = orthogonalVectors.getSecond();
 
         final Map<Vec3, List<Vec3>> forks = new HashMap<>();
 

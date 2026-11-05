@@ -14,14 +14,14 @@ public class KeyInputEventHandler {
     public void onKeyInputEvent(final ClientTickEvent.Post event) {
         // This gets fired in the main menu, or when we have an inventory open. In either case return
         final Player player = Minecraft.getInstance().player;
-        if (player == null || Minecraft.getInstance().screen != null) {
+        if (player == null || Minecraft.getInstance().gui.screen() != null) {
             return;
         }
 
         // Process input
         final boolean isPowerSourceSelectorKeyDown = ModKeyMappings.POWER_SOURCE_SELECTOR.isDown();
         if (isPowerSourceSelectorKeyDown && !wasPowerSourceSelectorKeyDown) {
-            Minecraft.getInstance().setScreen(new PowerSourceSelectionScreen());
+            Minecraft.getInstance().gui.setScreen(new PowerSourceSelectionScreen());
         }
         wasPowerSourceSelectorKeyDown = isPowerSourceSelectorKeyDown;
     }

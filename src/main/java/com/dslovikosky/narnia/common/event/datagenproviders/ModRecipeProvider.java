@@ -43,7 +43,9 @@ public class ModRecipeProvider extends RecipeProvider {
         trapDoor(output, ModBlocks.WORLD_WOOD_TRAP_DOOR.get(), ModBlocks.WORLD_WOOD_PLANKS.get());
         pressurePlate(ModBlocks.WORLD_WOOD_PRESSURE_PLATE.get(), ModBlocks.WORLD_WOOD_PLANKS.get());
         sign(output, ModItems.WORLD_WOOD_STANDING_SIGN.get(), ModBlocks.WORLD_WOOD_PLANKS.get());
-        hangingSign(ModItems.WORLD_WOOD_HANGING_SIGN.get(), ModBlocks.WORLD_WOOD_PLANKS.get());
+        hangingSignBuilder(ModItems.WORLD_WOOD_HANGING_SIGN.get(), Ingredient.of(ModBlocks.WORLD_WOOD_PLANKS.get()))
+                .unlockedBy("has_stripped_logs", has(ModBlocks.WORLD_WOOD_PLANKS.get()))
+                .save(output);
         woodenBoat(ModItems.WORLD_WOOD_BOAT.get(), ModBlocks.WORLD_WOOD_PLANKS.get());
         chestBoat(ModItems.WORLD_WOOD_CHEST_BOAT.get(), ModBlocks.WORLD_WOOD_PLANKS.get());
 

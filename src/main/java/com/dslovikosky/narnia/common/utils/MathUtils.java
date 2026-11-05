@@ -1,6 +1,6 @@
 package com.dslovikosky.narnia.common.utils;
 
-import net.minecraft.util.Tuple;
+import com.mojang.datafixers.util.Pair;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix3d;
 import org.joml.Quaternionf;
@@ -45,9 +45,9 @@ public class MathUtils {
     }
 
     // Returns a pair of vectors that are both orthogonal to the original vector. The called on vector must be unit length
-    public static Tuple<Vec3, Vec3> getOrthogonalVectors(final Vec3 vec3) {
+    public static Pair<Vec3, Vec3> getOrthogonalVectors(final Vec3 vec3) {
         if (vec3 == Vec3.ZERO) {
-            return new Tuple<>(vec3, vec3);
+            return Pair.of(vec3, vec3);
         }
 
         Vec3 leftRightDirection = Y_UNIT_VECTOR.cross(vec3);
@@ -56,7 +56,7 @@ public class MathUtils {
         }
         final Vec3 upDownDirection = leftRightDirection.cross(vec3);
 
-        return new Tuple<>(leftRightDirection, upDownDirection);
+        return Pair.of(leftRightDirection, upDownDirection);
     }
 
     public static double log(double base, double logNumber) {

@@ -7,7 +7,7 @@ import com.dslovikosky.narnia.common.spell.component.SpellComponentInstance;
 import com.dslovikosky.narnia.common.spell.component.effect.base.ProcResult;
 import com.dslovikosky.narnia.common.spell.component.effect.base.SpellEffect;
 import net.minecraft.commands.arguments.EntityAnchorArgument;
-import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.LightningBolt;
 import net.minecraft.world.phys.Vec3;
 
@@ -19,7 +19,7 @@ public class LightningSpellEffect extends SpellEffect {
     @Override
     public ProcResult proc(DeliveryTransitionState state, SpellComponentInstance<SpellEffect> instance) {
         final Vec3 position = state.getPosition();
-        final LightningBolt lightningBolt = new LightningBolt(EntityType.LIGHTNING_BOLT, state.getLevel());
+        final LightningBolt lightningBolt = new LightningBolt(EntityTypes.LIGHTNING_BOLT, state.getLevel());
         lightningBolt.setPos(position.x(), position.y(), position.z());
         lightningBolt.lookAt(EntityAnchorArgument.Anchor.FEET, state.getDirection());
         state.getLevel().addFreshEntity(lightningBolt);

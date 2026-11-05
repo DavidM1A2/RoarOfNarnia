@@ -20,7 +20,7 @@ import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.LightningBolt;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
@@ -81,7 +81,7 @@ public class CharnBellBlockEntity extends BlockEntity {
         }
         if (ticksRinging == RING_DURATION.toSeconds() * 20 - 10) {
             if (!level.isClientSide()) {
-                final LightningBolt lightningBolt = new LightningBolt(EntityType.LIGHTNING_BOLT, level);
+                final LightningBolt lightningBolt = new LightningBolt(EntityTypes.LIGHTNING_BOLT, level);
                 lightningBolt.setPos(pos.getX() + 0.5, pos.getY() + 1.5, pos.getZ() + 0.5);
                 level.addFreshEntity(lightningBolt);
 

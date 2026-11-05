@@ -33,6 +33,7 @@ import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.BiomeGenerationSettings;
 import net.minecraft.world.level.biome.BiomeSpecialEffects;
 import net.minecraft.world.level.biome.MobSpawnSettings;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LeavesBlock;
 import net.minecraft.world.level.block.RotatedPillarBlock;
@@ -93,6 +94,8 @@ public class ModDatapackObjectProvider {
                     // 1.21.11 replaced the fixed-time/bed/anchor flags and the effects location with the
                     // environment attribute system. An empty timeline set means the dimension does not run a
                     // day/night cycle, which is how a fixed time of day is now expressed.
+                    // 26.2 takes infiniburn as a resolved HolderSet rather than a TagKey
+                    final HolderGetter<Block> blocks = bootstrap.lookup(Registries.BLOCK);
                     bootstrap.register(ModDimensionTypes.WOOD_BETWEEN_THE_WORLDS, new DimensionType(
                             true,
                             true,
@@ -102,7 +105,7 @@ public class ModDatapackObjectProvider {
                             0,
                             128,
                             64,
-                            BlockTags.INFINIBURN_OVERWORLD,
+                            blocks.getOrThrow(BlockTags.INFINIBURN_OVERWORLD),
                             1.0f,
                             new DimensionType.MonsterSettings(ConstantInt.of(0), 0),
                             DimensionType.Skybox.OVERWORLD,
@@ -127,7 +130,7 @@ public class ModDatapackObjectProvider {
                             0,
                             256,
                             64,
-                            BlockTags.INFINIBURN_OVERWORLD,
+                            blocks.getOrThrow(BlockTags.INFINIBURN_OVERWORLD),
                             0.0f,
                             new DimensionType.MonsterSettings(ConstantInt.of(0), 0),
                             // The custom skybox renderer draws Charn's sky in full, so vanilla contributes none of it

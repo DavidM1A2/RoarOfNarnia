@@ -15,7 +15,7 @@ import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 public class WoodBetweenTheWorldsClientHandler {
     @SubscribeEvent
     public void onRenderLevelStageEvent(final RenderLevelStageEvent.AfterWeather event) {
-        ModRenderers.Client.DROWSY_VIGNETTE.render(Minecraft.getInstance().getMainRenderTarget(), event.getLevelRenderState());
+        ModRenderers.Client.DROWSY_VIGNETTE.render(Minecraft.getInstance().gameRenderer.mainRenderTarget(), event.getLevelRenderState());
     }
 
     @SubscribeEvent

@@ -82,7 +82,7 @@ public abstract class GuiComponent {
     }
 
     public void invalidate() {
-        if (Minecraft.getInstance().screen instanceof BaseScreen baseScreen) {
+        if (Minecraft.getInstance().gui.screen() instanceof BaseScreen baseScreen) {
             baseScreen.invalidate();
         }
     }

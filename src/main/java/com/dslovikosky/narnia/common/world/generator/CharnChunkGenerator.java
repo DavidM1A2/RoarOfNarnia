@@ -138,7 +138,7 @@ public class CharnChunkGenerator extends ChunkGenerator {
                         if (isBridge) {
                             // If we're generating an edge as part of a bridge, set the top block to a wall
                             chunk.setBlockState(mutablePos.set(x, groundHeight + 1, z), ModBlocks.DARK_CITY_STONE_BRICK_WALL.get().defaultBlockState());
-                            chunk.markPosForPostprocessing(mutablePos.set(x, groundHeight + 1, z));
+                            chunk.markPosForPostProcessing(mutablePos.set(x, groundHeight + 1, z));
                         }
                     } else if (isAlley) {
                         // If we're generating an alley, set the top block to cobblestone
