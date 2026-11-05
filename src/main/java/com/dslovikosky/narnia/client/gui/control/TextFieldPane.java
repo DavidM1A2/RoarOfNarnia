@@ -8,10 +8,10 @@ import com.dslovikosky.narnia.client.gui.layout.Dimensions;
 import com.dslovikosky.narnia.client.gui.layout.Spacing;
 import com.dslovikosky.narnia.client.gui.layout.TextAlignment;
 import com.dslovikosky.narnia.common.constants.Constants;
+import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.util.StringUtil;
-import org.lwjgl.glfw.GLFW;
 
 import java.awt.Color;
 import java.util.ArrayList;
@@ -103,25 +103,27 @@ public class TextFieldPane extends GuiPane {
 
     private void keyPressed(final KeyEvent event) {
         if (isFocused) {
-            if (event.hasModifier(KeyEvent.Modifier.CONTROL) && event.getKey() == GLFW.GLFW_KEY_A) {
+            // Text editing goes by key code rather than key, the way vanilla's EditBox does, so that the
+            // shortcuts land on the same letters whatever keyboard layout is in use
+            if (event.hasEditShortcutModifier() && event.getKeyCode() == InputConstants.KEYCODE_A) {
                 // Select all text, not yet implemented
-            } else if (event.hasModifier(KeyEvent.Modifier.CONTROL) && event.getKey() == GLFW.GLFW_KEY_C) {
+            } else if (event.hasEditShortcutModifier() && event.getKeyCode() == InputConstants.KEYCODE_C) {
                 Minecraft.getInstance().keyboardHandler.setClipboard(getText());
-            } else if (event.hasModifier(KeyEvent.Modifier.CONTROL) && event.getKey() == GLFW.GLFW_KEY_V) {
+            } else if (event.hasEditShortcutModifier() && event.getKeyCode() == InputConstants.KEYCODE_V) {
                 setText("");
                 addText(StringUtil.filterText(Minecraft.getInstance().keyboardHandler.getClipboard(), isMultiline));
-            } else if (event.hasModifier(KeyEvent.Modifier.CONTROL) && event.getKey() == GLFW.GLFW_KEY_X) {
+            } else if (event.hasEditShortcutModifier() && event.getKeyCode() == InputConstants.KEYCODE_X) {
                 Minecraft.getInstance().keyboardHandler.setClipboard(getText());
                 setText("");
             } else {
-                switch (event.getKey()) {
-                    case GLFW.GLFW_KEY_BACKSPACE -> removeChars(1);
-                    case GLFW.GLFW_KEY_ENTER -> {
+                switch (event.getKeyCode()) {
+                    case InputConstants.KEYCODE_BACKSPACE -> removeChars(1);
+                    case InputConstants.KEYCODE_RETURN, InputConstants.KEYCODE_NUMPADENTER -> {
                         if (isMultiline) {
                             addText("\n");
                         }
                     }
-                    case GLFW.GLFW_KEY_LEFT, GLFW.GLFW_KEY_RIGHT -> { /* Not yet implemented */ }
+                    case InputConstants.KEYCODE_LEFT, InputConstants.KEYCODE_RIGHT -> { /* Not yet implemented */ }
                 }
             }
         }

@@ -85,7 +85,7 @@ public abstract class BaseScreen extends Screen {
 
     @Override
     public boolean keyPressed(final net.minecraft.client.input.KeyEvent keyEvent) {
-        this.contentPane.processKeyInput(new KeyEvent(this.contentPane, keyEvent.key(), keyEvent.scancode(), Character.MIN_VALUE, keyEvent.modifiers(), KeyEvent.KeyEventType.Press));
+        this.contentPane.processKeyInput(new KeyEvent(this.contentPane, keyEvent.key(), keyEvent.keycode(), Character.MIN_VALUE, keyEvent.modifiers(), KeyEvent.KeyEventType.Press));
         if (super.keyPressed(keyEvent)) {
             return true;
         }
@@ -104,7 +104,7 @@ public abstract class BaseScreen extends Screen {
     @Override
     public boolean keyReleased(final net.minecraft.client.input.KeyEvent keyEvent) {
         final boolean result = super.keyReleased(keyEvent);
-        this.contentPane.processKeyInput(new KeyEvent(this.contentPane, keyEvent.key(), keyEvent.scancode(), Character.MIN_VALUE, keyEvent.modifiers(), KeyEvent.KeyEventType.Release));
+        this.contentPane.processKeyInput(new KeyEvent(this.contentPane, keyEvent.key(), keyEvent.keycode(), Character.MIN_VALUE, keyEvent.modifiers(), KeyEvent.KeyEventType.Release));
         return result;
     }
 

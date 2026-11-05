@@ -1,13 +1,13 @@
 package com.dslovikosky.narnia.client.gui.event;
 
 import com.dslovikosky.narnia.client.gui.control.GuiComponentWithEvents;
-import org.lwjgl.glfw.GLFW;
+import com.mojang.blaze3d.platform.InputConstants;
 
 public class MouseEvent extends GuiEvent {
     // The mouse buttons that are standard
-    public static final int LEFT_MOUSE_BUTTON = GLFW.GLFW_MOUSE_BUTTON_LEFT;
-    public static final int RIGHT_MOUSE_BUTTON = GLFW.GLFW_MOUSE_BUTTON_RIGHT;
-    public static final int MIDDLE_MOUSE_BUTTON = GLFW.GLFW_MOUSE_BUTTON_MIDDLE;
+    public static final int LEFT_MOUSE_BUTTON = InputConstants.MOUSE_BUTTON_LEFT;
+    public static final int RIGHT_MOUSE_BUTTON = InputConstants.MOUSE_BUTTON_RIGHT;
+    public static final int MIDDLE_MOUSE_BUTTON = InputConstants.MOUSE_BUTTON_MIDDLE;
 
     private final int mouseX;
     private final int mouseY;

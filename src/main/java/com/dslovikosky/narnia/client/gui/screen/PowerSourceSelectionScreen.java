@@ -26,7 +26,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.neoforged.neoforge.client.network.ClientPacketDistributor;
-import org.lwjgl.glfw.GLFW;
+import org.lwjgl.sdl.SDLMouse;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -89,7 +89,7 @@ public class PowerSourceSelectionScreen extends BaseScreen {
                     this.contentPane.invalidate();
                     // Bound Cursor
                     if (radiusSquared > radiusMaxSquared) {
-                        GLFW.glfwSetCursorPos(minecraft.getWindow().handle(), Math.cos(theta) * radiusAbsoluteMax, Math.sin(theta) * radiusAbsoluteMax);
+                        SDLMouse.SDL_WarpMouseInWindow(minecraft.getWindow().handle(), (float) (Math.cos(theta) * radiusAbsoluteMax), (float) (Math.sin(theta) * radiusAbsoluteMax));
                     }
                 }
             }
@@ -188,7 +188,7 @@ public class PowerSourceSelectionScreen extends BaseScreen {
 
     @Override
     protected void init() {
-        InputConstants.grabOrReleaseMouse(minecraft.getWindow(), GLFW.GLFW_CURSOR_DISABLED, 0.0, 0.0);
+        InputConstants.grabMouse(minecraft.getWindow(), 0.0, 0.0);
         super.init();
     }
 
@@ -210,7 +210,7 @@ public class PowerSourceSelectionScreen extends BaseScreen {
             ClientPacketDistributor.sendToServer(new SyncSelectedSpellPowerSourcePacket(selectedSpellPowerSource));
             minecraft.player.sendSystemMessage(Component.translatable("message.narnia.spell.power_source_changed", selectedSpellPowerSource.getName()));
         }
-        InputConstants.grabOrReleaseMouse(minecraft.getWindow(), GLFW.GLFW_CURSOR_NORMAL, GuiUtility.getWindowWidthInMCCoords() / 2.0, GuiUtility.getWindowHeightInMCCoords() / 2.0);
+        InputConstants.releaseMouse(minecraft.getWindow(), GuiUtility.getWindowWidthInMCCoords() / 2.0, GuiUtility.getWindowHeightInMCCoords() / 2.0);
         super.onClose();
     }
 }
