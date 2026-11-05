@@ -56,7 +56,7 @@ public class SpellWallRenderer extends EntityRenderer<SpellWallEntity, SpellWall
     }
 
     @Override
-    protected AABB getBoundingBoxForCulling(final SpellWallEntity spellWallEntity) {
+    protected AABB getBoundingBoxForCulling(final SpellWallEntity spellWallEntity, final float partialTicks) {
         return spellWallEntity.getBoundingBoxForCulling();
     }
 

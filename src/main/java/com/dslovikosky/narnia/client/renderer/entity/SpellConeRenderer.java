@@ -61,7 +61,7 @@ public class SpellConeRenderer extends EntityRenderer<SpellConeEntity, SpellCone
     }
 
     @Override
-    protected AABB getBoundingBoxForCulling(final SpellConeEntity spellConeEntity) {
+    protected AABB getBoundingBoxForCulling(final SpellConeEntity spellConeEntity, final float partialTicks) {
         return spellConeEntity.getBoundingBoxForCulling();
     }
 

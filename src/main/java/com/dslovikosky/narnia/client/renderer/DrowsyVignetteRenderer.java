@@ -5,17 +5,17 @@ import com.dslovikosky.narnia.common.constants.Constants;
 import com.dslovikosky.narnia.common.constants.ModAttachmentTypes;
 import com.dslovikosky.narnia.common.constants.ModMobEffects;
 import com.dslovikosky.narnia.common.event.WoodBetweenTheWorldsHandler;
-import com.mojang.blaze3d.buffers.GpuBuffer;
-import com.mojang.blaze3d.buffers.GpuBufferSlice;
+import com.mojang.renderpearl.api.buffers.GpuBuffer;
+import com.mojang.renderpearl.api.buffers.GpuBufferSlice;
 import com.mojang.blaze3d.buffers.Std140Builder;
 import com.mojang.blaze3d.buffers.Std140SizeCalculator;
 import com.mojang.blaze3d.pipeline.RenderTarget;
-import com.mojang.blaze3d.systems.CommandEncoder;
-import com.mojang.blaze3d.systems.GpuDevice;
-import com.mojang.blaze3d.systems.RenderPass;
+import com.mojang.renderpearl.api.commands.CommandEncoder;
+import com.mojang.renderpearl.api.device.GpuDevice;
+import com.mojang.renderpearl.api.commands.RenderPass;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.textures.FilterMode;
-import com.mojang.blaze3d.textures.GpuTextureView;
+import com.mojang.renderpearl.api.textures.FilterMode;
+import com.mojang.renderpearl.api.textures.GpuTextureView;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
@@ -90,24 +90,27 @@ public class DrowsyVignetteRenderer {
         uniformBufferObject.rotate();
 
         final CommandEncoder encoder = RenderSystem.getDevice().createCommandEncoder();
+
+        // Write vec4(timeStrength, 0,0,0) in std140 layout. 26.3 refuses to use a buffer that is still mapped,
+        // so the mapping has to be closed before the render pass below reads the uniform out of it.
         try (GpuBufferSlice.MappedView view = uniformBufferObject.currentBuffer().map(false, true)) {
-            // Write vec4(timeStrength, 0,0,0) in std140 layout
             Std140Builder.intoBuffer(view.data()).putVec4(strength, 0f, 0f, 0f);
+        }
 
-            // Get the main color texture view (the current frame)
-            final GpuTextureView colorView = renderTarget.getColorTextureView();
+        // Get the main color texture view (the current frame)
+        final GpuTextureView colorView = renderTarget.getColorTextureView();
 
-            // Create a render pass and bind the uniform and the color sampler
-            try (RenderPass pass = encoder.createRenderPass(() -> "drowsy_vignette_pass", colorView, Optional.empty())) {
-                // Setup the pipeline, uniform, sampler, and vertex buffer
-                pass.setPipeline(ModRenderPipelines.DROWSY_VIGNETTE);
-                pass.setUniform("TimeUniform", uniformBufferObject.currentBuffer().slice(0, UBO_SIZE));
-                pass.bindTexture("In", colorView, RenderSystem.getSamplerCache().getClampToEdge(FilterMode.LINEAR));
-                pass.setVertexBuffer(0, vertexBufferObject.slice());
+        // Create a render pass and bind the uniform and the color sampler
+        try (RenderPass pass = encoder.createRenderPass(() -> "drowsy_vignette_pass", colorView, Optional.empty())) {
+            // Setup the pipeline, uniform, sampler, and vertex buffer. 26.3 takes a compiled pipeline
+            // rather than the pipeline itself, and folded bindTexture into setUniform.
+            pass.setPipeline(RenderSystem.getCompiledPipeline(ModRenderPipelines.DROWSY_VIGNETTE));
+            pass.setUniform("TimeUniform", uniformBufferObject.currentBuffer().slice(0, UBO_SIZE));
+            pass.setUniform("In", colorView, RenderSystem.getSamplerCache().getClampToEdge(FilterMode.LINEAR));
+            pass.setVertexBuffer(0, vertexBufferObject.slice());
 
-                // Draw 3 vertices (one large triangle that covers the entire screen)
-                pass.draw(3, 1, 0, 0);
-            }
+            // Draw 3 vertices (one large triangle that covers the entire screen)
+            pass.draw(3, 1, 0, 0);
         }
     }
 }

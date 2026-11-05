@@ -47,8 +47,8 @@ public class RuneBlockEntityRenderer implements BlockEntityRenderer<RuneBlockEnt
         poseStack.pushPose();
         poseStack.translate(0.0, 0.5, 0.0);
         poseStack.translate(0.5, 0.0, 0.5);
-        poseStack.mulPose(Axis.YP.rotationDegrees(renderState.tickCount * 4 % 360));
-        poseStack.mulPose(Axis.XP.rotationDegrees(90));
+        poseStack.rotate(Axis.YP.rotationDegrees(renderState.tickCount * 4 % 360));
+        poseStack.rotate(Axis.XP.rotationDegrees(90));
         poseStack.translate(-0.5, 0.0, -0.5);
         nodeCollector.submitCustomGeometry(poseStack, RenderTypes.entityCutout(texture), (pose, consumer) -> {
             drawQuadVertex(pose.pose(), pose, consumer, 0.0, 0.0, 0.0, 0, 0);

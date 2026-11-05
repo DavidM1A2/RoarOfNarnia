@@ -1,12 +1,12 @@
 package com.dslovikosky.narnia.client.renderer;
 
 import com.dslovikosky.narnia.common.constants.Constants;
-import com.mojang.blaze3d.PrimitiveTopology;
-import com.mojang.blaze3d.buffers.GpuBuffer;
-import com.mojang.blaze3d.buffers.GpuBufferSlice;
-import com.mojang.blaze3d.systems.RenderPass;
+import com.mojang.renderpearl.api.pipeline.PrimitiveTopology;
+import com.mojang.renderpearl.api.buffers.GpuBuffer;
+import com.mojang.renderpearl.api.buffers.GpuBufferSlice;
+import com.mojang.renderpearl.api.commands.RenderPass;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.textures.GpuTextureView;
+import com.mojang.renderpearl.api.textures.GpuTextureView;
 import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.ByteBufferBuilder;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
@@ -78,9 +78,10 @@ public class CharnSkyRenderer implements CustomSkyboxRenderer, ResourceManagerRe
         return texturemanager.getTexture(location);
     }
 
+    // 26.3 hands the sky its fog as a prepared uniform slice rather than a callback that sets fog up
     @Override
-    public boolean renderSky(LevelRenderState levelRenderState, SkyRenderState skyRenderState, Matrix4fc modelViewMatrix, Runnable setupFog) {
-        setupFog.run();
+    public boolean renderSky(LevelRenderState levelRenderState, SkyRenderState skyRenderState, Matrix4fc modelViewMatrix, GpuBufferSlice skyFog) {
+        RenderSystem.setShaderFog(skyFog);
         if (this.charnSunTexture != null) {
             final Matrix4fStack matrix4fStack = RenderSystem.getModelViewStack();
             final GpuTextureView colorTextureView = Minecraft.getInstance().gameRenderer.mainRenderTarget().getColorTextureView();
@@ -96,16 +97,14 @@ public class CharnSkyRenderer implements CustomSkyboxRenderer, ResourceManagerRe
     }
 
     private void renderSkyDiscUpper(final SkyRenderState skyRenderState, final Matrix4fStack matrix4fStack, final GpuTextureView colorTextureView, final GpuTextureView depthTextureView) {
-        float red = ARGB.redFloat(skyRenderState.skyColor);
-        float green = ARGB.greenFloat(skyRenderState.skyColor);
-        float blue = ARGB.blueFloat(skyRenderState.skyColor);
+        // 26.3 carries the sky colour as a float vector rather than a packed int
         final GpuBufferSlice gpubufferslice = RenderSystem.getDynamicUniforms()
-                .writeTransform(matrix4fStack, new Vector4f(red, green, blue, 1.0F), new Vector3f(), new Matrix4f());
+                .writeTransform(matrix4fStack, new Vector4f(skyRenderState.skyColor, 1.0F), new Vector3f(), new Matrix4f());
 
         try (final RenderPass renderpass = RenderSystem.getDevice()
                 .createCommandEncoder()
                 .createRenderPass(() -> "Charn Sky disc", colorTextureView, Optional.empty(), depthTextureView, OptionalDouble.empty())) {
-            renderpass.setPipeline(RenderPipelines.SKY);
+            renderpass.setPipeline(RenderSystem.getCompiledPipeline(RenderPipelines.SKY));
             RenderSystem.bindDefaultUniforms(renderpass);
             renderpass.setUniform("DynamicTransforms", gpubufferslice);
             renderpass.setVertexBuffer(0, this.topSkyboxBuffer.slice());
@@ -127,10 +126,10 @@ public class CharnSkyRenderer implements CustomSkyboxRenderer, ResourceManagerRe
         try (final RenderPass renderpass = RenderSystem.getDevice()
                 .createCommandEncoder()
                 .createRenderPass(() -> "Charn Sky Sun", colorTextureView, Optional.empty(), depthTextureView, OptionalDouble.empty())) {
-            renderpass.setPipeline(RenderPipelines.CELESTIAL);
+            renderpass.setPipeline(RenderSystem.getCompiledPipeline(RenderPipelines.CELESTIAL));
             RenderSystem.bindDefaultUniforms(renderpass);
             renderpass.setUniform("DynamicTransforms", gpubufferslice);
-            renderpass.bindTexture("Sampler0", this.charnSunTexture.getTextureView(), this.charnSunTexture.getSampler());
+            renderpass.setUniform("Sampler0", this.charnSunTexture.getTextureView(), this.charnSunTexture.getSampler());
             renderpass.setVertexBuffer(0, this.charnSunBuffer.slice());
             renderpass.setIndexBuffer(gpubuffer, this.quadIndices.type());
             renderpass.drawIndexed(6, 1, 0, 0, 0);
@@ -141,21 +140,19 @@ public class CharnSkyRenderer implements CustomSkyboxRenderer, ResourceManagerRe
 
     private void renderSunset(final SkyRenderState skyRenderState, final Matrix4fStack matrix4fStack, final GpuTextureView colorTextureView, final GpuTextureView depthTextureView) {
         matrix4fStack.pushMatrix();
-        final float alpha = ARGB.alphaFloat(skyRenderState.sunriseAndSunsetColor);
+        // 26.3 carries the sunrise colour as a float vector rather than a packed int, alpha in w
+        final float alpha = skyRenderState.sunriseAndSunsetColor.w();
         if (alpha > 0.001F) {
-            final float red = ARGB.redFloat(skyRenderState.sunriseAndSunsetColor);
-            final float green = ARGB.greenFloat(skyRenderState.sunriseAndSunsetColor);
-            final float blue = ARGB.blueFloat(skyRenderState.sunriseAndSunsetColor);
             matrix4fStack.rotate(Axis.XP.rotationDegrees(90.0F));
             matrix4fStack.rotate(Axis.ZP.rotationDegrees(90.0F));
             matrix4fStack.scale(1.0F, 1.0F, alpha);
             GpuBufferSlice gpuBufferSlice = RenderSystem.getDynamicUniforms()
-                    .writeTransform(matrix4fStack, new Vector4f(red, green, blue, alpha), new Vector3f(), new Matrix4f());
+                    .writeTransform(matrix4fStack, new Vector4f(skyRenderState.sunriseAndSunsetColor), new Vector3f(), new Matrix4f());
 
             try (RenderPass renderpass = RenderSystem.getDevice()
                     .createCommandEncoder()
                     .createRenderPass(() -> "Sunrise sunset", colorTextureView, Optional.empty(), depthTextureView, OptionalDouble.empty())) {
-                renderpass.setPipeline(RenderPipelines.SUNRISE_SUNSET);
+                renderpass.setPipeline(RenderSystem.getCompiledPipeline(RenderPipelines.SUNRISE_SUNSET));
                 RenderSystem.bindDefaultUniforms(renderpass);
                 renderpass.setUniform("DynamicTransforms", gpuBufferSlice);
                 renderpass.setVertexBuffer(0, this.sunriseCircleBuffer.slice());
@@ -174,7 +171,7 @@ public class CharnSkyRenderer implements CustomSkyboxRenderer, ResourceManagerRe
         try (RenderPass renderpass = RenderSystem.getDevice()
                 .createCommandEncoder()
                 .createRenderPass(() -> "Sky dark", colorTextureView, Optional.empty(), depthTextureView, OptionalDouble.empty())) {
-            renderpass.setPipeline(RenderPipelines.SKY);
+            renderpass.setPipeline(RenderSystem.getCompiledPipeline(RenderPipelines.SKY));
             RenderSystem.bindDefaultUniforms(renderpass);
             renderpass.setUniform("DynamicTransforms", gpubufferslice);
             renderpass.setVertexBuffer(0, this.bottomSkyboxBuffer.slice());

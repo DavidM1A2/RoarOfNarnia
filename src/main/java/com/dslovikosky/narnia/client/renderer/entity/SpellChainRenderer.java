@@ -62,7 +62,7 @@ public class SpellChainRenderer extends EntityRenderer<SpellChainEntity, SpellCh
     }
 
     @Override
-    protected AABB getBoundingBoxForCulling(final SpellChainEntity spellChainEntity) {
+    protected AABB getBoundingBoxForCulling(final SpellChainEntity spellChainEntity, final float partialTicks) {
         return spellChainEntity.getBoundingBoxForCulling();
     }
 
@@ -211,7 +211,7 @@ public class SpellChainRenderer extends EntityRenderer<SpellChainEntity, SpellCh
         final Quaternionf rotation = MathUtils.computeRotationTo(BASE_RENDER_DIRECTION, direction);
 
         matrixStack.pushPose();
-        matrixStack.mulPose(rotation);
+        matrixStack.rotate(rotation);
 
         final PoseStack.Pose pose = matrixStack.last();
         final Matrix4f rotationMatrix = pose.pose();
@@ -221,7 +221,7 @@ public class SpellChainRenderer extends EntityRenderer<SpellChainEntity, SpellCh
             drawVertex(rotationMatrix, buffer, segmentLength, -width, 0.0, (float) segmentLength, 0f);
             drawVertex(rotationMatrix, buffer, segmentLength, width, 0.0, (float) segmentLength, 1f);
             drawVertex(rotationMatrix, buffer, 0.0, width, 0.0, 0f, 1f);
-            matrixStack.mulPose(Axis.XP.rotationDegrees(rotationPerSprite));
+            matrixStack.rotate(Axis.XP.rotationDegrees(rotationPerSprite));
         }
 
         matrixStack.popPose();

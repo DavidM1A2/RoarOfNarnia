@@ -75,25 +75,25 @@ public class SpellProjectileRenderer extends EntityRenderer<SpellProjectileEntit
 
         // Setup in-plane rotation
         poseStack.pushPose();
-        poseStack.mulPose(Axis.YP.rotationDegrees(tickCount * IN_PLANE_ROTATION_SPEED));
+        poseStack.rotate(Axis.YP.rotationDegrees(tickCount * IN_PLANE_ROTATION_SPEED));
         // Rotate the plane
-        poseStack.mulPose(Axis.XP.rotationDegrees(90f));
+        poseStack.rotate(Axis.XP.rotationDegrees(90f));
         SpellGeometrySubmitter.submitThroughWater(submitNodeCollector, poseStack, RENDER_TYPE, (pose, buffer) -> drawOneSprite(pose, buffer, red, green, blue));
         poseStack.popPose();
 
         // Setup in-plane rotation
         poseStack.pushPose();
-        poseStack.mulPose(Axis.XP.rotationDegrees(tickCount * IN_PLANE_ROTATION_SPEED));
+        poseStack.rotate(Axis.XP.rotationDegrees(tickCount * IN_PLANE_ROTATION_SPEED));
         // Rotate the plane
-        poseStack.mulPose(Axis.YP.rotationDegrees(90f));
+        poseStack.rotate(Axis.YP.rotationDegrees(90f));
         SpellGeometrySubmitter.submitThroughWater(submitNodeCollector, poseStack, RENDER_TYPE, (pose, buffer) -> drawOneSprite(pose, buffer, red, green, blue));
         poseStack.popPose();
 
         // Setup in-plane rotation
         poseStack.pushPose();
-        poseStack.mulPose(Axis.ZP.rotationDegrees(tickCount * IN_PLANE_ROTATION_SPEED));
+        poseStack.rotate(Axis.ZP.rotationDegrees(tickCount * IN_PLANE_ROTATION_SPEED));
         // Rotate the plane
-        poseStack.mulPose(Axis.ZP.rotationDegrees(90f));
+        poseStack.rotate(Axis.ZP.rotationDegrees(90f));
         SpellGeometrySubmitter.submitThroughWater(submitNodeCollector, poseStack, RENDER_TYPE, (pose, buffer) -> drawOneSprite(pose, buffer, red, green, blue));
         poseStack.popPose();
 
@@ -105,9 +105,9 @@ public class SpellProjectileRenderer extends EntityRenderer<SpellProjectileEntit
         final float yRotation = (tickCount + ((float) random.nextGaussian() + 1)) * PLANE_ROTATION_SPEED;
         final float zRotation = (tickCount + ((float) random.nextGaussian() + 1)) * PLANE_ROTATION_SPEED;
 
-        matrixStack.mulPose((random.nextBoolean() ? Axis.XP : Axis.XN).rotationDegrees(xRotation));
-        matrixStack.mulPose((random.nextBoolean() ? Axis.YP : Axis.YN).rotationDegrees(yRotation));
-        matrixStack.mulPose((random.nextBoolean() ? Axis.ZP : Axis.ZN).rotationDegrees(zRotation));
+        matrixStack.rotate((random.nextBoolean() ? Axis.XP : Axis.XN).rotationDegrees(xRotation));
+        matrixStack.rotate((random.nextBoolean() ? Axis.YP : Axis.YN).rotationDegrees(yRotation));
+        matrixStack.rotate((random.nextBoolean() ? Axis.ZP : Axis.ZN).rotationDegrees(zRotation));
     }
 
     private void drawOneSprite(final PoseStack.Pose pose, final VertexConsumer buffer, final int red, final int green, final int blue) {

@@ -51,7 +51,7 @@ public class SpellAOERenderer extends EntityRenderer<SpellAOEEntity, SpellAOERen
     }
 
     @Override
-    protected AABB getBoundingBoxForCulling(final SpellAOEEntity spellAOEEntity) {
+    protected AABB getBoundingBoxForCulling(final SpellAOEEntity spellAOEEntity, final float partialTicks) {
         return spellAOEEntity.getBoundingBoxForCulling();
     }
 
