@@ -35,7 +35,7 @@ public class ModModelProvider extends ModelProvider {
                         .slab(ModBlocks.WORLD_WOOD_SLAB.get())
                         .stairs(ModBlocks.WORLD_WOOD_STAIR.get())
                         .pressurePlate(ModBlocks.WORLD_WOOD_PRESSURE_PLATE.get())
-                        .sign(ModBlocks.WORLD_WOOD_WALL_SIGN.get(), ModBlocks.WORLD_WOOD_STANDING_SIGN.get())
+                        .sign(ModBlocks.WORLD_WOOD_STANDING_SIGN.get(), ModBlocks.WORLD_WOOD_WALL_SIGN.get())
                         .getFamily());
         createOrientableTrapdoor(blockModels, ModBlocks.WORLD_WOOD_TRAP_DOOR.get());
         createDoor(blockModels, ModBlocks.WORLD_WOOD_DOOR.get());

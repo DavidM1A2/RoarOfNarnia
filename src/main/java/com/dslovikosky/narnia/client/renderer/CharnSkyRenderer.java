@@ -1,6 +1,7 @@
 package com.dslovikosky.narnia.client.renderer;
 
 import com.dslovikosky.narnia.common.constants.Constants;
+import com.mojang.blaze3d.PrimitiveTopology;
 import com.mojang.blaze3d.buffers.GpuBuffer;
 import com.mojang.blaze3d.buffers.GpuBufferSlice;
 import com.mojang.blaze3d.systems.RenderPass;
@@ -11,7 +12,6 @@ import com.mojang.blaze3d.vertex.ByteBufferBuilder;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.MeshData;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderPipelines;
@@ -32,14 +32,14 @@ import org.joml.Vector3f;
 import org.joml.Vector4f;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.Optional;
 import java.util.OptionalDouble;
-import java.util.OptionalInt;
 
 @ParametersAreNonnullByDefault
 public class CharnSkyRenderer implements CustomSkyboxRenderer, ResourceManagerReloadListener {
     private static final Identifier CHARN_SUN_TEXTURE = Constants.modLocation("textures/environment/charn_sun.png");
 
-    private final RenderSystem.AutoStorageIndexBuffer quadIndices = RenderSystem.getSequentialBuffer(VertexFormat.Mode.QUADS);
+    private final RenderSystem.AutoStorageIndexBuffer quadIndices = RenderSystem.getSequentialBuffer(PrimitiveTopology.QUADS);
     private final GpuBuffer charnSunBuffer;
     private final GpuBuffer topSkyboxBuffer;
     private final GpuBuffer bottomSkyboxBuffer;
@@ -53,13 +53,13 @@ public class CharnSkyRenderer implements CustomSkyboxRenderer, ResourceManagerRe
 
         // Use 10 vertices to make a giant hemisphere. buildSkyDisc() uses one center vertex and 9 around the center.
         try (final ByteBufferBuilder byteBufferBuilder = ByteBufferBuilder.exactlySized(10 * DefaultVertexFormat.POSITION.getVertexSize())) {
-            final BufferBuilder topSkyboxBufferBuilder = new BufferBuilder(byteBufferBuilder, VertexFormat.Mode.TRIANGLE_FAN, DefaultVertexFormat.POSITION);
+            final BufferBuilder topSkyboxBufferBuilder = new BufferBuilder(byteBufferBuilder, PrimitiveTopology.TRIANGLE_FAN, DefaultVertexFormat.POSITION);
             this.buildSkyDisc(topSkyboxBufferBuilder, 16.0F);
             try (MeshData topSkyboxMeshData = topSkyboxBufferBuilder.buildOrThrow()) {
                 this.topSkyboxBuffer = RenderSystem.getDevice().createBuffer(() -> "Top skybox vertex buffer", GpuBuffer.USAGE_VERTEX, topSkyboxMeshData.vertexBuffer());
             }
 
-            final BufferBuilder bottomSkyboxBufferBuilder = new BufferBuilder(byteBufferBuilder, VertexFormat.Mode.TRIANGLE_FAN, DefaultVertexFormat.POSITION);
+            final BufferBuilder bottomSkyboxBufferBuilder = new BufferBuilder(byteBufferBuilder, PrimitiveTopology.TRIANGLE_FAN, DefaultVertexFormat.POSITION);
             this.buildSkyDisc(bottomSkyboxBufferBuilder, -16.0F);
             try (MeshData bottomSkyMeshData = bottomSkyboxBufferBuilder.buildOrThrow()) {
                 this.bottomSkyboxBuffer = RenderSystem.getDevice().createBuffer(() -> "Bottom skybox vertex buffer", GpuBuffer.USAGE_VERTEX, bottomSkyMeshData.vertexBuffer());
@@ -83,8 +83,8 @@ public class CharnSkyRenderer implements CustomSkyboxRenderer, ResourceManagerRe
         setupFog.run();
         if (this.charnSunTexture != null) {
             final Matrix4fStack matrix4fStack = RenderSystem.getModelViewStack();
-            final GpuTextureView colorTextureView = Minecraft.getInstance().getMainRenderTarget().getColorTextureView();
-            final GpuTextureView depthTextureView = Minecraft.getInstance().getMainRenderTarget().getDepthTextureView();
+            final GpuTextureView colorTextureView = Minecraft.getInstance().gameRenderer.mainRenderTarget().getColorTextureView();
+            final GpuTextureView depthTextureView = Minecraft.getInstance().gameRenderer.mainRenderTarget().getDepthTextureView();
 
             renderSkyDiscUpper(skyRenderState, matrix4fStack, colorTextureView, depthTextureView);
             renderSun(matrix4fStack, colorTextureView, depthTextureView);
@@ -104,12 +104,12 @@ public class CharnSkyRenderer implements CustomSkyboxRenderer, ResourceManagerRe
 
         try (final RenderPass renderpass = RenderSystem.getDevice()
                 .createCommandEncoder()
-                .createRenderPass(() -> "Charn Sky disc", colorTextureView, OptionalInt.empty(), depthTextureView, OptionalDouble.empty())) {
+                .createRenderPass(() -> "Charn Sky disc", colorTextureView, Optional.empty(), depthTextureView, OptionalDouble.empty())) {
             renderpass.setPipeline(RenderPipelines.SKY);
             RenderSystem.bindDefaultUniforms(renderpass);
             renderpass.setUniform("DynamicTransforms", gpubufferslice);
-            renderpass.setVertexBuffer(0, this.topSkyboxBuffer);
-            renderpass.draw(0, 10);
+            renderpass.setVertexBuffer(0, this.topSkyboxBuffer.slice());
+            renderpass.draw(10, 1, 0, 0);
         }
     }
 
@@ -126,14 +126,14 @@ public class CharnSkyRenderer implements CustomSkyboxRenderer, ResourceManagerRe
 
         try (final RenderPass renderpass = RenderSystem.getDevice()
                 .createCommandEncoder()
-                .createRenderPass(() -> "Charn Sky Sun", colorTextureView, OptionalInt.empty(), depthTextureView, OptionalDouble.empty())) {
+                .createRenderPass(() -> "Charn Sky Sun", colorTextureView, Optional.empty(), depthTextureView, OptionalDouble.empty())) {
             renderpass.setPipeline(RenderPipelines.CELESTIAL);
             RenderSystem.bindDefaultUniforms(renderpass);
             renderpass.setUniform("DynamicTransforms", gpubufferslice);
             renderpass.bindTexture("Sampler0", this.charnSunTexture.getTextureView(), this.charnSunTexture.getSampler());
-            renderpass.setVertexBuffer(0, this.charnSunBuffer);
+            renderpass.setVertexBuffer(0, this.charnSunBuffer.slice());
             renderpass.setIndexBuffer(gpubuffer, this.quadIndices.type());
-            renderpass.drawIndexed(0, 0, 6, 1);
+            renderpass.drawIndexed(6, 1, 0, 0, 0);
         }
 
         matrix4fStack.popMatrix();
@@ -154,12 +154,12 @@ public class CharnSkyRenderer implements CustomSkyboxRenderer, ResourceManagerRe
 
             try (RenderPass renderpass = RenderSystem.getDevice()
                     .createCommandEncoder()
-                    .createRenderPass(() -> "Sunrise sunset", colorTextureView, OptionalInt.empty(), depthTextureView, OptionalDouble.empty())) {
+                    .createRenderPass(() -> "Sunrise sunset", colorTextureView, Optional.empty(), depthTextureView, OptionalDouble.empty())) {
                 renderpass.setPipeline(RenderPipelines.SUNRISE_SUNSET);
                 RenderSystem.bindDefaultUniforms(renderpass);
                 renderpass.setUniform("DynamicTransforms", gpuBufferSlice);
-                renderpass.setVertexBuffer(0, this.sunriseCircleBuffer);
-                renderpass.draw(0, 18);
+                renderpass.setVertexBuffer(0, this.sunriseCircleBuffer.slice());
+                renderpass.draw(18, 1, 0, 0);
             }
         }
         matrix4fStack.popMatrix();
@@ -173,12 +173,12 @@ public class CharnSkyRenderer implements CustomSkyboxRenderer, ResourceManagerRe
 
         try (RenderPass renderpass = RenderSystem.getDevice()
                 .createCommandEncoder()
-                .createRenderPass(() -> "Sky dark", colorTextureView, OptionalInt.empty(), depthTextureView, OptionalDouble.empty())) {
+                .createRenderPass(() -> "Sky dark", colorTextureView, Optional.empty(), depthTextureView, OptionalDouble.empty())) {
             renderpass.setPipeline(RenderPipelines.SKY);
             RenderSystem.bindDefaultUniforms(renderpass);
             renderpass.setUniform("DynamicTransforms", gpubufferslice);
-            renderpass.setVertexBuffer(0, this.bottomSkyboxBuffer);
-            renderpass.draw(0, 10);
+            renderpass.setVertexBuffer(0, this.bottomSkyboxBuffer.slice());
+            renderpass.draw(10, 1, 0, 0);
         }
         matrix4fStack.popMatrix();
     }
@@ -191,7 +191,7 @@ public class CharnSkyRenderer implements CustomSkyboxRenderer, ResourceManagerRe
     private GpuBuffer buildCharnSunQuad() {
         // 4 vertices to make the sun
         try (ByteBufferBuilder byteBufferBuilder = ByteBufferBuilder.exactlySized(4 * DefaultVertexFormat.POSITION_TEX.getVertexSize())) {
-            final BufferBuilder bufferBuilder = new BufferBuilder(byteBufferBuilder, VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
+            final BufferBuilder bufferBuilder = new BufferBuilder(byteBufferBuilder, PrimitiveTopology.QUADS, DefaultVertexFormat.POSITION_TEX);
             Matrix4f matrix4f = new Matrix4f();
             bufferBuilder.addVertex(matrix4f, -1.0F, 0.0F, -1.0F).setUv(0.0F, 0.0F);
             bufferBuilder.addVertex(matrix4f, 1.0F, 0.0F, -1.0F).setUv(1.0F, 0.0F);
@@ -210,7 +210,7 @@ public class CharnSkyRenderer implements CustomSkyboxRenderer, ResourceManagerRe
 
         // 18 vertices to make the sunrise fan. One at the center, and then 17 around it in the for loop below
         try (ByteBufferBuilder byteBufferBuilder = ByteBufferBuilder.exactlySized(18 * DefaultVertexFormat.POSITION_COLOR.getVertexSize())) {
-            final BufferBuilder bufferBuilder = new BufferBuilder(byteBufferBuilder, VertexFormat.Mode.TRIANGLE_FAN, DefaultVertexFormat.POSITION_COLOR);
+            final BufferBuilder bufferBuilder = new BufferBuilder(byteBufferBuilder, PrimitiveTopology.TRIANGLE_FAN, DefaultVertexFormat.POSITION_COLOR);
             int white = ARGB.white(1.0F);
             int black = ARGB.white(0.0F);
 

@@ -6,6 +6,7 @@ import com.dslovikosky.narnia.common.constants.ModAttachmentTypes;
 import com.dslovikosky.narnia.common.constants.ModMobEffects;
 import com.dslovikosky.narnia.common.event.WoodBetweenTheWorldsHandler;
 import com.mojang.blaze3d.buffers.GpuBuffer;
+import com.mojang.blaze3d.buffers.GpuBufferSlice;
 import com.mojang.blaze3d.buffers.Std140Builder;
 import com.mojang.blaze3d.buffers.Std140SizeCalculator;
 import com.mojang.blaze3d.pipeline.RenderTarget;
@@ -24,7 +25,7 @@ import net.minecraft.client.renderer.state.level.LevelRenderState;
 import net.minecraft.util.context.ContextKey;
 import net.minecraft.world.effect.MobEffectInstance;
 
-import java.util.OptionalInt;
+import java.util.Optional;
 
 public class DrowsyVignetteRenderer {
     private static final ContextKey<Float> DROWSY_VIGNETTE_STRENGTH = new ContextKey<>(Constants.modLocation("drowsy_vignette_strength"));
@@ -51,7 +52,7 @@ public class DrowsyVignetteRenderer {
         final int vboUsage = GpuBuffer.USAGE_VERTEX | GpuBuffer.USAGE_MAP_WRITE;
         final GpuDevice device = RenderSystem.getDevice();
         vertexBufferObject = device.createBuffer(() -> "Drowsy Vignette VBO", vboUsage, FULLSCREEN_VERTEX_BYTES);
-        try (GpuBuffer.MappedView view = device.createCommandEncoder().mapBuffer(vertexBufferObject, false, true)) {
+        try (GpuBufferSlice.MappedView view = vertexBufferObject.map(false, true)) {
             view.data().asFloatBuffer().put(FULLSCREEN_TRIANGLE);
         }
     }
@@ -89,7 +90,7 @@ public class DrowsyVignetteRenderer {
         uniformBufferObject.rotate();
 
         final CommandEncoder encoder = RenderSystem.getDevice().createCommandEncoder();
-        try (GpuBuffer.MappedView view = encoder.mapBuffer(uniformBufferObject.currentBuffer(), false, true)) {
+        try (GpuBufferSlice.MappedView view = uniformBufferObject.currentBuffer().map(false, true)) {
             // Write vec4(timeStrength, 0,0,0) in std140 layout
             Std140Builder.intoBuffer(view.data()).putVec4(strength, 0f, 0f, 0f);
 
@@ -97,15 +98,15 @@ public class DrowsyVignetteRenderer {
             final GpuTextureView colorView = renderTarget.getColorTextureView();
 
             // Create a render pass and bind the uniform and the color sampler
-            try (RenderPass pass = encoder.createRenderPass(() -> "drowsy_vignette_pass", colorView, OptionalInt.empty())) {
+            try (RenderPass pass = encoder.createRenderPass(() -> "drowsy_vignette_pass", colorView, Optional.empty())) {
                 // Setup the pipeline, uniform, sampler, and vertex buffer
                 pass.setPipeline(ModRenderPipelines.DROWSY_VIGNETTE);
                 pass.setUniform("TimeUniform", uniformBufferObject.currentBuffer().slice(0, UBO_SIZE));
                 pass.bindTexture("In", colorView, RenderSystem.getSamplerCache().getClampToEdge(FilterMode.LINEAR));
-                pass.setVertexBuffer(0, vertexBufferObject);
+                pass.setVertexBuffer(0, vertexBufferObject.slice());
 
-                // Draw 3 indices (one large triangle that covers the entire screen)
-                pass.draw(0, 3);
+                // Draw 3 vertices (one large triangle that covers the entire screen)
+                pass.draw(3, 1, 0, 0);
             }
         }
     }

@@ -1,13 +1,12 @@
 package com.dslovikosky.narnia.client.renderer.entity;
 
 import com.dslovikosky.narnia.client.constants.ModRenderPipelines;
-import com.dslovikosky.narnia.client.renderer.CustomLateEntityRenderer;
 import com.dslovikosky.narnia.common.constants.Constants;
 import com.dslovikosky.narnia.common.entity.spell.SpellProjectileEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.rendertype.RenderSetup;
@@ -20,14 +19,13 @@ import org.joml.Matrix4f;
 import java.awt.Color;
 import java.util.Random;
 
-public class SpellProjectileRenderer extends EntityRenderer<SpellProjectileEntity, SpellProjectileRenderState> implements CustomLateEntityRenderer<SpellProjectileRenderState> {
+public class SpellProjectileRenderer extends EntityRenderer<SpellProjectileEntity, SpellProjectileRenderState> {
     // The texture used by the model
     private static final Identifier SPELL_PROJECTILE_TEXTURE = Constants.modLocation("textures/entity/spell/projectile.png");
 
     private static final RenderType RENDER_TYPE = RenderType.create(
             Constants.modLocation("spell_projectile").toString(),
             RenderSetup.builder(ModRenderPipelines.SPELL_ENTITY)
-                    .bufferSize(1536)
                     .affectsCrumbling()
                     .sortOnUpload()
                     .withTexture("Sampler0", SPELL_PROJECTILE_TEXTURE)
@@ -59,12 +57,12 @@ public class SpellProjectileRenderer extends EntityRenderer<SpellProjectileEntit
     }
 
     @Override
-    public void submit(SpellProjectileRenderState renderState, PoseStack poseStack, MultiBufferSource multiBufferSource, CameraRenderState cameraRenderState) {
+    public void submit(SpellProjectileRenderState renderState, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, CameraRenderState cameraRenderState) {
+        super.submit(renderState, poseStack, submitNodeCollector, cameraRenderState);
+
         poseStack.pushPose();
 
         poseStack.translate(0.0, renderState.boundingBoxHeight / 2, 0.0);
-
-        final VertexConsumer buffer = multiBufferSource.getBuffer(RENDER_TYPE);
 
         final float tickCount = renderState.ageInTicks + renderState.partialTick;
         final Color color = renderState.getColor();
@@ -79,7 +77,7 @@ public class SpellProjectileRenderer extends EntityRenderer<SpellProjectileEntit
         poseStack.mulPose(Axis.YP.rotationDegrees(tickCount * IN_PLANE_ROTATION_SPEED));
         // Rotate the plane
         poseStack.mulPose(Axis.XP.rotationDegrees(90f));
-        drawOneSprite(poseStack, buffer, red, green, blue);
+        submitNodeCollector.submitCustomGeometry(poseStack, RENDER_TYPE, (pose, buffer) -> drawOneSprite(pose, buffer, red, green, blue));
         poseStack.popPose();
 
         // Setup in-plane rotation
@@ -87,7 +85,7 @@ public class SpellProjectileRenderer extends EntityRenderer<SpellProjectileEntit
         poseStack.mulPose(Axis.XP.rotationDegrees(tickCount * IN_PLANE_ROTATION_SPEED));
         // Rotate the plane
         poseStack.mulPose(Axis.YP.rotationDegrees(90f));
-        drawOneSprite(poseStack, buffer, red, green, blue);
+        submitNodeCollector.submitCustomGeometry(poseStack, RENDER_TYPE, (pose, buffer) -> drawOneSprite(pose, buffer, red, green, blue));
         poseStack.popPose();
 
         // Setup in-plane rotation
@@ -95,7 +93,7 @@ public class SpellProjectileRenderer extends EntityRenderer<SpellProjectileEntit
         poseStack.mulPose(Axis.ZP.rotationDegrees(tickCount * IN_PLANE_ROTATION_SPEED));
         // Rotate the plane
         poseStack.mulPose(Axis.ZP.rotationDegrees(90f));
-        drawOneSprite(poseStack, buffer, red, green, blue);
+        submitNodeCollector.submitCustomGeometry(poseStack, RENDER_TYPE, (pose, buffer) -> drawOneSprite(pose, buffer, red, green, blue));
         poseStack.popPose();
 
         poseStack.popPose();
@@ -111,8 +109,7 @@ public class SpellProjectileRenderer extends EntityRenderer<SpellProjectileEntit
         matrixStack.mulPose((random.nextBoolean() ? Axis.ZP : Axis.ZN).rotationDegrees(zRotation));
     }
 
-    private void drawOneSprite(final PoseStack matrixStack, final VertexConsumer buffer, final int red, final int green, final int blue) {
-        final PoseStack.Pose pose = matrixStack.last();
+    private void drawOneSprite(final PoseStack.Pose pose, final VertexConsumer buffer, final int red, final int green, final int blue) {
         final Matrix4f rotationMatrix = pose.pose();
 
         drawVertex(rotationMatrix, buffer, -1, -1, 0, 0f, 0f, red, green, blue);

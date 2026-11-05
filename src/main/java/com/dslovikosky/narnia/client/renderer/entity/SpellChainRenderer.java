@@ -1,14 +1,13 @@
 package com.dslovikosky.narnia.client.renderer.entity;
 
 import com.dslovikosky.narnia.client.constants.ModRenderPipelines;
-import com.dslovikosky.narnia.client.renderer.CustomLateEntityRenderer;
 import com.dslovikosky.narnia.common.constants.Constants;
 import com.dslovikosky.narnia.common.entity.spell.SpellChainEntity;
 import com.dslovikosky.narnia.common.utils.MathUtils;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.rendertype.RenderSetup;
@@ -30,7 +29,7 @@ import java.util.Map;
 import java.util.Random;
 
 @ParametersAreNonnullByDefault
-public class SpellChainRenderer extends EntityRenderer<SpellChainEntity, SpellChainRenderState> implements CustomLateEntityRenderer<SpellChainRenderState> {
+public class SpellChainRenderer extends EntityRenderer<SpellChainEntity, SpellChainRenderState> {
     private static final double FORK_WIDTH = 0.03;
     private static final double JITTER_WIDTH = 0.05;
     private static final int SPRITE_COUNT = 2;
@@ -46,7 +45,6 @@ public class SpellChainRenderer extends EntityRenderer<SpellChainEntity, SpellCh
     private static final RenderType RENDER_TYPE = RenderType.create(
             Constants.modLocation("spell_chain").toString(),
             RenderSetup.builder(ModRenderPipelines.SPELL_ENTITY)
-                    .bufferSize(1536)
                     .affectsCrumbling()
                     .sortOnUpload()
                     .withTexture("Sampler0", SPELL_CHAIN_TEXTURE)
@@ -83,7 +81,9 @@ public class SpellChainRenderer extends EntityRenderer<SpellChainEntity, SpellCh
     }
 
     @Override
-    public void submit(SpellChainRenderState renderState, PoseStack poseStack, MultiBufferSource multiBufferSource, CameraRenderState cameraRenderState) {
+    public void submit(SpellChainRenderState renderState, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, CameraRenderState cameraRenderState) {
+        super.submit(renderState, poseStack, submitNodeCollector, cameraRenderState);
+
         final Vec3 startPos = renderState.getStartPos();
         final Vec3 endPos = renderState.getEndPos();
         final Random random = renderState.getRandom();
@@ -92,8 +92,6 @@ public class SpellChainRenderer extends EntityRenderer<SpellChainEntity, SpellCh
         }
 
         // How to make good looking lightning: https://developer.download.nvidia.com/SDK/10/direct3d/Source/Lightning/doc/lightning_doc.pdf
-        final VertexConsumer buffer = multiBufferSource.getBuffer(RENDER_TYPE);
-
         final double distance = startPos.distanceTo(endPos);
         final double numJitters = distance / APPROXIMATE_BLOCKS_PER_JITTER;
         final int numJitterSubdivisions = (int) Math.ceil(MathUtils.log(2.0, numJitters));
@@ -103,27 +101,32 @@ public class SpellChainRenderer extends EntityRenderer<SpellChainEntity, SpellCh
         jitterVertices.add(endPos);
         final Map<Vec3, List<Vec3>> forks = computeForks(random, jitterVertices);
 
-        poseStack.pushPose();
-        for (int i = 1; i < jitterVertices.size(); i++) {
-            final Vec3 fromJitterVertex = jitterVertices.get(i - 1);
-            final Vec3 toJitterVertex = jitterVertices.get(i);
+        submitNodeCollector.submitCustomGeometry(poseStack, RENDER_TYPE, (pose, buffer) -> {
+            // drawSegment walks the stack forward as it goes, so it needs a mutable stack rather than
+            // the single pose the submit system hands back
+            final PoseStack segmentStack = new PoseStack();
+            segmentStack.last().set(pose);
 
-            // Draw the fork first if it exists for this vertex
-            final List<Vec3> forkVertices = forks.get(fromJitterVertex);
-            if (forkVertices != null) {
-                poseStack.pushPose();
-                for (int j = 1; j < forkVertices.size(); j++) {
-                    final Vec3 fromForkVertex = forkVertices.get(j - 1);
-                    final Vec3 toForkVertex = forkVertices.get(j);
-                    drawSegment(poseStack, buffer, fromForkVertex, toForkVertex, FORK_WIDTH);
+            for (int i = 1; i < jitterVertices.size(); i++) {
+                final Vec3 fromJitterVertex = jitterVertices.get(i - 1);
+                final Vec3 toJitterVertex = jitterVertices.get(i);
+
+                // Draw the fork first if it exists for this vertex
+                final List<Vec3> forkVertices = forks.get(fromJitterVertex);
+                if (forkVertices != null) {
+                    segmentStack.pushPose();
+                    for (int j = 1; j < forkVertices.size(); j++) {
+                        final Vec3 fromForkVertex = forkVertices.get(j - 1);
+                        final Vec3 toForkVertex = forkVertices.get(j);
+                        drawSegment(segmentStack, buffer, fromForkVertex, toForkVertex, FORK_WIDTH);
+                    }
+                    segmentStack.popPose();
                 }
-                poseStack.popPose();
-            }
 
-            // Then draw the jitter
-            drawSegment(poseStack, buffer, fromJitterVertex, toJitterVertex, JITTER_WIDTH);
-        }
-        poseStack.popPose();
+                // Then draw the jitter
+                drawSegment(segmentStack, buffer, fromJitterVertex, toJitterVertex, JITTER_WIDTH);
+            }
+        });
     }
 
     /**

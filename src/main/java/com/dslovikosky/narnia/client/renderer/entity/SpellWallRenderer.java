@@ -1,13 +1,12 @@
 package com.dslovikosky.narnia.client.renderer.entity;
 
 import com.dslovikosky.narnia.client.constants.ModRenderPipelines;
-import com.dslovikosky.narnia.client.renderer.CustomLateEntityRenderer;
 import com.dslovikosky.narnia.common.constants.Constants;
 import com.dslovikosky.narnia.common.entity.spell.SpellWallEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.util.LightCoordsUtil;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -25,7 +24,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import java.awt.Color;
 
 @ParametersAreNonnullByDefault
-public class SpellWallRenderer extends EntityRenderer<SpellWallEntity, SpellWallRenderState> implements CustomLateEntityRenderer<SpellWallRenderState> {
+public class SpellWallRenderer extends EntityRenderer<SpellWallEntity, SpellWallRenderState> {
     // The texture used by the model
     private static final Identifier SPELL_CONE_TEXTURE = Constants.modLocation("textures/entity/spell/wall.png");
     // 1.21.11 moved line width into the vertex format; 1.0 matches the previous global default
@@ -33,7 +32,6 @@ public class SpellWallRenderer extends EntityRenderer<SpellWallEntity, SpellWall
     private static final RenderType WALL_RENDER_TYPE = RenderType.create(
             Constants.modLocation("spell_wall").toString(),
             RenderSetup.builder(ModRenderPipelines.SPELL_ENTITY)
-                    .bufferSize(1536)
                     .affectsCrumbling()
                     .sortOnUpload()
                     .withTexture("Sampler0", SPELL_CONE_TEXTURE)
@@ -42,7 +40,6 @@ public class SpellWallRenderer extends EntityRenderer<SpellWallEntity, SpellWall
     private static final RenderType WALL_BORDER_RENDER_TYPE = RenderType.create(
             Constants.modLocation("spell_wall_corner_border").toString(),
             RenderSetup.builder(RenderPipelines.LINES)
-                    .bufferSize(1536)
                     .affectsCrumbling()
                     .sortOnUpload()
                     .useOverlay()
@@ -77,7 +74,9 @@ public class SpellWallRenderer extends EntityRenderer<SpellWallEntity, SpellWall
     }
 
     @Override
-    public void submit(SpellWallRenderState renderState, PoseStack poseStack, MultiBufferSource multiBufferSource, CameraRenderState cameraRenderState) {
+    public void submit(SpellWallRenderState renderState, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, CameraRenderState cameraRenderState) {
+        super.submit(renderState, poseStack, submitNodeCollector, cameraRenderState);
+
         final Vec3 width = renderState.getWidth();
         final Vec3 height = renderState.getHeight();
         final Color color = renderState.getColor();
@@ -94,9 +93,6 @@ public class SpellWallRenderer extends EntityRenderer<SpellWallEntity, SpellWall
         final int innerAlpha = Math.round(Mth.lerp(percentRemaining, 140f, 0f));
         final int outerAlpha = Math.round(Mth.lerp(percentRemaining, 255f, 0f));
 
-        final Matrix4f rotationMatrix = poseStack.last().pose();
-        final PoseStack.Pose pose = poseStack.last();
-
         final double halfWidthX = width.x / 2;
         final double halfWidthY = width.y / 2;
         final double halfWidthZ = width.z / 2;
@@ -108,21 +104,25 @@ public class SpellWallRenderer extends EntityRenderer<SpellWallEntity, SpellWall
         final float uTileCount = (float) Math.floor(width.length());
         final float vTileCount = (float) Math.floor(height.length());
 
-        final VertexConsumer wallBuffer = multiBufferSource.getBuffer(WALL_RENDER_TYPE);
-        drawQuadVertex(rotationMatrix, pose, wallBuffer, -halfWidthX + halfHeightX, -halfWidthY + halfHeightY, -halfWidthZ + halfHeightZ, 0f, 0f, red, green, blue, innerAlpha);
-        drawQuadVertex(rotationMatrix, pose, wallBuffer, halfWidthX + halfHeightX, halfWidthY + halfHeightY, halfWidthZ + halfHeightZ, uTileCount, 0f, red, green, blue, innerAlpha);
-        drawQuadVertex(rotationMatrix, pose, wallBuffer, halfWidthX - halfHeightX, halfWidthY - halfHeightY, halfWidthZ - halfHeightZ, uTileCount, vTileCount, red, green, blue, innerAlpha);
-        drawQuadVertex(rotationMatrix, pose, wallBuffer, -halfWidthX - halfHeightX, -halfWidthY - halfHeightY, -halfWidthZ - halfHeightZ, 0f, vTileCount, red, green, blue, innerAlpha);
+        submitNodeCollector.submitCustomGeometry(poseStack, WALL_RENDER_TYPE, (pose, wallBuffer) -> {
+            final Matrix4f rotationMatrix = pose.pose();
+            drawQuadVertex(rotationMatrix, pose, wallBuffer, -halfWidthX + halfHeightX, -halfWidthY + halfHeightY, -halfWidthZ + halfHeightZ, 0f, 0f, red, green, blue, innerAlpha);
+            drawQuadVertex(rotationMatrix, pose, wallBuffer, halfWidthX + halfHeightX, halfWidthY + halfHeightY, halfWidthZ + halfHeightZ, uTileCount, 0f, red, green, blue, innerAlpha);
+            drawQuadVertex(rotationMatrix, pose, wallBuffer, halfWidthX - halfHeightX, halfWidthY - halfHeightY, halfWidthZ - halfHeightZ, uTileCount, vTileCount, red, green, blue, innerAlpha);
+            drawQuadVertex(rotationMatrix, pose, wallBuffer, -halfWidthX - halfHeightX, -halfWidthY - halfHeightY, -halfWidthZ - halfHeightZ, 0f, vTileCount, red, green, blue, innerAlpha);
+        });
 
         // RenderPipelines.LINES draws independent segments, so each edge is emitted as its own vertex pair
-        final VertexConsumer borderBuffer = multiBufferSource.getBuffer(WALL_BORDER_RENDER_TYPE);
         final Vec3 topLeft = new Vec3(-halfWidthX + halfHeightX, -halfWidthY + halfHeightY, -halfWidthZ + halfHeightZ);
         final Vec3 topRight = new Vec3(halfWidthX + halfHeightX, halfWidthY + halfHeightY, halfWidthZ + halfHeightZ);
         final Vec3 bottomRight = new Vec3(halfWidthX - halfHeightX, halfWidthY - halfHeightY, halfWidthZ - halfHeightZ);
         final Vec3 bottomLeft = new Vec3(-halfWidthX - halfHeightX, -halfWidthY - halfHeightY, -halfWidthZ - halfHeightZ);
-        drawBorderEdge(rotationMatrix, pose, borderBuffer, topLeft, topRight, red, green, blue, outerAlpha);
-        drawBorderEdge(rotationMatrix, pose, borderBuffer, topRight, bottomRight, red, green, blue, outerAlpha);
-        drawBorderEdge(rotationMatrix, pose, borderBuffer, bottomRight, bottomLeft, red, green, blue, outerAlpha);
+        submitNodeCollector.submitCustomGeometry(poseStack, WALL_BORDER_RENDER_TYPE, (pose, borderBuffer) -> {
+            final Matrix4f rotationMatrix = pose.pose();
+            drawBorderEdge(rotationMatrix, pose, borderBuffer, topLeft, topRight, red, green, blue, outerAlpha);
+            drawBorderEdge(rotationMatrix, pose, borderBuffer, topRight, bottomRight, red, green, blue, outerAlpha);
+            drawBorderEdge(rotationMatrix, pose, borderBuffer, bottomRight, bottomLeft, red, green, blue, outerAlpha);
+        });
     }
 
     private void drawBorderEdge(

@@ -1,7 +1,6 @@
 package com.dslovikosky.narnia;
 
 import com.dslovikosky.narnia.client.event.BlockEntityRendererRegister;
-import com.dslovikosky.narnia.client.event.ClientLateRenderHandler;
 import com.dslovikosky.narnia.client.event.ClientReloadHandler;
 import com.dslovikosky.narnia.client.event.ClientSpellFreezeHandler;
 import com.dslovikosky.narnia.client.event.EntityRendererRegister;
@@ -116,7 +115,6 @@ public class RoarOfNarnia {
         if (fmlLoader.getDist() == Dist.CLIENT) {
             forgeBus.register(new WoodBetweenTheWorldsClientHandler());
             forgeBus.register(new KeyInputEventHandler());
-            forgeBus.register(new ClientLateRenderHandler());
             forgeBus.register(new ClientSpellFreezeHandler());
             forgeBus.register(ClientProxy.CHARN_SCREEN_SHAKE_HANDLER);
         }

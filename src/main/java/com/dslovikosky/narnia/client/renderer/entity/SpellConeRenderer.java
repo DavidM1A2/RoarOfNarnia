@@ -1,13 +1,12 @@
 package com.dslovikosky.narnia.client.renderer.entity;
 
 import com.dslovikosky.narnia.client.constants.ModRenderPipelines;
-import com.dslovikosky.narnia.client.renderer.CustomLateEntityRenderer;
 import com.dslovikosky.narnia.common.constants.Constants;
 import com.dslovikosky.narnia.common.entity.spell.SpellConeEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.util.LightCoordsUtil;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -28,7 +27,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 @ParametersAreNonnullByDefault
-public class SpellConeRenderer extends EntityRenderer<SpellConeEntity, SpellConeRenderState> implements CustomLateEntityRenderer<SpellConeRenderState> {
+public class SpellConeRenderer extends EntityRenderer<SpellConeEntity, SpellConeRenderState> {
     private static final Vec3 UP_VECTOR = new Vec3(0.0, 1.0, 0.0);
     private static final Vec3 LEFT_VECTOR = new Vec3(1.0, 0.0, 0.0);
     // The texture used by the model
@@ -38,7 +37,6 @@ public class SpellConeRenderer extends EntityRenderer<SpellConeEntity, SpellCone
     private static final RenderType CONE_RENDER_TYPE = RenderType.create(
             Constants.modLocation("spell_cone").toString(),
             RenderSetup.builder(ModRenderPipelines.SPELL_ENTITY)
-                    .bufferSize(1536)
                     .affectsCrumbling()
                     .sortOnUpload()
                     .withTexture("Sampler0", SPELL_CONE_TEXTURE)
@@ -47,7 +45,6 @@ public class SpellConeRenderer extends EntityRenderer<SpellConeEntity, SpellCone
     private static final RenderType CONE_BORDER_RENDER_TYPE = RenderType.create(
             Constants.modLocation("spell_cone_corner_border").toString(),
             RenderSetup.builder(RenderPipelines.LINES)
-                    .bufferSize(1536)
                     .affectsCrumbling()
                     .sortOnUpload()
                     .useOverlay()
@@ -83,7 +80,9 @@ public class SpellConeRenderer extends EntityRenderer<SpellConeEntity, SpellCone
     }
 
     @Override
-    public void submit(SpellConeRenderState renderState, PoseStack poseStack, MultiBufferSource multiBufferSource, CameraRenderState cameraRenderState) {
+    public void submit(SpellConeRenderState renderState, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, CameraRenderState cameraRenderState) {
+        super.submit(renderState, poseStack, submitNodeCollector, cameraRenderState);
+
         final Vec3 direction = renderState.getDirection();
         final double length = renderState.getLength();
         final double radius = renderState.getRadius();
@@ -112,9 +111,6 @@ public class SpellConeRenderer extends EntityRenderer<SpellConeEntity, SpellCone
         }
         final Vec3 baseUpDownDir = baseLeftRightDir.cross(direction);
 
-        final Matrix4f rotationMatrix = poseStack.last().pose();
-        final PoseStack.Pose pose = poseStack.last();
-
         Vec3 finalBaseLeftRightDir = baseLeftRightDir;
         final List<Vec3> baseVertices = IntStream.range(0, numTriangles).boxed().map(it -> {
             final double rotation = angleIncrement * it;
@@ -124,26 +120,30 @@ public class SpellConeRenderer extends EntityRenderer<SpellConeEntity, SpellCone
         baseVertices.add(baseVertices.get(0));
 
         // Draw quads from the point of the cone to three vertices on the base. This will create a sort of diamond shape
-        final VertexConsumer coneBuffer = multiBufferSource.getBuffer(CONE_RENDER_TYPE);
-        for (int i = 2; i <= numTriangles; i = i + 2) {
-            final Vec3 baseVertexOne = baseVertices.get(i);
-            final Vec3 baseVertexTwo = baseVertices.get(i - 1);
-            final Vec3 baseVertexThree = baseVertices.get(i - 2);
+        submitNodeCollector.submitCustomGeometry(poseStack, CONE_RENDER_TYPE, (pose, coneBuffer) -> {
+            final Matrix4f rotationMatrix = pose.pose();
+            for (int i = 2; i <= numTriangles; i = i + 2) {
+                final Vec3 baseVertexOne = baseVertices.get(i);
+                final Vec3 baseVertexTwo = baseVertices.get(i - 1);
+                final Vec3 baseVertexThree = baseVertices.get(i - 2);
 
-            // Draw the "point" vertex of the cone first
-            drawConeVertex(rotationMatrix, pose, coneBuffer, 0.0, 0.0, 0.0, 0f, 0f, red, green, blue, coneAlpha);
-            drawConeVertex(rotationMatrix, pose, coneBuffer, baseVertexOne.x(), baseVertexOne.y(), baseVertexOne.z(), 1f, 0f, red, green, blue, coneAlpha);
-            drawConeVertex(rotationMatrix, pose, coneBuffer, baseVertexTwo.x(), baseVertexTwo.y(), baseVertexTwo.z(), 1f, 1f, red, green, blue, coneAlpha);
-            drawConeVertex(rotationMatrix, pose, coneBuffer, baseVertexThree.x(), baseVertexThree.y(), baseVertexThree.z(), 0f, 1f, red, green, blue, coneAlpha);
-        }
+                // Draw the "point" vertex of the cone first
+                drawConeVertex(rotationMatrix, pose, coneBuffer, 0.0, 0.0, 0.0, 0f, 0f, red, green, blue, coneAlpha);
+                drawConeVertex(rotationMatrix, pose, coneBuffer, baseVertexOne.x(), baseVertexOne.y(), baseVertexOne.z(), 1f, 0f, red, green, blue, coneAlpha);
+                drawConeVertex(rotationMatrix, pose, coneBuffer, baseVertexTwo.x(), baseVertexTwo.y(), baseVertexTwo.z(), 1f, 1f, red, green, blue, coneAlpha);
+                drawConeVertex(rotationMatrix, pose, coneBuffer, baseVertexThree.x(), baseVertexThree.y(), baseVertexThree.z(), 0f, 1f, red, green, blue, coneAlpha);
+            }
+        });
 
-        final VertexConsumer coneBorderBuffer = multiBufferSource.getBuffer(CONE_BORDER_RENDER_TYPE);
-        for (int i = 0; i < numTriangles; i++) {
-            final Vec3 baseVertex = baseVertices.get(i);
-            // Draw a point from the tip of the cone to each vertex
-            drawBorderVertex(rotationMatrix, pose, coneBorderBuffer, 0.0, 0.0, 0.0, red, green, blue, borderAlpha);
-            drawBorderVertex(rotationMatrix, pose, coneBorderBuffer, baseVertex.x(), baseVertex.y(), baseVertex.z(), red, green, blue, borderAlpha);
-        }
+        submitNodeCollector.submitCustomGeometry(poseStack, CONE_BORDER_RENDER_TYPE, (pose, coneBorderBuffer) -> {
+            final Matrix4f rotationMatrix = pose.pose();
+            for (int i = 0; i < numTriangles; i++) {
+                final Vec3 baseVertex = baseVertices.get(i);
+                // Draw a point from the tip of the cone to each vertex
+                drawBorderVertex(rotationMatrix, pose, coneBorderBuffer, 0.0, 0.0, 0.0, red, green, blue, borderAlpha);
+                drawBorderVertex(rotationMatrix, pose, coneBorderBuffer, baseVertex.x(), baseVertex.y(), baseVertex.z(), red, green, blue, borderAlpha);
+            }
+        });
     }
 
     private void drawConeVertex(
