@@ -1,5 +1,6 @@
 package com.dslovikosky.narnia.common.event.datagenproviders;
 
+import com.dslovikosky.narnia.common.constants.Constants;
 import com.dslovikosky.narnia.common.constants.ModBlocks;
 import com.dslovikosky.narnia.common.constants.ModItemTags;
 import com.dslovikosky.narnia.common.constants.ModItems;
@@ -23,7 +24,10 @@ import net.minecraft.world.level.block.TrapDoorBlock;
 
 public class ModRecipeProvider extends RecipeProvider {
     public ModRecipeProvider(final BootstrapContext<Recipe<?>> recipeOutput, final BootstrapContext<Advancement> advancementOutput) {
-        super(recipeOutput, advancementOutput);
+        // Helpers like stonecutterResultFromBase derive a bare recipe name with no namespace, which without a
+        // default mod id resolves to minecraft. Datagen only emits entries belonging to the mod being
+        // generated, so those recipes were being dropped on the floor.
+        super(recipeOutput, advancementOutput, Constants.MOD_ID);
     }
 
 
