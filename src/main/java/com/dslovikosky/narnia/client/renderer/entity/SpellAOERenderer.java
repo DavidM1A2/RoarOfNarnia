@@ -93,7 +93,7 @@ public class SpellAOERenderer extends EntityRenderer<SpellAOEEntity, SpellAOERen
         final int latitudes = (int) Math.ceil(7 + radius / 3);
         final int longitudes = (int) Math.ceil(7 + radius / 3);
 
-        SpellGeometrySubmitter.submitAfterTerrain(submitNodeCollector, poseStack, RENDER_TYPE, (pose, buffer) -> {
+        SpellGeometrySubmitter.submitThroughWater(submitNodeCollector, poseStack, RENDER_TYPE, (pose, buffer) -> {
             final Matrix4f rotationMatrix = pose.pose();
 
             // Algorithm from https://stackoverflow.com/questions/43412525/algorithm-to-draw-a-sphere-using-quadrilaterals

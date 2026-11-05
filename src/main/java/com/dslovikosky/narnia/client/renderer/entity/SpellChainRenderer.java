@@ -102,7 +102,7 @@ public class SpellChainRenderer extends EntityRenderer<SpellChainEntity, SpellCh
         jitterVertices.add(endPos);
         final Map<Vec3, List<Vec3>> forks = computeForks(random, jitterVertices);
 
-        SpellGeometrySubmitter.submitAfterTerrain(submitNodeCollector, poseStack, RENDER_TYPE, (pose, buffer) -> {
+        SpellGeometrySubmitter.submitThroughWater(submitNodeCollector, poseStack, RENDER_TYPE, (pose, buffer) -> {
             // drawSegment walks the stack forward as it goes, so it needs a mutable stack rather than
             // the single pose the submit system hands back
             final PoseStack segmentStack = new PoseStack();

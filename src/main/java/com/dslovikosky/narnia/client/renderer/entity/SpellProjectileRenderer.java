@@ -78,7 +78,7 @@ public class SpellProjectileRenderer extends EntityRenderer<SpellProjectileEntit
         poseStack.mulPose(Axis.YP.rotationDegrees(tickCount * IN_PLANE_ROTATION_SPEED));
         // Rotate the plane
         poseStack.mulPose(Axis.XP.rotationDegrees(90f));
-        SpellGeometrySubmitter.submitAfterTerrain(submitNodeCollector, poseStack, RENDER_TYPE, (pose, buffer) -> drawOneSprite(pose, buffer, red, green, blue));
+        SpellGeometrySubmitter.submitThroughWater(submitNodeCollector, poseStack, RENDER_TYPE, (pose, buffer) -> drawOneSprite(pose, buffer, red, green, blue));
         poseStack.popPose();
 
         // Setup in-plane rotation
@@ -86,7 +86,7 @@ public class SpellProjectileRenderer extends EntityRenderer<SpellProjectileEntit
         poseStack.mulPose(Axis.XP.rotationDegrees(tickCount * IN_PLANE_ROTATION_SPEED));
         // Rotate the plane
         poseStack.mulPose(Axis.YP.rotationDegrees(90f));
-        SpellGeometrySubmitter.submitAfterTerrain(submitNodeCollector, poseStack, RENDER_TYPE, (pose, buffer) -> drawOneSprite(pose, buffer, red, green, blue));
+        SpellGeometrySubmitter.submitThroughWater(submitNodeCollector, poseStack, RENDER_TYPE, (pose, buffer) -> drawOneSprite(pose, buffer, red, green, blue));
         poseStack.popPose();
 
         // Setup in-plane rotation
@@ -94,7 +94,7 @@ public class SpellProjectileRenderer extends EntityRenderer<SpellProjectileEntit
         poseStack.mulPose(Axis.ZP.rotationDegrees(tickCount * IN_PLANE_ROTATION_SPEED));
         // Rotate the plane
         poseStack.mulPose(Axis.ZP.rotationDegrees(90f));
-        SpellGeometrySubmitter.submitAfterTerrain(submitNodeCollector, poseStack, RENDER_TYPE, (pose, buffer) -> drawOneSprite(pose, buffer, red, green, blue));
+        SpellGeometrySubmitter.submitThroughWater(submitNodeCollector, poseStack, RENDER_TYPE, (pose, buffer) -> drawOneSprite(pose, buffer, red, green, blue));
         poseStack.popPose();
 
         poseStack.popPose();
