@@ -18,7 +18,7 @@ public class WorldWoodSaplingBlock extends SaplingBlock {
                 .randomTicks()
                 .instabreak()
                 .sound(SoundType.GRASS)
-                .pushReaction(PushReaction.DESTROY)
+                .pushReaction(PushReaction.POPPED)
                 .setId(ResourceKey.create(Registries.BLOCK, Constants.modLocation("world_wood_sapling"))));
     }
 }

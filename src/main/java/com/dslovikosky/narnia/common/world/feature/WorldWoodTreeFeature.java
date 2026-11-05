@@ -4,22 +4,27 @@ import com.dslovikosky.narnia.common.utils.EllipsoidUtils;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
 import net.minecraft.core.Vec3i;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
+import net.minecraft.util.valueproviders.IntProvider;
+import net.minecraft.util.valueproviders.IntProviders;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelWriter;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.LeavesBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.feature.Feature;
-import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 import net.minecraft.world.level.levelgen.feature.TreeFeature;
 import net.minecraft.world.level.levelgen.feature.foliageplacers.FoliagePlacer;
+import net.minecraft.world.level.levelgen.feature.stateproviders.BlockStateProvider;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import net.minecraft.world.phys.shapes.BitSetDiscreteVoxelShape;
@@ -34,19 +39,32 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
+/**
+ * 26.3 merged a feature and its configuration into one object, so the settings that used to live in
+ * WorldWoodTreeConfiguration are fields on the feature now and place takes the level directly.
+ */
 @ParametersAreNonnullByDefault
-public class WorldWoodTreeFeature extends Feature<WorldWoodTreeConfiguration> {
-    public WorldWoodTreeFeature(Codec<WorldWoodTreeConfiguration> pCodec) {
-        super(pCodec);
+public record WorldWoodTreeFeature(
+        IntProvider height,
+        Holder<BlockStateProvider> trunkProvider,
+        Holder<BlockStateProvider> foliageProvider
+) implements Feature {
+    public static final MapCodec<WorldWoodTreeFeature> CODEC = RecordCodecBuilder.mapCodec(
+            instance -> instance.group(
+                            IntProviders.CODEC.fieldOf("height").forGetter(WorldWoodTreeFeature::height),
+                            BlockStateProvider.CODEC.fieldOf("trunk_provider").forGetter(WorldWoodTreeFeature::trunkProvider),
+                            BlockStateProvider.CODEC.fieldOf("foliage_provider").forGetter(WorldWoodTreeFeature::foliageProvider)
+                    )
+                    .apply(instance, WorldWoodTreeFeature::new)
+    );
+
+    @Override
+    public MapCodec<WorldWoodTreeFeature> codec() {
+        return CODEC;
     }
 
     @Override
-    public final boolean place(FeaturePlaceContext<WorldWoodTreeConfiguration> pContext) {
-        final WorldGenLevel level = pContext.level();
-        final RandomSource randomSource = pContext.random();
-        final BlockPos originPos = pContext.origin();
-        final WorldWoodTreeConfiguration configuration = pContext.config();
-
+    public boolean place(final WorldGenLevel level, final ChunkGenerator chunkGenerator, final RandomSource randomSource, final BlockPos originPos) {
         final Set<BlockPos> rootPositions = Sets.newHashSet();
         final Set<BlockPos> trunkPositions = Sets.newHashSet();
         final Set<BlockPos> leafPositions = Sets.newHashSet();
@@ -72,7 +90,7 @@ public class WorldWoodTreeFeature extends Feature<WorldWoodTreeConfiguration> {
                 return leafPositions.contains(blockPos);
             }
         };
-        boolean placedSuccessfully = this.doPlace(level, randomSource, originPos, rootSetter, trunkSetter, foliageSetter, configuration);
+        boolean placedSuccessfully = this.doPlace(level, randomSource, originPos, rootSetter, trunkSetter, foliageSetter);
         if (placedSuccessfully && (!trunkPositions.isEmpty() || !leafPositions.isEmpty())) {
             return BoundingBox.encapsulatingPositions(Iterables.concat(rootPositions, trunkPositions, leafPositions, decorPositions)).map(boundingBox -> {
                 DiscreteVoxelShape discretevoxelshape = updateLeaves(level, boundingBox, trunkPositions, decorPositions, rootPositions);
@@ -90,10 +108,9 @@ public class WorldWoodTreeFeature extends Feature<WorldWoodTreeConfiguration> {
             BlockPos originPos,
             BiConsumer<BlockPos, BlockState> rootSetter,
             BiConsumer<BlockPos, BlockState> trunkSetter,
-            FoliagePlacer.FoliageSetter foliageSetter,
-            WorldWoodTreeConfiguration configuration
+            FoliagePlacer.FoliageSetter foliageSetter
     ) {
-        final int treeHeight = configuration.height().sample(random);
+        final int treeHeight = height.sample(random);
         final double baseTrunkWidth = treeHeight / 5.0;
 
         final double xCenterShift = -random.nextDouble();
@@ -116,7 +133,7 @@ public class WorldWoodTreeFeature extends Feature<WorldWoodTreeConfiguration> {
             final int finalLayer = layer;
             loopOverTreeTrunkLayerBlocks(layer, treeHeight, baseTrunkWidth, xCenterShift, zCenterShift, originPos, blockPos -> {
                 if (TreeFeature.validTreePos(level, blockPos)) {
-                    trunkSetter.accept(blockPos, configuration.trunkProvider().getState(level, random, blockPos));
+                    trunkSetter.accept(blockPos, trunkProvider.value().getState(level, random, blockPos));
                 }
                 if (finalLayer == treeHeight - 1) {
                     branchTipPositions.add(blockPos);
@@ -152,7 +169,7 @@ public class WorldWoodTreeFeature extends Feature<WorldWoodTreeConfiguration> {
 
                     final BlockPos blockPos = new BlockPos((int) Math.round(x), (int) Math.round(y), (int) Math.round(z));
                     if (TreeFeature.validTreePos(level, blockPos)) {
-                        trunkSetter.accept(blockPos, configuration.trunkProvider().getState(level, random, blockPos));
+                        trunkSetter.accept(blockPos, trunkProvider.value().getState(level, random, blockPos));
                     }
                     if (step == numSteps) {
                         branchTipPositions.add(blockPos);
@@ -180,7 +197,7 @@ public class WorldWoodTreeFeature extends Feature<WorldWoodTreeConfiguration> {
                         if (EllipsoidUtils.isInsideEllipsoid(0, 0, 0, leafClusterWidth / 2.0, leafClusterHeight / 2.0, leafClusterWidth / 2.0, xOffset, yOffset, zOffset)) {
                             final BlockPos leafPos = branchTipPos.offset(xOffset, yOffset, zOffset);
                             if (TreeFeature.validTreePos(level, leafPos)) {
-                                foliageSetter.set(leafPos, configuration.foliageProvider().getState(level, random, leafPos));
+                                foliageSetter.set(leafPos, foliageProvider.value().getState(level, random, leafPos));
                             }
                         }
                     }
@@ -205,7 +222,7 @@ public class WorldWoodTreeFeature extends Feature<WorldWoodTreeConfiguration> {
     }
 
     @Override
-    protected void setBlock(LevelWriter level, BlockPos blockPos, BlockState blockState) {
+    public void setBlock(LevelWriter level, BlockPos blockPos, BlockState blockState) {
         setBlockKnownShape(level, blockPos, blockState);
     }
 

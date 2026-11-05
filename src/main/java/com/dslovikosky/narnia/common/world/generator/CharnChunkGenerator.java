@@ -32,11 +32,14 @@ import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.PositionalRandomFactory;
 import net.minecraft.world.level.levelgen.RandomState;
 import net.minecraft.world.level.levelgen.blending.Blender;
+import net.minecraft.world.level.levelgen.densityfunction.SamplerContext;
 import net.minecraft.world.level.levelgen.synth.SimplexNoise;
+import org.jspecify.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
 @ParametersAreNonnullByDefault
@@ -57,15 +60,27 @@ public class CharnChunkGenerator extends ChunkGenerator {
         super(new FixedBiomeSource(biome));
     }
 
+    /**
+     * 26.3 collapsed fillFromNoise, applyCarvers and buildSurface into one buildTerrain call. Charn only ever
+     * filled from noise - its carver and surface passes were empty - so the whole generator is this method now.
+     */
     @Override
-    public CompletableFuture<ChunkAccess> fillFromNoise(Blender blender, RandomState randomState, StructureManager structureManager, ChunkAccess chunk) {
+    public CompletableFuture<ChunkAccess> buildTerrain(
+            ChunkAccess chunk,
+            Blender blender,
+            RandomState randomState,
+            StructureManager structureManager,
+            BiomeManager biomeManager,
+            @Nullable WorldGenRegion carverBiomeRegion,
+            Set<Holder<Biome>> possibleBiomes
+    ) {
         return CompletableFuture.supplyAsync(() -> {
             final ChunkPos pos = chunk.getPos();
             final int startX = pos.getMinBlockX();
             final int startZ = pos.getMinBlockZ();
 
             final PositionalRandomFactory randomFactory = randomState.getOrCreateRandomFactory(RANDOM);
-            final SimplexNoise noise = new SimplexNoise(randomFactory.fromHashOf(RANDOM));
+            final SimplexNoise noise = new SimplexNoise(randomFactory.fromHashOf(RANDOM), true);
 
             for (int x = startX; x < startX + 16; x++) {
                 for (int z = startZ; z < startZ + 16; z++) {
@@ -156,7 +171,7 @@ public class CharnChunkGenerator extends ChunkGenerator {
 
     @Override
     public int getBaseHeight(final int x, final int z, final Heightmap.Types type, final LevelHeightAccessor level, final RandomState random) {
-        final SimplexNoise detailNoise = new SimplexNoise(random.getOrCreateRandomFactory(RANDOM).fromHashOf(RANDOM));
+        final SimplexNoise detailNoise = new SimplexNoise(random.getOrCreateRandomFactory(RANDOM).fromHashOf(RANDOM), true);
 
         final double baseHeight = charnTerrain.computeBaseHeight(x, z, detailNoise);
         final double riverDepth = charnRivers.computeRiverDepth(x, z, detailNoise);
@@ -183,15 +198,12 @@ public class CharnChunkGenerator extends ChunkGenerator {
     }
 
     @Override
-    public void applyCarvers(WorldGenRegion level, long seed, RandomState random, BiomeManager biomeManager, StructureManager structureManager, ChunkAccess chunk) {
-    }
-
-    @Override
-    public void buildSurface(WorldGenRegion level, StructureManager structureManager, RandomState random, ChunkAccess chunk) {
-    }
-
-    @Override
     public void spawnOriginalMobs(WorldGenRegion level) {
+    }
+
+    @Override
+    public void addDebugScreenInfo(List<String> info, RandomState random, BlockPos pos, SamplerContext samplerContext) {
+        info.add("Charn City Generator");
     }
 
     @Override
@@ -209,8 +221,4 @@ public class CharnChunkGenerator extends ChunkGenerator {
         return 0;
     }
 
-    @Override
-    public void addDebugScreenInfo(List<String> info, RandomState random, BlockPos pos) {
-        info.add("Charn City Generator");
-    }
 }

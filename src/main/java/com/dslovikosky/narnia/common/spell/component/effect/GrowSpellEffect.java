@@ -11,6 +11,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.BonemealSource;
 import net.minecraft.world.level.block.BonemealableBlock;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -57,16 +58,16 @@ public class GrowSpellEffect extends SpellEffect {
                 break;
             }
 
-            if (!iGrowable.isValidBonemealTarget(level, position, blockState)) {
+            if (!iGrowable.isValidBonemealTarget(level, position, blockState, BonemealSource.INTERACTION)) {
                 break;
             }
 
             blockValid = true;
-            if (!iGrowable.isBonemealSuccess(level, level.getRandom(), position, blockState)) {
+            if (!iGrowable.isBonemealSuccess(level, level.getRandom(), position, blockState, BonemealSource.INTERACTION)) {
                 continue;
             }
 
-            iGrowable.performBonemeal(level, level.getRandom(), position, blockState);
+            iGrowable.performBonemeal(level, level.getRandom(), position, blockState, BonemealSource.INTERACTION);
             blockUpdated = true;
             blockState = level.getBlockState(position);
         }

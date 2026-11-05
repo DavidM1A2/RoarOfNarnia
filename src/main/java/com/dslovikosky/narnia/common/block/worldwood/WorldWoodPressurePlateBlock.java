@@ -19,7 +19,7 @@ public class WorldWoodPressurePlateBlock extends PressurePlateBlock {
                 .noCollision()
                 .strength(0.5F)
                 .ignitedByLava()
-                .pushReaction(PushReaction.DESTROY)
+                .pushReaction(PushReaction.POPPED)
                 .setId(ResourceKey.create(Registries.BLOCK, Constants.modLocation("world_wood_pressure_plate"))));
     }
 }

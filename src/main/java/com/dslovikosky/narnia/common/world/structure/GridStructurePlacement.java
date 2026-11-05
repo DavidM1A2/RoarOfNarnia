@@ -1,53 +1,33 @@
 package com.dslovikosky.narnia.common.world.structure;
 
-import com.dslovikosky.narnia.common.constants.ModStructurePlacementTypes;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.core.Vec3i;
 import net.minecraft.world.level.chunk.ChunkGeneratorStructureState;
 import net.minecraft.world.level.levelgen.structure.placement.StructurePlacement;
-import net.minecraft.world.level.levelgen.structure.placement.StructurePlacementType;
 
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.Optional;
 
+/**
+ * 26.3 turned StructurePlacement into an interface and moved the frequency reduction and exclusion zone
+ * machinery down into AbstractSpreadingStructurePlacement. This placement always overrode isStructureChunk to
+ * answer from the grid alone, so none of that machinery was ever reached, and implementing the interface
+ * directly keeps the same behaviour. StructurePlacementType is gone too; a placement returns its codec now.
+ */
 @ParametersAreNonnullByDefault
-public class GridStructurePlacement extends StructurePlacement {
+public record GridStructurePlacement(int xFrequency, int zFrequency) implements StructurePlacement {
     public static final MapCodec<GridStructurePlacement> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            Codec.INT.fieldOf("x_frequency").forGetter(GridStructurePlacement::getXFrequency),
-            Codec.INT.fieldOf("z_frequency").forGetter(GridStructurePlacement::getZFrequency)
+            Codec.INT.fieldOf("x_frequency").forGetter(GridStructurePlacement::xFrequency),
+            Codec.INT.fieldOf("z_frequency").forGetter(GridStructurePlacement::zFrequency)
     ).apply(instance, GridStructurePlacement::new));
 
-    private final int xFrequency;
-    private final int zFrequency;
-
-    public GridStructurePlacement(final int xFrequency, final int zFrequency) {
-        super(Vec3i.ZERO, FrequencyReductionMethod.DEFAULT, 0f, 0, Optional.empty());
-        this.xFrequency = xFrequency;
-        this.zFrequency = zFrequency;
+    @Override
+    public boolean isStructureChunk(ChunkGeneratorStructureState structureState, int x, int z) {
+        return x % xFrequency == 0 && z % zFrequency == 0;
     }
 
     @Override
-    protected boolean isPlacementChunk(ChunkGeneratorStructureState pStructureState, int pX, int pZ) {
-        return pX % xFrequency == 0 && pZ % zFrequency == 0;
-    }
-
-    @Override
-    public boolean isStructureChunk(ChunkGeneratorStructureState pStructureState, int pX, int pZ) {
-        return isPlacementChunk(pStructureState, pX, pZ);
-    }
-
-    @Override
-    public StructurePlacementType<?> type() {
-        return ModStructurePlacementTypes.GRID.get();
-    }
-
-    public int getXFrequency() {
-        return xFrequency;
-    }
-
-    public int getZFrequency() {
-        return zFrequency;
+    public MapCodec<GridStructurePlacement> codec() {
+        return CODEC;
     }
 }

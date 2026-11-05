@@ -36,7 +36,7 @@ public class RuneBlock extends Block implements EntityBlock {
                 .mapColor(MapColor.SAND)
                 .instrument(NoteBlockInstrument.BASEDRUM)
                 .strength(3.0F, 9.0F)
-                .isViewBlocking((ignoredA, ignoredB, ignoredC) -> false)
+                .isViewBlocking((ignoredA, ignoredB, ignoredC, ignoredD) -> false)
                 .lightLevel((state) -> 15)
                 .setId(ResourceKey.create(Registries.BLOCK, Constants.modLocation(color.getName() + "_rune"))));
         this.color = color;

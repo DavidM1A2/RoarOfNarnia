@@ -18,7 +18,7 @@ public class WorldWoodDoorBlock extends DoorBlock {
                 .strength(3.0F)
                 .noOcclusion()
                 .ignitedByLava()
-                .pushReaction(PushReaction.DESTROY)
+                .pushReaction(PushReaction.POPPED)
                 .setId(ResourceKey.create(Registries.BLOCK, Constants.modLocation("world_wood_door"))));
     }
 }

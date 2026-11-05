@@ -3,7 +3,6 @@ package com.dslovikosky.narnia.common.block;
 import com.dslovikosky.narnia.common.block_entity.CharnBellBlockEntity;
 import com.dslovikosky.narnia.common.constants.Constants;
 import com.dslovikosky.narnia.common.constants.ModBlockEntities;
-import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
@@ -41,8 +40,6 @@ public class CharnBellBlock extends HorizontalDirectionalBlock implements Entity
             box(7.5, 1.0, 2.0, 8.5, 16.0, 14.0),
             box(0.0, 0.0, 0.0, 16.0, 1.0, 16.0)
     );
-
-    private static final MapCodec<CharnBellBlock> CODEC = simpleCodec(CharnBellBlock::new);
 
     public CharnBellBlock() {
         this(Properties.of()
@@ -90,11 +87,6 @@ public class CharnBellBlock extends HorizontalDirectionalBlock implements Entity
     @Override
     public @Nullable BlockEntity newBlockEntity(final BlockPos pos, final BlockState state) {
         return new CharnBellBlockEntity(pos, state);
-    }
-
-    @Override
-    protected MapCodec<? extends HorizontalDirectionalBlock> codec() {
-        return CODEC;
     }
 
     @Override

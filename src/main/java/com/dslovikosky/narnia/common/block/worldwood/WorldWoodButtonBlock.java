@@ -13,7 +13,7 @@ public class WorldWoodButtonBlock extends ButtonBlock {
         super(ModBlockSetTypes.WORLD_WOOD, 30, BlockBehaviour.Properties.of()
                 .noCollision()
                 .strength(0.5F)
-                .pushReaction(PushReaction.DESTROY)
+                .pushReaction(PushReaction.POPPED)
                 .setId(ResourceKey.create(Registries.BLOCK, Constants.modLocation("world_wood_button"))));
     }
 }

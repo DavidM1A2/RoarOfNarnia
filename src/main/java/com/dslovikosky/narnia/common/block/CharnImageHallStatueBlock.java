@@ -3,7 +3,6 @@ package com.dslovikosky.narnia.common.block;
 import com.dslovikosky.narnia.common.block_entity.CharnImageHallStatueBlockEntity;
 import com.dslovikosky.narnia.common.constants.Constants;
 import com.dslovikosky.narnia.common.model.CharnStatueType;
-import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
@@ -25,8 +24,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class CharnImageHallStatueBlock extends HorizontalDirectionalBlock implements EntityBlock {
     public static final EnumProperty<CharnStatueType> TYPE = EnumProperty.create("charn_statue_type", CharnStatueType.class);
 
-    private static final MapCodec<CharnImageHallStatueBlock> CODEC = simpleCodec(CharnImageHallStatueBlock::new);
-
     public CharnImageHallStatueBlock() {
         this(Properties.of()
                 .noOcclusion()
@@ -43,11 +40,6 @@ public class CharnImageHallStatueBlock extends HorizontalDirectionalBlock implem
     @Override
     public @Nullable BlockEntity newBlockEntity(final BlockPos pos, final BlockState state) {
         return new CharnImageHallStatueBlockEntity(pos, state);
-    }
-
-    @Override
-    protected MapCodec<? extends HorizontalDirectionalBlock> codec() {
-        return CODEC;
     }
 
     @Override

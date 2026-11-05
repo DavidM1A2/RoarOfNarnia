@@ -3,21 +3,19 @@ package com.dslovikosky.narnia.common.event.datagenproviders;
 import com.dslovikosky.narnia.common.constants.ModBiomeModifiers;
 import com.dslovikosky.narnia.common.constants.ModBiomes;
 import com.dslovikosky.narnia.common.constants.ModBlocks;
-import com.dslovikosky.narnia.common.constants.ModConfiguredFeatures;
 import com.dslovikosky.narnia.common.constants.ModDamageTypes;
 import com.dslovikosky.narnia.common.constants.ModDimensionTypes;
 import com.dslovikosky.narnia.common.constants.ModFeatures;
 import com.dslovikosky.narnia.common.constants.ModLevelStems;
 import com.dslovikosky.narnia.common.constants.ModPlacedFeatures;
 import com.dslovikosky.narnia.common.world.feature.WaterPoolFeature;
-import com.dslovikosky.narnia.common.world.feature.WorldWoodTreeConfiguration;
+import com.dslovikosky.narnia.common.world.feature.WorldWoodTreeFeature;
 import com.dslovikosky.narnia.common.world.generator.CharnChunkGenerator;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderSet;
-import net.minecraft.core.RegistrySetBuilder;
-import net.minecraft.core.Vec3i;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.data.loot.LootTableProvider;
 import net.minecraft.data.worldgen.placement.VegetationPlacements;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.ARGB;
@@ -44,8 +42,8 @@ import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.VerticalAnchor;
 import net.minecraft.world.level.levelgen.blockpredicates.BlockPredicate;
-import net.minecraft.world.level.levelgen.carver.ConfiguredWorldCarver;
-import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
+import net.minecraft.world.level.levelgen.carver.WorldCarver;
+import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.stateproviders.BlockStateProvider;
 import net.minecraft.world.level.levelgen.flat.FlatLayerInfo;
 import net.minecraft.world.level.levelgen.flat.FlatLevelGeneratorSettings;
@@ -56,15 +54,16 @@ import net.minecraft.world.level.levelgen.placement.CountPlacement;
 import net.minecraft.world.level.levelgen.placement.HeightRangePlacement;
 import net.minecraft.world.level.levelgen.placement.HeightmapPlacement;
 import net.minecraft.world.level.levelgen.placement.InSquarePlacement;
+import net.minecraft.world.level.levelgen.placement.OffsetPlacement;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
-import net.minecraft.world.level.levelgen.placement.RandomOffsetPlacement;
 import net.minecraft.world.level.levelgen.placement.RarityFilter;
 import net.minecraft.world.level.levelgen.placement.SurfaceWaterDepthFilter;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.world.BiomeModifiers;
 import net.neoforged.neoforge.common.world.NeoForgeEnvironmentAttributes;
-import net.neoforged.neoforge.data.event.GatherDataEvent;
+import net.neoforged.neoforge.data.event.GatherDataRegistryEntriesEvent;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import net.neoforged.neoforge.registries.holdersets.OrHolderSet;
 
@@ -75,10 +74,15 @@ import java.util.Optional;
 
 import static com.dslovikosky.narnia.client.constants.ModRenderers.CHARN_SKY_RENDERER_ID;
 
+/**
+ * 26.3 bootstraps datapack registry entries through GatherDataRegistryEntriesEvent rather than handing a
+ * RegistrySetBuilder to the data generator. The gatherer sorts entries into the world and reloadable registry
+ * layers itself, so recipes and loot tables can be gathered alongside biomes and features.
+ */
 public class ModDatapackObjectProvider {
     @SubscribeEvent
-    public void onDataGatherEvent(final GatherDataEvent.Client event) {
-        final RegistrySetBuilder builder = new RegistrySetBuilder()
+    public void onGatherDataRegistryEntriesEvent(final GatherDataRegistryEntriesEvent event) {
+        event
                 .add(NeoForgeRegistries.Keys.BIOME_MODIFIERS, bootstrap -> {
                     final HolderGetter<Biome> biomes = bootstrap.lookup(Registries.BIOME);
                     final HolderGetter<PlacedFeature> placedFeatures = bootstrap.lookup(Registries.PLACED_FEATURE);
@@ -114,7 +118,7 @@ public class ModDatapackObjectProvider {
                                     // The old fixed time of 6000 ticks is noon, which the day timeline maps to a 0 degree sun angle
                                     .set(EnvironmentAttributes.SUN_ANGLE, 0.0F)
                                     // See the Charn note below: 26.1 defaults the ambient lightmap floor to black
-                                    .set(EnvironmentAttributes.AMBIENT_LIGHT_COLOR, ARGB.color(10, 10, 10))
+                                    .set(EnvironmentAttributes.AMBIENT_LIGHT_COLOR, ARGB.vector3fFromRGB24(ARGB.color(10, 10, 10)))
                                     .set(EnvironmentAttributes.RESPAWN_ANCHOR_WORKS, true)
                                     .set(EnvironmentAttributes.CAN_START_RAID, false)
                                     .build(),
@@ -142,10 +146,10 @@ public class ModDatapackObjectProvider {
                                     // defaults to pure black. Without this, Charn is literally rgb(0,0,0)
                                     // wherever block light does not reach, since it has no sky light either.
                                     // This matches the value vanilla gives the overworld.
-                                    .set(EnvironmentAttributes.AMBIENT_LIGHT_COLOR, ARGB.color(10, 10, 10))
+                                    .set(EnvironmentAttributes.AMBIENT_LIGHT_COLOR, ARGB.vector3fFromRGB24(ARGB.color(10, 10, 10)))
                                     // Charn's sunset fan was previously always drawn in this colour regardless of time
-                                    .set(EnvironmentAttributes.SUNRISE_SUNSET_COLOR, ARGB.color(50, 230, 16, 16))
-                                    .set(EnvironmentAttributes.BED_RULE, BedRule.EXPLODES)
+                                    .set(EnvironmentAttributes.SUNRISE_SUNSET_COLOR, ARGB.vector4fFromARGB32(ARGB.color(50, 230, 16, 16)))
+                                    .set(EnvironmentAttributes.BED_RULE, BedRule.DESTROY_ON_USE)
                                     .set(EnvironmentAttributes.RESPAWN_ANCHOR_WORKS, true)
                                     .set(EnvironmentAttributes.CAN_START_RAID, false)
                                     .build(),
@@ -155,7 +159,7 @@ public class ModDatapackObjectProvider {
                 })
                 .add(Registries.BIOME, bootstrap -> {
                     final HolderGetter<PlacedFeature> placedFeatures = bootstrap.lookup(Registries.PLACED_FEATURE);
-                    final HolderGetter<ConfiguredWorldCarver<?>> configuredWorldCarver = bootstrap.lookup(Registries.CONFIGURED_CARVER);
+                    final HolderGetter<WorldCarver> configuredWorldCarver = bootstrap.lookup(Registries.CARVER);
                     bootstrap.register(ModBiomes.WOOD_BETWEEN_THE_WORLDS, new Biome.BiomeBuilder()
                             .hasPrecipitation(false)
                             .temperature(0.7f)
@@ -164,9 +168,11 @@ public class ModDatapackObjectProvider {
                             // 1.21.11 moved the fog, sky and water fog colours out of BiomeSpecialEffects
                             // and into environment attributes
                             .putAttributes(EnvironmentAttributeMap.builder()
-                                    .set(EnvironmentAttributes.FOG_COLOR, new Color(72, 199, 255, 0).getRGB())
-                                    .set(EnvironmentAttributes.SKY_COLOR, new Color(80, 188, 255, 0).getRGB())
-                                    .set(EnvironmentAttributes.WATER_FOG_COLOR, new Color(13, 94, 115, 0).getRGB()))
+                                    .set(EnvironmentAttributes.FOG_COLOR, ARGB.vector3fFromRGB24(new Color(72, 199, 255, 0).getRGB()))
+                                    .set(EnvironmentAttributes.SKY_COLOR, ARGB.vector3fFromRGB24(new Color(80, 188, 255, 0).getRGB()))
+                                    .set(EnvironmentAttributes.WATER_FOG_COLOR, ARGB.vector3fFromRGB24(new Color(13, 94, 115, 0).getRGB()))
+                                    // 26.3 moved the world gen creature spawn chance out of MobSpawnSettings into an attribute
+                                    .set(EnvironmentAttributes.CREATURE_WORLD_GEN_SPAWN_PROBABILITY, 0.0F))
                             .specialEffects(new BiomeSpecialEffects.Builder()
                                     .waterColor(new Color(23, 209, 255, 0).getRGB())
                                     .foliageColorOverride(new Color(43, 199, 23, 0).getRGB())
@@ -183,7 +189,6 @@ public class ModDatapackObjectProvider {
                                     .addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, ModPlacedFeatures.WOOD_BETWEEN_THE_WORLDS_TREES)
                                     .build())
                             .mobSpawnSettings(new MobSpawnSettings.Builder()
-                                    .creatureGenerationProbability(0f)
                                     .build())
                             .build());
                     bootstrap.register(ModBiomes.DARK_CITY_RUINS, new Biome.BiomeBuilder()
@@ -192,9 +197,11 @@ public class ModDatapackObjectProvider {
                             .temperatureAdjustment(Biome.TemperatureModifier.NONE)
                             .downfall(0.0f)
                             .putAttributes(EnvironmentAttributeMap.builder()
-                                    .set(EnvironmentAttributes.FOG_COLOR, new Color(50, 0, 0, 0).getRGB())
-                                    .set(EnvironmentAttributes.SKY_COLOR, new Color(0, 0, 0, 0).getRGB())
-                                    .set(EnvironmentAttributes.WATER_FOG_COLOR, new Color(50, 0, 0, 0).getRGB()))
+                                    .set(EnvironmentAttributes.FOG_COLOR, ARGB.vector3fFromRGB24(new Color(50, 0, 0, 0).getRGB()))
+                                    .set(EnvironmentAttributes.SKY_COLOR, ARGB.vector3fFromRGB24(new Color(0, 0, 0, 0).getRGB()))
+                                    .set(EnvironmentAttributes.WATER_FOG_COLOR, ARGB.vector3fFromRGB24(new Color(50, 0, 0, 0).getRGB()))
+                                    // 26.3 moved the world gen creature spawn chance out of MobSpawnSettings into an attribute
+                                    .set(EnvironmentAttributes.CREATURE_WORLD_GEN_SPAWN_PROBABILITY, 0.0F))
                             .specialEffects(new BiomeSpecialEffects.Builder()
                                     .waterColor(new Color(50, 0, 0, 0).getRGB())
                                     .foliageColorOverride(new Color(44, 0, 23, 0).getRGB())
@@ -203,7 +210,6 @@ public class ModDatapackObjectProvider {
                                     .build())
                             .generationSettings(new BiomeGenerationSettings.Builder(placedFeatures, configuredWorldCarver).build())
                             .mobSpawnSettings(new MobSpawnSettings.Builder()
-                                    .creatureGenerationProbability(0f)
                                     .build())
                             .build());
                 })
@@ -229,43 +235,41 @@ public class ModDatapackObjectProvider {
                     bootstrap.register(ModLevelStems.DARK_CITY_RUINS,
                             new LevelStem(dimensionTypes.getOrThrow(ModDimensionTypes.DARK_CITY_RUINS), charnChunkGenerator));
                 })
-                .add(Registries.CONFIGURED_FEATURE, bootstrap -> {
-                    bootstrap.register(ModConfiguredFeatures.SMALL_WATER_POOL, new ConfiguredFeature<>(
-                            ModFeatures.WATER_POOL.get(),
-                            new WaterPoolFeature.Configuration(
-                                    BlockStateProvider.simple(Blocks.WATER),
-                                    ClampedNormalInt.of(8f, 1f, 6, 10),
-                                    ClampedNormalInt.of(8f, 1f, 6, 10),
-                                    ClampedNormalInt.of(10f, 1f, 8, 12)
-                            )));
-                    bootstrap.register(ModConfiguredFeatures.WORLD_WOOD_TREE, new ConfiguredFeature<>(
-                            ModFeatures.WORLD_WOOD_TREE.get(),
-                            new WorldWoodTreeConfiguration(
-                                    UniformInt.of(3, 24),
-                                    BlockStateProvider.simple(ModBlocks.WORLD_WOOD_LOG.get()
-                                            .defaultBlockState()
-                                            .setValue(RotatedPillarBlock.AXIS, Direction.Axis.Y)),
-                                    BlockStateProvider.simple(ModBlocks.WORLD_WOOD_LEAVES.get()
-                                            .defaultBlockState()
-                                            .setValue(LeavesBlock.DISTANCE, 7)
-                                            .setValue(LeavesBlock.PERSISTENT, false)
-                                            .setValue(LeavesBlock.WATERLOGGED, false))
-                            )));
+                // 26.3 dropped ConfiguredFeature. A feature holds its own settings and is registered straight
+                // into the feature registry, which is where the configured features used to live.
+                .add(Registries.FEATURE, bootstrap -> {
+                    bootstrap.register(ModFeatures.SMALL_WATER_POOL, new WaterPoolFeature(
+                            BlockStateProvider.holderOf(Blocks.WATER),
+                            ClampedNormalInt.of(8f, 1f, 6, 10),
+                            ClampedNormalInt.of(8f, 1f, 6, 10),
+                            ClampedNormalInt.of(10f, 1f, 8, 12)
+                    ));
+                    bootstrap.register(ModFeatures.WORLD_WOOD_TREE, new WorldWoodTreeFeature(
+                            UniformInt.of(3, 24),
+                            BlockStateProvider.holderOf(ModBlocks.WORLD_WOOD_LOG.get()
+                                    .defaultBlockState()
+                                    .setValue(RotatedPillarBlock.AXIS, Direction.Axis.Y)),
+                            BlockStateProvider.holderOf(ModBlocks.WORLD_WOOD_LEAVES.get()
+                                    .defaultBlockState()
+                                    .setValue(LeavesBlock.DISTANCE, 7)
+                                    .setValue(LeavesBlock.PERSISTENT, false)
+                                    .setValue(LeavesBlock.WATERLOGGED, false))
+                    ));
                 })
                 .add(Registries.PLACED_FEATURE, bootstrap -> {
-                    final HolderGetter<ConfiguredFeature<?, ?>> configuredFeatures = bootstrap.lookup(Registries.CONFIGURED_FEATURE);
+                    final HolderGetter<Feature> configuredFeatures = bootstrap.lookup(Registries.FEATURE);
                     bootstrap.register(ModPlacedFeatures.SPARSE_WORLD_WOOD_TREES, new PlacedFeature(
-                            configuredFeatures.getOrThrow(ModConfiguredFeatures.WORLD_WOOD_TREE),
+                            configuredFeatures.getOrThrow(ModFeatures.WORLD_WOOD_TREE),
                             List.of(
                                     CountPlacement.of(1),
-                                    RandomOffsetPlacement.of(UniformInt.of(6, 10), UniformInt.of(6, 10)),
+                                    OffsetPlacement.of(UniformInt.of(6, 10), UniformInt.of(6, 10)),
                                     RarityFilter.onAverageOnceEvery(30),
                                     SurfaceWaterDepthFilter.forMaxDepth(0),
                                     HeightmapPlacement.onHeightmap(Heightmap.Types.OCEAN_FLOOR),
-                                    BlockPredicateFilter.forPredicate(BlockPredicate.wouldSurvive(ModBlocks.WORLD_WOOD_SAPLING.get().defaultBlockState(), Vec3i.ZERO))
+                                    BlockPredicateFilter.forPredicate(BlockPredicate.wouldSurvive(ModBlocks.WORLD_WOOD_SAPLING.get()))
                             )));
                     bootstrap.register(ModPlacedFeatures.WOOD_BETWEEN_THE_WORLDS_TREES, new PlacedFeature(
-                            configuredFeatures.getOrThrow(ModConfiguredFeatures.WORLD_WOOD_TREE),
+                            configuredFeatures.getOrThrow(ModFeatures.WORLD_WOOD_TREE),
                             List.of(
                                     CountPlacement.of(6),
                                     InSquarePlacement.spread(),
@@ -274,15 +278,18 @@ public class ModDatapackObjectProvider {
                                     SurfaceWaterDepthFilter.forMaxDepth(0)
                             )));
                     bootstrap.register(ModPlacedFeatures.WOOD_BETWEEN_THE_WORLDS_WATER_POOL, new PlacedFeature(
-                            configuredFeatures.getOrThrow(ModConfiguredFeatures.SMALL_WATER_POOL),
+                            configuredFeatures.getOrThrow(ModFeatures.SMALL_WATER_POOL),
                             List.of(
-                                    RandomOffsetPlacement.of(UniformInt.of(3, 13), ConstantInt.of(0)),
+                                    OffsetPlacement.of(UniformInt.of(3, 13), ConstantInt.of(0)),
                                     HeightmapPlacement.onHeightmap(Heightmap.Types.WORLD_SURFACE_WG)
                             )));
                 })
                 .add(Registries.DAMAGE_TYPE, bootstrap -> {
                     bootstrap.register(ModDamageTypes.SPELL, new DamageType("narnia.spell", 0f));
-                });
-        event.createDatapackRegistryObjects(builder);
+                })
+                // Loot tables and recipes became reloadable datapack registries in 26.3, so they are gathered
+                // here rather than being registered as standalone data providers
+                .lootTable(new LootTableProvider.SubProviderEntry(ModBlockLootTableSubProvider::new, LootContextParamSets.BLOCK))
+                .recipe(ModRecipeProvider::new);
     }
 }

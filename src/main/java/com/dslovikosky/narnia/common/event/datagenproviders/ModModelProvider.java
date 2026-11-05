@@ -13,10 +13,20 @@ import net.minecraft.client.data.models.model.TexturedModel;
 import net.minecraft.data.BlockFamily;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.Identifier;
-import net.minecraft.world.item.equipment.EquipmentAssets;
+import net.minecraft.world.item.equipment.trim.TrimMaterials;
 import net.minecraft.world.level.block.Block;
 
+import java.util.Map;
+
 public class ModModelProvider extends ModelProvider {
+    /**
+     * 26.3 replaced the equipment asset argument of generateTrimmableItem with a palette replacement map.
+     * Passing EquipmentAssets.DIAMOND used to pick the darker diamond trim overlay on diamond-tier armour,
+     * which this map expresses directly - it is exactly what vanilla diamond armour does in 26.3.
+     */
+    private static final Map<TrimMaterials.Palette, TrimMaterials.Palette> ANCIENT_TRIM_PALETTES =
+            Map.of(TrimMaterials.Palette.DIAMOND, TrimMaterials.Palette.DIAMOND_DARKER);
+
     public ModModelProvider(final PackOutput output) {
         super(output, Constants.MOD_ID);
     }
@@ -81,10 +91,10 @@ public class ModModelProvider extends ModelProvider {
         itemModels.generateFlatItem(ModItems.WORLD_WOOD_CHEST_BOAT.get(), ModelTemplates.FLAT_ITEM);
 
         itemModels.generateFlatItem(ModItems.ANCIENT_METAL.get(), ModelTemplates.FLAT_ITEM);
-        itemModels.generateTrimmableItem(ModItems.ANCIENT_HELMET.get(), EquipmentAssets.DIAMOND, ItemModelGenerators.TRIM_PREFIX_HELMET, false);
-        itemModels.generateTrimmableItem(ModItems.ANCIENT_CHESTPLATE.get(), EquipmentAssets.DIAMOND, ItemModelGenerators.TRIM_PREFIX_CHESTPLATE, false);
-        itemModels.generateTrimmableItem(ModItems.ANCIENT_LEGGINGS.get(), EquipmentAssets.DIAMOND, ItemModelGenerators.TRIM_PREFIX_LEGGINGS, false);
-        itemModels.generateTrimmableItem(ModItems.ANCIENT_BOOTS.get(), EquipmentAssets.DIAMOND, ItemModelGenerators.TRIM_PREFIX_BOOTS, false);
+        itemModels.generateTrimmableItem(ModItems.ANCIENT_HELMET.get(), ItemModelGenerators.TRIM_PREFIX_HELMET, false, ANCIENT_TRIM_PALETTES);
+        itemModels.generateTrimmableItem(ModItems.ANCIENT_CHESTPLATE.get(), ItemModelGenerators.TRIM_PREFIX_CHESTPLATE, false, ANCIENT_TRIM_PALETTES);
+        itemModels.generateTrimmableItem(ModItems.ANCIENT_LEGGINGS.get(), ItemModelGenerators.TRIM_PREFIX_LEGGINGS, false, ANCIENT_TRIM_PALETTES);
+        itemModels.generateTrimmableItem(ModItems.ANCIENT_BOOTS.get(), ItemModelGenerators.TRIM_PREFIX_BOOTS, false, ANCIENT_TRIM_PALETTES);
         itemModels.generateFlatItem(ModItems.ANCIENT_SWORD.get(), ModelTemplates.FLAT_HANDHELD_ITEM);
 
         itemModels.generateFlatItem(ModBlocks.CHARN_BELL.asItem(), ModelTemplates.FLAT_ITEM);
@@ -96,7 +106,7 @@ public class ModModelProvider extends ModelProvider {
     }
 
     private void createSapling(final BlockModelGenerators blockModels, final Block block, final BlockModelGenerators.PlantType plantType) {
-        blockModels.registerSimpleItemModel(block, plantType.createItemModel(blockModels, block));
+        blockModels.registerSimpleItemModel(block, plantType.createItemModelUsingBlockTexture(blockModels, block));
         final TextureMapping textureMapping = plantType.getTextureMapping(block);
         final MultiVariant multiVariant = BlockModelGenerators.plainVariant(plantType.getCross()
                 .create(block, textureMapping, blockModels.modelOutput));

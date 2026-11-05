@@ -19,7 +19,7 @@ public class DarkCityDoorBlock extends DoorBlock {
                 .requiresCorrectToolForDrops()
                 .strength(1.5F, 6.0F)
                 .sound(SoundType.STONE)
-                .pushReaction(PushReaction.DESTROY)
+                .pushReaction(PushReaction.POPPED)
                 .setId(ResourceKey.create(Registries.BLOCK, Constants.modLocation("dark_city_door"))));
     }
 }

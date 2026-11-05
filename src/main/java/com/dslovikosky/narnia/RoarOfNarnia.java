@@ -17,7 +17,7 @@ import com.dslovikosky.narnia.common.constants.ModCreativeTabs;
 import com.dslovikosky.narnia.common.constants.ModDataComponentTypes;
 import com.dslovikosky.narnia.common.constants.ModEntityDataSerializers;
 import com.dslovikosky.narnia.common.constants.ModEntityTypes;
-import com.dslovikosky.narnia.common.constants.ModFeatures;
+import com.dslovikosky.narnia.common.constants.ModFeatureTypes;
 import com.dslovikosky.narnia.common.constants.ModItems;
 import com.dslovikosky.narnia.common.constants.ModMobEffects;
 import com.dslovikosky.narnia.common.constants.ModParticleTypes;
@@ -82,7 +82,7 @@ public class RoarOfNarnia {
         ModItems.ITEMS.register(modBus);
         ModCreativeTabs.CREATIVE_TABS.register(modBus);
         ModDataComponentTypes.DATA_COMPONENT_TYPES.register(modBus);
-        ModFeatures.FEATURES.register(modBus);
+        ModFeatureTypes.FEATURE_TYPES.register(modBus);
         ModAttachmentTypes.ATTACHMENT_TYPES.register(modBus);
         ModBlockEntities.BLOCK_ENTITY_TYPES.register(modBus);
         ModStructurePieces.STRUCTURE_PIECES.register(modBus);

@@ -7,10 +7,10 @@ public class CharnRivers {
     public double computeRiverDepth(final int x, final int z, final SimplexNoise noise) {
         // --- Step 1: Base smooth noise field ---
         // Very low frequency → broad, continent-scale curves
-        final double riverBase = noise.getValue(x * 0.0015, z * 0.0015);
+        final double riverBase = noise.get(x * 0.0015, z * 0.0015);
 
         // Slight warp to avoid uniform sine-wave patterns
-        final double riverWarp = noise.getValue((x + 2000) * 0.006, (z - 2000) * 0.006) * 0.5;
+        final double riverWarp = noise.get((x + 2000) * 0.006, (z - 2000) * 0.006) * 0.5;
 
         // Combine base and warp to create gentle direction bending
         final double riverCombined = riverBase + riverWarp * 0.4;

@@ -20,9 +20,9 @@ public class WorldWoodLeavesBlock extends TintedParticleLeavesBlock {
                 .noOcclusion()
                 .isValidSpawn(Blocks::ocelotOrParrot)
                 .isSuffocating((pState, pLevel, pPos) -> false)
-                .isViewBlocking((pState, pLevel, pPos) -> false)
+                .isViewBlocking((pState, pLevel, pPos, pNearPlaneBox) -> false)
                 .ignitedByLava()
-                .pushReaction(PushReaction.DESTROY)
+                .pushReaction(PushReaction.POPPED)
                 .isRedstoneConductor((pState, pLevel, pPos) -> false)
                 .setId(ResourceKey.create(Registries.BLOCK, Constants.modLocation("world_wood_leaves"))));
     }

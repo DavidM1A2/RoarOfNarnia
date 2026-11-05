@@ -1,9 +1,10 @@
 package com.dslovikosky.narnia.common.world.feature;
 
 import com.dslovikosky.narnia.common.utils.EllipsoidUtils;
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.valueproviders.IntProvider;
@@ -11,31 +12,47 @@ import net.minecraft.util.valueproviders.IntProviders;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.feature.Feature;
-import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
-import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
 import net.minecraft.world.level.levelgen.feature.stateproviders.BlockStateProvider;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
+/**
+ * 26.3 merged a feature and its configuration into one object. Feature is an interface whose instances carry
+ * their own settings and dispatch on a codec registered in the feature type registry, so the old
+ * Configuration record is now the feature itself and place takes the level directly instead of a context.
+ */
 @ParametersAreNonnullByDefault
-public class WaterPoolFeature extends Feature<WaterPoolFeature.Configuration> {
-    public WaterPoolFeature(Codec<WaterPoolFeature.Configuration> codec) {
-        super(codec);
+public record WaterPoolFeature(
+        Holder<BlockStateProvider> fluid,
+        IntProvider width,
+        IntProvider length,
+        IntProvider depth
+) implements Feature {
+    public static final MapCodec<WaterPoolFeature> CODEC = RecordCodecBuilder.mapCodec(
+            instance -> instance.group(
+                            BlockStateProvider.CODEC.fieldOf("fluid").forGetter(WaterPoolFeature::fluid),
+                            IntProviders.CODEC.fieldOf("width").forGetter(WaterPoolFeature::width),
+                            IntProviders.CODEC.fieldOf("length").forGetter(WaterPoolFeature::length),
+                            IntProviders.CODEC.fieldOf("depth").forGetter(WaterPoolFeature::depth)
+                    )
+                    .apply(instance, WaterPoolFeature::new)
+    );
+
+    @Override
+    public MapCodec<WaterPoolFeature> codec() {
+        return CODEC;
     }
 
     @Override
-    public boolean place(final FeaturePlaceContext<Configuration> context) {
-        final BlockPos blockPos = context.origin();
-        final BlockPos waterLevelPos = blockPos.below();
-        final WorldGenLevel level = context.level();
-        final RandomSource random = context.random();
-        final WaterPoolFeature.Configuration configuration = context.config();
+    public boolean place(final WorldGenLevel level, final ChunkGenerator chunkGenerator, final RandomSource random, final BlockPos origin) {
+        final BlockPos waterLevelPos = origin.below();
 
-        final BlockStateProvider fluid = configuration.fluid();
-        final int width = configuration.width().sample(random);
-        final int length = configuration.length().sample(random);
-        final int depth = configuration.depth().sample(random);
+        final BlockStateProvider fluidProvider = fluid.value();
+        final int width = width().sample(random);
+        final int length = length().sample(random);
+        final int depth = depth().sample(random);
 
         if (waterLevelPos.getY() <= level.getMinY() + depth + 1) {
             return false;
@@ -52,7 +69,7 @@ public class WaterPoolFeature extends Feature<WaterPoolFeature.Configuration> {
                         continue;
                     }
 
-                    final BlockState newBlockState = fluid.getState(level, random, currentBlockPos);
+                    final BlockState newBlockState = fluidProvider.getState(level, random, currentBlockPos);
                     final BlockState oldBlockState = level.getBlockState(currentBlockPos);
                     if (!oldBlockState.is(BlockTags.FEATURES_CANNOT_REPLACE) && !oldBlockState.isAir()) {
                         level.setBlock(currentBlockPos, newBlockState, 2);
@@ -75,17 +92,5 @@ public class WaterPoolFeature extends Feature<WaterPoolFeature.Configuration> {
         }
 
         return false;
-    }
-
-    public record Configuration(BlockStateProvider fluid, IntProvider width, IntProvider length, IntProvider depth) implements FeatureConfiguration {
-        public static final Codec<WaterPoolFeature.Configuration> CODEC = RecordCodecBuilder.create(
-                instance -> instance.group(
-                                BlockStateProvider.CODEC.fieldOf("fluid").forGetter(WaterPoolFeature.Configuration::fluid),
-                                IntProviders.CODEC.fieldOf("width").forGetter(WaterPoolFeature.Configuration::width),
-                                IntProviders.CODEC.fieldOf("length").forGetter(WaterPoolFeature.Configuration::length),
-                                IntProviders.CODEC.fieldOf("depth").forGetter(WaterPoolFeature.Configuration::depth)
-                        )
-                        .apply(instance, WaterPoolFeature.Configuration::new)
-        );
     }
 }

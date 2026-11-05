@@ -1,17 +1,17 @@
 package com.dslovikosky.narnia.common.event.datagenproviders;
 
-import com.dslovikosky.narnia.common.constants.Constants;
 import com.dslovikosky.narnia.common.constants.ModBlocks;
 import com.dslovikosky.narnia.common.constants.ModItemTags;
 import com.dslovikosky.narnia.common.constants.ModItems;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.data.PackOutput;
+import net.minecraft.advancements.Advancement;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.RecipeProvider;
+import net.minecraft.data.worldgen.BootstrapContext;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.SignItem;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.ButtonBlock;
@@ -21,12 +21,14 @@ import net.minecraft.world.level.block.FenceGateBlock;
 import net.minecraft.world.level.block.StairBlock;
 import net.minecraft.world.level.block.TrapDoorBlock;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.concurrent.CompletableFuture;
-
+/**
+ * 26.3 turned recipes and advancements into reloadable datapack registries, so a recipe provider writes into
+ * two bootstrap contexts instead of being its own data provider. The Runner that used to wire it into the
+ * generator is gone; GatherDataRegistryEntriesEvent#recipe takes this constructor directly.
+ */
 public class ModRecipeProvider extends RecipeProvider {
-    public ModRecipeProvider(final HolderLookup.Provider registries, final RecipeOutput output) {
-        super(registries, output);
+    public ModRecipeProvider(final BootstrapContext<Recipe<?>> recipeOutput, final BootstrapContext<Advancement> advancementOutput) {
+        super(recipeOutput, advancementOutput);
     }
 
 
@@ -173,25 +175,8 @@ public class ModRecipeProvider extends RecipeProvider {
         trapdoorBuilder(trapDoorBlock, Ingredient.of(planks)).unlockedBy(getHasName(planks), has(planks)).save(recipeOutput);
     }
 
-    private void sign(final RecipeOutput recipeOutput, final SignItem signItem, final Block planks) {
+    // 26.3 dropped SignItem, so a sign is just an item as far as its recipe is concerned
+    private void sign(final RecipeOutput recipeOutput, final Item signItem, final Block planks) {
         signBuilder(signItem, Ingredient.of(planks)).unlockedBy(getHasName(planks), has(planks)).save(recipeOutput);
-    }
-
-    @ParametersAreNonnullByDefault
-    public static class Runner extends RecipeProvider.Runner {
-        // Get the parameters from the `GatherDataEvent`s.
-        public Runner(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider) {
-            super(output, lookupProvider);
-        }
-
-        @Override
-        protected RecipeProvider createRecipeProvider(HolderLookup.Provider provider, RecipeOutput output) {
-            return new ModRecipeProvider(provider, output);
-        }
-
-        @Override
-        public String getName() {
-            return Constants.MOD_ID;
-        }
     }
 }

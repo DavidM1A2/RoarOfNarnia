@@ -2,18 +2,17 @@ package com.dslovikosky.narnia.common.event.datagenproviders;
 
 import com.dslovikosky.narnia.common.constants.ModBlocks;
 import com.dslovikosky.narnia.common.constants.ModItems;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.data.loot.BlockLootSubProvider;
+import net.minecraft.data.loot.LootTableSubProvider;
 import net.minecraft.world.flag.FeatureFlags;
-import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
+import net.minecraft.world.level.storage.loot.predicates.AnyOfCondition;
 import net.minecraft.world.level.storage.loot.predicates.BonusLevelTableCondition;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
-import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
+import net.minecraft.world.level.storage.loot.providers.number.ints.ContextIntProviders;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Set;
@@ -22,8 +21,8 @@ public class ModBlockLootTableSubProvider extends BlockLootSubProvider {
     // Order is Fortune 0, 1, 2, 3, 4+
     private static final float[] WORLD_WOOD_LEAVES_DUST_CHANCES = new float[]{0.1F, 0.15F, 0.2F, 0.25F, 0.3F};
 
-    protected ModBlockLootTableSubProvider(final HolderLookup.Provider lookupProvider) {
-        super(Set.of(), FeatureFlags.DEFAULT_FLAGS, lookupProvider);
+    protected ModBlockLootTableSubProvider(final LootTableSubProvider.Context output) {
+        super(Set.of(), FeatureFlags.DEFAULT_FLAGS, output);
     }
 
     @Override
@@ -33,8 +32,6 @@ public class ModBlockLootTableSubProvider extends BlockLootSubProvider {
 
     @Override
     protected void generate() {
-        final HolderLookup.RegistryLookup<Enchantment> registrylookup = this.registries.lookupOrThrow(Registries.ENCHANTMENT);
-
         dropSelf(ModBlocks.WORLD_WOOD.get());
         dropSelf(ModBlocks.STRIPPED_WORLD_WOOD.get());
         dropSelf(ModBlocks.WORLD_WOOD_LOG.get());
@@ -52,8 +49,8 @@ public class ModBlockLootTableSubProvider extends BlockLootSubProvider {
         dropSelf(ModBlocks.WORLD_WOOD_BUTTON.get());
         add(ModBlocks.WORLD_WOOD_LEAVES.get(), createLeavesDrops(ModBlocks.WORLD_WOOD_LEAVES.get(), ModBlocks.WORLD_WOOD_SAPLING.get(), NORMAL_LEAVES_SAPLING_CHANCES)
                 .withPool(LootPool.lootPool()
-                        .when(doesNotHaveShearsOrSilkTouch().and(BonusLevelTableCondition.bonusLevelFlatChance(registrylookup.getOrThrow(Enchantments.FORTUNE), WORLD_WOOD_LEAVES_DUST_CHANCES)))
-                        .setRolls(ConstantValue.exactly(1.0F))
+                        .when(doesNotHaveShearsOrSilkTouch().and(BonusLevelTableCondition.bonusLevelFlatChance(this.enchantments.getOrThrow(Enchantments.FORTUNE), WORLD_WOOD_LEAVES_DUST_CHANCES)))
+                        .setRolls(ContextIntProviders.exactly(1))
                         .add(LootItem.lootTableItem(ModItems.SPARKLING_DUST))));
         dropSelf(ModBlocks.WORLD_WOOD_SAPLING.get());
         add(ModBlocks.WORLD_WOOD_SLAB.get(), createSlabItemTable(ModBlocks.WORLD_WOOD_SLAB.get()));
@@ -85,8 +82,9 @@ public class ModBlockLootTableSubProvider extends BlockLootSubProvider {
         add(ModBlocks.YELLOW_RUNE.get(), noDrop());
     }
 
+    // 26.3 made hasShears and hasSilkTouch return registry holders, so these compose through AnyOfCondition now
     private LootItemCondition.Builder hasShearsOrSilkTouch() {
-        return this.hasShears().or(this.hasSilkTouch());
+        return new AnyOfCondition.Builder().or(this.hasShears()).or(this.hasSilkTouch());
     }
 
     private LootItemCondition.Builder doesNotHaveShearsOrSilkTouch() {

@@ -19,7 +19,7 @@ public class DarkCityWindowBlock extends TransparentBlock {
                 .isValidSpawn(Blocks::never)
                 .isRedstoneConductor((ignoredA, ignoredB, ignoredC) -> false)
                 .isSuffocating((ignoredA, ignoredB, ignoredC) -> false)
-                .isViewBlocking((ignoredA, ignoredB, ignoredC) -> false)
+                .isViewBlocking((ignoredA, ignoredB, ignoredC, ignoredD) -> false)
                 .setId(ResourceKey.create(Registries.BLOCK, Constants.modLocation("dark_city_window"))));
     }
 }
