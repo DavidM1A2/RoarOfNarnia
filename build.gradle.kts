@@ -28,8 +28,8 @@ base {
 // Mojang ships Java 25 to end users in 26.1.2, so mods should target Java 25.
 java.toolchain.languageVersion = JavaLanguageVersion.of(25)
 
-//minecraft.accessTransformers.file rootProject.file("src/main/resources/META-INF/accesstransformer.cfg")
-//minecraft.accessTransformers.entry public net.minecraft.client.Minecraft textureManager # textureManager
+// Opens up the MinecraftServer internals DynamicPoolWorldManager needs to add a ServerLevel at runtime.
+minecraft.accessTransformers.file(rootProject.file("src/main/resources/META-INF/accesstransformer.cfg"))
 
 // Default run configurations.
 // These can be tweaked, removed, or duplicated as needed.

@@ -3,9 +3,10 @@ package com.dslovikosky.narnia.common.item;
 import com.dslovikosky.narnia.common.constants.Constants;
 import com.dslovikosky.narnia.common.constants.ModAttachmentTypes;
 import com.dslovikosky.narnia.common.constants.ModDimensions;
-import com.dslovikosky.narnia.common.event.WoodBetweenTheWorldsHandler;
 import com.dslovikosky.narnia.common.model.attachment_type.PreRingTeleportData;
 import com.dslovikosky.narnia.common.model.attachment_type.PreRingTeleportEntry;
+import com.dslovikosky.narnia.common.world.dimension.DynamicPoolWorldManager;
+import com.dslovikosky.narnia.common.world.dimension.DynamicPoolWorlds;
 import com.mojang.logging.LogUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
@@ -68,13 +69,18 @@ public class RingItem extends Item {
                 }
                 if (entity.onGround()) {
                     if (!level.isClientSide()) {
-                        final ChunkPos chunkPos = entity.chunkPosition();
-                        final ResourceKey<Level> returnDimension =
-                                WoodBetweenTheWorldsHandler.POOL_LEVEL_MAP.getOrDefault(chunkPos, Level.OVERWORLD);
+                        final ChunkPos poolChunk = entity.chunkPosition();
+                        // Pools outside the handful of fixed ones lead to a world of their own, which is generated the
+                        // first time anyone sinks into them
+                        final ServerLevel returnLevel = DynamicPoolWorldManager.levelFor(level.getServer(), poolChunk);
+                        if (returnLevel == null) {
+                            LOG.error("The pool in chunk {} leads to a dimension that does not exist in this save", poolChunk);
+                            return;
+                        }
+
                         final PreRingTeleportData preRingTeleportData = entity.getData(ModAttachmentTypes.PRE_RING_TELEPORT_DATA);
-                        final ServerLevel returnLevel = level.getServer().getLevel(returnDimension);
-                        final PreRingTeleportEntry entry = preRingTeleportData.get(returnDimension)
-                                .orElse(new PreRingTeleportEntry(Vec3.upFromBottomCenterOf(returnLevel.getRespawnData().pos(), 1), 0f, 0f));
+                        final PreRingTeleportEntry entry = preRingTeleportData.get(returnLevel.dimension())
+                                .orElseGet(() -> firstArrivalIn(returnLevel));
                         entity.teleport(new TeleportTransition(returnLevel, entry.position(), Vec3.ZERO, entry.yaw(), entry.pitch(), TeleportTransition.DO_NOTHING));
                     }
                 }
@@ -92,7 +98,7 @@ public class RingItem extends Item {
             entity.setData(ModAttachmentTypes.PRE_RING_TELEPORT_DATA, preRingTeleportData);
 
             final ServerLevel woodBetweenTheWorlds = level.getServer().getLevel(ModDimensions.WOOD_BETWEEN_THE_WORLDS);
-            final ChunkPos entryChunkPos = WoodBetweenTheWorldsHandler.POOL_LEVEL_MAP.inverse().getOrDefault(dimension, ChunkPos.ZERO);
+            final ChunkPos entryChunkPos = DynamicPoolWorlds.poolChunkOf(dimension).orElse(ChunkPos.ZERO);
 
             final LevelChunk centerChunk = woodBetweenTheWorlds.getChunk(entryChunkPos.x(), entryChunkPos.z());
 
@@ -141,6 +147,13 @@ public class RingItem extends Item {
                 }
             }
         }
+    }
+
+    private PreRingTeleportEntry firstArrivalIn(final ServerLevel level) {
+        final Vec3 position = DynamicPoolWorlds.isDynamic(level.dimension())
+                ? DynamicPoolWorldManager.findArrivalPoint(level)
+                : Vec3.upFromBottomCenterOf(level.getRespawnData().pos(), 1);
+        return new PreRingTeleportEntry(position, 0f, 0f);
     }
 
     public enum Type {

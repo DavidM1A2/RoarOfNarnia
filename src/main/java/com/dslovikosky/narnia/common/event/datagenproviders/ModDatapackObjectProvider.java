@@ -9,15 +9,17 @@ import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.loot.LootTableProvider;
+import net.minecraft.data.worldgen.biome.OverworldBiomes;
 import net.minecraft.data.worldgen.placement.VegetationPlacements;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.TimelineTags;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.valueproviders.ClampedNormalInt;
 import net.minecraft.util.valueproviders.ConstantInt;
 import net.minecraft.util.valueproviders.UniformInt;
-import net.minecraft.world.attribute.BedRule;
-import net.minecraft.world.attribute.EnvironmentAttributeMap;
-import net.minecraft.world.attribute.EnvironmentAttributes;
+import net.minecraft.world.attribute.*;
+import net.minecraft.world.clock.WorldClock;
+import net.minecraft.world.clock.WorldClocks;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.level.CardinalLighting;
 import net.minecraft.world.level.biome.Biome;
@@ -43,6 +45,7 @@ import net.minecraft.world.level.levelgen.flat.FlatLevelGeneratorSettings;
 import net.minecraft.world.level.levelgen.heightproviders.ConstantHeight;
 import net.minecraft.world.level.levelgen.placement.*;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
+import net.minecraft.world.timeline.Timeline;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.world.BiomeModifiers;
@@ -77,6 +80,8 @@ public class ModDatapackObjectProvider {
                     // An empty timeline set means the dimension runs no day/night cycle, which is how a fixed
                     // time of day is expressed
                     final HolderGetter<Block> blocks = bootstrap.lookup(Registries.BLOCK);
+                    final HolderGetter<Timeline> timelines = bootstrap.lookup(Registries.TIMELINE);
+                    final HolderGetter<WorldClock> worldClocks = bootstrap.lookup(Registries.WORLD_CLOCK);
                     bootstrap.register(ModDimensionTypes.WOOD_BETWEEN_THE_WORLDS, new DimensionType(
                             true,
                             true,
@@ -132,6 +137,37 @@ public class ModDatapackObjectProvider {
                                     .build(),
                             HolderSet.direct(),
                             Optional.empty()
+                    ));
+                    // A deliberate copy of vanilla's overworld dimension type. Every dynamic pool world shares this one type
+                    bootstrap.register(ModDimensionTypes.DYNAMIC_POOL_WORLD, new DimensionType(
+                            false,
+                            true,
+                            false,
+                            false,
+                            1.0,
+                            -64,
+                            384,
+                            384,
+                            blocks.getOrThrow(BlockTags.INFINIBURN_OVERWORLD),
+                            0.0f,
+                            new DimensionType.MonsterSettings(UniformInt.of(0, 7), 0),
+                            DimensionType.Skybox.OVERWORLD,
+                            CardinalLighting.Type.DEFAULT,
+                            EnvironmentAttributeMap.builder()
+                                    .set(EnvironmentAttributes.FOG_COLOR, ARGB.vector3fFromRGB24(-4138753))
+                                    .set(EnvironmentAttributes.SKY_COLOR, ARGB.vector3fFromRGB24(OverworldBiomes.calculateSkyColor(0.8F)))
+                                    .set(EnvironmentAttributes.AMBIENT_LIGHT_COLOR, ARGB.vector3fFromRGB24(-16119286))
+                                    .set(EnvironmentAttributes.CLOUD_COLOR, ARGB.vector4fFromARGB32(ARGB.white(0.8F)))
+                                    .set(EnvironmentAttributes.CLOUD_HEIGHT, 192.33F)
+                                    .set(EnvironmentAttributes.BACKGROUND_MUSIC, BackgroundMusic.OVERWORLD)
+                                    .set(EnvironmentAttributes.BED_RULE, BedRule.CAN_SLEEP_WHEN_DARK)
+                                    .set(EnvironmentAttributes.STRAW_BED_RULE, BedRule.DESTROY_ON_LEAVE)
+                                    .set(EnvironmentAttributes.RESPAWN_ANCHOR_WORKS, false)
+                                    .set(EnvironmentAttributes.NETHER_PORTAL_SPAWNS_PIGLINS, true)
+                                    .set(EnvironmentAttributes.AMBIENT_SOUNDS, AmbientSounds.LEGACY_CAVE_SETTINGS)
+                                    .build(),
+                            timelines.getOrThrow(TimelineTags.IN_OVERWORLD),
+                            Optional.of(worldClocks.getOrThrow(WorldClocks.OVERWORLD))
                     ));
                 })
                 .add(Registries.BIOME, bootstrap -> {
