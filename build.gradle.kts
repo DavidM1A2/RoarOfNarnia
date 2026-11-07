@@ -46,7 +46,16 @@ runs {
         // Recommended logging level for the console
         // You can set various levels here.
         // Please read: https://stackoverflow.com/questions/2031163/when-to-use-the-different-log-levels
-        systemProperty("forge.logging.console.level", "debug")
+        systemProperty("forge.logging.console.level", "info")
+
+        // Netty probes for the epoll/kqueue native transports when a TCP listener starts, and logs the failure with
+        // its cause attached because FML's log4j config puts the root logger at "all". The DebugFile appender renders
+        // throwables with %xEx, which Class.forName's every frame's class to annotate it with a jar version -- that
+        // re-runs the already-failed io.netty.channel.*.Native initializer and blows up inside the appender, so log4j
+        // reports an AppenderLoggingException at ERROR. Telling netty the native transports are off up front makes the
+        // cause an UnsupportedOperationException it builds itself, which renders fine. Native transport cannot load in
+        // this dev environment anyway, so nothing is given up.
+        systemProperty("io.netty.transport.noNative", "true")
 
         modSource(project.sourceSets.main.get())
     }
