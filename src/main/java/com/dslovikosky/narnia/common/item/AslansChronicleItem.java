@@ -1,15 +1,7 @@
 package com.dslovikosky.narnia.common.item;
 
-import com.dslovikosky.narnia.client.gui.screen.PowerSourceSelectionScreen;
-import com.dslovikosky.narnia.client.gui.screen.SpellwrightingScreen;
+import com.dslovikosky.narnia.client.proxy.ClientProxy;
 import com.dslovikosky.narnia.common.constants.Constants;
-import com.dslovikosky.narnia.common.constants.ModSpellDeliveryMethods;
-import com.dslovikosky.narnia.common.constants.ModSpellEffects;
-import com.dslovikosky.narnia.common.spell.Spell;
-import com.dslovikosky.narnia.common.spell.SpellStage;
-import com.dslovikosky.narnia.common.spell.component.deliveryMethod.SpellDeliveryMethodInstance;
-import com.dslovikosky.narnia.common.spell.component.effect.base.SpellEffectInstance;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.InteractionHand;
@@ -29,7 +21,7 @@ public class AslansChronicleItem extends Item {
         // client's. Replacing a screen clears the old one's focus and stops text input, which left the GUI
         // drawn but deaf to the keyboard.
         if (level.isClientSide()) {
-            Minecraft.getInstance().gui.setScreen(new SpellwrightingScreen());
+            ClientProxy.openSpellwrightingScreen();
         }
 
         return super.use(level, player, hand);
